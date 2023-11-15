@@ -31,6 +31,7 @@ class CarrinhoPercursoEventRepository {
   void _onInsert() {
     const event = 'broadcast.carrinho.percurso.estagio.insert';
     _appSocket.socket.on(event, (data) {
+      print('DATA $data');
       _liteners
           .where((element) => element.event == Event.insert)
           .forEach((element) {
@@ -42,12 +43,9 @@ class CarrinhoPercursoEventRepository {
   void _onUpdate() {
     const event = 'broadcast.carrinho.percurso.estagio.update';
     _appSocket.socket.on(event, (data) {
-      print('broadcast update $data');
-
       _liteners
           .where((element) => element.event == Event.update)
           .forEach((element) {
-        print('broadcast update $data');
         element.callback(data);
       });
     });
