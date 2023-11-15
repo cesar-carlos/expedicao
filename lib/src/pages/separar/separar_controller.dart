@@ -1,3 +1,5 @@
+import 'package:app_expedicao/src/model/repository_event_lister_model.dart';
+import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_event_repository.dart';
 import 'package:get/get.dart';
 
 import 'package:app_expedicao/src/pages/separar_carrinhos/grid/separar_carrinho_grid_controller.dart';
@@ -44,7 +46,7 @@ class SepararController extends GetxController {
     await _fillGridSepararItens();
     await _fillGridSepararCarrinhos();
     await _fillGridSeparacaoItens();
-
+    _litenerCarrinhoPercurso();
     super.onInit();
   }
 
@@ -102,6 +104,18 @@ class SepararController extends GetxController {
         processo: _processoExecutavel,
       ).execute();
     }
+  }
+
+  _litenerCarrinhoPercurso() {
+    final carrinhoPercursoEvent = CarrinhoPercursoEventRepository.instancia;
+    carrinhoPercursoEvent.addListener(
+      RepositoryEventListerModel(
+        event: Event.insert,
+        callback: (data) {
+          print(data);
+        },
+      ),
+    );
   }
 
   @override
