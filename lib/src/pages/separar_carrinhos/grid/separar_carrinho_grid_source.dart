@@ -69,7 +69,7 @@ class SepararCarrinhoGridSource extends DataGridSource {
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   IconButton(
                     onPressed: () {
-                      controller.removeItemGrid(this, i);
+                      controller.onRemoveItem(this, i);
                     },
                     icon: const Icon(
                       size: 17,

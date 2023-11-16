@@ -5,7 +5,6 @@ class ExpedicaoCarrinhoPercursoModel {
   final int codCarrinhoPercurso;
   final String origem;
   final int codOrigem;
-
   final String situacao;
   final DateTime dataInicio;
   final String horaInicio;

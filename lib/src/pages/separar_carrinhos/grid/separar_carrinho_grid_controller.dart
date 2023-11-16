@@ -1,13 +1,15 @@
 import 'package:get/get.dart';
 
-import 'package:app_expedicao/src/pages/separar_carrinhos/grid/separar_carrinho_grid_source.dart';
 import 'package:app_expedicao/src/pages/separacao/widget/separacao_dailog_widget.dart';
+import 'package:app_expedicao/src/pages/separar_carrinhos/grid/separar_carrinho_grid_source.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget.dart';
 import 'package:app_expedicao/src/model/expedicao_percurso_consulta_model.dart';
 
 class SepararCarrinhoGridController extends GetxController {
   final RxList<ExpedicaoPercursoConsultaModel> _itens = RxList.empty();
   List<ExpedicaoPercursoConsultaModel> get itens => _itens;
+
+  void Function(ExpedicaoPercursoConsultaModel item)? onPressedRemoveItem;
 
   void addItem(ExpedicaoPercursoConsultaModel item) {
     _itens.add(item);
@@ -17,7 +19,7 @@ class SepararCarrinhoGridController extends GetxController {
     _itens.remove(item);
   }
 
-  Future<void> removeItemGrid(
+  Future<void> onRemoveItem(
     SepararCarrinhoGridSource grid,
     ExpedicaoPercursoConsultaModel item,
   ) async {
@@ -31,6 +33,7 @@ class SepararCarrinhoGridController extends GetxController {
     );
 
     if (confirmation != null && confirmation) {
+      onPressedRemoveItem?.call(item);
       removeItem(item);
     }
   }

@@ -6,30 +6,30 @@ import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinhos/carrinho_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_estagio_repository.dart';
 
-class AdicionarCarrinhoPercursoService {
+class CarrinhoPercursoAdicionarService {
   final ExpedicaoCarrinhoModel carrinho;
-  final ExpedicaoCarrinhoPercursoModel percurso;
-  final ExpedicaoPercursoEstagio estagio;
+  final ExpedicaoCarrinhoPercursoModel carrinhoPercurso;
+  final ExpedicaoPercursoEstagio percursoEstagio;
   final ProcessoExecutavelModel processo;
 
-  AdicionarCarrinhoPercursoService({
+  CarrinhoPercursoAdicionarService({
     required this.carrinho,
-    required this.percurso,
-    required this.estagio,
+    required this.carrinhoPercurso,
+    required this.percursoEstagio,
     required this.processo,
   });
 
-  execute() async {
+  Future<void> execute() async {
     final newCarrinho = carrinho.copyWith(situacao: 'AB');
-    CarrinhoRepository().update(newCarrinho);
-    CarrinhoPercursoEstagioRepository().insert(_percursoEstagio());
+    await CarrinhoRepository().update(newCarrinho);
+    await CarrinhoPercursoEstagioRepository().insert(_createPercursoEstagio());
   }
 
-  ExpedicaoPercursoEstagioModel _percursoEstagio() {
+  ExpedicaoPercursoEstagioModel _createPercursoEstagio() {
     return ExpedicaoPercursoEstagioModel(
-      codEmpresa: percurso.codEmpresa,
-      codCarrinhoPercurso: percurso.codCarrinhoPercurso,
-      codPercursoEstagio: estagio.codPercursoEstagio,
+      codEmpresa: carrinhoPercurso.codEmpresa,
+      codCarrinhoPercurso: carrinhoPercurso.codCarrinhoPercurso,
+      codPercursoEstagio: percursoEstagio.codPercursoEstagio,
       codCarrinho: carrinho.codCarrinho,
       situacao: 'AB',
       dataInicio: DateTime.now(),

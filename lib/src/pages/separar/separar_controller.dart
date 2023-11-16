@@ -1,3 +1,6 @@
+import 'package:app_expedicao/src/service/carrinho_percurso_cancelar_service.dart';
+import 'package:app_expedicao/src/service/carrinho_percurso_estagio_services.dart';
+import 'package:app_expedicao/src/service/carrinho_services.dart';
 import 'package:get/get.dart';
 
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_event_repository.dart';
@@ -5,7 +8,7 @@ import 'package:app_expedicao/src/pages/separar_carrinhos/grid/separar_carrinho_
 import 'package:app_expedicao/src/pages/separacao/grid/separacao_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/pages/carrinho/widget/adicionar_carrinho_dialog_widget.dart';
 
-import 'package:app_expedicao/src/service/adicionar_carrinho_percurso.service.dart';
+import 'package:app_expedicao/src/service/carrinho_percurso_adicionar_service.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dart';
 import 'package:app_expedicao/src/model/expedicao_percurso_consulta_model.dart';
 import 'package:app_expedicao/src/service/separar_estoque_consulta_services.dart';
@@ -20,11 +23,12 @@ class SepararController extends GetxController {
   late int codSepararEstoque;
 
   late SepararEstoqueconsultaServices _separarServices;
-
   late SepararGridController _separarGridController;
   late SepararCarrinhoGridController _separarCarrinhoGridController;
   late SeparacaoCarrinhoGridController _separacaoGridController;
   late ProcessoExecutavelModel _processoExecutavel;
+
+  final _carrinhoPercursoServices = CarrinhoPercursoServices();
 
   @override
   onInit() async {
@@ -41,7 +45,9 @@ class SepararController extends GetxController {
     await _fillGridSepararItens();
     await _fillGridSepararCarrinhos();
     await _fillGridSeparacaoItens();
+
     _litenerCarrinhoPercurso();
+    _onRemoveItemSepararCarrinhoGrid();
     super.onInit();
   }
 
@@ -80,18 +86,50 @@ class SepararController extends GetxController {
         situacao: carrinhoConsulta.situacao,
       );
 
-      final percurso = await CarrinhoPercursoServices().selectPercurso(
+      final carrinhoPercurso = await _carrinhoPercursoServices.selectPercurso(
         "CodEmpresa = ${_processoExecutavel.codEmpresa} AND Origem = '${_processoExecutavel.origem}' AND CodOrigem = ${_processoExecutavel.codOrigem}",
       );
 
       final estagio = await ExpedicaoEstagioService().separacao();
-      await AdicionarCarrinhoPercursoService(
+
+      await _carrinhoPercursoServices.adicionarCarrinhoPercursoService(
         carrinho: carrinho,
-        percurso: percurso.first,
-        estagio: estagio,
+        carrinhoPercurso: carrinhoPercurso.first,
+        percursoEstagio: estagio,
+        processo: _processoExecutavel,
+      );
+
+      final separarCarrinhos = await _separarServices.carrinhosPercurso();
+      _separarCarrinhoGridController.addItem(
+        separarCarrinhos
+            .where((el) => el.codCarrinho == carrinho.codCarrinho)
+            .toList()
+            .first,
+      );
+    }
+  }
+
+  _onRemoveItemSepararCarrinhoGrid() {
+    _separarCarrinhoGridController.onPressedRemoveItem = (item) async {
+      final carrinho = await CarrinhoServices().select(
+        "CodEmpresa = ${item.codEmpresa} AND CodCarrinho = ${item.codCarrinho}",
+      );
+
+      final carrinhoPercursoEstagio =
+          await CarrinhoPercursoEstagioServices().select('''   
+                  CodEmpresa = ${item.codEmpresa}
+              AND CodCarrinhoPercurso = ${item.codCarrinhoPercurso}
+              AND CodPercursoEstagio = ${item.codPercursoEstagio}
+              AND CodCarrinho = ${item.codCarrinho}
+              AND Situacao = 'AB'
+            ''');
+
+      await CarrinhoPercursoCancelarService(
+        carrinho: carrinho.first,
+        percursoEstagio: carrinhoPercursoEstagio.first,
         processo: _processoExecutavel,
       ).execute();
-    }
+    };
   }
 
   _litenerCarrinhoPercurso() {
@@ -103,6 +141,31 @@ class SepararController extends GetxController {
           for (var el in data.mutation) {
             final car = ExpedicaoPercursoConsultaModel.fromJson(el);
             _separarCarrinhoGridController.addItem(car);
+          }
+        },
+      ),
+    );
+
+    carrinhoPercursoEvent.addListener(
+      RepositoryEventListerModel(
+        event: Event.update,
+        callback: (data) async {
+          for (var el in data.mutation) {
+            // ignore: unused_local_variable
+            final car = ExpedicaoPercursoConsultaModel.fromJson(el);
+            //TODO: Atualizar carrinho
+          }
+        },
+      ),
+    );
+
+    carrinhoPercursoEvent.addListener(
+      RepositoryEventListerModel(
+        event: Event.delete,
+        callback: (data) async {
+          for (var el in data.mutation) {
+            final car = ExpedicaoPercursoConsultaModel.fromJson(el);
+            _separarCarrinhoGridController.removeItem(car);
           }
         },
       ),

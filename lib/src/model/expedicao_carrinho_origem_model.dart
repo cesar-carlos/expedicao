@@ -3,6 +3,7 @@ class ExpedicaoCarrinhoOrigemModel {
     'SE': 'Separando',
     'CO': 'Conferencia',
     'EX': 'Expedição',
+    'CP': 'Carrinho Percurso',
     '': ''
   };
 }
