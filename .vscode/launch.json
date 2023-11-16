@@ -17,6 +17,12 @@
       "deviceId": "chrome"
     },
     {
+      "name": "Data7 Linux (debug mode)",
+      "request": "launch",
+      "type": "dart",
+      "deviceId": "linux"
+    },
+    {
       "name": "app_expedicao",
       "request": "launch",
       "type": "dart"

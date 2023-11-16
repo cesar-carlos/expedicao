@@ -6,9 +6,11 @@ enum Event {
   delete,
 }
 
-class RepositoryEventListerModel<T> {
-  Event event;
+typedef Callback = void Function(BasicEventModel parametro);
 
-  Function(BasicEventModel<T> data) callback;
+class RepositoryEventListerModel {
+  Event event;
+  Callback callback;
+
   RepositoryEventListerModel({required this.event, required this.callback});
 }

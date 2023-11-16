@@ -20,7 +20,7 @@ class SepararEstoqueconsultaServices {
     );
   }
 
-  Future<List<ExpedicaoPercursoConsultaModel>> carrinhos() async {
+  Future<List<ExpedicaoPercursoConsultaModel>> carrinhosPercurso() async {
     return await CarrinhoPercursoConsultaRepository().select(
       'CodEmpresa = $codEmpresa AND CodOrigem = $codSepararEstoque',
     );

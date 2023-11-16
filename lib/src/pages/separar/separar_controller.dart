@@ -4,17 +4,15 @@ import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinh
 import 'package:app_expedicao/src/pages/separar_carrinhos/grid/separar_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/pages/separacao/grid/separacao_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/pages/carrinho/widget/adicionar_carrinho_dialog_widget.dart';
-import 'package:app_expedicao/src/model/expedicao_separacao_item_consulta_model.dart';
+
 import 'package:app_expedicao/src/service/adicionar_carrinho_percurso.service.dart';
-import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dart';
 import 'package:app_expedicao/src/model/expedicao_percurso_consulta_model.dart';
 import 'package:app_expedicao/src/service/separar_estoque_consulta_services.dart';
 import 'package:app_expedicao/src/model/repository_event_lister_model.dart';
-import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
 import 'package:app_expedicao/src/service/expedicao.estagio.service.dart';
-import 'package:app_expedicao/src/model/expedicao_percurso_estagio.dart';
+import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_model.dart';
 
 class SepararController extends GetxController {
@@ -22,14 +20,11 @@ class SepararController extends GetxController {
   late int codSepararEstoque;
 
   late SepararEstoqueconsultaServices _separarServices;
+
   late SepararGridController _separarGridController;
   late SepararCarrinhoGridController _separarCarrinhoGridController;
   late SeparacaoCarrinhoGridController _separacaoGridController;
   late ProcessoExecutavelModel _processoExecutavel;
-
-  final _separarItens = <ExpedicaoSepararItemConsultaModel>[].obs;
-  final _separarCarrinhos = <ExpedicaoPercursoConsultaModel>[].obs;
-  final _separacaoItens = <ExpedicaSeparacaoItemConsultaModel>[].obs;
 
   @override
   onInit() async {
@@ -51,32 +46,25 @@ class SepararController extends GetxController {
   }
 
   Future<void> _fillGridSepararItens() async {
-    _separarItens.value = await _separarServices.itensSaparar();
-
-    for (var el in _separarItens) {
+    final separarItens = await _separarServices.itensSaparar();
+    for (var el in separarItens) {
       _separarGridController.addItem(el);
     }
   }
 
   Future<void> _fillGridSepararCarrinhos() async {
-    _separarCarrinhos.value = await _separarServices.carrinhos();
-
-    for (var el in _separarCarrinhos) {
+    final separarCarrinhos = await _separarServices.carrinhosPercurso();
+    for (var el in separarCarrinhos) {
       _separarCarrinhoGridController.addItem(el);
     }
   }
 
   Future<void> _fillGridSeparacaoItens() async {
-    _separacaoItens.value = await _separarServices.itensSeparacao();
-
-    for (var el in _separacaoItens) {
+    final separacaoItens = await _separarServices.itensSeparacao();
+    for (var el in separacaoItens) {
       _separacaoGridController.addItem(el);
     }
   }
-
-  List<ExpedicaoSepararItemConsultaModel> get separarItens => _separarItens;
-  List<ExpedicaSeparacaoItemConsultaModel> get separadoItens => _separacaoItens;
-  List<ExpedicaoPercursoConsultaModel> get carrinhos => _separarCarrinhos;
 
   Future<void> addCarrinho() async {
     final dialog = AdicionarCarrinhoDialogWidget();
@@ -111,18 +99,13 @@ class SepararController extends GetxController {
     carrinhoPercursoEvent.addListener(
       RepositoryEventListerModel(
         event: Event.insert,
-        callback: (data) {
-          print(data);
+        callback: (data) async {
+          for (var el in data.mutation) {
+            final car = ExpedicaoPercursoConsultaModel.fromJson(el);
+            _separarCarrinhoGridController.addItem(car);
+          }
         },
       ),
     );
-  }
-
-  @override
-  void onClose() {
-    _separarItens.close();
-    _separarCarrinhos.close();
-    _separacaoItens.close();
-    super.onClose();
   }
 }

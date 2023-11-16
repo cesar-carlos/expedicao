@@ -11,12 +11,12 @@ class ExpedicaoPercursoConsultaModel {
   final String nomeCarrinho;
   final String codigoBarrasCarrinho;
   final String ativo;
-  final DateTime? dataInicio;
-  final String? horaInicio;
+  final DateTime dataInicio;
+  final String horaInicio;
   final DateTime? dataFinalizacao;
   final String? horaFinalizacao;
-  final int? codUsuario;
-  final String? nomeUsuario;
+  final int codUsuario;
+  final String nomeUsuario;
   final int? codSetorEstoque;
   final String? nomeSetorEstoque;
 
@@ -31,12 +31,12 @@ class ExpedicaoPercursoConsultaModel {
     required this.nomeCarrinho,
     required this.codigoBarrasCarrinho,
     required this.ativo,
-    this.dataInicio,
-    this.horaInicio,
+    required this.dataInicio,
+    required this.horaInicio,
     this.dataFinalizacao,
     this.horaFinalizacao,
-    this.codUsuario,
-    this.nomeUsuario,
+    required this.codUsuario,
+    required this.nomeUsuario,
     this.codSetorEstoque,
     this.nomeSetorEstoque,
   });
@@ -85,5 +85,10 @@ class ExpedicaoPercursoConsultaModel {
       'CodSetorEstoque': codSetorEstoque,
       'NomeSetorEstoque': nomeSetorEstoque,
     };
+  }
+
+  @override
+  String toString() {
+    return 'ExpedicaoPercursoConsultaModel(codEmpresa: $codEmpresa, codCarrinhoPercurso: $codCarrinhoPercurso, codPercursoEstagio: $codPercursoEstagio, origem: $origem, codOrigem: $codOrigem, situacao: $situacao, codCarrinho: $codCarrinho, nomeCarrinho: $nomeCarrinho, codigoBarrasCarrinho: $codigoBarrasCarrinho, ativo: $ativo, dataInicio: $dataInicio, horaInicio: $horaInicio, dataFinalizacao: $dataFinalizacao, horaFinalizacao: $horaFinalizacao, codUsuario: $codUsuario, nomeUsuario: $nomeUsuario, codSetorEstoque: $codSetorEstoque, nomeSetorEstoque: $nomeSetorEstoque)';
   }
 }

@@ -40,7 +40,6 @@ class SepararCarrinhoGridController extends GetxController {
     ExpedicaoPercursoConsultaModel item,
   ) {
     final dialog = SeparacaoDailogWidget(codCarrinho: 1);
-
     dialog.show();
   }
 
@@ -48,6 +47,6 @@ class SepararCarrinhoGridController extends GetxController {
     SepararCarrinhoGridSource grid,
     ExpedicaoPercursoConsultaModel item,
   ) {
-    print('save');
+    print('SALVAR CARRINHO SEPARACAO');
   }
 }

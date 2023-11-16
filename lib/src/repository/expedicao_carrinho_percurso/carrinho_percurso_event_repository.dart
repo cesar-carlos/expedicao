@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:app_expedicao/src/model/basic_event_model.dart';
 import 'package:get/get.dart';
 
 import 'package:app_expedicao/src/app/app_socket.config.dart';
@@ -20,22 +23,21 @@ class CarrinhoPercursoEventRepository {
     return _instancia!;
   }
 
-  addListener<T>(RepositoryEventListerModel<T> listerner) {
+  addListener(RepositoryEventListerModel listerner) {
     _liteners.add(listerner);
   }
 
-  removeListener<T>(RepositoryEventListerModel<T> listerner) {
+  removeListener(RepositoryEventListerModel listerner) {
     _liteners.remove(listerner);
   }
 
   void _onInsert() {
     const event = 'broadcast.carrinho.percurso.estagio.insert';
     _appSocket.socket.on(event, (data) {
-      print('DATA $data');
       _liteners
           .where((element) => element.event == Event.insert)
           .forEach((element) {
-        element.callback(data);
+        element.callback(_convert(data));
       });
     });
   }
@@ -46,7 +48,7 @@ class CarrinhoPercursoEventRepository {
       _liteners
           .where((element) => element.event == Event.update)
           .forEach((element) {
-        element.callback(data);
+        element.callback(_convert(data));
       });
     });
   }
@@ -57,8 +59,17 @@ class CarrinhoPercursoEventRepository {
       _liteners
           .where((element) => element.event == Event.delete)
           .forEach((element) {
-        element.callback(data);
+        element.callback(_convert(data));
       });
     });
+  }
+
+  BasicEventModel _convert(String data) {
+    try {
+      var deconde = jsonDecode(data);
+      return BasicEventModel.fromJson(deconde);
+    } catch (e) {
+      return BasicEventModel.empty();
+    }
   }
 }
