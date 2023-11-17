@@ -29,6 +29,7 @@ class CarrinhoPercursoAdicionarService {
     return ExpedicaoPercursoEstagioModel(
       codEmpresa: carrinhoPercurso.codEmpresa,
       codCarrinhoPercurso: carrinhoPercurso.codCarrinhoPercurso,
+      item: '',
       codPercursoEstagio: percursoEstagio.codPercursoEstagio,
       codCarrinho: carrinho.codCarrinho,
       situacao: 'AB',

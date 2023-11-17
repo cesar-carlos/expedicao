@@ -6,14 +6,14 @@ import 'package:app_expedicao/src/app/app_helper.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
 import 'package:app_expedicao/src/pages/separar_carrinhos/grid/separar_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/pages/separar_carrinhos/grid/separar_carrinho_grid_cells.dart';
-import 'package:app_expedicao/src/model/expedicao_percurso_consulta_model.dart';
+import 'package:app_expedicao/src/model/expedicao_percurso_estagio_consulta_model.dart';
 
 class SepararCarrinhoGridSource extends DataGridSource {
   var controller = Get.find<SepararCarrinhoGridController>();
   List<DataGridRow> _itens = [];
 
   SepararCarrinhoGridSource(
-      {required List<ExpedicaoPercursoConsultaModel> itens}) {
+      {required List<ExpedicaoPercursoEstagioConsultaModel> itens}) {
     _itens = itens
         .map<DataGridRow>((i) => DataGridRow(cells: [
               DataGridCell<int>(
@@ -23,6 +23,10 @@ class SepararCarrinhoGridSource extends DataGridSource {
               DataGridCell<int>(
                 columnName: 'codCarrinhoPercurso',
                 value: i.codCarrinhoPercurso,
+              ),
+              DataGridCell<String>(
+                columnName: 'item',
+                value: i.item,
               ),
               DataGridCell<String>(
                 columnName: 'origem',

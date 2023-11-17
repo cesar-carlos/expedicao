@@ -5,6 +5,7 @@ class ExpedicaSeparacaoItemConsultaModel {
   final int codSepararEstoque;
   final String item;
   final String sessionId;
+  final String situacao;
   final int codCarrinho;
   final String nomeCarrinho;
   final String codigoBarrasCarrinho;
@@ -37,6 +38,7 @@ class ExpedicaSeparacaoItemConsultaModel {
     required this.codSepararEstoque,
     required this.item,
     required this.sessionId,
+    required this.situacao,
     required this.codCarrinho,
     required this.nomeCarrinho,
     required this.codigoBarrasCarrinho,
@@ -72,6 +74,7 @@ class ExpedicaSeparacaoItemConsultaModel {
       codSepararEstoque: map['CodSepararEstoque'],
       item: map['Item'],
       sessionId: map['SessionId'],
+      situacao: map['Situacao'],
       codCarrinho: map['CodCarrinho'],
       nomeCarrinho: map['NomeCarrinho'],
       codigoBarrasCarrinho: map['CodigoBarrasCarrinho'],
@@ -107,6 +110,7 @@ class ExpedicaSeparacaoItemConsultaModel {
       'CodSepararEstoque': codSepararEstoque,
       'Item': item,
       'SessionId': sessionId,
+      'Situacao': situacao,
       'CodCarrinho': codCarrinho,
       'NomeCarrinho': nomeCarrinho,
       'CodigoBarrasCarrinho': codigoBarrasCarrinho,
@@ -132,7 +136,7 @@ class ExpedicaSeparacaoItemConsultaModel {
       'NomeSeparador': nomeSeparador,
       'DataSeparacao': dataSeparacao,
       'HoraSeparacao': horaSeparacao,
-      'Quantidade': quantidade,
+      'Quantidade': quantidade.toStringAsFixed(4),
     };
   }
 }

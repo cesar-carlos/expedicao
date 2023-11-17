@@ -37,6 +37,45 @@ class ProcessoExecutavelModel {
     required this.bancoDados,
   });
 
+  ProcessoExecutavelModel copyWith({
+    int? codProcessoExecutavel,
+    int? codEmpresa,
+    int? codFilial,
+    String? status,
+    String? origem,
+    int? codOrigem,
+    String? itemOrigem,
+    DateTime? dataAbertura,
+    int? codUsuario,
+    String? nomeUsuario,
+    String? codContaFinanceira,
+    int? codPeriodoCaixa,
+    String? statusPeriodoCaixa,
+    String? nomeComputador,
+    String? usuarioWindows,
+    String? bancoDados,
+  }) {
+    return ProcessoExecutavelModel(
+      codProcessoExecutavel:
+          codProcessoExecutavel ?? this.codProcessoExecutavel,
+      codEmpresa: codEmpresa ?? this.codEmpresa,
+      codFilial: codFilial ?? this.codFilial,
+      status: status ?? this.status,
+      origem: origem ?? this.origem,
+      codOrigem: codOrigem ?? this.codOrigem,
+      itemOrigem: itemOrigem ?? this.itemOrigem,
+      dataAbertura: dataAbertura ?? this.dataAbertura,
+      codUsuario: codUsuario ?? this.codUsuario,
+      nomeUsuario: nomeUsuario ?? this.nomeUsuario,
+      codContaFinanceira: codContaFinanceira ?? this.codContaFinanceira,
+      codPeriodoCaixa: codPeriodoCaixa ?? this.codPeriodoCaixa,
+      statusPeriodoCaixa: statusPeriodoCaixa ?? this.statusPeriodoCaixa,
+      nomeComputador: nomeComputador ?? this.nomeComputador,
+      usuarioWindows: usuarioWindows ?? this.usuarioWindows,
+      bancoDados: bancoDados ?? this.bancoDados,
+    );
+  }
+
   factory ProcessoExecutavelModel.empty() {
     return ProcessoExecutavelModel(
       codProcessoExecutavel: 0,
@@ -117,5 +156,10 @@ class ProcessoExecutavelModel {
       'UsuarioWindows': usuarioWindows,
       'BancoDados': bancoDados,
     };
+  }
+
+  @override
+  String toString() {
+    return 'ProcessoExecutavelModel(codProcessoExecutavel: $codProcessoExecutavel, codEmpresa: $codEmpresa, codFilial: $codFilial, status: $status, origem: $origem, codOrigem: $codOrigem, itemOrigem: $itemOrigem, dataAbertura: $dataAbertura, codUsuario: $codUsuario, nomeUsuario: $nomeUsuario, codContaFinanceira: $codContaFinanceira, codPeriodoCaixa: $codPeriodoCaixa, statusPeriodoCaixa: $statusPeriodoCaixa, nomeComputador: $nomeComputador, usuarioWindows: $usuarioWindows, bancoDados: $bancoDados)';
   }
 }

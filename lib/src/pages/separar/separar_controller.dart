@@ -10,7 +10,7 @@ import 'package:app_expedicao/src/pages/carrinho/widget/adicionar_carrinho_dialo
 
 import 'package:app_expedicao/src/service/carrinho_percurso_adicionar_service.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dart';
-import 'package:app_expedicao/src/model/expedicao_percurso_consulta_model.dart';
+import 'package:app_expedicao/src/model/expedicao_percurso_estagio_consulta_model.dart';
 import 'package:app_expedicao/src/service/separar_estoque_consulta_services.dart';
 import 'package:app_expedicao/src/model/repository_event_lister_model.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
@@ -139,7 +139,7 @@ class SepararController extends GetxController {
         event: Event.insert,
         callback: (data) async {
           for (var el in data.mutation) {
-            final car = ExpedicaoPercursoConsultaModel.fromJson(el);
+            final car = ExpedicaoPercursoEstagioConsultaModel.fromJson(el);
             _separarCarrinhoGridController.addItem(car);
           }
         },
@@ -152,7 +152,7 @@ class SepararController extends GetxController {
         callback: (data) async {
           for (var el in data.mutation) {
             // ignore: unused_local_variable
-            final car = ExpedicaoPercursoConsultaModel.fromJson(el);
+            final car = ExpedicaoPercursoEstagioConsultaModel.fromJson(el);
             //TODO: Atualizar carrinho
           }
         },
@@ -164,7 +164,7 @@ class SepararController extends GetxController {
         event: Event.delete,
         callback: (data) async {
           for (var el in data.mutation) {
-            final car = ExpedicaoPercursoConsultaModel.fromJson(el);
+            final car = ExpedicaoPercursoEstagioConsultaModel.fromJson(el);
             _separarCarrinhoGridController.removeItem(car);
           }
         },

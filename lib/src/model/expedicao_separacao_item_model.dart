@@ -5,7 +5,9 @@ class ExpedicaoSeparacaoItemModel {
   final int codSepararEstoque;
   final String item;
   final String sessionId;
-  final int codCarrinho;
+  final String situacao;
+  final int codCarrinhoPercurso;
+  final String itemCarrinhoPercurso;
   final int codSeparador;
   final String nomeSeparador;
   final DateTime dataSeparacao;
@@ -19,7 +21,9 @@ class ExpedicaoSeparacaoItemModel {
     required this.codSepararEstoque,
     required this.item,
     required this.sessionId,
-    required this.codCarrinho,
+    required this.situacao,
+    required this.codCarrinhoPercurso,
+    required this.itemCarrinhoPercurso,
     required this.codSeparador,
     required this.nomeSeparador,
     required this.dataSeparacao,
@@ -34,7 +38,9 @@ class ExpedicaoSeparacaoItemModel {
     int? codSepararEstoque,
     String? item,
     String? sessionId,
-    int? codCarrinho,
+    String? situacao,
+    int? codCarrinhoPercurso,
+    String? itemCarrinhoPercurso,
     int? codSeparador,
     String? nomeSeparador,
     DateTime? dataSeparacao,
@@ -48,7 +54,9 @@ class ExpedicaoSeparacaoItemModel {
       codSepararEstoque: codSepararEstoque ?? this.codSepararEstoque,
       item: item ?? this.item,
       sessionId: sessionId ?? this.sessionId,
-      codCarrinho: codCarrinho ?? this.codCarrinho,
+      situacao: situacao ?? this.situacao,
+      codCarrinhoPercurso: codCarrinhoPercurso ?? this.codCarrinhoPercurso,
+      itemCarrinhoPercurso: itemCarrinhoPercurso ?? this.itemCarrinhoPercurso,
       codSeparador: codSeparador ?? this.codSeparador,
       nomeSeparador: nomeSeparador ?? this.nomeSeparador,
       dataSeparacao: dataSeparacao ?? this.dataSeparacao,
@@ -65,7 +73,9 @@ class ExpedicaoSeparacaoItemModel {
       codSepararEstoque: map['CodSepararEstoque'],
       item: map['Item'],
       sessionId: map['SessionId'],
-      codCarrinho: map['CodCarrinho'],
+      situacao: map['Situacao'],
+      codCarrinhoPercurso: map['CodCarrinhoPercurso'],
+      itemCarrinhoPercurso: map['ItemCarrinhoPercurso'],
       codSeparador: map['CodSeparador'],
       nomeSeparador: map['NomeSeparador'],
       dataSeparacao: AppHelper.tryStringToDate(map['DataSeparacao']),
@@ -82,14 +92,16 @@ class ExpedicaoSeparacaoItemModel {
       "CodSepararEstoque": codSepararEstoque,
       "Item": item,
       "SessionId": sessionId,
-      "CodCarrinho": codCarrinho,
+      "Situacao": situacao,
+      "CodCarrinhoPercurso": codCarrinhoPercurso,
+      "ItemCarrinhoPercurso": itemCarrinhoPercurso,
       "CodSeparador": codSeparador,
       "NomeSeparador": nomeSeparador,
       "DataSeparacao": dataSeparacao.toIso8601String(),
       "HoraSeparacao": horaSeparacao,
       "CodProduto": codProduto,
       "CodUnidadeMedida": codUnidadeMedida,
-      "Quantidade": quantidade,
+      "Quantidade": quantidade.toStringAsFixed(4),
     };
   }
 }

@@ -3,6 +3,7 @@ import 'package:app_expedicao/src/app/app_helper.dart';
 class ExpedicaoPercursoEstagioModel {
   final int codEmpresa;
   final int codCarrinhoPercurso;
+  final String item;
   final int codPercursoEstagio;
   final int codCarrinho;
   final String situacao;
@@ -16,6 +17,7 @@ class ExpedicaoPercursoEstagioModel {
   ExpedicaoPercursoEstagioModel({
     required this.codEmpresa,
     required this.codCarrinhoPercurso,
+    required this.item,
     required this.codPercursoEstagio,
     required this.codCarrinho,
     required this.situacao,
@@ -30,6 +32,7 @@ class ExpedicaoPercursoEstagioModel {
   ExpedicaoPercursoEstagioModel copyWith({
     int? codEmpresa,
     int? codCarrinhoPercurso,
+    String? item,
     int? codPercursoEstagio,
     int? codCarrinho,
     String? situacao,
@@ -43,6 +46,7 @@ class ExpedicaoPercursoEstagioModel {
     return ExpedicaoPercursoEstagioModel(
       codEmpresa: codEmpresa ?? this.codEmpresa,
       codCarrinhoPercurso: codCarrinhoPercurso ?? this.codCarrinhoPercurso,
+      item: item ?? this.item,
       codPercursoEstagio: codPercursoEstagio ?? this.codPercursoEstagio,
       codCarrinho: codCarrinho ?? this.codCarrinho,
       situacao: situacao ?? this.situacao,
@@ -59,12 +63,13 @@ class ExpedicaoPercursoEstagioModel {
     return ExpedicaoPercursoEstagioModel(
       codEmpresa: map['CodEmpresa'],
       codCarrinhoPercurso: map['CodCarrinhoPercurso'],
+      item: map['Item'],
       codPercursoEstagio: map['CodPercursoEstagio'],
       codCarrinho: map['CodCarrinho'],
       situacao: map['Situacao'],
       dataInicio: AppHelper.tryStringToDate(map['DataInicio']),
       horaInicio: map['HoraInicio'] ?? '00:00:00',
-      dataFinalizacao: AppHelper.tryStringToDate(map['DataFinalizacao']),
+      dataFinalizacao: map['DataFinalizacao'],
       horaFinalizacao: map['HoraFinalizacao'],
       codUsuario: map['CodUsuario'],
       nomeUsuario: map['NomeUsuario'],
@@ -75,6 +80,7 @@ class ExpedicaoPercursoEstagioModel {
     return {
       'CodEmpresa': codEmpresa,
       'CodCarrinhoPercurso': codCarrinhoPercurso,
+      'Item': item,
       'CodPercursoEstagio': codPercursoEstagio,
       'CodCarrinho': codCarrinho,
       'Situacao': situacao,
@@ -85,5 +91,10 @@ class ExpedicaoPercursoEstagioModel {
       'CodUsuario': codUsuario,
       'NomeUsuario': nomeUsuario,
     };
+  }
+
+  @override
+  String toString() {
+    return 'ExpedicaoPercursoEstagioModel(codEmpresa: $codEmpresa, codCarrinhoPercurso: $codCarrinhoPercurso, item: $item, codPercursoEstagio: $codPercursoEstagio, codCarrinho: $codCarrinho, situacao: $situacao, dataInicio: $dataInicio, horaInicio: $horaInicio, dataFinalizacao: $dataFinalizacao, horaFinalizacao: $horaFinalizacao, codUsuario: $codUsuario, nomeUsuario: $nomeUsuario)';
   }
 }

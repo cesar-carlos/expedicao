@@ -136,10 +136,10 @@ class ExpedicaoSepararItemConsultaModel {
       'Endereco': endereco,
       'CodLocaArmazenagem': codLocaArmazenagem,
       'NomeLocaArmazenagem': nomeLocaArmazenagem,
-      'Quantidade': quantidade,
-      'QuantidadeInterna': quantidadeInterna,
-      'QuantidadeExterna': quantidadeExterna,
-      'QuantidadeSeparacao': quantidadeSeparacao,
+      'Quantidade': quantidade.toStringAsFixed(4),
+      'QuantidadeInterna': quantidadeInterna.toStringAsFixed(4),
+      'QuantidadeExterna': quantidadeExterna.toStringAsFixed(4),
+      'QuantidadeSeparacao': quantidadeSeparacao.toStringAsFixed(4),
     };
   }
 

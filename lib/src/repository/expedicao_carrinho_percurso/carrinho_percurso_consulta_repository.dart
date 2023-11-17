@@ -4,16 +4,17 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
-import 'package:app_expedicao/src/model/expedicao_percurso_consulta_model.dart';
+import 'package:app_expedicao/src/model/expedicao_percurso_estagio_consulta_model.dart';
 import 'package:app_expedicao/src/app/app_socket.config.dart';
 
 class CarrinhoPercursoConsultaRepository {
   final uuid = const Uuid();
   var socket = Get.find<AppSocketConfig>().socket;
 
-  Future<List<ExpedicaoPercursoConsultaModel>> select([String params = '']) {
+  Future<List<ExpedicaoPercursoEstagioConsultaModel>> select(
+      [String params = '']) {
     final event = '${socket.id} carrinho.percurso.consulta';
-    final completer = Completer<List<ExpedicaoPercursoConsultaModel>>();
+    final completer = Completer<List<ExpedicaoPercursoEstagioConsultaModel>>();
     final resposeIn = uuid.v4();
 
     final send = {
@@ -31,8 +32,8 @@ class CarrinhoPercursoConsultaRepository {
         return;
       }
 
-      final list = data.map<ExpedicaoPercursoConsultaModel>((json) {
-        return ExpedicaoPercursoConsultaModel.fromJson(json);
+      final list = data.map<ExpedicaoPercursoEstagioConsultaModel>((json) {
+        return ExpedicaoPercursoEstagioConsultaModel.fromJson(json);
       }).toList();
 
       socket.off(resposeIn);

@@ -24,9 +24,9 @@ class CarrinhoPercursoCancelarService {
     final newPercursoEstagio = percursoEstagio.copyWith(situacao: 'CA');
     final newCancelamento = await _createCancelamento();
 
-    await CarrinhoRepository().update(newCarrinho);
-    await CarrinhoPercursoEstagioRepository().insert(newPercursoEstagio);
-    await CancelamentoRepository().insert(newCancelamento);
+    //await CarrinhoRepository().update(newCarrinho);
+    //await CarrinhoPercursoEstagioRepository().update(newPercursoEstagio);
+    //await CancelamentoRepository().insert(newCancelamento);
   }
 
   Future<ExpedicaoCancelamentoModel> _createCancelamento() async {

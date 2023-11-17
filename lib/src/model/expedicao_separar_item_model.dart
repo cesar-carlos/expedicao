@@ -98,10 +98,10 @@ class ExpedicaoSepararItemModel {
     data['CodLocaArmazenagem'] = codLocaArmazenagem;
     data['CodProduto'] = codProduto;
     data['CodUnidadeMedida'] = codUnidadeMedida;
-    data['Quantidade'] = quantidade; //convert toString fixed 4
-    data['QuantidadeInterna'] = quantidadeInterna;
-    data['QuantidadeExterna'] = quantidadeExterna;
-    data['QuantidadeSeparacao'] = quantidadeSeparacao;
+    data['Quantidade'] = quantidade.toStringAsFixed(4);
+    data['QuantidadeInterna'] = quantidadeInterna.toStringAsFixed(4);
+    data['QuantidadeExterna'] = quantidadeExterna.toStringAsFixed(4);
+    data['QuantidadeSeparacao'] = quantidadeSeparacao.toStringAsFixed(4);
     return data;
   }
 }

@@ -45,6 +45,20 @@ class SepararCarrinhoGridColumns {
     _columns.add(
       GridColumn(
         visible: false,
+        columnName: 'item',
+        label: Container(
+          padding: padding,
+          alignment: Alignment.centerLeft,
+          child: const Text(
+            'item',
+          ),
+        ),
+      ),
+    );
+
+    _columns.add(
+      GridColumn(
+        visible: false,
         columnName: 'origem',
         label: Container(
           padding: padding,
