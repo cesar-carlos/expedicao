@@ -1,3 +1,4 @@
+import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
 import 'package:get/get.dart';
 
 import 'package:app_expedicao/src/pages/separacao/widget/separacao_dailog_widget.dart';
@@ -20,22 +21,33 @@ class SepararCarrinhoGridController extends GetxController {
     _itens.remove(item);
   }
 
+  void updateItem(ExpedicaoPercursoEstagioConsultaModel item) {
+    final index = _itens.indexWhere((el) => el.codCarrinho == item.codCarrinho);
+    if (index == -1) return;
+    _itens[index] = item;
+  }
+
   Future<void> onRemoveItem(
     SepararCarrinhoGridSource grid,
     ExpedicaoPercursoEstagioConsultaModel item,
   ) async {
-    const message = 'Deseja realmente excluir?';
-    const detail = 'Ao excluir o item, ele será removido do carrinho!';
+    if (item.situacao == 'CA') {
+      await ConfirmationDialogMessageWidget.show(
+        context: Get.context!,
+        message: 'Carrinho já cancelado!',
+        detail: 'Não é possível cancelar um carrinho já cancelado!',
+      );
+      return;
+    }
 
     final bool? confirmation = await ConfirmationDialogWidget.show(
       context: Get.context!,
-      message: message,
-      detail: detail,
+      message: 'Deseja realmente cancelar?',
+      detail: 'Ao cancelar, os itens serão removido do carrinho!',
     );
 
     if (confirmation != null && confirmation) {
       onPressedRemoveItem?.call(item);
-      removeItem(item);
     }
   }
 
@@ -43,7 +55,7 @@ class SepararCarrinhoGridController extends GetxController {
     SepararCarrinhoGridSource grid,
     ExpedicaoPercursoEstagioConsultaModel item,
   ) {
-    final dialog = SeparacaoDailogWidget(codCarrinho: 1);
+    final dialog = SeparacaoDailogWidget(codCarrinho: item.codCarrinho);
     dialog.show();
   }
 

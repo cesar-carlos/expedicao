@@ -91,6 +91,33 @@ class SeparacaoItemRepository {
     return completer.future;
   }
 
+  Future<List<ExpedicaoSeparacaoItemModel>> updateAll(
+      List<ExpedicaoSeparacaoItemModel> entity) {
+    final event = '${socket.id} separacao.item.update';
+    final completer = Completer<List<ExpedicaoSeparacaoItemModel>>();
+    final resposeIn = uuid.v4();
+
+    final send = {
+      "session": socket.id,
+      "resposeIn": resposeIn,
+      "mutation": entity.map((el) => el.toJson()).toList(),
+    };
+
+    socket.emit(event, jsonEncode(send));
+    socket.on(resposeIn, (receiver) {
+      final data = jsonDecode(receiver);
+      final mutation = data?['mutation'];
+      final carrinho = mutation
+          .map<ExpedicaoSeparacaoItemModel>(
+              (json) => ExpedicaoSeparacaoItemModel.fromJson(json))
+          .toList();
+      socket.off(resposeIn);
+      completer.complete(carrinho);
+    });
+
+    return completer.future;
+  }
+
   Future<ExpedicaoSeparacaoItemModel> delete(
       ExpedicaoSeparacaoItemModel entity) {
     final event = '${socket.id} separacao.item.delete';

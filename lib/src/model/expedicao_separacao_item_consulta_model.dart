@@ -74,7 +74,7 @@ class ExpedicaSeparacaoItemConsultaModel {
       codSepararEstoque: map['CodSepararEstoque'],
       item: map['Item'],
       sessionId: map['SessionId'],
-      situacao: map['Situacao'],
+      situacao: map['Situacao'] ?? '',
       codCarrinho: map['CodCarrinho'],
       nomeCarrinho: map['NomeCarrinho'],
       codigoBarrasCarrinho: map['CodigoBarrasCarrinho'],

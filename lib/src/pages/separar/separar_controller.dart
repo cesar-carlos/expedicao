@@ -1,15 +1,14 @@
-import 'package:app_expedicao/src/service/carrinho_percurso_cancelar_service.dart';
-import 'package:app_expedicao/src/service/carrinho_percurso_estagio_services.dart';
-import 'package:app_expedicao/src/service/carrinho_services.dart';
 import 'package:get/get.dart';
 
-import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_event_repository.dart';
-import 'package:app_expedicao/src/pages/separar_carrinhos/grid/separar_carrinho_grid_controller.dart';
-import 'package:app_expedicao/src/pages/separacao/grid/separacao_carrinho_grid_controller.dart';
-import 'package:app_expedicao/src/pages/carrinho/widget/adicionar_carrinho_dialog_widget.dart';
-
-import 'package:app_expedicao/src/service/carrinho_percurso_adicionar_service.dart';
+import 'package:app_expedicao/src/service/carrinho_services.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dart';
+import 'package:app_expedicao/src/service/carrinho_percurso_estagio_services.dart';
+import 'package:app_expedicao/src/service/carrinho_percurso_cancelar_service.dart';
+import 'package:app_expedicao/src/service/carrinho_percurso_adicionar_service.dart';
+import 'package:app_expedicao/src/pages/carrinho/widget/adicionar_carrinho_dialog_widget.dart';
+import 'package:app_expedicao/src/pages/separacao/grid/separacao_carrinho_grid_controller.dart';
+import 'package:app_expedicao/src/pages/separar_carrinhos/grid/separar_carrinho_grid_controller.dart';
+import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_event_repository.dart';
 import 'package:app_expedicao/src/model/expedicao_percurso_estagio_consulta_model.dart';
 import 'package:app_expedicao/src/service/separar_estoque_consulta_services.dart';
 import 'package:app_expedicao/src/model/repository_event_lister_model.dart';
@@ -124,11 +123,16 @@ class SepararController extends GetxController {
               AND Situacao = 'AB'
             ''');
 
+      if (carrinho.isEmpty || carrinhoPercursoEstagio.isEmpty) return;
+
       await CarrinhoPercursoCancelarService(
         carrinho: carrinho.first,
         percursoEstagio: carrinhoPercursoEstagio.first,
         processo: _processoExecutavel,
       ).execute();
+
+      final newItem = item.copyWith(situacao: 'CA');
+      _separarCarrinhoGridController.updateItem(newItem);
     };
   }
 

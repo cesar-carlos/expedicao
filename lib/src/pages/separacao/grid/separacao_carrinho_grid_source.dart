@@ -1,3 +1,4 @@
+import 'package:app_expedicao/src/model/expedicao_item_situacao_model.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -29,6 +30,10 @@ class SeparacaoCarrinhoGridSource extends DataGridSource {
               DataGridCell<String>(
                 columnName: 'sessionId',
                 value: i.sessionId,
+              ),
+              DataGridCell<String>(
+                columnName: 'situacao',
+                value: ExpedicaoItemSituacaoModel.situacao[i.situacao],
               ),
               DataGridCell<int>(
                 columnName: 'codCarrinho',

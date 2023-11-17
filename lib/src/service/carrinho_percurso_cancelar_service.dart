@@ -1,5 +1,7 @@
+import 'package:app_expedicao/src/model/expedicao_separacao_item_model.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_cancelamento/cancelamento_repository.dart';
+import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_repository.dart';
 import 'package:app_expedicao/src/repository/sequencia_registro/sequencia_registro_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_estagio_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinhos/carrinho_repository.dart';
@@ -20,13 +22,31 @@ class CarrinhoPercursoCancelarService {
   });
 
   Future<void> execute() async {
+    final separacaoItens = await _findSeparacaoEstagio();
+
     final newCarrinho = carrinho.copyWith(situacao: 'LI');
     final newPercursoEstagio = percursoEstagio.copyWith(situacao: 'CA');
     final newCancelamento = await _createCancelamento();
 
-    //await CarrinhoRepository().update(newCarrinho);
-    //await CarrinhoPercursoEstagioRepository().update(newPercursoEstagio);
-    //await CancelamentoRepository().insert(newCancelamento);
+    final newItens = separacaoItens.map((el) {
+      return el.copyWith(situacao: 'CA');
+    }).toList();
+
+    await CarrinhoRepository().update(newCarrinho);
+    await CarrinhoPercursoEstagioRepository().update(newPercursoEstagio);
+    await CancelamentoRepository().insert(newCancelamento);
+    await SeparacaoItemRepository().updateAll(newItens);
+  }
+
+  Future<List<ExpedicaoSeparacaoItemModel>> _findSeparacaoEstagio() async {
+    final params = ''' 
+          CodEmpresa = ${percursoEstagio.codEmpresa} 
+      AND CodCarrinhoPercurso = ${percursoEstagio.codCarrinhoPercurso} 
+      AND ItemCarrinhoPercurso = ${percursoEstagio.item} 
+      
+    ''';
+
+    return await SeparacaoItemRepository().select(params);
   }
 
   Future<ExpedicaoCancelamentoModel> _createCancelamento() async {

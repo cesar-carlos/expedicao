@@ -49,8 +49,9 @@ class SepararCarrinhoGridSource extends DataGridSource {
                 value: i.codigoBarrasCarrinho,
               ),
               DataGridCell<String>(
-                  columnName: 'situacao',
-                  value: ExpedicaoCarrinhoSituacaoModel.situacao[i.situacao]),
+                columnName: 'situacao',
+                value: ExpedicaoCarrinhoSituacaoModel.situacao[i.situacao],
+              ),
               DataGridCell<String>(
                 columnName: 'dataInicio',
                 value: AppHelper.formatarData(i.dataInicio),

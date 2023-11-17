@@ -41,7 +41,7 @@ class SeparacaoCarrinhoGridColumns {
     _columns.add(
       GridColumn(
         visible: true,
-        maximumWidth: 40,
+        maximumWidth: 50,
         columnName: 'item',
         label: Container(
           padding: padding,
@@ -59,6 +59,21 @@ class SeparacaoCarrinhoGridColumns {
           padding: padding,
           alignment: Alignment.centerLeft,
           child: const Text('sessionId'),
+        ),
+      ),
+    );
+
+    _columns.add(
+      GridColumn(
+        visible: false,
+        maximumWidth: 80,
+        columnName: 'situacao',
+        label: Container(
+          padding: padding,
+          alignment: Alignment.centerLeft,
+          child: const Text(
+            'Situação',
+          ),
         ),
       ),
     );
@@ -105,7 +120,7 @@ class SeparacaoCarrinhoGridColumns {
     _columns.add(
       GridColumn(
         visible: true,
-        maximumWidth: 70,
+        maximumWidth: 80,
         columnName: 'codProduto',
         label: Container(
           padding: padding,
