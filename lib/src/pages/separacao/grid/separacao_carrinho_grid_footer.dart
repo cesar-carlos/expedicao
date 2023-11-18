@@ -5,8 +5,13 @@ import 'package:app_expedicao/src/pages/separacao/grid/separacao_carrinho_grid_c
 
 class SeparacaoCarrinhoGridFooter extends StatelessWidget {
   final controller = Get.find<SeparacaoCarrinhoGridController>();
+  final String item;
   final int codCarrinho;
-  SeparacaoCarrinhoGridFooter({super.key, required this.codCarrinho});
+  SeparacaoCarrinhoGridFooter({
+    super.key,
+    required this.item,
+    required this.codCarrinho,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +20,7 @@ class SeparacaoCarrinhoGridFooter extends StatelessWidget {
       color: Colors.grey[200],
       child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
         Obx(() => Text(
-              'Total de Itens: ${controller.itensCarrinho(codCarrinho: codCarrinho).length}',
+              'Total de Itens: ${controller.itensCarrinho(item: item, codCarrinho: codCarrinho).length}',
               style: const TextStyle(
                 color: Colors.black,
                 fontSize: 12,

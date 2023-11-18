@@ -10,9 +10,14 @@ import 'package:app_expedicao/src/pages/separacao/grid/separacao_carrinho_grid_s
 
 class SeparacaoCarrinhoGrid extends StatelessWidget {
   final controller = Get.find<SeparacaoCarrinhoGridController>();
+  final String item;
   final int codCarrinho;
 
-  SeparacaoCarrinhoGrid({super.key, required this.codCarrinho});
+  SeparacaoCarrinhoGrid({
+    super.key,
+    required this.item,
+    required this.codCarrinho,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -20,12 +25,13 @@ class SeparacaoCarrinhoGrid extends StatelessWidget {
         init: controller,
         builder: (controller) {
           return Obx(() => SfDataGrid(
-                source: SeparacaoCarrinhoGridSource(
-                    controller.itensCarrinho(codCarrinho: codCarrinho)),
+                source: SeparacaoCarrinhoGridSource(controller.itensCarrinho(
+                    item: item, codCarrinho: codCarrinho)),
                 columnWidthMode: ColumnWidthMode.fill,
                 onCellDoubleTap: SeparacaoCarrinhoGridEvent.onCellDoubleTap,
                 columns: SeparacaoCarrinhoGridColumns().columns,
-                footer: SeparacaoCarrinhoGridFooter(codCarrinho: codCarrinho),
+                footer: SeparacaoCarrinhoGridFooter(
+                    codCarrinho: codCarrinho, item: item),
                 headerRowHeight: 40,
                 rowHeight: 40,
               ));

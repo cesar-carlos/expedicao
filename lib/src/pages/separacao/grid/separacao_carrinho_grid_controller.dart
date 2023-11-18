@@ -15,8 +15,11 @@ class SeparacaoCarrinhoGridController extends GetxController {
   }
 
   List<ExpedicaSeparacaoItemConsultaModel> itensCarrinho({
+    required String item,
     required int codCarrinho,
   }) {
-    return _itens.where((el) => el.codCarrinho == codCarrinho).toList();
+    return _itens
+        .where((el) => el.item == item && el.codCarrinho == codCarrinho)
+        .toList();
   }
 }

@@ -30,7 +30,7 @@ class SepararPage extends StatelessWidget {
                 SpaceButtonsHeadFormElement(width: double.infinity, children: [
                   ButtonHeadForm(
                     title: 'Adicionar Carrinho',
-                    onPressed: controller.addCarrinho,
+                    onPressed: controller.adicionarCarrinho,
                     icon: const Icon(
                       BootstrapIcons.cart4,
                       color: Colors.white,

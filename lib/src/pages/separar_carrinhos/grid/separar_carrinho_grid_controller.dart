@@ -1,7 +1,7 @@
-import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
 import 'package:get/get.dart';
 
-import 'package:app_expedicao/src/pages/separacao/widget/separacao_dailog_widget.dart';
+import 'package:app_expedicao/src/pages/separacao/separacao_page.dart';
+import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
 import 'package:app_expedicao/src/pages/separar_carrinhos/grid/separar_carrinho_grid_source.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget.dart';
 import 'package:app_expedicao/src/model/expedicao_percurso_estagio_consulta_model.dart';
@@ -22,7 +22,8 @@ class SepararCarrinhoGridController extends GetxController {
   }
 
   void updateItem(ExpedicaoPercursoEstagioConsultaModel item) {
-    final index = _itens.indexWhere((el) => el.codCarrinho == item.codCarrinho);
+    final index = _itens.indexWhere(
+        (el) => el.item == item.item && el.codCarrinho == item.codCarrinho);
     if (index == -1) return;
     _itens[index] = item;
   }
@@ -37,6 +38,7 @@ class SepararCarrinhoGridController extends GetxController {
         message: 'Carrinho já cancelado!',
         detail: 'Não é possível cancelar um carrinho já cancelado!',
       );
+
       return;
     }
 
@@ -52,16 +54,20 @@ class SepararCarrinhoGridController extends GetxController {
   }
 
   void editItemGrid(
-    SepararCarrinhoGridSource grid,
-    ExpedicaoPercursoEstagioConsultaModel item,
+    SepararCarrinhoGridSource carrinhoGrid,
+    ExpedicaoPercursoEstagioConsultaModel percursoEstagioConsulta,
   ) {
-    final dialog = SeparacaoDailogWidget(codCarrinho: item.codCarrinho);
+    final dialog = SeparacaoPage(
+      item: percursoEstagioConsulta.item,
+      codCarrinho: percursoEstagioConsulta.codCarrinho,
+    );
+
     dialog.show();
   }
 
   void saveItemGrid(
-    SepararCarrinhoGridSource grid,
-    ExpedicaoPercursoEstagioConsultaModel item,
+    SepararCarrinhoGridSource carrinhoGrid,
+    ExpedicaoPercursoEstagioConsultaModel percursoEstagioConsulta,
   ) {
     print('SALVAR CARRINHO SEPARACAO');
   }

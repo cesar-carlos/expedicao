@@ -71,7 +71,7 @@ class SepararController extends GetxController {
     }
   }
 
-  Future<void> addCarrinho() async {
+  Future<void> adicionarCarrinho() async {
     final dialog = AdicionarCarrinhoDialogWidget();
     final carrinhoConsulta = await dialog.show();
 
@@ -86,7 +86,11 @@ class SepararController extends GetxController {
       );
 
       final carrinhoPercurso = await _carrinhoPercursoServices.selectPercurso(
-        "CodEmpresa = ${_processoExecutavel.codEmpresa} AND Origem = '${_processoExecutavel.origem}' AND CodOrigem = ${_processoExecutavel.codOrigem}",
+        ''' CodEmpresa = ${_processoExecutavel.codEmpresa} 
+        AND Origem = '${_processoExecutavel.origem}' 
+        AND CodOrigem = ${_processoExecutavel.codOrigem}
+        
+        ''',
       );
 
       final estagio = await ExpedicaoEstagioService().separacao();
@@ -98,12 +102,14 @@ class SepararController extends GetxController {
         processo: _processoExecutavel,
       );
 
-      final separarCarrinhos = await _separarServices.carrinhosPercurso();
+      final separarCarrinhos = await _separarServices.carrinhosPercurso()
+        ..sort((a, b) => a.item.compareTo(b.item));
+
       _separarCarrinhoGridController.addItem(
         separarCarrinhos
             .where((el) => el.codCarrinho == carrinho.codCarrinho)
             .toList()
-            .first,
+            .last,
       );
     }
   }
@@ -120,7 +126,8 @@ class SepararController extends GetxController {
               AND CodCarrinhoPercurso = ${item.codCarrinhoPercurso}
               AND CodPercursoEstagio = ${item.codPercursoEstagio}
               AND CodCarrinho = ${item.codCarrinho}
-              AND Situacao = 'AB'
+              AND Item = ${item.item}
+              
             ''');
 
       if (carrinho.isEmpty || carrinhoPercursoEstagio.isEmpty) return;
@@ -138,6 +145,7 @@ class SepararController extends GetxController {
 
   _litenerCarrinhoPercurso() {
     final carrinhoPercursoEvent = CarrinhoPercursoEventRepository.instancia;
+
     carrinhoPercursoEvent.addListener(
       RepositoryEventListerModel(
         event: Event.insert,
@@ -155,9 +163,8 @@ class SepararController extends GetxController {
         event: Event.update,
         callback: (data) async {
           for (var el in data.mutation) {
-            // ignore: unused_local_variable
             final car = ExpedicaoPercursoEstagioConsultaModel.fromJson(el);
-            //TODO: Atualizar carrinho
+            _separarCarrinhoGridController.updateItem(car);
           }
         },
       ),

@@ -1,13 +1,13 @@
 import 'package:app_expedicao/src/model/expedicao_separacao_item_model.dart';
-import 'package:app_expedicao/src/model/processo_executavel_model.dart';
+import 'package:app_expedicao/src/model/expedicao_percurso_estagio_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_cancelamento/cancelamento_repository.dart';
+import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_estagio_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_repository.dart';
 import 'package:app_expedicao/src/repository/sequencia_registro/sequencia_registro_repository.dart';
-import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_estagio_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinhos/carrinho_repository.dart';
 import 'package:app_expedicao/src/repository/sequencia_registro/sequencia_tabelas.dart';
-import 'package:app_expedicao/src/model/expedicao_percurso_estagio_model.dart';
 import 'package:app_expedicao/src/model/expedicao_cancelamento_model.dart';
+import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_model.dart';
 
 class CarrinhoPercursoCancelarService {
@@ -32,10 +32,10 @@ class CarrinhoPercursoCancelarService {
       return el.copyWith(situacao: 'CA');
     }).toList();
 
-    await CarrinhoRepository().update(newCarrinho);
-    await CarrinhoPercursoEstagioRepository().update(newPercursoEstagio);
     await CancelamentoRepository().insert(newCancelamento);
     await SeparacaoItemRepository().updateAll(newItens);
+    await CarrinhoPercursoEstagioRepository().update(newPercursoEstagio);
+    await CarrinhoRepository().update(newCarrinho);
   }
 
   Future<List<ExpedicaoSeparacaoItemModel>> _findSeparacaoEstagio() async {

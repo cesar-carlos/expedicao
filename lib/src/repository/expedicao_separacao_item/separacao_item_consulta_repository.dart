@@ -11,8 +11,9 @@ class SeparacaoItemConsultaRepository {
   final uuid = const Uuid();
   var socket = Get.find<AppSocketConfig>().socket;
 
-  Future<List<ExpedicaSeparacaoItemConsultaModel>> select(
-      [String params = '']) {
+  Future<List<ExpedicaSeparacaoItemConsultaModel>> select([
+    String params = '',
+  ]) {
     final event = '${socket.id} separacao.item.consulta';
     final completer = Completer<List<ExpedicaSeparacaoItemConsultaModel>>();
     final resposeIn = uuid.v4();
@@ -24,21 +25,28 @@ class SeparacaoItemConsultaRepository {
     };
 
     socket.emit(event, jsonEncode(send));
-    socket.on(resposeIn, (receiver) {
-      final data = jsonDecode(receiver);
+    socket.on(
+      resposeIn,
+      (receiver) {
+        try {
+          final data = jsonDecode(receiver);
 
-      if (data.isEmpty) {
-        completer.complete([]);
-        return;
-      }
+          if (data.isEmpty) {
+            completer.complete([]);
+            return;
+          }
 
-      final list = data.map<ExpedicaSeparacaoItemConsultaModel>((json) {
-        return ExpedicaSeparacaoItemConsultaModel.fromJson(json);
-      }).toList();
+          final list = data.map<ExpedicaSeparacaoItemConsultaModel>((json) {
+            return ExpedicaSeparacaoItemConsultaModel.fromJson(json);
+          }).toList();
 
-      socket.off(resposeIn);
-      completer.complete(list);
-    });
+          socket.off(resposeIn);
+          completer.complete(list);
+        } catch (e) {
+          completer.complete([]);
+        }
+      },
+    );
 
     return completer.future;
   }

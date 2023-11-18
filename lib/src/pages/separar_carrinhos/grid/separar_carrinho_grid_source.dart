@@ -76,10 +76,10 @@ class SepararCarrinhoGridSource extends DataGridSource {
                     onPressed: () {
                       controller.onRemoveItem(this, i);
                     },
-                    icon: const Icon(
+                    icon: Icon(
                       size: 17,
                       Icons.delete,
-                      color: Colors.red,
+                      color: i.situacao != 'CA' ? Colors.red : Colors.grey,
                     ),
                   ),
                   const SizedBox(
@@ -93,9 +93,9 @@ class SepararCarrinhoGridSource extends DataGridSource {
                     onPressed: () {
                       controller.editItemGrid(this, i);
                     },
-                    icon: const Icon(
+                    icon: Icon(
                       size: 17,
-                      Icons.edit,
+                      i.situacao != 'CA' ? Icons.edit : Icons.visibility,
                       color: Colors.blue,
                     ),
                   ),
