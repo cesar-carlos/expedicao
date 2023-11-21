@@ -1,25 +1,25 @@
-class EstoqueItemConsultaModel {
+class EstoqueProdutoConsultaModel {
   final int codProduto;
-  final int nomeProduto;
-  final int ativo;
-  final int codTipoProduto;
-  final int codUnidadeMedida;
-  final int nomeUnidadeMedida;
+  final String nomeProduto;
+  final String ativo;
+  final String codTipoProduto;
+  final String codUnidadeMedida;
+  final String nomeUnidadeMedida;
   final int codGrupoProduto;
-  final int nomeGrupoProduto;
+  final String nomeGrupoProduto;
   final int codMarca;
-  final int nomeMarca;
-  final int codSetorEstoque;
-  final int ncm;
-  final int codigoBarras;
-  final int codigoBarras2;
-  final int codigoReferencia;
-  final int codigoFornecedor;
-  final int codigoFabricante;
-  final int codigoOriginal;
-  final int endereco;
+  final String nomeMarca;
+  final int? codSetorEstoque;
+  final String? ncm;
+  final String? codigoBarras;
+  final String? codigoBarras2;
+  final String? codigoReferencia;
+  final String? codigoFornecedor;
+  final String? codigoFabricante;
+  final String? codigoOriginal;
+  final String? endereco;
 
-  EstoqueItemConsultaModel({
+  EstoqueProdutoConsultaModel({
     required this.codProduto,
     required this.nomeProduto,
     required this.ativo,
@@ -30,20 +30,20 @@ class EstoqueItemConsultaModel {
     required this.nomeGrupoProduto,
     required this.codMarca,
     required this.nomeMarca,
-    required this.codSetorEstoque,
-    required this.ncm,
-    required this.codigoBarras,
-    required this.codigoBarras2,
-    required this.codigoReferencia,
-    required this.codigoFornecedor,
-    required this.codigoFabricante,
-    required this.codigoOriginal,
-    required this.endereco,
+    this.codSetorEstoque,
+    this.ncm,
+    this.codigoBarras,
+    this.codigoBarras2,
+    this.codigoReferencia,
+    this.codigoFornecedor,
+    this.codigoFabricante,
+    this.codigoOriginal,
+    this.endereco,
   });
 
-  factory EstoqueItemConsultaModel.fromJson(Map map) {
-    return EstoqueItemConsultaModel(
-      codProduto: int.parse(map['CodProduto']),
+  factory EstoqueProdutoConsultaModel.fromJson(Map map) {
+    return EstoqueProdutoConsultaModel(
+      codProduto: map['CodProduto'],
       nomeProduto: map['NomeProduto'],
       ativo: map['Ativo'],
       codTipoProduto: map['CodTipoProduto'],
@@ -87,5 +87,10 @@ class EstoqueItemConsultaModel {
       'CodigoOriginal': codigoOriginal,
       'Endereco': endereco,
     };
+  }
+
+  @override
+  String toString() {
+    return 'EstoqueProdutoConsultaModel(codProduto: $codProduto, nomeProduto: $nomeProduto, ativo: $ativo, codTipoProduto: $codTipoProduto, codUnidadeMedida: $codUnidadeMedida, nomeUnidadeMedida: $nomeUnidadeMedida, codGrupoProduto: $codGrupoProduto, nomeGrupoProduto: $nomeGrupoProduto, codMarca: $codMarca, nomeMarca: $nomeMarca, codSetorEstoque: $codSetorEstoque, ncm: $ncm, codigoBarras: $codigoBarras, codigoBarras2: $codigoBarras2, codigoReferencia: $codigoReferencia, codigoFornecedor: $codigoFornecedor, codigoFabricante: $codigoFabricante, codigoOriginal: $codigoOriginal, endereco: $endereco)';
   }
 }

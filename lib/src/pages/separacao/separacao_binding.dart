@@ -6,7 +6,7 @@ import 'package:app_expedicao/src/pages/separacao/grid/separacao_carrinho_grid_c
 class SeparacaoBinding implements Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(() => SeparacaoController());
+    Get.lazyPut(() => SeparacaoController(Get.arguments));
     Get.lazyPut(() => SeparacaoCarrinhoGridController());
   }
 }

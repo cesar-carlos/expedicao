@@ -20,7 +20,7 @@ class SeparacaoCarrinhoGridFooter extends StatelessWidget {
       color: Colors.grey[200],
       child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
         Obx(() => Text(
-              'Total de Itens: ${controller.itensCarrinho(item: item, codCarrinho: codCarrinho).length}',
+              'Total de Itens: ${controller.itens.length}',
               style: const TextStyle(
                 color: Colors.black,
                 fontSize: 12,

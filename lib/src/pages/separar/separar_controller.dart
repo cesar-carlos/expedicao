@@ -24,16 +24,12 @@ class SepararController extends GetxController {
   late SepararEstoqueconsultaServices _separarServices;
   late SepararGridController _separarGridController;
   late SepararCarrinhoGridController _separarCarrinhoGridController;
-  late SeparacaoCarrinhoGridController _separacaoGridController;
   late ProcessoExecutavelModel _processoExecutavel;
-
-  final _carrinhoPercursoServices = CarrinhoPercursoServices();
 
   @override
   onInit() async {
     _separarGridController = Get.find<SepararGridController>();
     _separarCarrinhoGridController = Get.find<SepararCarrinhoGridController>();
-    _separacaoGridController = Get.find<SeparacaoCarrinhoGridController>();
     _processoExecutavel = Get.find<ProcessoExecutavelModel>();
 
     _separarServices = SepararEstoqueconsultaServices(
@@ -43,11 +39,17 @@ class SepararController extends GetxController {
 
     await _fillGridSepararItens();
     await _fillGridSepararCarrinhos();
-    await _fillGridSeparacaoItens();
 
     _litenerCarrinhoPercurso();
     _onRemoveItemSepararCarrinhoGrid();
     super.onInit();
+  }
+
+  @override
+  void onClose() {
+    _separarGridController.dispose();
+    _separarCarrinhoGridController.dispose();
+    super.onClose();
   }
 
   Future<void> _fillGridSepararItens() async {
@@ -61,13 +63,6 @@ class SepararController extends GetxController {
     final separarCarrinhos = await _separarServices.carrinhosPercurso();
     for (var el in separarCarrinhos) {
       _separarCarrinhoGridController.addItem(el);
-    }
-  }
-
-  Future<void> _fillGridSeparacaoItens() async {
-    final separacaoItens = await _separarServices.itensSeparacao();
-    for (var el in separacaoItens) {
-      _separacaoGridController.addItem(el);
     }
   }
 
@@ -85,7 +80,7 @@ class SepararController extends GetxController {
         situacao: carrinhoConsulta.situacao,
       );
 
-      final carrinhoPercurso = await _carrinhoPercursoServices.selectPercurso(
+      final carrinhoPercurso = await CarrinhoPercursoServices().selectPercurso(
         ''' CodEmpresa = ${_processoExecutavel.codEmpresa} 
         AND Origem = '${_processoExecutavel.origem}' 
         AND CodOrigem = ${_processoExecutavel.codOrigem}
@@ -95,12 +90,12 @@ class SepararController extends GetxController {
 
       final estagio = await ExpedicaoEstagioService().separacao();
 
-      await _carrinhoPercursoServices.adicionarCarrinhoPercursoService(
+      await CarrinhoPercursoAdicionarService(
         carrinho: carrinho,
         carrinhoPercurso: carrinhoPercurso.first,
         percursoEstagio: estagio,
         processo: _processoExecutavel,
-      );
+      ).execute();
 
       final separarCarrinhos = await _separarServices.carrinhosPercurso()
         ..sort((a, b) => a.item.compareTo(b.item));

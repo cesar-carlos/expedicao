@@ -9,6 +9,8 @@ class ExpedicaSeparacaoItemConsultaModel {
   final int codCarrinho;
   final String nomeCarrinho;
   final String codigoBarrasCarrinho;
+  final int codCarrinhoPercurso;
+  final String itemCarrinhoPercurso;
   final int codProduto;
   final String nomeProduto;
   final String codUnidadeMedida;
@@ -42,6 +44,8 @@ class ExpedicaSeparacaoItemConsultaModel {
     required this.codCarrinho,
     required this.nomeCarrinho,
     required this.codigoBarrasCarrinho,
+    required this.codCarrinhoPercurso,
+    required this.itemCarrinhoPercurso,
     required this.codProduto,
     required this.nomeProduto,
     required this.codUnidadeMedida,
@@ -78,6 +82,8 @@ class ExpedicaSeparacaoItemConsultaModel {
       codCarrinho: map['CodCarrinho'],
       nomeCarrinho: map['NomeCarrinho'],
       codigoBarrasCarrinho: map['CodigoBarrasCarrinho'],
+      codCarrinhoPercurso: map['CodCarrinhoPercurso'],
+      itemCarrinhoPercurso: map['ItemCarrinhoPercurso'],
       codProduto: map['CodProduto'],
       nomeProduto: map['NomeProduto'],
       codUnidadeMedida: map['CodUnidadeMedida'],
@@ -114,6 +120,8 @@ class ExpedicaSeparacaoItemConsultaModel {
       'CodCarrinho': codCarrinho,
       'NomeCarrinho': nomeCarrinho,
       'CodigoBarrasCarrinho': codigoBarrasCarrinho,
+      'CodCarrinhoPercurso': codCarrinhoPercurso,
+      'ItemCarrinhoPercurso': itemCarrinhoPercurso,
       'CodProduto': codProduto,
       'NomeProduto': nomeProduto,
       'CodUnidadeMedida': codUnidadeMedida,
@@ -138,5 +146,10 @@ class ExpedicaSeparacaoItemConsultaModel {
       'HoraSeparacao': horaSeparacao,
       'Quantidade': quantidade.toStringAsFixed(4),
     };
+  }
+
+  @override
+  String toString() {
+    return 'ExpedicaSeparacaoItemConsultaModel(codEmpresa: $codEmpresa, codSepararEstoque: $codSepararEstoque, item: $item, sessionId: $sessionId, situacao: $situacao, codCarrinho: $codCarrinho, nomeCarrinho: $nomeCarrinho, codigoBarrasCarrinho: $codigoBarrasCarrinho, codCarrinhoPercurso: $codCarrinhoPercurso, itemCarrinhoPercurso: $itemCarrinhoPercurso, codProduto: $codProduto, nomeProduto: $nomeProduto, codUnidadeMedida: $codUnidadeMedida, nomeUnidadeMedida: $nomeUnidadeMedida, codGrupoProduto: $codGrupoProduto, nomeGrupoProduto: $nomeGrupoProduto, codMarca: $codMarca, nomeMarca: $nomeMarca, codSetorEstoque: $codSetorEstoque, nomeSetorEstoque: $nomeSetorEstoque, ncm: $ncm, codigoBarras: $codigoBarras, codigoBarras2: $codigoBarras2, codigoReferencia: $codigoReferencia, codigoFornecedor: $codigoFornecedor, codigoFabricante: $codigoFabricante, codigoOriginal: $codigoOriginal, endereco: $endereco, codSeparador: $codSeparador, nomeSeparador: $nomeSeparador, dataSeparacao: $dataSeparacao, horaSeparacao: $horaSeparacao, quantidade: $quantidade)';
   }
 }

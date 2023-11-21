@@ -5,6 +5,8 @@ import 'package:app_expedicao/src/model/expedicao_separacao_item_consulta_model.
 class SeparacaoCarrinhoGridController extends GetxController {
   final RxList<ExpedicaSeparacaoItemConsultaModel> _itens = RxList.empty();
   List<ExpedicaSeparacaoItemConsultaModel> get itens => _itens;
+  List<ExpedicaSeparacaoItemConsultaModel> get itensSort =>
+      _itens.toList()..sort((a, b) => b.item.compareTo(a.item));
 
   void addItem(ExpedicaSeparacaoItemConsultaModel item) {
     _itens.add(item);
@@ -14,12 +16,13 @@ class SeparacaoCarrinhoGridController extends GetxController {
     _itens.remove(item);
   }
 
-  List<ExpedicaSeparacaoItemConsultaModel> itensCarrinho({
-    required String item,
-    required int codCarrinho,
-  }) {
-    return _itens
-        .where((el) => el.item == item && el.codCarrinho == codCarrinho)
-        .toList();
+  void clear() {
+    _itens.clear();
+  }
+
+  @override
+  void onClose() {
+    _itens.close();
+    super.onClose();
   }
 }

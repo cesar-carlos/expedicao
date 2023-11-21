@@ -3,8 +3,8 @@ import 'package:get/get.dart';
 import 'package:app_expedicao/src/pages/separacao/separacao_page.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
 import 'package:app_expedicao/src/pages/separar_carrinhos/grid/separar_carrinho_grid_source.dart';
-import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget.dart';
 import 'package:app_expedicao/src/model/expedicao_percurso_estagio_consulta_model.dart';
+import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget.dart';
 
 class SepararCarrinhoGridController extends GetxController {
   final RxList<ExpedicaoPercursoEstagioConsultaModel> _itens = RxList.empty();
@@ -57,11 +57,7 @@ class SepararCarrinhoGridController extends GetxController {
     SepararCarrinhoGridSource carrinhoGrid,
     ExpedicaoPercursoEstagioConsultaModel percursoEstagioConsulta,
   ) {
-    final dialog = SeparacaoPage(
-      item: percursoEstagioConsulta.item,
-      codCarrinho: percursoEstagioConsulta.codCarrinho,
-    );
-
+    final dialog = SeparacaoPage(percursoEstagioConsulta);
     dialog.show();
   }
 

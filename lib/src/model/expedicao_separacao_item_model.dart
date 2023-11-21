@@ -104,4 +104,9 @@ class ExpedicaoSeparacaoItemModel {
       "Quantidade": quantidade.toStringAsFixed(4),
     };
   }
+
+  @override
+  String toString() {
+    return 'ExpedicaoSeparacaoItemModel(codEmpresa: $codEmpresa, codSepararEstoque: $codSepararEstoque, item: $item, sessionId: $sessionId, situacao: $situacao, codCarrinhoPercurso: $codCarrinhoPercurso, itemCarrinhoPercurso: $itemCarrinhoPercurso, codSeparador: $codSeparador, nomeSeparador: $nomeSeparador, dataSeparacao: $dataSeparacao, horaSeparacao: $horaSeparacao, codProduto: $codProduto, codUnidadeMedida: $codUnidadeMedida, quantidade: $quantidade)';
+  }
 }

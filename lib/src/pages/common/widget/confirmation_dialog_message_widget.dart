@@ -39,6 +39,7 @@ class ConfirmationDialogMessageWidget {
                           name: 'Ok',
                           padding: const EdgeInsets.only(right: 5, bottom: 10),
                           onPressed: () => Navigator.of(context).pop(true),
+                          focusNode: FocusNode()..requestFocus(),
                         ),
                       ],
                     ),

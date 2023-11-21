@@ -1,3 +1,4 @@
+import 'package:app_expedicao/src/model/expedicao_percurso_estagio_consulta_model.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
@@ -12,10 +13,9 @@ import 'package:app_expedicao/src/pages/separacao/widget/scan_item_widget.dart';
 class SeparacaoPage {
   double height = 30;
   Size size = Get.size;
-  final String item;
-  final int codCarrinho;
+  final ExpedicaoPercursoEstagioConsultaModel percursoEstagioConsulta;
 
-  SeparacaoPage({required this.item, required this.codCarrinho});
+  SeparacaoPage(this.percursoEstagioConsulta);
 
   Future<void> show() async {
     await showDialog(
@@ -65,7 +65,7 @@ class SeparacaoPage {
         ),
 
         //LEITOR CODIGO DE BARRAS
-        ScanItemWidget(size: size),
+        ScanItemWidget(percursoEstagioConsulta, size: size),
 
         //tabs
         Expanded(
@@ -123,10 +123,7 @@ class SeparacaoPage {
                   child: TabBarView(children: [
                     Container(
                       color: Colors.white70,
-                      child: SeparacaoCarrinhoGrid(
-                        codCarrinho: codCarrinho,
-                        item: item,
-                      ),
+                      child: SeparacaoCarrinhoGrid(percursoEstagioConsulta),
                     ),
                     Container(
                       color: Colors.white70,

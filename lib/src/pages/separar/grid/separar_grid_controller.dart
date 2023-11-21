@@ -14,4 +14,20 @@ class SepararGridController extends GetxController {
   removeItem(ExpedicaoSepararItemConsultaModel item) {
     _itens.remove(item);
   }
+
+  removeAll() {
+    _itens.clear();
+  }
+
+  bool findFrombarcode(String barcode) {
+    final item = _itens.where(
+      (element) => element.codigoBarras == barcode,
+    );
+
+    if (item.isEmpty) {
+      return false;
+    }
+
+    return true;
+  }
 }
