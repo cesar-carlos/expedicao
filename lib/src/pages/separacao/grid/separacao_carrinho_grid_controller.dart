@@ -4,6 +4,7 @@ import 'package:app_expedicao/src/model/expedicao_separacao_item_consulta_model.
 
 class SeparacaoCarrinhoGridController extends GetxController {
   final RxList<ExpedicaSeparacaoItemConsultaModel> _itens = RxList.empty();
+
   List<ExpedicaSeparacaoItemConsultaModel> get itens => _itens;
   List<ExpedicaSeparacaoItemConsultaModel> get itensSort =>
       _itens.toList()..sort((a, b) => b.item.compareTo(a.item));

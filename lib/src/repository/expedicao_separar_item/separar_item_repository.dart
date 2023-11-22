@@ -43,9 +43,10 @@ class SepararItemRepository {
     return completer.future;
   }
 
-  Future<ExpedicaoSepararItemModel> insert(ExpedicaoSepararItemModel entity) {
+  Future<List<ExpedicaoSepararItemModel>> insert(
+      ExpedicaoSepararItemModel entity) {
     final event = '${socket.id} separar.item.insert';
-    final completer = Completer<ExpedicaoSepararItemModel>();
+    final completer = Completer<List<ExpedicaoSepararItemModel>>();
     final resposeIn = uuid.v4();
 
     final send = {
@@ -57,18 +58,23 @@ class SepararItemRepository {
     socket.emit(event, jsonEncode(send));
     socket.on(resposeIn, (receiver) {
       final data = jsonDecode(receiver);
-      final mutation = data?['mutation'];
-      final carrinho = ExpedicaoSepararItemModel.fromJson(mutation);
+      final mutation = data?['mutation'] ?? [];
+
+      final list = mutation.map<ExpedicaoSepararItemModel>((json) {
+        return ExpedicaoSepararItemModel.fromJson(json);
+      }).toList();
+
       socket.off(resposeIn);
-      completer.complete(carrinho);
+      completer.complete(list);
     });
 
     return completer.future;
   }
 
-  Future<ExpedicaoSepararItemModel> update(ExpedicaoSepararItemModel entity) {
+  Future<List<ExpedicaoSepararItemModel>> update(
+      ExpedicaoSepararItemModel entity) {
     final event = '${socket.id} separar.item.update';
-    final completer = Completer<ExpedicaoSepararItemModel>();
+    final completer = Completer<List<ExpedicaoSepararItemModel>>();
     final resposeIn = uuid.v4();
 
     final send = {
@@ -80,18 +86,23 @@ class SepararItemRepository {
     socket.emit(event, jsonEncode(send));
     socket.on(resposeIn, (receiver) {
       final data = jsonDecode(receiver);
-      final mutation = data?['mutation'];
-      final carrinho = ExpedicaoSepararItemModel.fromJson(mutation);
+      final mutation = data?['mutation'] ?? [];
+
+      final list = mutation.map<ExpedicaoSepararItemModel>((json) {
+        return ExpedicaoSepararItemModel.fromJson(json);
+      }).toList();
+
       socket.off(resposeIn);
-      completer.complete(carrinho);
+      completer.complete(list);
     });
 
     return completer.future;
   }
 
-  Future<ExpedicaoSepararItemModel> delete(ExpedicaoSepararItemModel entity) {
+  Future<List<ExpedicaoSepararItemModel>> delete(
+      ExpedicaoSepararItemModel entity) {
     final event = '${socket.id} separar.item.delete';
-    final completer = Completer<ExpedicaoSepararItemModel>();
+    final completer = Completer<List<ExpedicaoSepararItemModel>>();
     final resposeIn = uuid.v4();
 
     final send = {
@@ -103,10 +114,14 @@ class SepararItemRepository {
     socket.emit(event, jsonEncode(send));
     socket.on(resposeIn, (receiver) {
       final data = jsonDecode(receiver);
-      final mutation = data?['mutation'];
-      final carrinho = ExpedicaoSepararItemModel.fromJson(mutation);
+      final mutation = data?['mutation'] ?? [];
+
+      final list = mutation.map<ExpedicaoSepararItemModel>((json) {
+        return ExpedicaoSepararItemModel.fromJson(json);
+      }).toList();
+
       socket.off(resposeIn);
-      completer.complete(carrinho);
+      completer.complete(list);
     });
 
     return completer.future;

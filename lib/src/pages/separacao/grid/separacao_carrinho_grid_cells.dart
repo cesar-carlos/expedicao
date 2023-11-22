@@ -1,3 +1,5 @@
+import 'package:app_expedicao/src/app/app_helper.dart';
+import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/material.dart';
 
 class SeparacaoCarrinhoGridCells {
@@ -43,6 +45,8 @@ class SeparacaoCarrinhoGridCells {
   }
 
   static defaultMoneyCell(double value) {
+    final display = value.toStringAsFixed(3).replaceAll('.', ',');
+
     return Container(
       padding: const EdgeInsets.all(10),
       alignment: Alignment.centerRight,
@@ -53,7 +57,7 @@ class SeparacaoCarrinhoGridCells {
         ),
       ),
       child: Text(
-        value.toString(),
+        AppHelper.stringToQuantity(display),
         style: SeparacaoCarrinhoGridCells.textStyleCell(),
       ),
     );

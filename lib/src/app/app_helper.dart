@@ -44,7 +44,7 @@ class AppHelper {
 
   static String stringToQuantity(String? newValue) {
     try {
-      if (newValue == null) return '0,00';
+      if (newValue == null) return '0,000';
       final formatd = NumberTextInputFormatter(
         integerDigits: 10,
         decimalDigits: 3,

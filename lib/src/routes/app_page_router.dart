@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 
 import 'package:app_expedicao/src/pages/notfound/notfound_page.dart';
 import 'package:app_expedicao/src/pages/notfound/notfound_binding.dart';
+import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/pages/separar/separar_binding.dart';
 import 'package:app_expedicao/src/pages/splash/splash_binding.dart';
@@ -22,8 +23,13 @@ class AppPageRouter {
       binding: SepararBinding(),
       transition: Transition.fadeIn,
       page: () {
-        ProcessoExecutavelModel processoExecutavel = Get.arguments;
-        return SepararPage(processoExecutavel: processoExecutavel);
+        ProcessoExecutavelModel processos = Get.arguments['processoExecutavel'];
+        ExpedicaoSepararConsultaModel separa = Get.arguments['separarConsulta'];
+
+        return SepararPage(
+          processoExecutavel: processos,
+          separarConsulta: separa,
+        );
       },
     ),
     GetPage(

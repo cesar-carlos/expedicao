@@ -1,8 +1,7 @@
-import 'package:app_expedicao/src/service/carrinho_separacao_item_services.dart';
-import 'package:date_format/date_format.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
+import 'package:app_expedicao/src/service/carrinho_separacao_item_services.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_adicionar_item_service.dart';
 import 'package:app_expedicao/src/pages/separacao/grid/separacao_carrinho_grid_controller.dart';
@@ -31,7 +30,7 @@ class SeparacaoController extends GetxController {
   void onInit() {
     _produtoService = ProdutoService();
     scanController = TextEditingController();
-    quantidadeController = TextEditingController(text: '1.000');
+    quantidadeController = TextEditingController(text: '1,000');
     _separacaoGridController = Get.find<SeparacaoCarrinhoGridController>();
     _separarGridController = Get.find<SepararGridController>();
     _processoExecutavel = Get.find<ProcessoExecutavelModel>();
@@ -138,7 +137,9 @@ class SeparacaoController extends GetxController {
             await carrinhoPercursoAdicionarItemService.adicionar(
           codProduto: result.right!.codProduto,
           codUnidadeMedida: result.right!.codUnidadeMedida,
-          quantidade: double.parse(quantidadeController.text),
+          quantidade: double.parse(quantidadeController.text
+              .replaceAll('.', '')
+              .replaceAll(',', '.')),
         );
 
         if (separacaoItemConsulta == null) {

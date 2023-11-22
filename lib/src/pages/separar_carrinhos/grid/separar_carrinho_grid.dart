@@ -9,23 +9,20 @@ import 'package:app_expedicao/src/pages/separar_carrinhos/grid/separar_carrinho_
 import 'package:app_expedicao/src/pages/separar_carrinhos/grid/separar_carrinho_grid_controller.dart';
 
 class SepararCarrinhoGrid extends StatelessWidget {
-  final controller = Get.find<SepararCarrinhoGridController>();
-  SepararCarrinhoGrid({super.key});
+  const SepararCarrinhoGrid({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<SepararCarrinhoGridController>(
-        init: controller,
-        builder: (controller) {
-          return Obx(() => SfDataGrid(
-                source: SepararCarrinhoGridSource(itens: controller.itens),
-                columnWidthMode: ColumnWidthMode.fill,
-                onCellDoubleTap: SepararCarrinhoGridEvent.onCellDoubleTap,
-                columns: SepararCarrinhoGridColumns().columns,
-                footer: const SepararCarrinhoGridFooter(),
-                headerRowHeight: 30,
-                rowHeight: 40,
-              ));
-        });
+    return GetBuilder<SepararCarrinhoGridController>(builder: (controller) {
+      return Obx(() => SfDataGrid(
+            source: SepararCarrinhoGridSource(itens: controller.itens),
+            columnWidthMode: ColumnWidthMode.fill,
+            onCellDoubleTap: SepararCarrinhoGridEvent.onCellDoubleTap,
+            columns: SepararCarrinhoGridColumns().columns,
+            footer: const SepararCarrinhoGridFooter(),
+            headerRowHeight: 30,
+            rowHeight: 40,
+          ));
+    });
   }
 }

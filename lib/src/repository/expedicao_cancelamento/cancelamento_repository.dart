@@ -43,9 +43,10 @@ class CancelamentoRepository {
     return completer.future;
   }
 
-  Future<void> insert(ExpedicaoCancelamentoModel cancelamento) {
+  Future<List<ExpedicaoCancelamentoModel>> insert(
+      ExpedicaoCancelamentoModel cancelamento) {
     final event = '${socket.id} cancelamento.insert';
-    final completer = Completer<ExpedicaoCancelamentoModel>();
+    final completer = Completer<List<ExpedicaoCancelamentoModel>>();
     final resposeIn = uuid.v4();
 
     final send = {
@@ -57,18 +58,23 @@ class CancelamentoRepository {
     socket.emit(event, jsonEncode(send));
     socket.on(resposeIn, (receiver) {
       final data = jsonDecode(receiver);
-      final mutation = data?['mutation'];
-      final cancelamento = ExpedicaoCancelamentoModel.fromJson(mutation);
+      final mutation = data?['mutation'] ?? [];
+
+      final list = mutation.map<ExpedicaoCancelamentoModel>((json) {
+        return ExpedicaoCancelamentoModel.fromJson(json);
+      }).toList();
+
       socket.off(resposeIn);
-      completer.complete(cancelamento);
+      completer.complete(list);
     });
 
     return completer.future;
   }
 
-  Future<void> update(ExpedicaoCancelamentoModel cancelamento) {
+  Future<List<ExpedicaoCancelamentoModel>> update(
+      ExpedicaoCancelamentoModel cancelamento) {
     final event = '${socket.id} cancelamento.update';
-    final completer = Completer<ExpedicaoCancelamentoModel>();
+    final completer = Completer<List<ExpedicaoCancelamentoModel>>();
     final resposeIn = uuid.v4();
 
     final send = {
@@ -80,18 +86,23 @@ class CancelamentoRepository {
     socket.emit(event, jsonEncode(send));
     socket.on(resposeIn, (receiver) {
       final data = jsonDecode(receiver);
-      final mutation = data?['mutation'];
-      final cancelamento = ExpedicaoCancelamentoModel.fromJson(mutation);
+      final mutation = data?['mutation'] ?? [];
+
+      final list = mutation.map<ExpedicaoCancelamentoModel>((json) {
+        return ExpedicaoCancelamentoModel.fromJson(json);
+      }).toList();
+
       socket.off(resposeIn);
-      completer.complete(cancelamento);
+      completer.complete(list);
     });
 
     return completer.future;
   }
 
-  Future<void> delete(ExpedicaoCancelamentoModel cancelamento) {
+  Future<List<ExpedicaoCancelamentoModel>> delete(
+      ExpedicaoCancelamentoModel cancelamento) {
     final event = '${socket.id} cancelamento.delete';
-    final completer = Completer<ExpedicaoCancelamentoModel>();
+    final completer = Completer<List<ExpedicaoCancelamentoModel>>();
     final resposeIn = uuid.v4();
 
     final send = {
@@ -103,10 +114,14 @@ class CancelamentoRepository {
     socket.emit(event, jsonEncode(send));
     socket.on(resposeIn, (receiver) {
       final data = jsonDecode(receiver);
-      final mutation = data?['mutation'];
-      final cancelamento = ExpedicaoCancelamentoModel.fromJson(mutation);
+      final mutation = data?['mutation'] ?? [];
+
+      final list = mutation.map<ExpedicaoCancelamentoModel>((json) {
+        return ExpedicaoCancelamentoModel.fromJson(json);
+      }).toList();
+
       socket.off(resposeIn);
-      completer.complete(cancelamento);
+      completer.complete(list);
     });
 
     return completer.future;

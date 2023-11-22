@@ -19,10 +19,18 @@ class CarrinhoPercursoAdicionarService {
     required this.processo,
   });
 
-  Future<void> execute() async {
+  Future<ExpedicaoPercursoEstagioModel?> execute() async {
     final newCarrinho = carrinho.copyWith(situacao: 'AB');
     await CarrinhoRepository().update(newCarrinho);
-    await CarrinhoPercursoEstagioRepository().insert(_createPercursoEstagio());
+
+    final carrinhoPercursoEstagio = await CarrinhoPercursoEstagioRepository()
+        .insert(_createPercursoEstagio());
+
+    if (carrinhoPercursoEstagio.isNotEmpty) {
+      return carrinhoPercursoEstagio.first;
+    }
+
+    return null;
   }
 
   ExpedicaoPercursoEstagioModel _createPercursoEstagio() {

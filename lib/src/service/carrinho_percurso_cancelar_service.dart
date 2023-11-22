@@ -22,8 +22,7 @@ class CarrinhoPercursoCancelarService {
   });
 
   Future<void> execute() async {
-    final separacaoItens = await _findSeparacaoEstagio();
-
+    final separacaoItens = await _findSeparacaoItem();
     final newCarrinho = carrinho.copyWith(situacao: 'LI');
     final newPercursoEstagio = percursoEstagio.copyWith(situacao: 'CA');
     final newCancelamento = await _createCancelamento();
@@ -38,7 +37,7 @@ class CarrinhoPercursoCancelarService {
     await CarrinhoRepository().update(newCarrinho);
   }
 
-  Future<List<ExpedicaoSeparacaoItemModel>> _findSeparacaoEstagio() async {
+  Future<List<ExpedicaoSeparacaoItemModel>> _findSeparacaoItem() async {
     final params = ''' 
           CodEmpresa = ${percursoEstagio.codEmpresa} 
       AND CodCarrinhoPercurso = ${percursoEstagio.codCarrinhoPercurso} 

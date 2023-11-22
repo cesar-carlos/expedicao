@@ -32,7 +32,7 @@ class SepararCarrinhosWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              Expanded(
+              const Expanded(
                 child: SepararCarrinhoGrid(),
               ),
             ]),

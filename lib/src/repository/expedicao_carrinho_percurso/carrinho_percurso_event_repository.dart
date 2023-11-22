@@ -1,10 +1,9 @@
 import 'dart:convert';
-
-import 'package:app_expedicao/src/model/basic_event_model.dart';
 import 'package:get/get.dart';
 
-import 'package:app_expedicao/src/app/app_socket.config.dart';
 import 'package:app_expedicao/src/model/repository_event_lister_model.dart';
+import 'package:app_expedicao/src/model/basic_event_model.dart';
+import 'package:app_expedicao/src/app/app_socket.config.dart';
 
 class CarrinhoPercursoEventRepository {
   static CarrinhoPercursoEventRepository? _instancia;
@@ -32,7 +31,7 @@ class CarrinhoPercursoEventRepository {
   }
 
   void _onInsert() {
-    const event = 'broadcast.carrinho.percurso.estagio.insert';
+    const event = 'carrinho.percurso.estagio.insert.listen';
     _appSocket.socket.on(event, (data) {
       _liteners
           .where((element) => element.event == Event.insert)
@@ -43,7 +42,7 @@ class CarrinhoPercursoEventRepository {
   }
 
   void _onUpdate() {
-    const event = 'broadcast.carrinho.percurso.estagio.update';
+    const event = 'carrinho.percurso.estagio.update.listen';
     _appSocket.socket.on(event, (data) {
       _liteners
           .where((element) => element.event == Event.update)
@@ -54,7 +53,7 @@ class CarrinhoPercursoEventRepository {
   }
 
   void _onDelete() {
-    const event = 'broadcast.carrinho.percurso.estagio.delete';
+    const event = 'carrinho.percurso.estagio.delete.listen';
     _appSocket.socket.on(event, (data) {
       _liteners
           .where((element) => element.event == Event.delete)
