@@ -1,5 +1,4 @@
 import 'package:app_expedicao/src/app/app_helper.dart';
-import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/material.dart';
 
 class SeparacaoCarrinhoGridCells {

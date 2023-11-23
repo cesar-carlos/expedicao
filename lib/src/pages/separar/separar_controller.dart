@@ -1,18 +1,16 @@
-import 'package:app_expedicao/src/pages/separar_carrinhos/separar_carrinhos_controller.dart';
 import 'package:get/get.dart';
 
-import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
-
-import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dart';
-
-import 'package:app_expedicao/src/service/carrinho_percurso_adicionar_service.dart';
-import 'package:app_expedicao/src/pages/carrinho/widget/adicionar_carrinho_dialog_widget.dart';
-
-import 'package:app_expedicao/src/service/separar_consulta_services.dart';
-
-import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
-
 import 'package:app_expedicao/src/service/expedicao.estagio.service.dart';
+import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
+import 'package:app_expedicao/src/model/repository_event_lister_model.dart';
+import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';
+import 'package:app_expedicao/src/pages/separar_carrinhos/separar_carrinhos_controller.dart';
+import 'package:app_expedicao/src/pages/carrinho/widget/adicionar_carrinho_dialog_widget.dart';
+import 'package:app_expedicao/src/repository/expedicao_separar_item/separar_item_event_repository.dart';
+import 'package:app_expedicao/src/service/carrinho_percurso_adicionar_service.dart';
+import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dart';
+import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
+import 'package:app_expedicao/src/service/separar_consulta_services.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_model.dart';
 
@@ -38,6 +36,7 @@ class SepararController extends GetxController {
     );
 
     await _fillGridSepararItens();
+    _litenerSepararItens();
     super.onInit();
   }
 
@@ -93,5 +92,45 @@ class SepararController extends GetxController {
         _separarCarrinhosController.addCarrinho(percursoEstagioConsulta.last);
       }
     }
+  }
+
+  _litenerSepararItens() {
+    final carrinhoPercursoEvent = SepararItemEventRepository.instancia;
+
+    carrinhoPercursoEvent.addListener(
+      RepositoryEventListerModel(
+        event: Event.insert,
+        callback: (data) async {
+          for (var el in data.mutation) {
+            final item = ExpedicaoSepararItemConsultaModel.fromJson(el);
+            _separarGridController.updateItem(item);
+          }
+        },
+      ),
+    );
+
+    carrinhoPercursoEvent.addListener(
+      RepositoryEventListerModel(
+        event: Event.update,
+        callback: (data) async {
+          for (var el in data.mutation) {
+            final item = ExpedicaoSepararItemConsultaModel.fromJson(el);
+            _separarGridController.updateItem(item);
+          }
+        },
+      ),
+    );
+
+    carrinhoPercursoEvent.addListener(
+      RepositoryEventListerModel(
+        event: Event.delete,
+        callback: (data) async {
+          for (var el in data.mutation) {
+            final item = ExpedicaoSepararItemConsultaModel.fromJson(el);
+            _separarGridController.updateItem(item);
+          }
+        },
+      ),
+    );
   }
 }

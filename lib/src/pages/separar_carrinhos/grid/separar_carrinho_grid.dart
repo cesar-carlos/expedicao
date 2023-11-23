@@ -15,7 +15,7 @@ class SepararCarrinhoGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<SepararCarrinhoGridController>(builder: (controller) {
       return Obx(() => SfDataGrid(
-            source: SepararCarrinhoGridSource(itens: controller.itens),
+            source: SepararCarrinhoGridSource(itens: controller.itensSort),
             columnWidthMode: ColumnWidthMode.fill,
             onCellDoubleTap: SepararCarrinhoGridEvent.onCellDoubleTap,
             columns: SepararCarrinhoGridColumns().columns,

@@ -18,7 +18,7 @@ class SepararGrid extends StatelessWidget {
         init: controller,
         builder: (controller) {
           return Obx(() => SfDataGrid(
-                source: SepararSource(controller.itens),
+                source: SepararSource(controller.itensSort),
                 columnWidthMode: ColumnWidthMode.fill,
                 onCellDoubleTap: SepararGridEvent.onCellDoubleTap,
                 columns: SepararGridColumns().columns,

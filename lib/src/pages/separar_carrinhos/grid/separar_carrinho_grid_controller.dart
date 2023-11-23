@@ -8,7 +8,10 @@ import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget
 
 class SepararCarrinhoGridController extends GetxController {
   final RxList<ExpedicaoPercursoEstagioConsultaModel> _itens = RxList.empty();
+
   List<ExpedicaoPercursoEstagioConsultaModel> get itens => _itens;
+  List<ExpedicaoPercursoEstagioConsultaModel> get itensSort =>
+      _itens.toList()..sort((a, b) => b.item.compareTo(a.item));
 
   void Function(ExpedicaoPercursoEstagioConsultaModel item)?
       onPressedRemoveItem;

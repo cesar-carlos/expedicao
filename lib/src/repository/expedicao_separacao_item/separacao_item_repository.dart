@@ -77,6 +77,74 @@ class SeparacaoItemRepository {
     return completer.future;
   }
 
+  Future<List<ExpedicaoSeparacaoItemModel>> insertAll(
+      List<ExpedicaoSeparacaoItemModel> entity) {
+    final event = '${socket.id} separacao.item.insert';
+    final completer = Completer<List<ExpedicaoSeparacaoItemModel>>();
+    final resposeIn = uuid.v4();
+
+    final send = {
+      "session": socket.id,
+      "resposeIn": resposeIn,
+      "mutation": entity.map((el) => el.toJson()).toList(),
+    };
+
+    socket.emit(event, jsonEncode(send));
+    socket.on(resposeIn, (receiver) {
+      final data = jsonDecode(receiver);
+      final mutation = data?['mutation'] ?? [];
+
+      if (data.isEmpty || mutation.isEmpty) {
+        completer.complete([]);
+        socket.off(resposeIn);
+        return;
+      }
+
+      final list = mutation.map<ExpedicaoSeparacaoItemModel>((json) {
+        return ExpedicaoSeparacaoItemModel.fromJson(json);
+      }).toList();
+
+      socket.off(resposeIn);
+      completer.complete(list);
+    });
+
+    return completer.future;
+  }
+
+  Future<ExpedicaoSeparacaoItemModel?> update(
+      ExpedicaoSeparacaoItemModel entity) {
+    final event = '${socket.id} separacao.item.update';
+    final completer = Completer<ExpedicaoSeparacaoItemModel?>();
+    final resposeIn = uuid.v4();
+
+    final send = {
+      "session": socket.id,
+      "resposeIn": resposeIn,
+      "mutation": entity.toJson(),
+    };
+
+    socket.emit(event, jsonEncode(send));
+    socket.on(resposeIn, (receiver) {
+      final data = jsonDecode(receiver);
+      final mutation = data?['mutation'] ?? [];
+
+      if (mutation.isEmpty) {
+        completer.complete(null);
+        socket.off(resposeIn);
+        return;
+      }
+
+      final list = mutation.map<ExpedicaoSeparacaoItemModel>((json) {
+        return ExpedicaoSeparacaoItemModel.fromJson(json);
+      }).toList();
+
+      socket.off(resposeIn);
+      completer.complete(list.first);
+    });
+
+    return completer.future;
+  }
+
   Future<List<ExpedicaoSeparacaoItemModel>> updateAll(
       List<ExpedicaoSeparacaoItemModel> entity) {
     final event = '${socket.id} separacao.item.update';
@@ -140,6 +208,40 @@ class SeparacaoItemRepository {
 
       socket.off(resposeIn);
       completer.complete(list.first);
+    });
+
+    return completer.future;
+  }
+
+  Future<List<ExpedicaoSeparacaoItemModel>> deleteall(
+      List<ExpedicaoSeparacaoItemModel> entity) {
+    final event = '${socket.id} separacao.item.delete';
+    final completer = Completer<List<ExpedicaoSeparacaoItemModel>>();
+    final resposeIn = uuid.v4();
+
+    final send = {
+      "session": socket.id,
+      "resposeIn": resposeIn,
+      "mutation": entity.map((el) => el.toJson()).toList(),
+    };
+
+    socket.emit(event, jsonEncode(send));
+    socket.on(resposeIn, (receiver) {
+      final data = jsonDecode(receiver);
+      final mutation = data?['mutation'] ?? [];
+
+      if (mutation.isEmpty) {
+        completer.complete([]);
+        socket.off(resposeIn);
+        return;
+      }
+
+      final list = mutation.map<ExpedicaoSeparacaoItemModel>((json) {
+        return ExpedicaoSeparacaoItemModel.fromJson(json);
+      }).toList();
+
+      socket.off(resposeIn);
+      completer.complete(list);
     });
 
     return completer.future;

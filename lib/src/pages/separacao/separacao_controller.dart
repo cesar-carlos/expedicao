@@ -1,12 +1,13 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
+import 'package:app_expedicao/src/service/separacao_remover_item_service.dart';
 import 'package:app_expedicao/src/service/carrinho_separacao_item_services.dart';
-import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dart';
-import 'package:app_expedicao/src/service/carrinho_percurso_adicionar_item_service.dart';
 import 'package:app_expedicao/src/pages/separacao/grid/separacao_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
 import 'package:app_expedicao/src/model/expedicao_percurso_estagio_consulta_model.dart';
+import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dart';
+import 'package:app_expedicao/src/service/separacao_adicionar_item_service.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/service/produto_service.dart';
@@ -14,15 +15,20 @@ import 'package:app_expedicao/src/service/produto_service.dart';
 class SeparacaoController extends GetxController {
   final ExpedicaoPercursoEstagioConsultaModel percursoEstagioConsulta;
 
-  late ProdutoService _produtoService;
-  late TextEditingController scanController;
-  late TextEditingController quantidadeController;
   late SeparacaoCarrinhoGridController _separacaoGridController;
-  late CarrinhoSeparacaoItemServices _separacaoServices;
   late ProcessoExecutavelModel _processoExecutavel;
   late SepararGridController _separarGridController;
-  late FocusNode quantidadeFocusNode;
+
+  late ProdutoService _produtoService;
+  late CarrinhoSeparacaoItemServices _separacaoServices;
+
+  late TextEditingController scanController;
+  late TextEditingController quantidadeController;
+  late TextEditingController displayController;
+
   late FocusNode scanFocusNode;
+  late FocusNode quantidadeFocusNode;
+  late FocusNode displayFocusNode;
 
   SeparacaoController(this.percursoEstagioConsulta);
 
@@ -30,14 +36,21 @@ class SeparacaoController extends GetxController {
   void onInit() {
     _produtoService = ProdutoService();
     scanController = TextEditingController();
+    displayController = TextEditingController(text: '');
     quantidadeController = TextEditingController(text: '1,000');
     _separacaoGridController = Get.find<SeparacaoCarrinhoGridController>();
     _separarGridController = Get.find<SepararGridController>();
     _processoExecutavel = Get.find<ProcessoExecutavelModel>();
     _separacaoServices = CarrinhoSeparacaoItemServices();
+
     scanFocusNode = FocusNode()..requestFocus();
+    displayFocusNode = FocusNode();
     quantidadeFocusNode = FocusNode();
+
     _fillGridSeparacaoItens();
+    _onRemoveItemSeparacaoGrid();
+    _listenFocusNode();
+
     super.onInit();
   }
 
@@ -46,8 +59,26 @@ class SeparacaoController extends GetxController {
     scanController.dispose();
     quantidadeController.dispose();
     quantidadeFocusNode.dispose();
+    displayController.dispose();
     scanFocusNode.dispose();
+
     super.onClose();
+  }
+
+  ExpedicaoPercursoEstagioConsultaModel get percursoEstagio =>
+      percursoEstagioConsulta;
+
+  _listenFocusNode() {
+    quantidadeFocusNode.addListener(() {
+      quantidadeController.selection = TextSelection(
+        baseOffset: 0,
+        extentOffset: quantidadeController.text.length,
+      );
+    });
+
+    displayFocusNode.addListener(() {
+      scanFocusNode.requestFocus();
+    });
   }
 
   Future<void> _fillGridSeparacaoItens() async {
@@ -65,97 +96,155 @@ class SeparacaoController extends GetxController {
     }
   }
 
-  Future<void> onSubmitted(String? value) async {
-    if (value != null) {
-      if (!value.isNotEmpty) {
-        await ConfirmationDialogMessageWidget.show(
-          context: Get.context!,
-          message: 'Valor invalido!',
-          detail: 'Digite o codigo de barras do produto para fazer a pesquisa!',
-        );
+  bool viewMode() {
+    if (percursoEstagioConsulta.situacao == 'CA') return true;
+    return false;
+  }
 
-        scanFocusNode.requestFocus();
-        return;
-      }
+  Future<void> onSubmittedScan(String? value) async {
+    if (value != null) _addItemSeparacao();
+  }
 
-      if (!_separarGridController.findFrombarcode(value.trim())) {
-        await ConfirmationDialogMessageWidget.show(
-          context: Get.context!,
-          message: 'Produto não encontrado!',
-          detail: 'Este produto não esta na lista de separação!',
-        );
+  Future<void> onSubmittedQuantity(String? value) async {
+    if (value != null) _addItemSeparacao();
+  }
 
-        scanFocusNode.requestFocus();
-        scanController.clear();
-        return;
-      }
+  Future<void> _addItemSeparacao() async {
+    final scanValue = scanController.text;
+    final quantityValue = quantidadeController.text;
 
-      final result =
-          await _produtoService.consultaPorCodigoBarras(value.trim());
-      if (result.left != null) {
-        await ConfirmationDialogMessageWidget.show(
-          context: Get.context!,
-          message: result.left!.title,
-          detail: result.left!.message,
-        );
+    if (scanValue.isEmpty) {
+      await ConfirmationDialogMessageWidget.show(
+        context: Get.context!,
+        message: 'Valor invalido!',
+        detail: 'Digite o codigo de barras do produto para fazer a pesquisa!',
+      );
 
-        scanFocusNode.requestFocus();
-        scanController.clear();
-        return;
-      }
+      displayController.text = '';
+      scanFocusNode.requestFocus();
+      return;
+    }
 
-      if (result.right != null) {
-        final carrinhosPercurso =
-            await CarrinhoPercursoServices().selectPercurso(
-          ''' CodEmpresa = ${_processoExecutavel.codEmpresa} 
+    if (quantityValue.isEmpty) {
+      await ConfirmationDialogMessageWidget.show(
+        context: Get.context!,
+        message: 'Valor invalido!',
+        detail: 'Digite a quantidade do produto para fazer a separação!',
+      );
+
+      quantidadeController.text = '1,000';
+      quantidadeFocusNode.requestFocus();
+      return;
+    }
+
+    if (!_separarGridController.findFrombarcode(scanValue.trim()) &&
+        !_separarGridController.findFromCodigo(int.parse(scanValue.trim()))) {
+      await ConfirmationDialogMessageWidget.show(
+        context: Get.context!,
+        message: 'Produto não encontrado!',
+        detail: 'Este produto não esta na lista de separação!',
+      );
+
+      displayController.text = '';
+      scanFocusNode.requestFocus();
+      scanController.clear();
+      return;
+    }
+
+    final resp = scanValue.trim().length >= 7
+        ? await _produtoService.consultaPorCodigoBarras(scanValue.trim())
+        : await _produtoService.consultaPorCodigo(int.parse(scanValue.trim()));
+
+    if (resp.left != null) {
+      await ConfirmationDialogMessageWidget.show(
+        context: Get.context!,
+        message: resp.left!.title,
+        detail: resp.left!.message,
+      );
+
+      displayController.text = '';
+      scanFocusNode.requestFocus();
+      scanController.clear();
+      return;
+    }
+
+    if (resp.right != null) {
+      final carrinhosPercurso = await CarrinhoPercursoServices().selectPercurso(
+        ''' CodEmpresa = ${_processoExecutavel.codEmpresa} 
           AND Origem = '${_processoExecutavel.origem}' 
           AND CodOrigem = ${_processoExecutavel.codOrigem}
         
         ''',
+      );
+
+      if (carrinhosPercurso.isEmpty) {
+        await ConfirmationDialogMessageWidget.show(
+          context: Get.context!,
+          message: 'Carrinho não encontrado!',
+          detail: 'Não foi encontrado nenhum carrinho para o percurso!',
         );
 
-        if (carrinhosPercurso.isEmpty) {
-          await ConfirmationDialogMessageWidget.show(
-            context: Get.context!,
-            message: 'Carrinho não encontrado!',
-            detail: 'Não foi encontrado nenhum carrinho para o percurso!',
-          );
-
-          scanFocusNode.requestFocus();
-          scanController.clear();
-          return;
-        }
-
-        final carrinhoPercursoAdicionarItemService =
-            CarrinhoPercursoAdicionarItemService(
-          carrinhoPercurso: carrinhosPercurso.first,
-          percursoEstagioConsulta: percursoEstagioConsulta,
-          processo: _processoExecutavel,
-        );
-
-        final separacaoItemConsulta =
-            await carrinhoPercursoAdicionarItemService.adicionar(
-          codProduto: result.right!.codProduto,
-          codUnidadeMedida: result.right!.codUnidadeMedida,
-          quantidade: double.parse(quantidadeController.text
-              .replaceAll('.', '')
-              .replaceAll(',', '.')),
-        );
-
-        if (separacaoItemConsulta == null) {
-          await ConfirmationDialogMessageWidget.show(
-            context: Get.context!,
-            message: 'Erro ao adicionar item!',
-            detail: 'Não foi possivel adicionar o item ao carrinho!',
-          );
-
-          scanFocusNode.requestFocus();
-          scanController.clear();
-          return;
-        }
-
-        _separacaoGridController.addItem(separacaoItemConsulta);
+        displayController.text = '';
+        scanFocusNode.requestFocus();
+        scanController.clear();
+        return;
       }
+
+      final carrinhoPercursoAdicionarItemService =
+          SeparacaoAdicionarItemService(
+        carrinhoPercurso: carrinhosPercurso.first,
+        percursoEstagioConsulta: percursoEstagioConsulta,
+      );
+
+      final separacaoItemConsulta =
+          await carrinhoPercursoAdicionarItemService.add(
+        codProduto: resp.right!.codProduto,
+        codUnidadeMedida: resp.right!.codUnidadeMedida,
+        quantidade: double.parse(
+            quantidadeController.text.replaceAll('.', '').replaceAll(',', '.')),
+      );
+
+      if (separacaoItemConsulta == null) {
+        await ConfirmationDialogMessageWidget.show(
+          context: Get.context!,
+          message: 'Erro ao adicionar item!',
+          detail: 'Não foi possivel adicionar o item ao carrinho!',
+        );
+
+        displayController.text = '';
+        scanFocusNode.requestFocus();
+        scanController.clear();
+        return;
+      }
+
+      displayController.text = resp.right!.nomeProduto;
+      _separacaoGridController.addItem(separacaoItemConsulta);
+
+      scanController.text = '';
+      quantidadeController.text = '1,000';
+      scanFocusNode.requestFocus();
     }
+  }
+
+  Future<void> _onRemoveItemSeparacaoGrid() async {
+    _separacaoGridController.onPressedRemoveItem = (el) async {
+      if (viewMode()) {
+        await ConfirmationDialogMessageWidget.show(
+          context: Get.context!,
+          message: 'Não é possivel remover o item!',
+          detail: 'O carrinho ja foi cancelado!',
+        );
+
+        return;
+      }
+
+      await SeparacaoRemoverItemService().remove(
+        codEmpresa: el.codEmpresa,
+        codSepararEstoque: el.codSepararEstoque,
+        item: el.item,
+      );
+
+      _separacaoGridController.removeItem(el);
+    };
   }
 }

@@ -1,21 +1,31 @@
-import 'package:app_expedicao/src/model/expedicao_percurso_estagio_consulta_model.dart';
+import 'package:app_expedicao/src/pages/separacao/separacao_controller.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid.dart';
 import 'package:app_expedicao/src/pages/separacao/grid/separacao_carrinho_grid.dart';
+import 'package:app_expedicao/src/model/expedicao_percurso_estagio_consulta_model.dart';
 import 'package:app_expedicao/src/pages/common/form_element/button_head_form_element.dart';
 import 'package:app_expedicao/src/pages/common/form_element/space_button_head_form_element.dart';
 import 'package:app_expedicao/src/pages/common/form_element/bar_head_form_element.dart';
 import 'package:app_expedicao/src/pages/separacao/widget/scan_item_widget.dart';
 
 class SeparacaoPage {
+  late String title;
   double height = 30;
   Size size = Get.size;
+
+  final SeparacaoController _controller;
   final ExpedicaoPercursoEstagioConsultaModel percursoEstagioConsulta;
 
-  SeparacaoPage(this.percursoEstagioConsulta);
+  SeparacaoPage(this.percursoEstagioConsulta)
+      : _controller = SeparacaoController(percursoEstagioConsulta) {
+    Get.lazyPut(() => _controller);
+    title = _controller.viewMode()
+        ? 'Separação - Visualização'
+        : 'Separação - Edição';
+  }
 
   Future<void> show() async {
     await showDialog(
@@ -26,7 +36,7 @@ class SeparacaoPage {
           width: size.width * 0.95,
           height: size.height * 0.8,
           child: Column(children: [
-            BarHeadFormElement(widthBar: size.width, title: 'Seração'),
+            BarHeadFormElement(widthBar: size.width, title: title),
             dailog(),
           ]),
         ),
@@ -75,8 +85,9 @@ class SeparacaoPage {
               bottomRight: Radius.circular(10),
             ),
             child: DefaultTabController(
+              initialIndex: _controller.viewMode() ? 0 : 1,
               length: 2,
-              animationDuration: const Duration(milliseconds: 100),
+              animationDuration: const Duration(milliseconds: 500),
               child: Column(children: [
                 Container(
                   color: Colors.white,

@@ -158,7 +158,7 @@ class SeparacaoCarrinhoGridSource extends DataGridSource {
                   ),
                   IconButton(
                     onPressed: () {
-                      //controller.deleteSeparacaoItensCarrinhoGrid(this, i);
+                      controller.onRemoveItem(this, i);
                     },
                     icon: const Icon(
                       size: 17,
