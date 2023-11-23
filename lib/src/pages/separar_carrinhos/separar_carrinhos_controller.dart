@@ -69,7 +69,6 @@ class SepararCarrinhosController extends GetxController {
       await CarrinhoPercursoCancelarService(
         carrinho: carrinho.first,
         percursoEstagio: carrinhoPercursoEstagio.first,
-        processo: _processoExecutavel,
       ).execute();
 
       final newItem = item.copyWith(situacao: 'CA');
@@ -79,7 +78,6 @@ class SepararCarrinhosController extends GetxController {
 
   _litenerCarrinhoPercurso() {
     final carrinhoPercursoEvent = CarrinhoPercursoEventRepository.instancia;
-
     carrinhoPercursoEvent.addListener(
       RepositoryEventListerModel(
         event: Event.insert,
