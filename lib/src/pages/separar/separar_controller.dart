@@ -99,31 +99,8 @@ class SepararController extends GetxController {
 
     carrinhoPercursoEvent.addListener(
       RepositoryEventListerModel(
-        event: Event.insert,
-        callback: (data) async {
-          for (var el in data.mutation) {
-            final item = ExpedicaoSepararItemConsultaModel.fromJson(el);
-            _separarGridController.updateItem(item);
-          }
-        },
-      ),
-    );
-
-    carrinhoPercursoEvent.addListener(
-      RepositoryEventListerModel(
         event: Event.update,
-        callback: (data) async {
-          for (var el in data.mutation) {
-            final item = ExpedicaoSepararItemConsultaModel.fromJson(el);
-            _separarGridController.updateItem(item);
-          }
-        },
-      ),
-    );
-
-    carrinhoPercursoEvent.addListener(
-      RepositoryEventListerModel(
-        event: Event.delete,
+        allEvent: true,
         callback: (data) async {
           for (var el in data.mutation) {
             final item = ExpedicaoSepararItemConsultaModel.fromJson(el);

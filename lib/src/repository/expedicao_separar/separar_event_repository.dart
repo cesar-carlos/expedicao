@@ -37,7 +37,11 @@ class SepararEventRepository {
           .where((element) => element.event == Event.insert)
           .forEach((element) {
         final basicEvent = _convert(data);
-        if (basicEvent.session == _appSocket.socket.id) return;
+
+        if (basicEvent.session == _appSocket.socket.id && !element.allEvent) {
+          return;
+        }
+
         element.callback(basicEvent);
       });
     });
@@ -50,7 +54,11 @@ class SepararEventRepository {
           .where((element) => element.event == Event.update)
           .forEach((element) {
         final basicEvent = _convert(data);
-        if (basicEvent.session == _appSocket.socket.id) return;
+
+        if (basicEvent.session == _appSocket.socket.id && !element.allEvent) {
+          return;
+        }
+
         element.callback(basicEvent);
       });
     });
@@ -63,7 +71,11 @@ class SepararEventRepository {
           .where((element) => element.event == Event.delete)
           .forEach((element) {
         final basicEvent = _convert(data);
-        if (basicEvent.session == _appSocket.socket.id) return;
+
+        if (basicEvent.session == _appSocket.socket.id && !element.allEvent) {
+          return;
+        }
+
         element.callback(basicEvent);
       });
     });

@@ -11,6 +11,11 @@ typedef Callback = void Function(BasicEventModel parametro);
 class RepositoryEventListerModel {
   Event event;
   Callback callback;
+  bool allEvent;
 
-  RepositoryEventListerModel({required this.event, required this.callback});
+  RepositoryEventListerModel({
+    required this.event,
+    required this.callback,
+    this.allEvent = false,
+  });
 }
