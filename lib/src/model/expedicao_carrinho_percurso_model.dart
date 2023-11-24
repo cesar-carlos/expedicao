@@ -57,7 +57,7 @@ class ExpedicaoCarrinhoPercursoModel {
       situacao: map['Situacao'],
       dataInicio: AppHelper.tryStringToDate(map['DataInicio']),
       horaInicio: map['HoraInicio'] ?? '00:00:00',
-      dataFinalizacao: map['DataFinalizacao'],
+      dataFinalizacao: AppHelper.tryStringToDateOrNull(map['DataFinalizacao']),
       horaFinalizacao: map['HoraFinalizacao'],
     );
   }

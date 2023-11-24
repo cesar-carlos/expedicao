@@ -149,7 +149,8 @@ class ExpedicaoCarrinhoPercursoConsultaModel {
       codCancelamento: map['CodCancelamento'],
       codMotivoCancelamento: map['CodMotivoCancelamento'],
       descricaoMotivoCancelamento: map['DescricaoMotivoCancelamento'],
-      dataCancelamento: DateTime.tryParse(map['DataCancelamento']),
+      dataCancelamento:
+          AppHelper.tryStringToDateOrNull(map['DataCancelamento']),
       horaCancelamento: map['HoraCancelamento'],
       codUsuarioCancelamento: map['CodUsuarioCancelamento'],
       nomeUsuarioCancelamento: map['NomeUsuarioCancelamento'],

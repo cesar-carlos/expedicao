@@ -56,7 +56,8 @@ class ExpedicaoSepararModel {
       historico: map['Historico'],
       observacao: map['Observacao'],
       codMotivoCancelamento: map['CodMotivoCancelamento'],
-      dataCancelamento: map['DataCancelamento'],
+      dataCancelamento:
+          AppHelper.tryStringToDateOrNull(map['DataCancelamento']),
       horaCancelamento: map['HoraCancelamento'],
       codUsuarioCancelamento: map['CodUsuarioCancelamento'],
       nomeUsuarioCancelamento: map['NomeUsuarioCancelamento'],

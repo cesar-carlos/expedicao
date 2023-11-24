@@ -1,5 +1,5 @@
-import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
+import 'package:date_format/date_format.dart';
 import 'package:number_text_input_formatter/number_text_input_formatter.dart';
 
 class AppHelper {
@@ -21,6 +21,17 @@ class AppHelper {
       return DateTime.parse(date);
     } catch (err) {
       return DateTime(1900);
+    }
+  }
+
+  static DateTime? tryStringToDateOrNull(String? date) {
+    try {
+      if (date == null) return null;
+      if (date == '') return null;
+
+      return DateTime.parse(date);
+    } catch (err) {
+      return null;
     }
   }
 
