@@ -36,7 +36,9 @@ class SepararItemEventRepository {
       _liteners
           .where((element) => element.event == Event.insert)
           .forEach((element) {
-        element.callback(_convert(data));
+        final basicEvent = _convert(data);
+        if (basicEvent.session == _appSocket.socket.id) return;
+        element.callback(basicEvent);
       });
     });
   }
@@ -47,7 +49,9 @@ class SepararItemEventRepository {
       _liteners
           .where((element) => element.event == Event.update)
           .forEach((element) {
-        element.callback(_convert(data));
+        final basicEvent = _convert(data);
+        if (basicEvent.session == _appSocket.socket.id) return;
+        element.callback(basicEvent);
       });
     });
   }
@@ -58,7 +62,9 @@ class SepararItemEventRepository {
       _liteners
           .where((element) => element.event == Event.delete)
           .forEach((element) {
-        element.callback(_convert(data));
+        final basicEvent = _convert(data);
+        if (basicEvent.session == _appSocket.socket.id) return;
+        element.callback(basicEvent);
       });
     });
   }
