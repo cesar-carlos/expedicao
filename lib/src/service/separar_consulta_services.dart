@@ -4,7 +4,7 @@ import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinh
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_consulta_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_separar_item/separar_item_consulta_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_separar/separar_consulta_repository.dart';
-import 'package:app_expedicao/src/model/expedicao_percurso_estagio_consulta_model.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';
 
 class SepararConsultaServices {
@@ -34,7 +34,7 @@ class SepararConsultaServices {
     );
   }
 
-  Future<List<ExpedicaoPercursoEstagioConsultaModel>>
+  Future<List<ExpedicaoCarrinhoPercursoConsultaModel>>
       carrinhosPercurso() async {
     return await CarrinhoPercursoConsultaRepository().select(
       'CodEmpresa = $codEmpresa AND CodOrigem = $codSepararEstoque',

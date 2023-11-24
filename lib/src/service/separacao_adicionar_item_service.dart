@@ -5,7 +5,7 @@ import 'package:app_expedicao/src/model/expedicao_separacao_item_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separacao_item_consulta_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_consulta_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_repository.dart';
-import 'package:app_expedicao/src/model/expedicao_percurso_estagio_consulta_model.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 
@@ -14,7 +14,7 @@ class SeparacaoAdicionarItemService {
   final _processo = Get.find<ProcessoExecutavelModel>();
 
   final ExpedicaoCarrinhoPercursoModel carrinhoPercurso;
-  final ExpedicaoPercursoEstagioConsultaModel percursoEstagioConsulta;
+  final ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta;
 
   SeparacaoAdicionarItemService({
     required this.carrinhoPercurso,

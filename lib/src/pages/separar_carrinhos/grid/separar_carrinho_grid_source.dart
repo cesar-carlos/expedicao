@@ -2,18 +2,18 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-import 'package:app_expedicao/src/app/app_helper.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
 import 'package:app_expedicao/src/pages/separar_carrinhos/grid/separar_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/pages/separar_carrinhos/grid/separar_carrinho_grid_cells.dart';
-import 'package:app_expedicao/src/model/expedicao_percurso_estagio_consulta_model.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
+import 'package:app_expedicao/src/app/app_helper.dart';
 
 class SepararCarrinhoGridSource extends DataGridSource {
   var controller = Get.find<SepararCarrinhoGridController>();
   List<DataGridRow> _itens = [];
 
   SepararCarrinhoGridSource(
-      {required List<ExpedicaoPercursoEstagioConsultaModel> itens}) {
+      {required List<ExpedicaoCarrinhoPercursoConsultaModel> itens}) {
     _itens = itens
         .map<DataGridRow>((i) => DataGridRow(cells: [
               DataGridCell<int>(

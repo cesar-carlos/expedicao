@@ -7,10 +7,10 @@ import 'package:app_expedicao/src/pages/separacao/grid/separacao_carrinho_grid_c
 import 'package:app_expedicao/src/pages/separacao/grid/separacao_carrinho_grid_footer.dart';
 import 'package:app_expedicao/src/pages/separacao/grid/separacao_carrinho_grid_source.dart';
 import 'package:app_expedicao/src/pages/separacao/grid/separacao_carrinho_grid_event.dart';
-import 'package:app_expedicao/src/model/expedicao_percurso_estagio_consulta_model.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
 
 class SeparacaoCarrinhoGrid extends StatelessWidget {
-  final ExpedicaoPercursoEstagioConsultaModel percursoEstagioConsulta;
+  final ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta;
 
   SeparacaoCarrinhoGrid(this.percursoEstagioConsulta, {super.key}) {
     Get.lazyPut(() => SeparacaoCarrinhoGridController());

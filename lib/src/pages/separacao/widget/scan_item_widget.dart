@@ -1,21 +1,20 @@
-import 'package:app_expedicao/src/model/expedicao_percurso_estagio_consulta_model.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
 import 'package:number_text_input_formatter/number_text_input_formatter.dart';
 import 'package:app_expedicao/src/pages/separacao/separacao_controller.dart';
 
 class ScanItemWidget extends StatelessWidget {
-  final ExpedicaoPercursoEstagioConsultaModel percursoEstagioConsulta;
+  final Size size;
+  final ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta;
 
   const ScanItemWidget(
     this.percursoEstagioConsulta, {
     required this.size,
     super.key,
   });
-
-  final Size size;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +37,7 @@ class ScanItemWidget extends StatelessWidget {
                       Expanded(
                         flex: 5,
                         child: TextField(
-                          enabled: !controller.viewMode(),
+                          enabled: !controller.viewMode,
                           controller: controller.scanController,
                           focusNode: controller.scanFocusNode,
                           onSubmitted: controller.onSubmittedScan,
@@ -74,7 +73,7 @@ class ScanItemWidget extends StatelessWidget {
                       //** quantidade **//
                       Expanded(
                         child: TextField(
-                          enabled: !controller.viewMode(),
+                          enabled: !controller.viewMode,
                           cursorHeight: 22,
                           controller: controller.quantidadeController,
                           focusNode: controller.quantidadeFocusNode,

@@ -1,6 +1,6 @@
 import 'package:app_expedicao/src/app/app_helper.dart';
 
-class ExpedicaoPercursoEstagioConsultaModel {
+class ExpedicaoCarrinhoPercursoConsultaModel {
   final int codEmpresa;
   final int codCarrinhoPercurso;
   final String item;
@@ -20,8 +20,16 @@ class ExpedicaoPercursoEstagioConsultaModel {
   final String nomeUsuario;
   final int? codSetorEstoque;
   final String? nomeSetorEstoque;
+  final int? codCancelamento;
+  final int? codMotivoCancelamento;
+  final String? descricaoMotivoCancelamento;
+  final DateTime? dataCancelamento;
+  final String? horaCancelamento;
+  final int? codUsuarioCancelamento;
+  final String? nomeUsuarioCancelamento;
+  final String? observacaoCancelamento;
 
-  ExpedicaoPercursoEstagioConsultaModel({
+  ExpedicaoCarrinhoPercursoConsultaModel({
     required this.codEmpresa,
     required this.codCarrinhoPercurso,
     required this.item,
@@ -41,9 +49,17 @@ class ExpedicaoPercursoEstagioConsultaModel {
     required this.nomeUsuario,
     this.codSetorEstoque,
     this.nomeSetorEstoque,
+    this.codCancelamento,
+    this.codMotivoCancelamento,
+    this.descricaoMotivoCancelamento,
+    this.dataCancelamento,
+    this.horaCancelamento,
+    this.codUsuarioCancelamento,
+    this.nomeUsuarioCancelamento,
+    this.observacaoCancelamento,
   });
 
-  ExpedicaoPercursoEstagioConsultaModel copyWith({
+  ExpedicaoCarrinhoPercursoConsultaModel copyWith({
     int? codEmpresa,
     int? codCarrinhoPercurso,
     String? item,
@@ -63,8 +79,16 @@ class ExpedicaoPercursoEstagioConsultaModel {
     String? nomeUsuario,
     int? codSetorEstoque,
     String? nomeSetorEstoque,
+    int? codCancelamento,
+    int? codMotivoCancelamento,
+    String? descricaoMotivoCancelamento,
+    DateTime? dataCancelamento,
+    String? horaCancelamento,
+    int? codUsuarioCancelamento,
+    String? nomeUsuarioCancelamento,
+    String? observacaoCancelamento,
   }) {
-    return ExpedicaoPercursoEstagioConsultaModel(
+    return ExpedicaoCarrinhoPercursoConsultaModel(
       codEmpresa: codEmpresa ?? this.codEmpresa,
       codCarrinhoPercurso: codCarrinhoPercurso ?? this.codCarrinhoPercurso,
       item: item ?? this.item,
@@ -84,12 +108,25 @@ class ExpedicaoPercursoEstagioConsultaModel {
       nomeUsuario: nomeUsuario ?? this.nomeUsuario,
       codSetorEstoque: codSetorEstoque ?? this.codSetorEstoque,
       nomeSetorEstoque: nomeSetorEstoque ?? this.nomeSetorEstoque,
+      codCancelamento: codCancelamento ?? this.codCancelamento,
+      codMotivoCancelamento:
+          codMotivoCancelamento ?? this.codMotivoCancelamento,
+      descricaoMotivoCancelamento:
+          descricaoMotivoCancelamento ?? this.descricaoMotivoCancelamento,
+      dataCancelamento: dataCancelamento ?? this.dataCancelamento,
+      horaCancelamento: horaCancelamento ?? this.horaCancelamento,
+      codUsuarioCancelamento:
+          codUsuarioCancelamento ?? this.codUsuarioCancelamento,
+      nomeUsuarioCancelamento:
+          nomeUsuarioCancelamento ?? this.nomeUsuarioCancelamento,
+      observacaoCancelamento:
+          observacaoCancelamento ?? this.observacaoCancelamento,
     );
   }
 
-  factory ExpedicaoPercursoEstagioConsultaModel.fromJson(
+  factory ExpedicaoCarrinhoPercursoConsultaModel.fromJson(
       Map<String, dynamic> map) {
-    return ExpedicaoPercursoEstagioConsultaModel(
+    return ExpedicaoCarrinhoPercursoConsultaModel(
       codEmpresa: map['CodEmpresa'],
       codCarrinhoPercurso: map['CodCarrinhoPercurso'],
       item: map['Item'],
@@ -109,6 +146,14 @@ class ExpedicaoPercursoEstagioConsultaModel {
       nomeUsuario: map['NomeUsuario'],
       codSetorEstoque: map['CodSetorEstoque'],
       nomeSetorEstoque: map['NomeSetorEstoque'],
+      codCancelamento: map['CodCancelamento'],
+      codMotivoCancelamento: map['CodMotivoCancelamento'],
+      descricaoMotivoCancelamento: map['DescricaoMotivoCancelamento'],
+      dataCancelamento: DateTime.tryParse(map['DataCancelamento']),
+      horaCancelamento: map['HoraCancelamento'],
+      codUsuarioCancelamento: map['CodUsuarioCancelamento'],
+      nomeUsuarioCancelamento: map['NomeUsuarioCancelamento'],
+      observacaoCancelamento: map['ObservacaoCancelamento'],
     );
   }
 
@@ -133,11 +178,19 @@ class ExpedicaoPercursoEstagioConsultaModel {
       'NomeUsuario': nomeUsuario,
       'CodSetorEstoque': codSetorEstoque,
       'NomeSetorEstoque': nomeSetorEstoque,
+      'CodCancelamento': codCancelamento,
+      'CodMotivoCancelamento': codMotivoCancelamento,
+      'DescricaoMotivoCancelamento': descricaoMotivoCancelamento,
+      'DataCancelamento': dataCancelamento,
+      'HoraCancelamento': horaCancelamento,
+      'CodUsuarioCancelamento': codUsuarioCancelamento,
+      'NomeUsuarioCancelamento': nomeUsuarioCancelamento,
+      'ObservacaoCancelamento': observacaoCancelamento,
     };
   }
 
   @override
   String toString() {
-    return 'ExpedicaoPercursoConsultaModel(codEmpresa: $codEmpresa, codCarrinhoPercurso: $codCarrinhoPercurso, item: $item, codPercursoEstagio: $codPercursoEstagio, origem: $origem, codOrigem: $codOrigem, situacao: $situacao, codCarrinho: $codCarrinho, nomeCarrinho: $nomeCarrinho, codigoBarrasCarrinho: $codigoBarrasCarrinho, ativo: $ativo, dataInicio: $dataInicio, horaInicio: $horaInicio, dataFinalizacao: $dataFinalizacao, horaFinalizacao: $horaFinalizacao, codUsuario: $codUsuario, nomeUsuario: $nomeUsuario, codSetorEstoque: $codSetorEstoque, nomeSetorEstoque: $nomeSetorEstoque)';
+    return 'ExpedicaoCarrinhoPercursoConsultaModel(codEmpresa: $codEmpresa, codCarrinhoPercurso: $codCarrinhoPercurso, item: $item, codPercursoEstagio: $codPercursoEstagio, origem: $origem, codOrigem: $codOrigem, situacao: $situacao, codCarrinho: $codCarrinho, nomeCarrinho: $nomeCarrinho, codigoBarrasCarrinho: $codigoBarrasCarrinho, ativo: $ativo, dataInicio: $dataInicio, horaInicio: $horaInicio, dataFinalizacao: $dataFinalizacao, horaFinalizacao: $horaFinalizacao, codUsuario: $codUsuario, nomeUsuario: $nomeUsuario, codSetorEstoque: $codSetorEstoque, nomeSetorEstoque: $nomeSetorEstoque, codCancelamento: $codCancelamento, codMotivoCancelamento: $codMotivoCancelamento, descricaoMotivoCancelamento: $descricaoMotivoCancelamento, dataCancelamento: $dataCancelamento, horaCancelamento: $horaCancelamento, codUsuarioCancelamento: $codUsuarioCancelamento, nomeUsuarioCancelamento: $nomeUsuarioCancelamento, observacaoCancelamento: $observacaoCancelamento)';
   }
 }

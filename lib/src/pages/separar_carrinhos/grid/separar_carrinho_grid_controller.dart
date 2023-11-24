@@ -3,28 +3,28 @@ import 'package:get/get.dart';
 import 'package:app_expedicao/src/pages/separacao/separacao_page.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
 import 'package:app_expedicao/src/pages/separar_carrinhos/grid/separar_carrinho_grid_source.dart';
-import 'package:app_expedicao/src/model/expedicao_percurso_estagio_consulta_model.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget.dart';
 
 class SepararCarrinhoGridController extends GetxController {
-  final RxList<ExpedicaoPercursoEstagioConsultaModel> _itens = RxList.empty();
+  final RxList<ExpedicaoCarrinhoPercursoConsultaModel> _itens = RxList.empty();
 
-  List<ExpedicaoPercursoEstagioConsultaModel> get itens => _itens;
-  List<ExpedicaoPercursoEstagioConsultaModel> get itensSort =>
+  List<ExpedicaoCarrinhoPercursoConsultaModel> get itens => _itens;
+  List<ExpedicaoCarrinhoPercursoConsultaModel> get itensSort =>
       _itens.toList()..sort((a, b) => b.item.compareTo(a.item));
 
-  void Function(ExpedicaoPercursoEstagioConsultaModel item)?
+  void Function(ExpedicaoCarrinhoPercursoConsultaModel item)?
       onPressedRemoveItem;
 
-  void addItem(ExpedicaoPercursoEstagioConsultaModel item) {
+  void addItem(ExpedicaoCarrinhoPercursoConsultaModel item) {
     _itens.add(item);
   }
 
-  void removeItem(ExpedicaoPercursoEstagioConsultaModel item) {
+  void removeItem(ExpedicaoCarrinhoPercursoConsultaModel item) {
     _itens.remove(item);
   }
 
-  void updateItem(ExpedicaoPercursoEstagioConsultaModel item) {
+  void updateItem(ExpedicaoCarrinhoPercursoConsultaModel item) {
     final index = _itens.indexWhere(
         (el) => el.item == item.item && el.codCarrinho == item.codCarrinho);
     if (index == -1) return;
@@ -33,7 +33,7 @@ class SepararCarrinhoGridController extends GetxController {
 
   Future<void> onRemoveItem(
     SepararCarrinhoGridSource grid,
-    ExpedicaoPercursoEstagioConsultaModel item,
+    ExpedicaoCarrinhoPercursoConsultaModel item,
   ) async {
     if (item.situacao == 'CA') {
       await ConfirmationDialogMessageWidget.show(
@@ -58,7 +58,7 @@ class SepararCarrinhoGridController extends GetxController {
 
   void editItemGrid(
     SepararCarrinhoGridSource carrinhoGrid,
-    ExpedicaoPercursoEstagioConsultaModel percursoEstagioConsulta,
+    ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta,
   ) {
     final dialog = SeparacaoPage(percursoEstagioConsulta);
     dialog.show();
@@ -66,7 +66,7 @@ class SepararCarrinhoGridController extends GetxController {
 
   void saveItemGrid(
     SepararCarrinhoGridSource carrinhoGrid,
-    ExpedicaoPercursoEstagioConsultaModel percursoEstagioConsulta,
+    ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta,
   ) {
     print('SALVAR CARRINHO SEPARACAO');
   }

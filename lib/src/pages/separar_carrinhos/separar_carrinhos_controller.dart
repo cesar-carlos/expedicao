@@ -3,7 +3,7 @@ import 'package:uuid/uuid.dart';
 
 import 'package:app_expedicao/src/model/repository_event_lister_model.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_services.dart';
-import 'package:app_expedicao/src/model/expedicao_percurso_estagio_consulta_model.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
 import 'package:app_expedicao/src/pages/separar_carrinhos/grid/separar_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_event_repository.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_cancelar_service.dart';
@@ -45,7 +45,7 @@ class SepararCarrinhosController extends GetxController {
     }
   }
 
-  void addCarrinho(ExpedicaoPercursoEstagioConsultaModel model) {
+  void addCarrinho(ExpedicaoCarrinhoPercursoConsultaModel model) {
     _separarCarrinhoGridController.addItem(model);
   }
 
@@ -87,7 +87,7 @@ class SepararCarrinhosController extends GetxController {
         event: Event.insert,
         callback: (data) async {
           for (var el in data.mutation) {
-            final car = ExpedicaoPercursoEstagioConsultaModel.fromJson(el);
+            final car = ExpedicaoCarrinhoPercursoConsultaModel.fromJson(el);
             _separarCarrinhoGridController.addItem(car);
           }
         },
@@ -100,7 +100,7 @@ class SepararCarrinhosController extends GetxController {
         event: Event.update,
         callback: (data) async {
           for (var el in data.mutation) {
-            final car = ExpedicaoPercursoEstagioConsultaModel.fromJson(el);
+            final car = ExpedicaoCarrinhoPercursoConsultaModel.fromJson(el);
             _separarCarrinhoGridController.updateItem(car);
           }
         },
@@ -113,7 +113,7 @@ class SepararCarrinhosController extends GetxController {
         event: Event.delete,
         callback: (data) async {
           for (var el in data.mutation) {
-            final car = ExpedicaoPercursoEstagioConsultaModel.fromJson(el);
+            final car = ExpedicaoCarrinhoPercursoConsultaModel.fromJson(el);
             _separarCarrinhoGridController.removeItem(car);
           }
         },

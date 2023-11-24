@@ -59,7 +59,7 @@ class CarrinhoPercursoCancelarService {
       codCancelamento: sequencia.first.valor,
       origem: 'CP',
       codOrigem: percursoEstagio.codCarrinhoPercurso,
-      itemOrigem: percursoEstagio.codCarrinho.toString(),
+      itemOrigem: percursoEstagio.item,
       codMotivoCancelamento: 1,
       dataCancelamento: DateTime.now(),
       horaCancelamento: DateTime.now().toString().substring(11, 19),

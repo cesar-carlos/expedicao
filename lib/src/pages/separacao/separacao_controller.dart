@@ -6,17 +6,18 @@ import 'package:app_expedicao/src/model/repository_event_lister_model.dart';
 import 'package:app_expedicao/src/service/separacao_remover_item_service.dart';
 import 'package:app_expedicao/src/service/carrinho_separacao_item_services.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_event_repository.dart';
 import 'package:app_expedicao/src/pages/separacao/grid/separacao_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
-import 'package:app_expedicao/src/model/expedicao_percurso_estagio_consulta_model.dart';
 import 'package:app_expedicao/src/service/separacao_adicionar_item_service.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/service/produto_service.dart';
 
 class SeparacaoController extends GetxController {
-  final ExpedicaoPercursoEstagioConsultaModel percursoEstagioConsulta;
+  final RxBool _viewMode = false.obs;
+  final ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta;
   final _carrinhoPercursoEvent = CarrinhoPercursoEventRepository.instancia;
 
   late SeparacaoCarrinhoGridController _separacaoGridController;
@@ -70,11 +71,11 @@ class SeparacaoController extends GetxController {
     quantidadeFocusNode.dispose();
     displayController.dispose();
     scanFocusNode.dispose();
-
+    _viewMode.close();
     super.onClose();
   }
 
-  ExpedicaoPercursoEstagioConsultaModel get percursoEstagio =>
+  ExpedicaoCarrinhoPercursoConsultaModel get percursoEstagio =>
       percursoEstagioConsulta;
 
   _listenFocusNode() {
@@ -105,9 +106,12 @@ class SeparacaoController extends GetxController {
     }
   }
 
-  bool viewMode() {
-    if (percursoEstagioConsulta.situacao == 'CA') return true;
-    return false;
+  bool get viewMode {
+    if (percursoEstagioConsulta.situacao == 'CA') {
+      _viewMode.value = true;
+    }
+
+    return _viewMode.value;
   }
 
   Future<void> onSubmittedScan(String? value) async {
@@ -237,7 +241,7 @@ class SeparacaoController extends GetxController {
 
   Future<void> _onRemoveItemSeparacaoGrid() async {
     _separacaoGridController.onPressedRemoveItem = (el) async {
-      if (viewMode()) {
+      if (viewMode) {
         await ConfirmationDialogMessageWidget.show(
           context: Get.context!,
           message: 'Não é possivel remover o item!',
@@ -265,8 +269,18 @@ class SeparacaoController extends GetxController {
       event: Event.update,
       callback: (data) async {
         for (var el in data.mutation) {
-          final car = ExpedicaoPercursoEstagioConsultaModel.fromJson(el);
-          print(car);
+          final car = ExpedicaoCarrinhoPercursoConsultaModel.fromJson(el);
+          if (car.situacao == 'CA') {
+            _viewMode.value = true;
+            update();
+
+            await ConfirmationDialogMessageWidget.show(
+              context: Get.context!,
+              message: 'Carrinho cancelado!',
+              detail:
+                  'O carrinho foi cancelado pelo usuario ${car.nomeUsuarioCancelamento}!',
+            );
+          }
         }
       },
     );

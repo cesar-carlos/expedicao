@@ -1,5 +1,5 @@
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
-import 'package:app_expedicao/src/model/expedicao_percurso_estagio_consulta_model.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
 import 'package:app_expedicao/src/repository/sequencia_registro/sequencia_registro_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_consulta_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_estagio_repository.dart';
@@ -16,7 +16,7 @@ class CarrinhoPercursoServices {
   final repositoryPercurso = CarrinhoPercursoRepository();
   final repositoryCarrinho = CarrinhoRepository();
 
-  Future<List<ExpedicaoPercursoEstagioConsultaModel>> consultaPercurso(
+  Future<List<ExpedicaoCarrinhoPercursoConsultaModel>> consultaPercurso(
       [String params = '']) async {
     return await repositoryConsulta.select(params);
   }
