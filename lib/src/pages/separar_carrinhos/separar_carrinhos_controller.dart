@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:uuid/uuid.dart';
 
 import 'package:app_expedicao/src/model/repository_event_lister_model.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_services.dart';
@@ -78,8 +79,11 @@ class SepararCarrinhosController extends GetxController {
 
   _litenerCarrinhoPercurso() {
     final carrinhoPercursoEvent = CarrinhoPercursoEventRepository.instancia;
+    const uuid = Uuid();
+
     carrinhoPercursoEvent.addListener(
       RepositoryEventListerModel(
+        id: uuid.v4(),
         event: Event.insert,
         callback: (data) async {
           for (var el in data.mutation) {
@@ -92,6 +96,7 @@ class SepararCarrinhosController extends GetxController {
 
     carrinhoPercursoEvent.addListener(
       RepositoryEventListerModel(
+        id: uuid.v4(),
         event: Event.update,
         callback: (data) async {
           for (var el in data.mutation) {
@@ -104,6 +109,7 @@ class SepararCarrinhosController extends GetxController {
 
     carrinhoPercursoEvent.addListener(
       RepositoryEventListerModel(
+        id: uuid.v4(),
         event: Event.delete,
         callback: (data) async {
           for (var el in data.mutation) {

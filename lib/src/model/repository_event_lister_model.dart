@@ -9,11 +9,13 @@ enum Event {
 typedef Callback = void Function(BasicEventModel parametro);
 
 class RepositoryEventListerModel {
+  String id;
   Event event;
   Callback callback;
   bool allEvent;
 
   RepositoryEventListerModel({
+    required this.id,
     required this.event,
     required this.callback,
     this.allEvent = false,

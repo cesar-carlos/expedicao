@@ -27,7 +27,7 @@ class SepararEventRepository {
   }
 
   removeListener(RepositoryEventListerModel listerner) {
-    _liteners.remove(listerner);
+    _liteners.removeWhere((element) => element.id == listerner.id);
   }
 
   void _onInsert() {

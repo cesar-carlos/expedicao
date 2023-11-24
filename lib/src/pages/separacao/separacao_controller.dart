@@ -1,12 +1,15 @@
 import 'package:get/get.dart';
+import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 
+import 'package:app_expedicao/src/model/repository_event_lister_model.dart';
 import 'package:app_expedicao/src/service/separacao_remover_item_service.dart';
 import 'package:app_expedicao/src/service/carrinho_separacao_item_services.dart';
+import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dart';
+import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_event_repository.dart';
 import 'package:app_expedicao/src/pages/separacao/grid/separacao_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
 import 'package:app_expedicao/src/model/expedicao_percurso_estagio_consulta_model.dart';
-import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dart';
 import 'package:app_expedicao/src/service/separacao_adicionar_item_service.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
@@ -14,8 +17,10 @@ import 'package:app_expedicao/src/service/produto_service.dart';
 
 class SeparacaoController extends GetxController {
   final ExpedicaoPercursoEstagioConsultaModel percursoEstagioConsulta;
+  final _carrinhoPercursoEvent = CarrinhoPercursoEventRepository.instancia;
 
   late SeparacaoCarrinhoGridController _separacaoGridController;
+  late List<RepositoryEventListerModel> _litenerCarrinho;
   late ProcessoExecutavelModel _processoExecutavel;
   late SepararGridController _separarGridController;
 
@@ -34,10 +39,12 @@ class SeparacaoController extends GetxController {
 
   @override
   void onInit() {
+    _litenerCarrinho = [];
     _produtoService = ProdutoService();
     scanController = TextEditingController();
     displayController = TextEditingController(text: '');
     quantidadeController = TextEditingController(text: '1,000');
+
     _separacaoGridController = Get.find<SeparacaoCarrinhoGridController>();
     _separarGridController = Get.find<SepararGridController>();
     _processoExecutavel = Get.find<ProcessoExecutavelModel>();
@@ -49,6 +56,7 @@ class SeparacaoController extends GetxController {
 
     _fillGridSeparacaoItens();
     _onRemoveItemSeparacaoGrid();
+    _litenerCarrinhoPercurso();
     _listenFocusNode();
 
     super.onInit();
@@ -58,6 +66,7 @@ class SeparacaoController extends GetxController {
   void onClose() {
     scanController.dispose();
     quantidadeController.dispose();
+    _removelitenerCarrinhoPercurso();
     quantidadeFocusNode.dispose();
     displayController.dispose();
     scanFocusNode.dispose();
@@ -246,5 +255,29 @@ class SeparacaoController extends GetxController {
 
       _separacaoGridController.removeItem(el);
     };
+  }
+
+  void _litenerCarrinhoPercurso() {
+    const uuid = Uuid();
+
+    final insert = RepositoryEventListerModel(
+      id: uuid.v4(),
+      event: Event.update,
+      callback: (data) async {
+        for (var el in data.mutation) {
+          final car = ExpedicaoPercursoEstagioConsultaModel.fromJson(el);
+          print(car);
+        }
+      },
+    );
+
+    _carrinhoPercursoEvent.addListener(insert);
+    _litenerCarrinho.add(insert);
+  }
+
+  void _removelitenerCarrinhoPercurso() {
+    for (var el in _litenerCarrinho) {
+      _carrinhoPercursoEvent.removeListener(el);
+    }
   }
 }

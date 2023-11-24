@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:uuid/uuid.dart';
 
 import 'package:app_expedicao/src/service/expedicao.estagio.service.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
@@ -96,9 +97,11 @@ class SepararController extends GetxController {
 
   _litenerSepararItens() {
     final carrinhoPercursoEvent = SepararItemEventRepository.instancia;
+    const uuid = Uuid();
 
     carrinhoPercursoEvent.addListener(
       RepositoryEventListerModel(
+        id: uuid.v4(),
         event: Event.update,
         allEvent: true,
         callback: (data) async {
