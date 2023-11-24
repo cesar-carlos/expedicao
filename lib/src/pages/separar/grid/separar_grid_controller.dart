@@ -14,7 +14,10 @@ class SepararGridController extends GetxController {
   }
 
   removeItem(ExpedicaoSepararItemConsultaModel item) {
-    _itens.remove(item);
+    _itens.removeWhere((el) =>
+        el.codEmpresa == item.codEmpresa &&
+        el.codSepararEstoque == item.codSepararEstoque &&
+        el.item == item.item);
   }
 
   updateItem(ExpedicaoSepararItemConsultaModel item) {

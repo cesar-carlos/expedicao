@@ -3,7 +3,7 @@ import 'package:uuid/uuid.dart';
 
 import 'package:app_expedicao/src/service/expedicao.estagio.service.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
-import 'package:app_expedicao/src/model/repository_event_lister_model.dart';
+import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';
 import 'package:app_expedicao/src/pages/separar_carrinhos/separar_carrinhos_controller.dart';
 import 'package:app_expedicao/src/pages/carrinho/widget/adicionar_carrinho_dialog_widget.dart';
@@ -100,7 +100,7 @@ class SepararController extends GetxController {
     const uuid = Uuid();
 
     carrinhoPercursoEvent.addListener(
-      RepositoryEventListerModel(
+      RepositoryEventListenerModel(
         id: uuid.v4(),
         event: Event.update,
         allEvent: true,

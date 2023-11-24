@@ -2,11 +2,13 @@ import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 
-import 'package:app_expedicao/src/model/repository_event_lister_model.dart';
+import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
 import 'package:app_expedicao/src/service/separacao_remover_item_service.dart';
 import 'package:app_expedicao/src/service/carrinho_separacao_item_services.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dart';
+import 'package:app_expedicao/src/model/expedicao_separacao_item_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
+import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_event_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_event_repository.dart';
 import 'package:app_expedicao/src/pages/separacao/grid/separacao_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
@@ -17,13 +19,15 @@ import 'package:app_expedicao/src/service/produto_service.dart';
 
 class SeparacaoController extends GetxController {
   final RxBool _viewMode = false.obs;
+
   final ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta;
   final _carrinhoPercursoEvent = CarrinhoPercursoEventRepository.instancia;
+  final _separacaoItemEvent = SeparacaoItemEventRepository.instancia;
+  final List<RepositoryEventListenerModel> _listerner = [];
 
-  late SeparacaoCarrinhoGridController _separacaoGridController;
-  late List<RepositoryEventListerModel> _litenerCarrinho;
-  late ProcessoExecutavelModel _processoExecutavel;
   late SepararGridController _separarGridController;
+  late SeparacaoCarrinhoGridController _separacaoGridController;
+  late ProcessoExecutavelModel _processoExecutavel;
 
   late ProdutoService _produtoService;
   late CarrinhoSeparacaoItemServices _separacaoServices;
@@ -40,7 +44,6 @@ class SeparacaoController extends GetxController {
 
   @override
   void onInit() {
-    _litenerCarrinho = [];
     _produtoService = ProdutoService();
     scanController = TextEditingController();
     displayController = TextEditingController(text: '');
@@ -57,8 +60,8 @@ class SeparacaoController extends GetxController {
 
     _fillGridSeparacaoItens();
     _onRemoveItemSeparacaoGrid();
-    _litenerCarrinhoPercurso();
     _listenFocusNode();
+    _addLiteners();
 
     super.onInit();
   }
@@ -67,11 +70,12 @@ class SeparacaoController extends GetxController {
   void onClose() {
     scanController.dispose();
     quantidadeController.dispose();
-    _removelitenerCarrinhoPercurso();
     quantidadeFocusNode.dispose();
     displayController.dispose();
     scanFocusNode.dispose();
     _viewMode.close();
+
+    _removeliteners();
     super.onClose();
   }
 
@@ -261,10 +265,10 @@ class SeparacaoController extends GetxController {
     };
   }
 
-  void _litenerCarrinhoPercurso() {
+  void _addLiteners() {
     const uuid = Uuid();
 
-    final insert = RepositoryEventListerModel(
+    final updateCarrinhoPercurso = RepositoryEventListenerModel(
       id: uuid.v4(),
       event: Event.update,
       callback: (data) async {
@@ -278,20 +282,48 @@ class SeparacaoController extends GetxController {
               context: Get.context!,
               message: 'Carrinho cancelado!',
               detail:
-                  'O carrinho foi cancelado pelo usuario ${car.nomeUsuarioCancelamento}!',
+                  'Carrinho cancelado pelo usuario: ${car.nomeUsuarioCancelamento}!',
             );
           }
         }
       },
     );
 
-    _carrinhoPercursoEvent.addListener(insert);
-    _litenerCarrinho.add(insert);
+    final insertSeparacaoItem = RepositoryEventListenerModel(
+      id: uuid.v4(),
+      event: Event.insert,
+      callback: (data) async {
+        for (var el in data.mutation) {
+          final sep = ExpedicaSeparacaoItemConsultaModel.fromJson(el);
+          _separacaoGridController.addItem(sep);
+        }
+      },
+    );
+
+    final deleteSeparacaoItem = RepositoryEventListenerModel(
+      id: uuid.v4(),
+      event: Event.delete,
+      callback: (data) async {
+        for (var el in data.mutation) {
+          final sep = ExpedicaSeparacaoItemConsultaModel.fromJson(el);
+          _separacaoGridController.removeItem(sep);
+        }
+      },
+    );
+
+    _carrinhoPercursoEvent.addListener(updateCarrinhoPercurso);
+    _separacaoItemEvent.addListener(insertSeparacaoItem);
+    _separacaoItemEvent.addListener(deleteSeparacaoItem);
+
+    _listerner.add(updateCarrinhoPercurso);
+    _listerner.add(insertSeparacaoItem);
+    _listerner.add(deleteSeparacaoItem);
   }
 
-  void _removelitenerCarrinhoPercurso() {
-    for (var el in _litenerCarrinho) {
+  void _removeliteners() {
+    for (var el in _listerner) {
       _carrinhoPercursoEvent.removeListener(el);
+      _separacaoItemEvent.removeListener(el);
     }
   }
 }

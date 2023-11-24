@@ -1,6 +1,4 @@
-import 'package:app_expedicao/src/model/basic_model.dart';
-
-class ExpedicaoCancelamentoModel implements BasicModel {
+class ExpedicaoCancelamentoModel {
   final int codEmpresa;
   final int codCancelamento;
   final String origem;
@@ -27,7 +25,6 @@ class ExpedicaoCancelamentoModel implements BasicModel {
     this.observacaoCancelamento,
   });
 
-  @override
   ExpedicaoCancelamentoModel copyWith({
     int? codEmpresa,
     int? codCancelamento,
@@ -76,7 +73,6 @@ class ExpedicaoCancelamentoModel implements BasicModel {
     );
   }
 
-  @override
   Map<String, dynamic> toJson() {
     return {
       'CodEmpresa': codEmpresa,

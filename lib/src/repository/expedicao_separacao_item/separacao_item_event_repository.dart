@@ -6,8 +6,8 @@ import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
 import 'package:app_expedicao/src/model/basic_event_model.dart';
 import 'package:app_expedicao/src/app/app_socket.config.dart';
 
-class SepararItemEventRepository implements EventContract {
-  static SepararItemEventRepository? _instancia;
+class SeparacaoItemEventRepository implements EventContract {
+  static SeparacaoItemEventRepository? _instancia;
   final List<RepositoryEventListenerModel> _listener = [];
 
   @override
@@ -15,29 +15,29 @@ class SepararItemEventRepository implements EventContract {
 
   final _appSocket = Get.find<AppSocketConfig>();
 
-  SepararItemEventRepository._() {
+  SeparacaoItemEventRepository._() {
     _onInsert();
     _onUpdate();
     _onDelete();
   }
 
-  static SepararItemEventRepository get instancia {
-    _instancia ??= SepararItemEventRepository._();
+  static SeparacaoItemEventRepository get instancia {
+    _instancia ??= SeparacaoItemEventRepository._();
     return _instancia!;
   }
 
   @override
-  addListener(RepositoryEventListenerModel listerner) {
+  void addListener(RepositoryEventListenerModel listerner) {
     _listener.add(listerner);
   }
 
   @override
-  removeListener(RepositoryEventListenerModel listerner) {
+  void removeListener(RepositoryEventListenerModel listerner) {
     _listener.removeWhere((element) => element.id == listerner.id);
   }
 
   void _onInsert() {
-    const event = 'separar.item.insert.listen';
+    const event = 'separacao.item.insert.listen';
     _appSocket.socket.on(event, (data) {
       _listener
           .where((element) => element.event == Event.insert)
@@ -54,7 +54,7 @@ class SepararItemEventRepository implements EventContract {
   }
 
   void _onUpdate() {
-    const event = 'separar.item.update.listen';
+    const event = 'separacao.item.update.listen';
     _appSocket.socket.on(event, (data) {
       _listener
           .where((element) => element.event == Event.update)
@@ -71,7 +71,7 @@ class SepararItemEventRepository implements EventContract {
   }
 
   void _onDelete() {
-    const event = 'separar.item.delete.listen';
+    const event = 'separacao.item.delete.listen';
     _appSocket.socket.on(event, (data) {
       _listener
           .where((element) => element.event == Event.delete)

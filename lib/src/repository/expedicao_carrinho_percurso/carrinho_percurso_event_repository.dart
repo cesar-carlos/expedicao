@@ -1,13 +1,17 @@
 import 'dart:convert';
 import 'package:get/get.dart';
 
-import 'package:app_expedicao/src/model/repository_event_lister_model.dart';
+import 'package:app_expedicao/src/contract/event_contract.dart';
+import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
 import 'package:app_expedicao/src/model/basic_event_model.dart';
 import 'package:app_expedicao/src/app/app_socket.config.dart';
 
-class CarrinhoPercursoEventRepository {
+class CarrinhoPercursoEventRepository implements EventContract {
   static CarrinhoPercursoEventRepository? _instancia;
-  final List<RepositoryEventListerModel> _liteners = [];
+  final List<RepositoryEventListenerModel> _listener = [];
+
+  @override
+  List<RepositoryEventListenerModel> get listener => _listener;
 
   final _appSocket = Get.find<AppSocketConfig>();
 
@@ -22,18 +26,20 @@ class CarrinhoPercursoEventRepository {
     return _instancia!;
   }
 
-  addListener(RepositoryEventListerModel listerner) {
-    _liteners.add(listerner);
+  @override
+  addListener(RepositoryEventListenerModel listerner) {
+    _listener.add(listerner);
   }
 
-  removeListener(RepositoryEventListerModel listerner) {
-    _liteners.removeWhere((element) => element.id == listerner.id);
+  @override
+  removeListener(RepositoryEventListenerModel listerner) {
+    _listener.removeWhere((element) => element.id == listerner.id);
   }
 
   void _onInsert() {
     const event = 'carrinho.percurso.estagio.insert.listen';
     _appSocket.socket.on(event, (data) {
-      _liteners
+      _listener
           .where((element) => element.event == Event.insert)
           .forEach((element) {
         final basicEvent = _convert(data);
@@ -50,7 +56,7 @@ class CarrinhoPercursoEventRepository {
   void _onUpdate() {
     const event = 'carrinho.percurso.estagio.update.listen';
     _appSocket.socket.on(event, (data) {
-      _liteners
+      _listener
           .where((element) => element.event == Event.update)
           .forEach((element) {
         final basicEvent = _convert(data);
@@ -67,7 +73,7 @@ class CarrinhoPercursoEventRepository {
   void _onDelete() {
     const event = 'carrinho.percurso.estagio.delete.listen';
     _appSocket.socket.on(event, (data) {
-      _liteners
+      _listener
           .where((element) => element.event == Event.delete)
           .forEach((element) {
         final basicEvent = _convert(data);

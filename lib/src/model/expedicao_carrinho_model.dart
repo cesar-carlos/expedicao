@@ -1,6 +1,4 @@
-import 'package:app_expedicao/src/model/basic_model.dart';
-
-class ExpedicaoCarrinhoModel implements BasicModel {
+class ExpedicaoCarrinhoModel {
   final int codEmpresa;
   final int codCarrinho;
   final String descricao;
@@ -17,7 +15,6 @@ class ExpedicaoCarrinhoModel implements BasicModel {
     required this.situacao,
   });
 
-  @override
   ExpedicaoCarrinhoModel copyWith({
     int? codEmpresa,
     int? codCarrinho,
@@ -36,7 +33,6 @@ class ExpedicaoCarrinhoModel implements BasicModel {
     );
   }
 
-  @override
   factory ExpedicaoCarrinhoModel.fromJson(Map<String, dynamic> map) {
     return ExpedicaoCarrinhoModel(
       codEmpresa: map['CodEmpresa'],
@@ -48,7 +44,6 @@ class ExpedicaoCarrinhoModel implements BasicModel {
     );
   }
 
-  @override
   Map<String, dynamic> toJson() {
     return {
       'CodEmpresa': codEmpresa,

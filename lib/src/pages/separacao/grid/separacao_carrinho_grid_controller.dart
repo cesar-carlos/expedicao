@@ -15,8 +15,12 @@ class SeparacaoCarrinhoGridController extends GetxController {
 
   void addItem(ExpedicaSeparacaoItemConsultaModel item) => _itens.add(item);
 
-  void removeItem(ExpedicaSeparacaoItemConsultaModel item) =>
-      _itens.remove(item);
+  void removeItem(ExpedicaSeparacaoItemConsultaModel item) {
+    _itens.removeWhere((el) =>
+        el.codEmpresa == item.codEmpresa &&
+        el.codSepararEstoque == item.codSepararEstoque &&
+        el.item == item.item);
+  }
 
   void clear() => _itens.clear();
 
