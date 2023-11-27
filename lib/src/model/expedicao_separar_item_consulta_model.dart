@@ -15,11 +15,11 @@ class ExpedicaoSepararItemConsultaModel {
   final String nomeUnidadeMedida;
   final int codGrupoProduto;
   final String nomeGrupoProduto;
-  final int codMarca;
-  final String nomeMarca;
+  final int? codMarca;
+  final String? nomeMarca;
   final int? codSetorEstoque;
   final String? nomeSetorEstoque;
-  final String ncm;
+  final String? ncm;
   final String? codigoBarras;
   final String? codigoBarras2;
   final String? codigoReferencia;
@@ -49,11 +49,11 @@ class ExpedicaoSepararItemConsultaModel {
     required this.nomeUnidadeMedida,
     required this.codGrupoProduto,
     required this.nomeGrupoProduto,
-    required this.codMarca,
-    required this.nomeMarca,
+    this.codMarca,
+    this.nomeMarca,
     this.codSetorEstoque,
     this.nomeSetorEstoque,
-    required this.ncm,
+    this.ncm,
     this.codigoBarras,
     this.codigoBarras2,
     this.codigoReferencia,

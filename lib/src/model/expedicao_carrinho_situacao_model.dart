@@ -1,7 +1,7 @@
 class ExpedicaoCarrinhoSituacaoModel {
   static Map<String, String> situacao = {
-    'AB': 'Em Uso',
     'LI': 'Liberado',
+    'AB': 'Em Uso',
     'CA': 'Cancelado',
     'FN': 'Finalizado',
     '': ''
