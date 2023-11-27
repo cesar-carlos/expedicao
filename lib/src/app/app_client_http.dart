@@ -9,8 +9,6 @@ class AppClientHttp {
 
   AppClientHttp() {
     client.options.baseUrl = dotenv.env['API_SERVER'] ?? '';
-    //client.options.connectTimeout = const Duration(seconds: 5);
-    //client.options.receiveTimeout = const Duration(seconds: 5);
   }
 
   Future<Response<T>> get<T>(String endPoint) async {

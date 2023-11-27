@@ -30,7 +30,8 @@ class SplashController extends GetxController {
 
     if (_processoExecutavel == null) {
       const arguments = '''
-        Não foi possível executar o processo.
+          Não foi possível executar o processo.
+        
           1) Verifique se o servidor está online.
           2) Verifique se o banco de dados está online.
           3) Verifique se o banco de dados está configurado corretamente.
@@ -48,7 +49,8 @@ class SplashController extends GetxController {
     _separarConsulta = await _separarConsultaServices.separarConsulta();
     if (_separarConsulta == null) {
       const arguments = '''
-        Não foi possível localizar itens da separação.
+          Não foi possível localizar itens da separação.
+
           1) Verifique se o servidor está online.
           2) Verifique se o banco de dados está online.
           3) Verifique se o banco de dados está configurado corretamente.

@@ -15,8 +15,4 @@ class AppDependency {
   lazyPutDependency<T>(T dependency) {
     Get.put(dependency);
   }
-
-  // T find<T>() {
-  //   return Get.find<T>();
-  // }
 }

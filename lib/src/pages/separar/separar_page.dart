@@ -25,7 +25,6 @@ class SepararPage extends StatelessWidget {
   }) {
     Get.put<ProcessoExecutavelModel>(processoExecutavel);
     Get.put<ExpedicaoSepararConsultaModel>(separarConsulta);
-
     Get.lazyPut(() => SepararCarrinhoGridController());
     Get.lazyPut<CarrinhoController>(() => CarrinhoController());
     Get.lazyPut<SepararCarrinhosController>(() => SepararCarrinhosController());
