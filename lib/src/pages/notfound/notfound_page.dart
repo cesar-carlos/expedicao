@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 class NotFoundPage extends StatelessWidget {
@@ -5,9 +6,10 @@ class NotFoundPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    final args = Get.arguments ?? '';
+    return Scaffold(
       body: Center(
-        child: Text('Not Found Page'),
+        child: Text(args),
       ),
     );
   }

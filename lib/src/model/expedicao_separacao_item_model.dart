@@ -1,4 +1,5 @@
 import 'package:app_expedicao/src/app/app_helper.dart';
+import 'package:app_expedicao/src/model/expedicao_separacao_item_consulta_model.dart';
 
 class ExpedicaoSeparacaoItemModel {
   final int codEmpresa;
@@ -103,6 +104,26 @@ class ExpedicaoSeparacaoItemModel {
       "CodUnidadeMedida": codUnidadeMedida,
       "Quantidade": quantidade.toStringAsFixed(4),
     };
+  }
+
+  factory ExpedicaoSeparacaoItemModel.fromConsulta(
+      ExpedicaSeparacaoItemConsultaModel model) {
+    return ExpedicaoSeparacaoItemModel(
+      codEmpresa: model.codEmpresa,
+      codSepararEstoque: model.codSepararEstoque,
+      item: model.item,
+      sessionId: model.sessionId,
+      situacao: model.situacao,
+      codCarrinhoPercurso: model.codCarrinhoPercurso,
+      itemCarrinhoPercurso: model.itemCarrinhoPercurso,
+      codSeparador: model.codSeparador,
+      nomeSeparador: model.nomeSeparador,
+      dataSeparacao: model.dataSeparacao,
+      horaSeparacao: model.horaSeparacao,
+      codProduto: model.codProduto,
+      codUnidadeMedida: model.codUnidadeMedida,
+      quantidade: model.quantidade,
+    );
   }
 
   @override

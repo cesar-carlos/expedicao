@@ -20,6 +20,8 @@ class SepararCarrinhoGrid extends StatelessWidget {
             onCellDoubleTap: SepararCarrinhoGridEvent.onCellDoubleTap,
             columns: SepararCarrinhoGridColumns().columns,
             footer: const SepararCarrinhoGridFooter(),
+            showColumnHeaderIconOnHover: true,
+            isScrollbarAlwaysShown: true,
             headerRowHeight: 30,
             rowHeight: 40,
           ));

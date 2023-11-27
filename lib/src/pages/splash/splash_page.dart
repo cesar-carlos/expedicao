@@ -18,7 +18,7 @@ class SplashPage extends StatelessWidget {
                 return const CarregandoWidget();
               }
 
-              return Center(child: Text(controller.error!.message));
+              return const Center(child: Text('Carregado'));
             }),
       );
     });

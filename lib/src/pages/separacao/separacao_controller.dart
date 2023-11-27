@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 
+import 'package:app_expedicao/src/app/app_helper.dart';
 import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
 import 'package:app_expedicao/src/service/separacao_remover_item_service.dart';
 import 'package:app_expedicao/src/service/carrinho_separacao_item_services.dart';
@@ -12,7 +13,9 @@ import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_event_repository.dart';
 import 'package:app_expedicao/src/pages/separacao/grid/separacao_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
+import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget.dart';
 import 'package:app_expedicao/src/service/separacao_adicionar_item_service.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/service/produto_service.dart';
@@ -20,6 +23,7 @@ import 'package:app_expedicao/src/service/produto_service.dart';
 class SeparacaoController extends GetxController {
   final RxBool _viewMode = false.obs;
 
+  ExpedicaoCarrinhoPercursoModel? _carrinhoPercurso;
   final ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta;
   final _carrinhoPercursoEvent = CarrinhoPercursoEventRepository.instancia;
   final _separacaoItemEvent = SeparacaoItemEventRepository.instancia;
@@ -58,6 +62,7 @@ class SeparacaoController extends GetxController {
     displayFocusNode = FocusNode();
     quantidadeFocusNode = FocusNode();
 
+    _fillCarrinhoPercurso();
     _fillGridSeparacaoItens();
     _onRemoveItemSeparacaoGrid();
     _listenFocusNode();
@@ -95,6 +100,19 @@ class SeparacaoController extends GetxController {
     });
   }
 
+  //TODO: TRY ERROR NOT FOUND CARRINHO, IN OPEN FORM
+  Future<void> _fillCarrinhoPercurso() async {
+    final params = ''' CodEmpresa = ${_processoExecutavel.codEmpresa} 
+          AND Origem = '${_processoExecutavel.origem}' 
+          AND CodOrigem = ${_processoExecutavel.codOrigem}
+        
+        ''';
+
+    final carrinhosPe = await CarrinhoPercursoServices().selectPercurso(params);
+    if (carrinhosPe.isEmpty) return;
+    _carrinhoPercurso = carrinhosPe.last;
+  }
+
   Future<void> _fillGridSeparacaoItens() async {
     final params = '''
           CodEmpresa = ${percursoEstagioConsulta.codEmpresa} 
@@ -104,7 +122,7 @@ class SeparacaoController extends GetxController {
     ''';
 
     final separacaoItens = await _separacaoServices.consulta(params);
-    _separacaoGridController.clear();
+    _separacaoGridController.removeAll();
     for (var el in separacaoItens) {
       _separacaoGridController.addItem(el);
     }
@@ -128,7 +146,7 @@ class SeparacaoController extends GetxController {
 
   Future<void> _addItemSeparacao() async {
     final scanValue = scanController.text;
-    final quantityValue = quantidadeController.text;
+    final textQuantityValue = quantidadeController.text;
 
     if (scanValue.isEmpty) {
       await ConfirmationDialogMessageWidget.show(
@@ -142,7 +160,7 @@ class SeparacaoController extends GetxController {
       return;
     }
 
-    if (quantityValue.isEmpty) {
+    if (textQuantityValue.isEmpty) {
       await ConfirmationDialogMessageWidget.show(
         context: Get.context!,
         message: 'Valor invalido!',
@@ -154,8 +172,8 @@ class SeparacaoController extends GetxController {
       return;
     }
 
-    if (!_separarGridController.findFrombarcode(scanValue.trim()) &&
-        !_separarGridController.findFromCodigo(int.parse(scanValue.trim()))) {
+    if (!_separarGridController.existsBarCode(scanValue.trim()) &&
+        !_separarGridController.existsCodProduto(int.parse(scanValue.trim()))) {
       await ConfirmationDialogMessageWidget.show(
         context: Get.context!,
         message: 'Produto não encontrado!',
@@ -168,7 +186,25 @@ class SeparacaoController extends GetxController {
       return;
     }
 
-    final resp = scanValue.trim().length >= 7
+    final isValidQuantitySeparate = validQuantitySeparate(
+      scanValue.trim(),
+      AppHelper.quantityDisplayToDouble(textQuantityValue),
+    );
+
+    if (!isValidQuantitySeparate) {
+      await ConfirmationDialogMessageWidget.show(
+        context: Get.context!,
+        message: 'Quantidade invalida!',
+        detail: 'A quantidade informada é maior que a quantidade a separar!',
+      );
+
+      quantidadeController.text = '1,000';
+      scanController.clear();
+      scanFocusNode.requestFocus();
+      return;
+    }
+
+    final resp = AppHelper.isBarCode(scanValue)
         ? await _produtoService.consultaPorCodigoBarras(scanValue.trim())
         : await _produtoService.consultaPorCodigo(int.parse(scanValue.trim()));
 
@@ -186,15 +222,7 @@ class SeparacaoController extends GetxController {
     }
 
     if (resp.right != null) {
-      final carrinhosPercurso = await CarrinhoPercursoServices().selectPercurso(
-        ''' CodEmpresa = ${_processoExecutavel.codEmpresa} 
-          AND Origem = '${_processoExecutavel.origem}' 
-          AND CodOrigem = ${_processoExecutavel.codOrigem}
-        
-        ''',
-      );
-
-      if (carrinhosPercurso.isEmpty) {
+      if (_carrinhoPercurso == null) {
         await ConfirmationDialogMessageWidget.show(
           context: Get.context!,
           message: 'Carrinho não encontrado!',
@@ -209,7 +237,7 @@ class SeparacaoController extends GetxController {
 
       final carrinhoPercursoAdicionarItemService =
           SeparacaoAdicionarItemService(
-        carrinhoPercurso: carrinhosPercurso.first,
+        carrinhoPercurso: _carrinhoPercurso!,
         percursoEstagioConsulta: percursoEstagioConsulta,
       );
 
@@ -217,8 +245,8 @@ class SeparacaoController extends GetxController {
           await carrinhoPercursoAdicionarItemService.add(
         codProduto: resp.right!.codProduto,
         codUnidadeMedida: resp.right!.codUnidadeMedida,
-        quantidade: double.parse(
-            quantidadeController.text.replaceAll('.', '').replaceAll(',', '.')),
+        quantidade:
+            AppHelper.quantityDisplayToDouble(quantidadeController.text),
       );
 
       if (separacaoItemConsulta == null) {
@@ -243,6 +271,19 @@ class SeparacaoController extends GetxController {
     }
   }
 
+  bool validQuantitySeparate(String scanText, double value) {
+    bool isBarCode = AppHelper.isBarCode(scanText);
+    int codProduto = isBarCode
+        ? _separarGridController.findcodProdutoFromBarCode(scanText.trim())
+        : int.parse(scanText.trim());
+
+    final totalSeparar = _separarGridController.totalQtdProduct(codProduto);
+    final totalSeparada =
+        _separarGridController.totalQtdProductSeparation(codProduto);
+    if ((totalSeparada + value) > totalSeparar) return false;
+    return true;
+  }
+
   Future<void> _onRemoveItemSeparacaoGrid() async {
     _separacaoGridController.onPressedRemoveItem = (el) async {
       if (viewMode) {
@@ -255,8 +296,10 @@ class SeparacaoController extends GetxController {
         return;
       }
 
-      await SeparacaoRemoverItemService().remove(
-        codEmpresa: el.codEmpresa,
+      await SeparacaoRemoverItemService(
+        carrinhoPercurso: _carrinhoPercurso!,
+        percursoEstagioConsulta: percursoEstagioConsulta,
+      ).remove(
         codSepararEstoque: el.codSepararEstoque,
         item: el.item,
       );
@@ -265,9 +308,84 @@ class SeparacaoController extends GetxController {
     };
   }
 
+  Future<void> onReconferirTudo() async {
+    if (viewMode) {
+      await ConfirmationDialogMessageWidget.show(
+        context: Get.context!,
+        message: 'Não é possivel remover os itens!',
+        detail: 'O carrinho ja foi cancelado!',
+      );
+
+      return;
+    }
+
+    if (_separacaoGridController.totalQuantity() == 0) {
+      await ConfirmationDialogMessageWidget.show(
+        context: Get.context!,
+        message: 'Não existe itens no carrinho!',
+        detail: 'Não é possivel reconferir, pois não existe itens no carrinho!',
+      );
+
+      return;
+    }
+
+    final bool? confirmation = await ConfirmationDialogWidget.show(
+      context: Get.context!,
+      message: 'Deseja realmente reconferir?',
+      detail: 'Ao reconferir, todos os itens serão removido do carrinho!',
+    );
+
+    if (confirmation != null && confirmation) {
+      SeparacaoRemoverItemService(
+        carrinhoPercurso: _carrinhoPercurso!,
+        percursoEstagioConsulta: percursoEstagioConsulta,
+      ).removeAllItensCart(
+        codSepararEstoque: percursoEstagioConsulta.codOrigem,
+        codCarrinho: percursoEstagioConsulta.codCarrinho,
+      );
+
+      _separacaoGridController.removeAll();
+    }
+  }
+
+  Future<void> onSeparaTudo() async {
+    final double totalSeparar = _separarGridController.totalQuantity();
+    final double totalSeparado =
+        _separarGridController.totalQuantitySeparetion();
+
+    if (totalSeparado >= totalSeparar) {
+      await ConfirmationDialogMessageWidget.show(
+        context: Get.context!,
+        message: 'Não existe itens para separar!',
+        detail: 'Todos os itens ja foram separados!',
+      );
+
+      return;
+    }
+
+    final bool? confirmation = await ConfirmationDialogWidget.show(
+      context: Get.context!,
+      message: 'Deseja separa tudo?',
+      detail:
+          'Todos os itens com saldo para separação serão adicionados ao carrinho!',
+    );
+
+    if (confirmation != null && confirmation) {
+      final carrinhoPercursoAdicionarItemService =
+          SeparacaoAdicionarItemService(
+        carrinhoPercurso: _carrinhoPercurso!,
+        percursoEstagioConsulta: percursoEstagioConsulta,
+      );
+
+      await carrinhoPercursoAdicionarItemService.addAll(
+        codEmpresa: _processoExecutavel.codEmpresa,
+        codSepararEstoque: _processoExecutavel.codOrigem,
+      );
+    }
+  }
+
   void _addLiteners() {
     const uuid = Uuid();
-
     final updateCarrinhoPercurso = RepositoryEventListenerModel(
       id: uuid.v4(),
       event: Event.update,

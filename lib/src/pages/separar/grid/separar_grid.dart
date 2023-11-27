@@ -23,10 +23,8 @@ class SepararGrid extends StatelessWidget {
                 onCellDoubleTap: SepararGridEvent.onCellDoubleTap,
                 columns: SepararGridColumns().columns,
                 footer: const SepararGridFooter(),
-                selectionMode: SelectionMode.singleDeselect,
                 showColumnHeaderIconOnHover: true,
                 isScrollbarAlwaysShown: true,
-                allowColumnsResizing: true,
                 headerRowHeight: 40,
                 rowHeight: 40,
               ));

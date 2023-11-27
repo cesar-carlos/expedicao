@@ -29,21 +29,62 @@ class SepararGridController extends GetxController {
     _itens.clear();
   }
 
-  bool findFrombarcode(String barcode) {
-    final item = _itens.where(
-      (el) => el.codigoBarras == barcode,
-    );
+  double totalQuantity() {
+    return _itens.fold<double>(0.00, (acm, el) => acm + el.quantidade);
+  }
 
+  double totalQuantitySeparetion() {
+    return _itens.fold<double>(0.00, (acm, el) => acm + el.quantidadeSeparacao);
+  }
+
+  double totalQtdProduct(int codProduto) {
+    return _itens
+        .where((el) => el.codProduto == codProduto)
+        .fold<double>(0.00, (acm, el) => acm + el.quantidade);
+  }
+
+  double totalQtdProductInternal(int codProduto) {
+    return _itens
+        .where((el) => el.codProduto == codProduto)
+        .fold<double>(0.00, (acm, el) => acm + el.quantidadeInterna);
+  }
+
+  double totalQtdProductExternal(int codProduto) {
+    return _itens
+        .where((el) => el.codProduto == codProduto)
+        .fold<double>(0.00, (acm, el) => acm + el.quantidadeExterna);
+  }
+
+  double totalQtdProductSeparation(int codProduto) {
+    return _itens
+        .where((el) => el.codProduto == codProduto)
+        .fold<double>(0.00, (acm, el) => acm + el.quantidadeSeparacao);
+  }
+
+  bool existsBarCode(String barCode) {
+    final itens = _itens.where((el) => el.codigoBarras == barCode).toList();
+    if (itens.isEmpty) return false;
+    return true;
+  }
+
+  bool existsCodProduto(int codProduto) {
+    final item = _itens.where((el) => el.codProduto == codProduto).toList();
     if (item.isEmpty) return false;
     return true;
   }
 
-  bool findFromCodigo(int codigo) {
-    final item = _itens.where(
-      (el) => el.codProduto == codigo,
-    );
+  int findcodProdutoFromBarCode(String barCode) {
+    final itens = _itens.where((el) => el.codigoBarras == barCode).toList();
+    return itens.first.codProduto;
+  }
 
-    if (item.isEmpty) return false;
-    return true;
+  ExpedicaoSepararItemConsultaModel findBarCode(String barCode) {
+    final itens = _itens.where((el) => el.codigoBarras == barCode).toList();
+    return itens.first;
+  }
+
+  ExpedicaoSepararItemConsultaModel findCodProduto(int codProduto) {
+    final itens = _itens.where((el) => el.codProduto == codProduto).toList();
+    return itens.first;
   }
 }

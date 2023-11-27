@@ -213,7 +213,7 @@ class SeparacaoItemRepository {
     return completer.future;
   }
 
-  Future<List<ExpedicaoSeparacaoItemModel>> deleteall(
+  Future<List<ExpedicaoSeparacaoItemModel>> deleteAll(
       List<ExpedicaoSeparacaoItemModel> entity) {
     final event = '${socket.id} separacao.item.delete';
     final completer = Completer<List<ExpedicaoSeparacaoItemModel>>();

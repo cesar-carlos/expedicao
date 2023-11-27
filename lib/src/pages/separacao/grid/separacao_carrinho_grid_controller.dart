@@ -22,7 +22,19 @@ class SeparacaoCarrinhoGridController extends GetxController {
         el.item == item.item);
   }
 
-  void clear() => _itens.clear();
+  void removeAll() {
+    _itens.clear();
+  }
+
+  double totalQuantity() {
+    return _itens.fold<double>(0.00, (acm, el) => acm + el.quantidade);
+  }
+
+  double totalQtdProduct(int codProduto) {
+    return _itens
+        .where((el) => el.codProduto == codProduto)
+        .fold<double>(0.00, (acm, el) => acm + el.quantidade);
+  }
 
   Future<void> onRemoveItem(
     SeparacaoCarrinhoGridSource grid,

@@ -27,6 +27,8 @@ class SeparacaoCarrinhoGrid extends StatelessWidget {
             footer: SeparacaoCarrinhoGridFooter(
                 codCarrinho: percursoEstagioConsulta.codCarrinho,
                 item: percursoEstagioConsulta.item),
+            showColumnHeaderIconOnHover: true,
+            isScrollbarAlwaysShown: true,
             headerRowHeight: 40,
             rowHeight: 40,
           ));

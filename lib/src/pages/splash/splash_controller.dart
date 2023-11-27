@@ -1,15 +1,15 @@
-import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
-import 'package:app_expedicao/src/service/separar_consulta_services.dart';
 import 'package:get/get.dart';
 
-import 'package:app_expedicao/src/app/app_processo_executavel.dart';
+import 'package:app_expedicao/src/service/separar_consulta_services.dart';
+import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
+import 'package:app_expedicao/src/service/processo_executavel_service.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/routes/app_router.dart';
-import 'package:app_expedicao/src/app/app_error.dart';
 
 class SplashController extends GetxController {
-  final _controller = Get.find<AppProcessoExecutavel>();
-  late ({ProcessoExecutavelModel? succes, AppError? error}) _processoExec;
+  final _processoExecutavelService = ProcessoExecutavelService();
+
+  late ProcessoExecutavelModel? _processoExecutavel;
   late SepararConsultaServices _separarConsultaServices;
   late ExpedicaoSepararConsultaModel? _separarConsulta;
 
@@ -18,27 +18,43 @@ class SplashController extends GetxController {
   @override
   Future<void> onInit() async {
     await _onInit();
-
     super.onInit();
   }
 
   _onInit() async {
     _isLoad.value = true;
-    _processoExec = await _controller.getProcessoExecutavel();
+    //delay socket connection
+    await Future.delayed(const Duration(seconds: 1));
 
-    if (_processoExec.error != null) {
-      Get.offNamed(AppRouter.notfind);
+    _processoExecutavel = await _processoExecutavelService.executar();
+
+    if (_processoExecutavel == null) {
+      const arguments = '''
+        Não foi possível executar o processo.
+          1) Verifique se o servidor está online.
+          2) Verifique se o banco de dados está online.
+          3) Verifique se o banco de dados está configurado corretamente.
+      ''';
+
+      Get.offNamed(AppRouter.notfind, arguments: arguments);
       return;
     }
 
     _separarConsultaServices = SepararConsultaServices(
-      codEmpresa: _processoExec.succes!.codEmpresa,
-      codSepararEstoque: _processoExec.succes!.codOrigem,
+      codEmpresa: _processoExecutavel!.codEmpresa,
+      codSepararEstoque: _processoExecutavel!.codOrigem,
     );
 
     _separarConsulta = await _separarConsultaServices.separarConsulta();
     if (_separarConsulta == null) {
-      Get.offNamed(AppRouter.notfind);
+      const arguments = '''
+        Não foi possível localizar itens da separação.
+          1) Verifique se o servidor está online.
+          2) Verifique se o banco de dados está online.
+          3) Verifique se o banco de dados está configurado corretamente.
+      ''';
+
+      Get.offNamed(AppRouter.notfind, arguments: arguments);
       return;
     }
 
@@ -47,12 +63,11 @@ class SplashController extends GetxController {
   }
 
   bool get isLoad => _isLoad.value;
-  AppError? get error => _processoExec.error;
 
   void nextPage() async {
-    Get.find<ProcessoExecutavelModel>().update(_processoExec.succes!);
+    Get.put<ProcessoExecutavelModel>(_processoExecutavel!);
     Get.offNamed(AppRouter.separar, arguments: {
-      'processoExecutavel': _processoExec.succes,
+      'processoExecutavel': _processoExecutavel,
       'separarConsulta': _separarConsulta,
     });
   }

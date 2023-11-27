@@ -1,3 +1,4 @@
+import 'package:app_expedicao/src/repository/expedicao_separar_item/separar_item_repository.dart';
 import 'package:get/get.dart';
 
 import 'package:app_expedicao/src/app/app_socket.config.dart';
@@ -55,5 +56,50 @@ class SeparacaoAdicionarItemService {
     final list = await SeparacaoItemConsultaRepository().select(params);
     if (list.isEmpty) return null;
     return list.first;
+  }
+
+  Future<List<ExpedicaSeparacaoItemConsultaModel>> addAll({
+    required codEmpresa,
+    required codSepararEstoque,
+  }) async {
+    final params = '''
+          CodEmpresa = $codEmpresa
+      AND CodSepararEstoque = $codSepararEstoque
+    ''';
+
+    final separarItens = await SepararItemRepository().select(params);
+    final separacaoItens = await SeparacaoItemRepository().select(params);
+
+    for (final item in separarItens) {
+      final qtdSeparadaProduto = separacaoItens.where((el) {
+        return el.codProduto == item.codProduto && el.situacao != 'CA';
+      }).fold<double>(0.00, (acm, element) => acm + element.quantidade);
+
+      final double qtdSeparar = (item.quantidade - qtdSeparadaProduto);
+
+      if (qtdSeparar <= 0) continue;
+      final itemSeparacao = ExpedicaoSeparacaoItemModel(
+        codEmpresa: carrinhoPercurso.codEmpresa,
+        codSepararEstoque: carrinhoPercurso.codOrigem,
+        item: '',
+        sessionId: _socket.id ?? '',
+        situacao: 'SP',
+        codCarrinhoPercurso: percursoEstagioConsulta.codCarrinhoPercurso,
+        itemCarrinhoPercurso: percursoEstagioConsulta.item,
+        codSeparador: _processo.codUsuario,
+        nomeSeparador: _processo.nomeUsuario,
+        dataSeparacao: DateTime.now(),
+        horaSeparacao: DateTime.now().toIso8601String().substring(11, 19),
+        codProduto: item.codProduto,
+        codUnidadeMedida: item.codUnidadeMedida,
+        quantidade: qtdSeparar,
+      );
+
+      await SeparacaoItemRepository().insert(itemSeparacao);
+    }
+
+    //TODO:: implementar retorno
+
+    return [];
   }
 }

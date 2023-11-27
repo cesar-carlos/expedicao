@@ -53,6 +53,15 @@ class AppHelper {
     }
   }
 
+  static quantityDisplayToDouble(String value) {
+    return double.parse(value.replaceAll('.', '').replaceAll(',', '.'));
+  }
+
+  static isBarCode(String value) {
+    if (value.trim().length > 7) return true;
+    return false;
+  }
+
   static String stringToQuantity(String? newValue) {
     try {
       if (newValue == null) return '0,000';

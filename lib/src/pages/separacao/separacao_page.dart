@@ -55,7 +55,7 @@ class SeparacaoPage {
           children: [
             ButtonHeadForm(
               title: 'Separar tudo',
-              onPressed: () {},
+              onPressed: _controller.onSeparaTudo,
               icon: const Icon(
                 BootstrapIcons.magic,
                 color: Colors.white,
@@ -64,7 +64,7 @@ class SeparacaoPage {
             ),
             ButtonHeadForm(
               title: 'Reconferir tudo',
-              onPressed: () {},
+              onPressed: _controller.onReconferirTudo,
               icon: const Icon(
                 BootstrapIcons.list_task,
                 color: Colors.white,
