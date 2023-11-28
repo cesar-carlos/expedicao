@@ -23,7 +23,8 @@ class CarrinhoPercursoServices {
 
   Future<List<ExpedicaoCarrinhoPercursoModel>> selectPercurso(
       [String params = '']) async {
-    return await repositoryPercurso.select(params);
+    final respose = await repositoryPercurso.select(params);
+    return respose;
   }
 
   Future<List<ExpedicaoPercursoEstagioModel>> selectEstagio(

@@ -412,8 +412,11 @@ class SeparacaoController extends GetxController {
       event: Event.insert,
       callback: (data) async {
         for (var el in data.mutation) {
-          final sep = ExpedicaSeparacaoItemConsultaModel.fromJson(el);
-          _separacaoGridController.addItem(sep);
+          final res = ExpedicaSeparacaoItemConsultaModel.fromJson(el);
+          if (res.codEmpresa == _processoExecutavel.codEmpresa &&
+              res.codSepararEstoque == _processoExecutavel.codOrigem) {
+            _separacaoGridController.addItem(res);
+          }
         }
       },
     );

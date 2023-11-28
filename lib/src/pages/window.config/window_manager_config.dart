@@ -11,6 +11,7 @@ class WindowManagerConfig {
     minimumSize: ui.Size(1300, 800),
     backgroundColor: Colors.transparent,
     titleBarStyle: TitleBarStyle.normal,
+    center: true,
   );
 
   Future<void> config() async {
