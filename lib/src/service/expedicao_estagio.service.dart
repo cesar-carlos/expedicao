@@ -5,6 +5,7 @@ class ExpedicaoEstagioService {
   Future<ExpedicaoPercursoEstagio> separacao() async {
     const params = "Sigla = 'SE' AND Ativo = 'S'";
     final estagio = await PercursoEstagioRepository().select(params);
+
     return estagio.last;
   }
 

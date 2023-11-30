@@ -1,14 +1,13 @@
 import 'package:dio/dio.dart';
 
 import 'package:app_expedicao/src/app/app_error.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class AppClientHttp {
   final client = Dio();
   AppError? appError;
 
   AppClientHttp() {
-    client.options.baseUrl = dotenv.env['API_SERVER'] ?? '';
+    client.options.baseUrl = 'http://localhost:3001';
   }
 
   Future<Response<T>> get<T>(String endPoint) async {

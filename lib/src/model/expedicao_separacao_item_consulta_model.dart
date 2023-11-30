@@ -17,8 +17,8 @@ class ExpedicaSeparacaoItemConsultaModel {
   final String nomeUnidadeMedida;
   final int codGrupoProduto;
   final String nomeGrupoProduto;
-  final int codMarca;
-  final String nomeMarca;
+  final int? codMarca;
+  final String? nomeMarca;
   final int? codSetorEstoque;
   final String? nomeSetorEstoque;
   final String ncm;
@@ -52,18 +52,18 @@ class ExpedicaSeparacaoItemConsultaModel {
     required this.nomeUnidadeMedida,
     required this.codGrupoProduto,
     required this.nomeGrupoProduto,
-    required this.codMarca,
-    required this.nomeMarca,
-    required this.codSetorEstoque,
-    required this.nomeSetorEstoque,
+    this.codMarca,
+    this.nomeMarca,
+    this.codSetorEstoque,
+    this.nomeSetorEstoque,
     required this.ncm,
-    required this.codigoBarras,
-    required this.codigoBarras2,
-    required this.codigoReferencia,
-    required this.codigoFornecedor,
-    required this.codigoFabricante,
-    required this.codigoOriginal,
-    required this.endereco,
+    this.codigoBarras,
+    this.codigoBarras2,
+    this.codigoReferencia,
+    this.codigoFornecedor,
+    this.codigoFabricante,
+    this.codigoOriginal,
+    this.endereco,
     required this.codSeparador,
     required this.nomeSeparador,
     required this.dataSeparacao,
@@ -94,7 +94,7 @@ class ExpedicaSeparacaoItemConsultaModel {
       nomeMarca: map['NomeMarca'],
       codSetorEstoque: map['CodSetorEstoque'],
       nomeSetorEstoque: map['NomeSetorEstoque'],
-      ncm: map['NCM'],
+      ncm: map['NCM'] ?? '00000000',
       codigoBarras: map['CodigoBarras'],
       codigoBarras2: map['CodigoBarras2'],
       codigoReferencia: map['CodigoReferencia'],

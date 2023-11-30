@@ -13,8 +13,8 @@ class ExpedicaoSepararConsultaModel {
   final String nomeEntidade;
   final int codPrioridade;
   final String nomePrioridade;
-  final int? historico;
-  final int? observacao;
+  final String? historico;
+  final String? observacao;
 
   ExpedicaoSepararConsultaModel({
     required this.codEmpresa,
@@ -29,8 +29,8 @@ class ExpedicaoSepararConsultaModel {
     required this.nomeEntidade,
     required this.codPrioridade,
     required this.nomePrioridade,
-    required this.historico,
-    required this.observacao,
+    this.historico,
+    this.observacao,
   });
 
   factory ExpedicaoSepararConsultaModel.fromJson(Map<String, dynamic> map) {

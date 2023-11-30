@@ -19,7 +19,7 @@ class ExpedicaoSepararItemConsultaModel {
   final String? nomeMarca;
   final int? codSetorEstoque;
   final String? nomeSetorEstoque;
-  final String? ncm;
+  final String ncm;
   final String? codigoBarras;
   final String? codigoBarras2;
   final String? codigoReferencia;
@@ -53,7 +53,7 @@ class ExpedicaoSepararItemConsultaModel {
     this.nomeMarca,
     this.codSetorEstoque,
     this.nomeSetorEstoque,
-    this.ncm,
+    required this.ncm,
     this.codigoBarras,
     this.codigoBarras2,
     this.codigoReferencia,
@@ -89,7 +89,7 @@ class ExpedicaoSepararItemConsultaModel {
       nomeMarca: map['NomeMarca'],
       codSetorEstoque: map['CodSetorEstoque'],
       nomeSetorEstoque: map['NomeSetorEstoque'],
-      ncm: map['NCM'],
+      ncm: map['NCM'] ?? '00000000',
       codigoBarras: map['CodigoBarras'],
       codigoBarras2: map['CodigoBarras2'],
       codigoReferencia: map['CodigoReferencia'],

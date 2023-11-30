@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 
-import 'package:app_expedicao/src/service/separar_consulta_services.dart';
+import 'package:app_expedicao/src/service/separar_consultas_services.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
 import 'package:app_expedicao/src/service/processo_executavel_service.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
@@ -17,11 +17,12 @@ class SplashController extends GetxController {
 
   @override
   Future<void> onInit() async {
-    await _onInit();
     super.onInit();
+
+    await _init();
   }
 
-  _onInit() async {
+  _init() async {
     _isLoad.value = true;
     //delay socket connection
     await Future.delayed(const Duration(seconds: 1));
@@ -29,7 +30,7 @@ class SplashController extends GetxController {
     _processoExecutavel = await _processoExecutavelService.executar();
 
     if (_processoExecutavel == null) {
-      const arguments = '''
+      const arguments = ''' 
           Não foi possível executar o processo.
         
           1) Verifique se o servidor está online.
@@ -46,7 +47,7 @@ class SplashController extends GetxController {
       codSepararEstoque: _processoExecutavel!.codOrigem,
     );
 
-    _separarConsulta = await _separarConsultaServices.separarConsulta();
+    _separarConsulta = await _separarConsultaServices.separar();
     if (_separarConsulta == null) {
       const arguments = '''
           Não foi possível localizar itens da separação.
@@ -68,9 +69,6 @@ class SplashController extends GetxController {
 
   void nextPage() async {
     Get.put<ProcessoExecutavelModel>(_processoExecutavel!);
-    Get.offNamed(AppRouter.separar, arguments: {
-      'processoExecutavel': _processoExecutavel,
-      'separarConsulta': _separarConsulta,
-    });
+    Get.offNamed(AppRouter.separar, arguments: _separarConsulta);
   }
 }

@@ -1,9 +1,12 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class SepararGridController extends GetxController {
   final RxList<ExpedicaoSepararItemConsultaModel> _itens = RxList.empty();
+  final DataGridController dataGridController = DataGridController();
 
   List<ExpedicaoSepararItemConsultaModel> get itens => _itens;
   List<ExpedicaoSepararItemConsultaModel> get itensSort =>
@@ -22,6 +25,7 @@ class SepararGridController extends GetxController {
 
   updateItem(ExpedicaoSepararItemConsultaModel item) {
     final index = _itens.indexWhere((el) => el.item == item.item);
+    dataGridController.selectedIndex = index;
     _itens[index] = item;
   }
 

@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 
+import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separacao_item_model.dart';
 import 'package:app_expedicao/src/model/expedicao_percurso_estagio_model.dart';
 import 'package:app_expedicao/src/repository/sequencia_registro/sequencia_tabelas.dart';
@@ -25,12 +26,18 @@ class CarrinhoPercursoCancelarService {
 
   Future<void> execute() async {
     final separacaoItens = await _findSeparacaoItem();
-    final newCarrinho = carrinho.copyWith(situacao: 'LI');
-    final newPercursoEstagio = percursoEstagio.copyWith(situacao: 'CA');
+    final newCarrinho = carrinho.copyWith(
+      situacao: ExpedicaoSituacaoModel.cancelada,
+    );
+
+    final newPercursoEstagio = percursoEstagio.copyWith(
+      situacao: ExpedicaoSituacaoModel.cancelada,
+    );
+
     final newCancelamento = await _createCancelamento();
 
     final newItens = separacaoItens.map((el) {
-      return el.copyWith(situacao: 'CA');
+      return el.copyWith(situacao: ExpedicaoSituacaoModel.cancelada);
     }).toList();
 
     await CancelamentoRepository().insert(newCancelamento);
@@ -57,7 +64,7 @@ class CarrinhoPercursoCancelarService {
     return ExpedicaoCancelamentoModel(
       codEmpresa: percursoEstagio.codEmpresa,
       codCancelamento: sequencia.first.valor,
-      origem: 'CP',
+      origem: 'SE',
       codOrigem: percursoEstagio.codCarrinhoPercurso,
       itemOrigem: percursoEstagio.item,
       codMotivoCancelamento: 1,

@@ -1,11 +1,14 @@
+import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_expedicao/src/app/app_helper.dart';
+
+import 'package:app_expedicao/src/service/separar_consultas_services.dart';
 import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
 import 'package:app_expedicao/src/service/separacao_remover_item_service.dart';
-import 'package:app_expedicao/src/service/carrinho_separacao_item_services.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dart';
 import 'package:app_expedicao/src/model/expedicao_separacao_item_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
@@ -33,8 +36,9 @@ class SeparacaoController extends GetxController {
   late SeparacaoCarrinhoGridController _separacaoGridController;
   late ProcessoExecutavelModel _processoExecutavel;
 
+  late SepararConsultaServices _separarConsultasServices;
+
   late ProdutoService _produtoService;
-  late CarrinhoSeparacaoItemServices _separacaoServices;
 
   late TextEditingController scanController;
   late TextEditingController quantidadeController;
@@ -48,6 +52,8 @@ class SeparacaoController extends GetxController {
 
   @override
   void onInit() {
+    super.onInit();
+
     _produtoService = ProdutoService();
     scanController = TextEditingController();
     displayController = TextEditingController(text: '');
@@ -56,19 +62,21 @@ class SeparacaoController extends GetxController {
     _separacaoGridController = Get.find<SeparacaoCarrinhoGridController>();
     _separarGridController = Get.find<SepararGridController>();
     _processoExecutavel = Get.find<ProcessoExecutavelModel>();
-    _separacaoServices = CarrinhoSeparacaoItemServices();
 
     scanFocusNode = FocusNode()..requestFocus();
     displayFocusNode = FocusNode();
     quantidadeFocusNode = FocusNode();
+
+    _separarConsultasServices = SepararConsultaServices(
+      codEmpresa: _processoExecutavel.codEmpresa,
+      codSepararEstoque: _processoExecutavel.codOrigem,
+    );
 
     _fillCarrinhoPercurso();
     _fillGridSeparacaoItens();
     _onRemoveItemSeparacaoGrid();
     _listenFocusNode();
     _addLiteners();
-
-    super.onInit();
   }
 
   @override
@@ -114,22 +122,20 @@ class SeparacaoController extends GetxController {
   }
 
   Future<void> _fillGridSeparacaoItens() async {
-    final params = '''
-          CodEmpresa = ${percursoEstagioConsulta.codEmpresa} 
-      AND CodSepararEstoque = '${percursoEstagioConsulta.codOrigem}' 
-      AND CodCarrinhoPercurso = '${percursoEstagioConsulta.codCarrinhoPercurso}'
-      AND ItemCarrinhoPercurso = '${percursoEstagioConsulta.item}'
-    ''';
+    final separacaoItens = await _separarConsultasServices.itensSeparacao();
 
-    final separacaoItens = await _separacaoServices.consulta(params);
     _separacaoGridController.removeAll();
     for (var el in separacaoItens) {
-      _separacaoGridController.addItem(el);
+      if (el.codCarrinhoPercurso ==
+              percursoEstagioConsulta.codCarrinhoPercurso &&
+          el.itemCarrinhoPercurso == percursoEstagioConsulta.item) {
+        _separacaoGridController.addItem(el);
+      }
     }
   }
 
   bool get viewMode {
-    if (percursoEstagioConsulta.situacao == 'CA') {
+    if (percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.cancelada) {
       _viewMode.value = true;
     }
 
@@ -222,19 +228,6 @@ class SeparacaoController extends GetxController {
     }
 
     if (resp.right != null) {
-      if (_carrinhoPercurso == null) {
-        await ConfirmationDialogMessageWidget.show(
-          context: Get.context!,
-          message: 'Carrinho não encontrado!',
-          detail: 'Não foi encontrado nenhum carrinho para o percurso!',
-        );
-
-        displayController.text = '';
-        scanFocusNode.requestFocus();
-        scanController.clear();
-        return;
-      }
-
       final carrinhoPercursoAdicionarItemService =
           SeparacaoAdicionarItemService(
         carrinhoPercurso: _carrinhoPercurso!,
@@ -392,7 +385,7 @@ class SeparacaoController extends GetxController {
       callback: (data) async {
         for (var el in data.mutation) {
           final car = ExpedicaoCarrinhoPercursoConsultaModel.fromJson(el);
-          if (car.situacao == 'CA') {
+          if (car.situacao == ExpedicaoCarrinhoSituacaoModel.cancelado) {
             _viewMode.value = true;
             update();
 

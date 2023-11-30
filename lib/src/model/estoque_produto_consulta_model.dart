@@ -7,8 +7,8 @@ class EstoqueProdutoConsultaModel {
   final String nomeUnidadeMedida;
   final int codGrupoProduto;
   final String nomeGrupoProduto;
-  final int codMarca;
-  final String nomeMarca;
+  final int? codMarca;
+  final String? nomeMarca;
   final int? codSetorEstoque;
   final String? ncm;
   final String? codigoBarras;
@@ -28,8 +28,8 @@ class EstoqueProdutoConsultaModel {
     required this.nomeUnidadeMedida,
     required this.codGrupoProduto,
     required this.nomeGrupoProduto,
-    required this.codMarca,
-    required this.nomeMarca,
+    this.codMarca,
+    this.nomeMarca,
     this.codSetorEstoque,
     this.ncm,
     this.codigoBarras,

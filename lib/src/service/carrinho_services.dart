@@ -5,8 +5,6 @@ import 'package:app_expedicao/src/repository/expedicao_carrinhos/carrinho_reposi
 import 'package:app_expedicao/src/model/expedicao_carrinho_consulta_model.dart';
 
 class CarrinhoServices {
-  final sequenciaName = 'Carrinho_Sequencia_1';
-
   final repository = CarrinhoRepository();
   final repositoryConsulta = CarrinhoConsultaRepository();
   final repositorySequecia = SequenciaRegistroRepository();
@@ -21,8 +19,7 @@ class CarrinhoServices {
   }
 
   Future<ExpedicaoCarrinhoModel> insert(ExpedicaoCarrinhoModel carrinho) async {
-    final sequencia = await repositorySequecia.select(sequenciaName);
-    final newCarrinho = carrinho.copyWith(codCarrinho: sequencia.first.valor);
+    final newCarrinho = carrinho.copyWith(codCarrinho: 0);
     await repository.insert(newCarrinho);
     return newCarrinho;
   }

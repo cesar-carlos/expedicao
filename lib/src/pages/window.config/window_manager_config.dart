@@ -1,5 +1,6 @@
 import 'dart:ui' as ui;
 
+import 'package:app_expedicao/src/app/app_platform.dart';
 import 'package:flutter/material.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:app_expedicao/src/pages/window.config/window_event.dart';
@@ -15,12 +16,14 @@ class WindowManagerConfig {
   );
 
   Future<void> config() async {
-    windowManager.waitUntilReadyToShow(_windowOptions, () async {
-      await windowManager.show();
-      await windowManager.focus();
-    });
+    if (AppPlatform.isDesktop) {
+      windowManager.waitUntilReadyToShow(_windowOptions, () async {
+        await windowManager.show();
+        await windowManager.focus();
+      });
 
-    windowManager.addListener(WindowEvent());
-    await windowManager.ensureInitialized();
+      windowManager.addListener(WindowEvent());
+      await windowManager.ensureInitialized();
+    }
   }
 }

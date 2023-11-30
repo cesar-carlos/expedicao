@@ -3,15 +3,16 @@ import 'package:get/get.dart';
 import 'package:app_expedicao/src/app/app_socket.config.dart';
 
 class FooterPageController extends GetxController {
-  bool _isConnected = false;
+  bool _isConnected = true;
   final _socket = Get.find<AppSocketConfig>();
 
   bool get isConnected => _isConnected;
 
   @override
   void onInit() {
-    _linstenConnection();
     super.onInit();
+
+    _linstenConnection();
   }
 
   _linstenConnection() {

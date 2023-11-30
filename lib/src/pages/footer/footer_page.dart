@@ -22,18 +22,6 @@ class FooterPage extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 5),
                 child: Row(
                   children: [
-                    // controller.isConnected == true
-                    //     ? const Icon(
-                    //         BootstrapIcons.database_fill_check,
-                    //         color: Colors.white,
-                    //         size: 15,
-                    //       )
-                    //     : const Icon(
-                    //         BootstrapIcons.database_fill_x,
-                    //         color: Colors.red,
-                    //         size: 15,
-                    //       ),
-                    // const SizedBox(width: 5),
                     controller.isConnected == true
                         ? const Text(
                             'Conectado',

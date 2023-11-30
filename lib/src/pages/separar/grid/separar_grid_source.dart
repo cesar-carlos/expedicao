@@ -1,10 +1,13 @@
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid_cells.dart';
+import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';
 
 class SepararSource extends DataGridSource {
+  var controller = Get.find<SepararGridController>();
   List<DataGridRow> _itens = [];
 
   SepararSource(List<ExpedicaoSepararItemConsultaModel> itens) {
@@ -155,10 +158,11 @@ class SepararSource extends DataGridSource {
 
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
-    final rowPar = _itens.indexOf(row) % 2 == 0;
+    final selectedRow =
+        controller.dataGridController.selectedRows.contains(row);
 
-    return DataGridRowAdapter(
-        color: rowPar ? Colors.grey[300] : Colors.white,
+    final dataGridRowAdapter = DataGridRowAdapter(
+        color: Colors.white60,
         cells: row.getCells().map<Widget>((cell) {
           if (cell.value is double) {
             return SepararGridCell.defaultMoneyCell(cell.value);
@@ -182,5 +186,7 @@ class SepararSource extends DataGridSource {
 
           return SepararGridCell.defaultCells(cell.value);
         }).toList());
+
+    return dataGridRowAdapter;
   }
 }

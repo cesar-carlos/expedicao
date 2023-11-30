@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 import 'package:system_theme/system_theme.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:app_expedicao/src/app/app_theme.dart';
 import 'package:app_expedicao/src/pages/splash/splash_binding.dart';
 import 'package:app_expedicao/src/pages/window.config/window_manager_config.dart';
@@ -13,7 +12,6 @@ import 'package:app_expedicao/src/app/app_client_http.dart';
 
 Future<void> main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: ".env");
   await WindowManagerConfig().config();
   await SystemTheme.accentColor.load();
 

@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
+import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/pages/separar_carrinhos/grid/separar_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/pages/separar_carrinhos/grid/separar_carrinho_grid_cells.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
@@ -50,7 +50,7 @@ class SepararCarrinhoGridSource extends DataGridSource {
               ),
               DataGridCell<String>(
                 columnName: 'situacao',
-                value: ExpedicaoCarrinhoSituacaoModel.situacao[i.situacao],
+                value: i.situacao,
               ),
               DataGridCell<String>(
                 columnName: 'dataInicio',
@@ -79,7 +79,9 @@ class SepararCarrinhoGridSource extends DataGridSource {
                     icon: Icon(
                       size: 17,
                       Icons.delete,
-                      color: i.situacao != 'CA' ? Colors.red : Colors.grey,
+                      color: i.situacao != ExpedicaoSituacaoModel.cancelada
+                          ? Colors.red
+                          : Colors.grey,
                     ),
                   ),
                   const SizedBox(
@@ -95,7 +97,9 @@ class SepararCarrinhoGridSource extends DataGridSource {
                     },
                     icon: Icon(
                       size: 17,
-                      i.situacao != 'CA' ? Icons.edit : Icons.visibility,
+                      i.situacao != ExpedicaoSituacaoModel.cancelada
+                          ? Icons.edit
+                          : Icons.visibility,
                       color: Colors.blue,
                     ),
                   ),
@@ -127,10 +131,11 @@ class SepararCarrinhoGridSource extends DataGridSource {
 
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
-    final rowPar = _itens.indexOf(row) % 2 == 0;
+    final selectedRow =
+        controller.dataGridController.selectedRows.contains(row);
 
     return DataGridRowAdapter(
-        color: rowPar ? Colors.grey[300] : Colors.white,
+        color: Colors.white60,
         cells: row.getCells().map<Widget>((cell) {
           if (cell.value is double) {
             return SepararCarrinhoGridCells.defaultMoneyCell(cell.value);

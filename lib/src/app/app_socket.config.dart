@@ -2,10 +2,9 @@ import 'package:get/get.dart';
 
 // ignore: library_prefixes
 import 'package:socket_io_client/socket_io_client.dart' as IO;
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class AppSocketConfig extends GetxController {
-  final _baseUrl = '${dotenv.env['API_SERVER']}/';
+  final _baseUrl = 'http://localhost:3001/';
   final Rx<bool> _isConnected = false.obs;
   late IO.Socket _socket;
 

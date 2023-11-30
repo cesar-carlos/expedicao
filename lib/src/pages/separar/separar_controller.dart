@@ -1,35 +1,58 @@
+import 'package:app_expedicao/src/pages/carrinho/carrinho_controller.dart';
+import 'package:app_expedicao/src/pages/separar_carrinhos/grid/separar_carrinho_grid_controller.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
-import 'package:app_expedicao/src/service/expedicao.estagio.service.dart';
+import 'package:app_expedicao/src/model/expedicao_separar_model.dart';
+import 'package:app_expedicao/src/service/expedicao_estagio.service.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
 import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';
 import 'package:app_expedicao/src/pages/separar_carrinhos/separar_carrinhos_controller.dart';
 import 'package:app_expedicao/src/pages/carrinho/widget/adicionar_carrinho_dialog_widget.dart';
 import 'package:app_expedicao/src/repository/expedicao_separar_item/separar_item_event_repository.dart';
+import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_adicionar_service.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
-import 'package:app_expedicao/src/service/separar_consulta_services.dart';
+import 'package:app_expedicao/src/service/separar_consultas_services.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_model.dart';
+import 'package:app_expedicao/src/service/separar_services.dart';
 
 class SepararController extends GetxController {
+  bool _iniciada = false;
+
   late SepararConsultaServices _separarServices;
   late SepararGridController _separarGridController;
   late ProcessoExecutavelModel _processoExecutavel;
   late ExpedicaoSepararConsultaModel _separarConsulta;
   late SepararCarrinhosController _separarCarrinhosController;
+  ExpedicaoCarrinhoPercursoModel? _carrinhoPercurso;
 
   ExpedicaoSepararConsultaModel get separarConsulta => _separarConsulta;
 
+  bool get iniciada {
+    if (_carrinhoPercurso == null) {
+      _iniciada = false;
+      return _iniciada;
+    } else {
+      _iniciada = true;
+      return _iniciada;
+    }
+  }
+
   @override
   onInit() async {
-    _separarConsulta = Get.find<ExpedicaoSepararConsultaModel>();
-    _separarGridController = Get.find<SepararGridController>();
+    super.onInit();
+
+    _putDependencies();
+
     _processoExecutavel = Get.find<ProcessoExecutavelModel>();
+    _separarConsulta = Get.find<ExpedicaoSepararConsultaModel>();
     _separarCarrinhosController = Get.find<SepararCarrinhosController>();
+    _separarGridController = Get.find<SepararGridController>();
 
     _separarServices = SepararConsultaServices(
       codEmpresa: _processoExecutavel.codEmpresa,
@@ -37,8 +60,16 @@ class SepararController extends GetxController {
     );
 
     await _fillGridSepararItens();
+    await _fillCarrinhoPercurso();
     _litenerSepararItens();
-    super.onInit();
+  }
+
+  _putDependencies() {
+    Get.lazyPut(() => SepararCarrinhosController());
+    Get.lazyPut(() => SepararGridController());
+
+    Get.lazyPut(() => CarrinhoController());
+    Get.lazyPut(() => SepararCarrinhoGridController());
   }
 
   @override
@@ -54,11 +85,48 @@ class SepararController extends GetxController {
     }
   }
 
+  Future<void> _fillCarrinhoPercurso() async {
+    final carrinhoPercursos = await CarrinhoPercursoServices().selectPercurso(
+      ''' CodEmpresa = ${_processoExecutavel.codEmpresa} 
+        AND Origem = '${_processoExecutavel.origem}' 
+        AND CodOrigem = ${_processoExecutavel.codOrigem}
+        
+        ''',
+    );
+
+    if (carrinhoPercursos.isNotEmpty) {
+      _carrinhoPercurso = carrinhoPercursos.first;
+    }
+  }
+
+  Future<void> iniciarSeparacao() async {
+    _iniciada = !_iniciada;
+    if (_carrinhoPercurso == null) {
+      await _fillCarrinhoPercurso();
+    }
+
+    final separar = ExpedicaoSepararModel.fromConsulta(_separarConsulta);
+    final separarServices = SepararServices(separar: separar);
+    await separarServices.iniciar();
+  }
+
+  Future<void> pausarSeparacao() async {
+    await ConfirmationDialogMessageWidget.show(
+      context: Get.context!,
+      message: 'Não implementado!',
+      detail:
+          'Não é possível pausar a separação, esta funcionalidade ainda não foi implementada.',
+    );
+  }
+
   Future<void> adicionarCarrinho() async {
     final dialog = AdicionarCarrinhoDialogWidget();
     final carrinhoConsulta = await dialog.show();
 
     if (carrinhoConsulta != null) {
+      await iniciarSeparacao();
+      await _fillCarrinhoPercurso();
+
       final carrinho = ExpedicaoCarrinhoModel(
         codEmpresa: carrinhoConsulta.codEmpresa,
         codCarrinho: carrinhoConsulta.codCarrinho,
@@ -68,29 +136,22 @@ class SepararController extends GetxController {
         situacao: carrinhoConsulta.situacao,
       );
 
-      final carrinhoPercurso = await CarrinhoPercursoServices().selectPercurso(
-        ''' CodEmpresa = ${_processoExecutavel.codEmpresa} 
-        AND Origem = '${_processoExecutavel.origem}' 
-        AND CodOrigem = ${_processoExecutavel.codOrigem}
-        
-        ''',
-      );
-
       final estagio = await ExpedicaoEstagioService().separacao();
 
-      final response = await CarrinhoPercursoAdicionarService(
+      final percursoEstagio = await CarrinhoPercursoAdicionarService(
         carrinho: carrinho,
-        carrinhoPercurso: carrinhoPercurso.first,
+        carrinhoPercurso: _carrinhoPercurso!,
         percursoEstagio: estagio,
         processo: _processoExecutavel,
       ).execute();
 
-      if (response != null) {
+      if (percursoEstagio != null) {
         final percursoEstagioConsulta =
             await _separarServices.carrinhosPercurso()
-              ..where((el) => el.item == response.item).toList();
+              ..where((el) => el.item == percursoEstagio.item).toList();
 
         _separarCarrinhosController.addCarrinho(percursoEstagioConsulta.last);
+        update();
       }
     }
   }

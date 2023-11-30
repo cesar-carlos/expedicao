@@ -177,10 +177,11 @@ class SeparacaoCarrinhoGridSource extends DataGridSource {
 
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
-    final rowPar = _itens.indexOf(row) % 2 == 0;
+    final selectedRow =
+        controller.dataGridController.selectedRows.contains(row);
 
     return DataGridRowAdapter(
-        color: rowPar ? Colors.grey[300] : Colors.white,
+        color: Colors.white60,
         cells: row.getCells().map<Widget>((cell) {
           if (cell.value is double) {
             return SeparacaoCarrinhoGridCells.defaultMoneyCell(cell.value);

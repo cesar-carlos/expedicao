@@ -1,4 +1,5 @@
 import 'package:app_expedicao/src/app/app_helper.dart';
+import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
 
 class ExpedicaoSepararModel {
   final int codEmpresa;
@@ -40,6 +41,71 @@ class ExpedicaoSepararModel {
     this.nomeUsuarioCancelamento,
     this.observacaoCancelamento,
   });
+
+  ExpedicaoSepararModel copyWith({
+    int? codEmpresa,
+    int? codSepararEstoque,
+    int? codTipoOperacaoExpedicao,
+    String? tipoEntidade,
+    int? codEntidade,
+    String? nomeEntidade,
+    String? situacao,
+    DateTime? data,
+    String? hora,
+    int? codPrioridade,
+    String? historico,
+    String? observacao,
+    int? codMotivoCancelamento,
+    DateTime? dataCancelamento,
+    String? horaCancelamento,
+    int? codUsuarioCancelamento,
+    String? nomeUsuarioCancelamento,
+    String? observacaoCancelamento,
+  }) {
+    return ExpedicaoSepararModel(
+      codEmpresa: codEmpresa ?? this.codEmpresa,
+      codSepararEstoque: codSepararEstoque ?? this.codSepararEstoque,
+      codTipoOperacaoExpedicao:
+          codTipoOperacaoExpedicao ?? this.codTipoOperacaoExpedicao,
+      tipoEntidade: tipoEntidade ?? this.tipoEntidade,
+      codEntidade: codEntidade ?? this.codEntidade,
+      nomeEntidade: nomeEntidade ?? this.nomeEntidade,
+      situacao: situacao ?? this.situacao,
+      data: data ?? this.data,
+      hora: hora ?? this.hora,
+      codPrioridade: codPrioridade ?? this.codPrioridade,
+      historico: historico ?? this.historico,
+      observacao: observacao ?? this.observacao,
+      codMotivoCancelamento:
+          codMotivoCancelamento ?? this.codMotivoCancelamento,
+      dataCancelamento: dataCancelamento ?? this.dataCancelamento,
+      horaCancelamento: horaCancelamento ?? this.horaCancelamento,
+      codUsuarioCancelamento:
+          codUsuarioCancelamento ?? this.codUsuarioCancelamento,
+      nomeUsuarioCancelamento:
+          nomeUsuarioCancelamento ?? this.nomeUsuarioCancelamento,
+      observacaoCancelamento:
+          observacaoCancelamento ?? this.observacaoCancelamento,
+    );
+  }
+
+  factory ExpedicaoSepararModel.fromConsulta(
+      ExpedicaoSepararConsultaModel model) {
+    return ExpedicaoSepararModel(
+      codEmpresa: model.codEmpresa,
+      codSepararEstoque: model.codSepararEstoque,
+      codTipoOperacaoExpedicao: model.codTipoOperacao,
+      tipoEntidade: model.tipoEntidade,
+      codEntidade: model.codEntidade,
+      nomeEntidade: model.nomeEntidade,
+      situacao: model.situacao,
+      data: model.dataEmissao,
+      hora: model.horaEmissao,
+      codPrioridade: model.codPrioridade,
+      historico: model.historico.toString(),
+      observacao: model.observacao.toString(),
+    );
+  }
 
   factory ExpedicaoSepararModel.fromJson(Map map) {
     return ExpedicaoSepararModel(

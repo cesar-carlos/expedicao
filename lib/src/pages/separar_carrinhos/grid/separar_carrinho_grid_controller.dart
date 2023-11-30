@@ -5,9 +5,12 @@ import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_messag
 import 'package:app_expedicao/src/pages/separar_carrinhos/grid/separar_carrinho_grid_source.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget.dart';
+import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class SepararCarrinhoGridController extends GetxController {
   final RxList<ExpedicaoCarrinhoPercursoConsultaModel> _itens = RxList.empty();
+  final dataGridController = DataGridController();
 
   List<ExpedicaoCarrinhoPercursoConsultaModel> get itens => _itens;
   List<ExpedicaoCarrinhoPercursoConsultaModel> get itensSort =>
@@ -38,7 +41,7 @@ class SepararCarrinhoGridController extends GetxController {
     SepararCarrinhoGridSource grid,
     ExpedicaoCarrinhoPercursoConsultaModel item,
   ) async {
-    if (item.situacao == 'CA') {
+    if (item.situacao == ExpedicaoSituacaoModel.cancelada) {
       await ConfirmationDialogMessageWidget.show(
         context: Get.context!,
         message: 'Carrinho já cancelado!',

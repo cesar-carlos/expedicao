@@ -43,10 +43,10 @@ class SeparacaoItemRepository {
     return completer.future;
   }
 
-  Future<ExpedicaoSeparacaoItemModel?> insert(
+  Future<List<ExpedicaoSeparacaoItemModel>> insert(
       ExpedicaoSeparacaoItemModel entity) {
     final event = '${socket.id} separacao.item.insert';
-    final completer = Completer<ExpedicaoSeparacaoItemModel?>();
+    final completer = Completer<List<ExpedicaoSeparacaoItemModel>>();
     final resposeIn = uuid.v4();
 
     final send = {
@@ -60,18 +60,12 @@ class SeparacaoItemRepository {
       final data = jsonDecode(receiver);
       final mutation = data?['mutation'] ?? [];
 
-      if (data.isEmpty || mutation.isEmpty) {
-        completer.complete(null);
-        socket.off(resposeIn);
-        return;
-      }
-
       final list = mutation.map<ExpedicaoSeparacaoItemModel>((json) {
         return ExpedicaoSeparacaoItemModel.fromJson(json);
       }).toList();
 
       socket.off(resposeIn);
-      completer.complete(list.first);
+      completer.complete(list);
     });
 
     return completer.future;
@@ -94,12 +88,6 @@ class SeparacaoItemRepository {
       final data = jsonDecode(receiver);
       final mutation = data?['mutation'] ?? [];
 
-      if (data.isEmpty || mutation.isEmpty) {
-        completer.complete([]);
-        socket.off(resposeIn);
-        return;
-      }
-
       final list = mutation.map<ExpedicaoSeparacaoItemModel>((json) {
         return ExpedicaoSeparacaoItemModel.fromJson(json);
       }).toList();
@@ -111,10 +99,10 @@ class SeparacaoItemRepository {
     return completer.future;
   }
 
-  Future<ExpedicaoSeparacaoItemModel?> update(
+  Future<List<ExpedicaoSeparacaoItemModel>> update(
       ExpedicaoSeparacaoItemModel entity) {
     final event = '${socket.id} separacao.item.update';
-    final completer = Completer<ExpedicaoSeparacaoItemModel?>();
+    final completer = Completer<List<ExpedicaoSeparacaoItemModel>>();
     final resposeIn = uuid.v4();
 
     final send = {
@@ -128,18 +116,12 @@ class SeparacaoItemRepository {
       final data = jsonDecode(receiver);
       final mutation = data?['mutation'] ?? [];
 
-      if (mutation.isEmpty) {
-        completer.complete(null);
-        socket.off(resposeIn);
-        return;
-      }
-
       final list = mutation.map<ExpedicaoSeparacaoItemModel>((json) {
         return ExpedicaoSeparacaoItemModel.fromJson(json);
       }).toList();
 
       socket.off(resposeIn);
-      completer.complete(list.first);
+      completer.complete(list);
     });
 
     return completer.future;
@@ -162,12 +144,6 @@ class SeparacaoItemRepository {
       final data = jsonDecode(receiver);
       final mutation = data?['mutation'] ?? [];
 
-      if (mutation.isEmpty) {
-        completer.complete([]);
-        socket.off(resposeIn);
-        return;
-      }
-
       final list = mutation.map<ExpedicaoSeparacaoItemModel>((json) {
         return ExpedicaoSeparacaoItemModel.fromJson(json);
       }).toList();
@@ -179,10 +155,10 @@ class SeparacaoItemRepository {
     return completer.future;
   }
 
-  Future<ExpedicaoSeparacaoItemModel?> delete(
+  Future<List<ExpedicaoSeparacaoItemModel>> delete(
       ExpedicaoSeparacaoItemModel entity) {
     final event = '${socket.id} separacao.item.delete';
-    final completer = Completer<ExpedicaoSeparacaoItemModel?>();
+    final completer = Completer<List<ExpedicaoSeparacaoItemModel>>();
     final resposeIn = uuid.v4();
 
     final send = {
@@ -196,18 +172,12 @@ class SeparacaoItemRepository {
       final data = jsonDecode(receiver);
       final mutation = data?['mutation'] ?? [];
 
-      if (mutation.isEmpty) {
-        completer.complete(null);
-        socket.off(resposeIn);
-        return;
-      }
-
       final list = mutation.map<ExpedicaoSeparacaoItemModel>((json) {
         return ExpedicaoSeparacaoItemModel.fromJson(json);
       }).toList();
 
       socket.off(resposeIn);
-      completer.complete(list.first);
+      completer.complete(list);
     });
 
     return completer.future;
@@ -229,12 +199,6 @@ class SeparacaoItemRepository {
     socket.on(resposeIn, (receiver) {
       final data = jsonDecode(receiver);
       final mutation = data?['mutation'] ?? [];
-
-      if (mutation.isEmpty) {
-        completer.complete([]);
-        socket.off(resposeIn);
-        return;
-      }
 
       final list = mutation.map<ExpedicaoSeparacaoItemModel>((json) {
         return ExpedicaoSeparacaoItemModel.fromJson(json);

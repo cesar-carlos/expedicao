@@ -9,6 +9,7 @@ import 'package:app_expedicao/src/pages/common/widget/message_dialog.widget.dart
 import 'package:app_expedicao/src/repository/expedicao_carrinhos/carrinho_consulta_repository.dart';
 import 'package:app_expedicao/src/pages/carrinho/view_model/carrinho_view_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_consulta_model.dart';
+import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 
 class CarrinhoController extends GetxController {
   final CarrinhoViewModel _carrinho = CarrinhoViewModel.empty();
@@ -16,6 +17,7 @@ class CarrinhoController extends GetxController {
 
   Uuid uuid = const Uuid();
 
+  late ProcessoExecutavelModel _processoExecutavel;
   late TextEditingController textControllerCodigoCarrinho;
   late FocusNode focusNodeBtnAdicionarCarrinho;
   late FocusNode focusNodeCodigoCarrinho;
@@ -23,10 +25,20 @@ class CarrinhoController extends GetxController {
 
   @override
   void onInit() {
+    super.onInit();
+
+    _processoExecutavel = Get.find<ProcessoExecutavelModel>();
     textControllerCodigoCarrinho = TextEditingController();
     focusNodeBtnAdicionarCarrinho = FocusNode();
     focusNodeCodigoCarrinho = FocusNode();
-    super.onInit();
+  }
+
+  @override
+  void onClose() {
+    textControllerCodigoCarrinho.dispose();
+    focusNodeBtnAdicionarCarrinho.dispose();
+    focusNodeCodigoCarrinho.dispose();
+    super.onClose();
   }
 
   CarrinhoViewModel get carrinho => _carrinho;
@@ -42,8 +54,9 @@ class CarrinhoController extends GetxController {
         ExpedicaoCarrinhoConsultaModel? carrinhoConsulta,
         AppDialog? dialog
       })?> getCarrinho(String codigoBarras) async {
-    final params = "CodigoBarras = '$codigoBarras'";
-    final carrinhos = await repotory.select(params);
+    final carrinhos = await repotory.select(
+      "CodEmpresa = ${_processoExecutavel.codEmpresa} AND CodigoBarras = '$codigoBarras'",
+    );
 
     if (carrinhos.isEmpty) {
       final appDialog = AppDialog(
@@ -101,8 +114,7 @@ class CarrinhoController extends GetxController {
   viewFromCarrinhoConsulta(ExpedicaoCarrinhoConsultaModel input) {
     _carrinho.codCarrinho = input.codCarrinho;
     _carrinho.descricaoCarrinho = input.descricaoCarrinho;
-    _carrinho.situacao =
-        ExpedicaoCarrinhoSituacaoModel.situacao[input.situacao] ?? '';
+    _carrinho.situacao = input.situacao;
     _carrinho.local = ExpedicaoCarrinhoOrigemModel.origem[input.origem] ?? '';
     _carrinho.setor = input.nomeSetorEstoque ?? '';
     _carrinho.observacao = '';
@@ -110,7 +122,7 @@ class CarrinhoController extends GetxController {
   }
 
   bool validCarrinho(ExpedicaoCarrinhoConsultaModel input) {
-    if (input.situacao == 'LI') {
+    if (input.situacao == ExpedicaoCarrinhoSituacaoModel.liberado) {
       return true;
     }
 
@@ -120,13 +132,5 @@ class CarrinhoController extends GetxController {
   void clear() {
     textControllerCodigoCarrinho.clear();
     _carrinho.clear();
-  }
-
-  @override
-  void onClose() {
-    textControllerCodigoCarrinho.dispose();
-    focusNodeBtnAdicionarCarrinho.dispose();
-    focusNodeCodigoCarrinho.dispose();
-    super.onClose();
   }
 }

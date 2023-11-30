@@ -1,9 +1,9 @@
-import 'package:app_expedicao/src/repository/expedicao_separar_item/separar_item_repository.dart';
 import 'package:get/get.dart';
 
 import 'package:app_expedicao/src/app/app_socket.config.dart';
 import 'package:app_expedicao/src/model/expedicao_separacao_item_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separacao_item_consulta_model.dart';
+import 'package:app_expedicao/src/repository/expedicao_separar_item/separar_item_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_consulta_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_repository.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
@@ -44,13 +44,15 @@ class SeparacaoAdicionarItemService {
       quantidade: quantidade,
     );
 
-    final resp = await SeparacaoItemRepository().insert(itemSeparacao);
-    if (resp == null) return null;
+    final newSeparacaoItem =
+        await SeparacaoItemRepository().insert(itemSeparacao);
+
+    if (newSeparacaoItem.isEmpty) return null;
 
     final params = '''
-          CodEmpresa = ${resp.codEmpresa} 
-      AND CodSepararEstoque = ${resp.codSepararEstoque}
-      AND Item = '${resp.item}'
+          CodEmpresa = ${newSeparacaoItem.first.codEmpresa} 
+      AND CodSepararEstoque = ${newSeparacaoItem.first.codSepararEstoque}
+      AND Item = '${newSeparacaoItem.first.item}'
     ''';
 
     final list = await SeparacaoItemConsultaRepository().select(params);

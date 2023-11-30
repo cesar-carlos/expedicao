@@ -69,7 +69,7 @@ class ExpedicaoCarrinhoPercursoModel {
       'Origem': origem,
       'CodOrigem': codOrigem,
       'Situacao': situacao,
-      'DataInicio': dataInicio,
+      'DataInicio': dataInicio.toIso8601String(),
       'HoraInicio': horaInicio,
       'DataFinalizacao': dataFinalizacao,
       'HoraFinalizacao': horaFinalizacao,

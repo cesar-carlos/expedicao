@@ -3,33 +3,44 @@ import 'package:date_format/date_format.dart';
 import 'package:number_text_input_formatter/number_text_input_formatter.dart';
 
 class AppHelper {
-  static String formatarData(DateTime? data) {
-    if (data == null) return '';
-    return formatDate(data, [dd, '/', mm, '/', yyyy]);
+  static String formatarData(DateTime? value) {
+    if (value == null) return '';
+    return formatDate(value, [dd, '/', mm, '/', yyyy]);
   }
 
-  static String formatarHora(DateTime? data) {
-    if (data == null) return '';
-    return formatDate(data, [HH, ':', nn, ':', ss]);
+  static String formatarHora(DateTime? value) {
+    if (value == null) return '';
+    return formatDate(value, [HH, ':', nn, ':', ss]);
   }
 
-  static DateTime tryStringToDate(String? date) {
+  static DateTime tryStringToDate(String? value) {
     try {
-      if (date == null) return DateTime(1900);
-      if (date == '') return DateTime(1900);
+      if (value == null) return DateTime(1900);
+      if (value == '') return DateTime(1900);
 
-      return DateTime.parse(date);
+      return DateTime.parse(value);
     } catch (err) {
       return DateTime(1900);
     }
   }
 
-  static DateTime? tryStringToDateOrNull(String? date) {
+  static DateTime? tryStringToDateOrNull(String? value) {
     try {
-      if (date == null) return null;
-      if (date == '') return null;
+      if (value == null) return null;
+      if (value == '') return null;
 
-      return DateTime.parse(date);
+      return DateTime.parse(value);
+    } catch (err) {
+      return null;
+    }
+  }
+
+  static int? tryStringToIntOrNull(String? value) {
+    try {
+      if (value == null) return null;
+      if (value == '') return null;
+
+      return int.parse(value);
     } catch (err) {
       return null;
     }

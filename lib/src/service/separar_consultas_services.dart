@@ -16,7 +16,7 @@ class SepararConsultaServices {
     required this.codSepararEstoque,
   });
 
-  Future<ExpedicaoSepararConsultaModel?> separarConsulta() async {
+  Future<ExpedicaoSepararConsultaModel?> separar() async {
     final response = await SepararConsultaRepository().select(
       'CodEmpresa = $codEmpresa AND CodSepararEstoque = $codSepararEstoque',
     );
@@ -34,16 +34,16 @@ class SepararConsultaServices {
     );
   }
 
+  Future<List<ExpedicaSeparacaoItemConsultaModel>> itensSeparacao() async {
+    return await SeparacaoItemConsultaRepository().select(
+      'CodEmpresa = $codEmpresa AND CodSepararEstoque = $codSepararEstoque',
+    );
+  }
+
   Future<List<ExpedicaoCarrinhoPercursoConsultaModel>>
       carrinhosPercurso() async {
     return await CarrinhoPercursoConsultaRepository().select(
       'CodEmpresa = $codEmpresa AND CodOrigem = $codSepararEstoque',
-    );
-  }
-
-  Future<List<ExpedicaSeparacaoItemConsultaModel>> itensSeparacao() async {
-    return await SeparacaoItemConsultaRepository().select(
-      'CodEmpresa = $codEmpresa AND CodSepararEstoque = $codSepararEstoque',
     );
   }
 }

@@ -1,7 +1,9 @@
 import 'package:get/get.dart';
 import 'package:flutter/widgets.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+import 'package:syncfusion_flutter_core/theme.dart';
 
+import 'package:app_expedicao/src/pages/separacao/grid/separacao_carrinho_grid_theme.dart';
 import 'package:app_expedicao/src/pages/separacao/grid/separacao_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/pages/separacao/grid/separacao_carrinho_grid_columns.dart';
 import 'package:app_expedicao/src/pages/separacao/grid/separacao_carrinho_grid_footer.dart';
@@ -19,19 +21,27 @@ class SeparacaoCarrinhoGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<SeparacaoCarrinhoGridController>(builder: (controller) {
-      return Obx(() => SfDataGrid(
-            source: SeparacaoCarrinhoGridSource(controller.itensSort),
+      return Obx(
+        () => SfDataGridTheme(
+          data: SeparacaoCarrinhoGridTheme.theme,
+          child: SfDataGrid(
             columnWidthMode: ColumnWidthMode.fill,
+            controller: controller.dataGridController,
+            source: SeparacaoCarrinhoGridSource(controller.itensSort),
             onCellDoubleTap: SeparacaoCarrinhoGridEvent.onCellDoubleTap,
             columns: SeparacaoCarrinhoGridColumns().columns,
+            selectionMode: SelectionMode.single,
             footer: SeparacaoCarrinhoGridFooter(
-                codCarrinho: percursoEstagioConsulta.codCarrinho,
-                item: percursoEstagioConsulta.item),
+              codCarrinho: percursoEstagioConsulta.codCarrinho,
+              item: percursoEstagioConsulta.item,
+            ),
             showColumnHeaderIconOnHover: true,
             isScrollbarAlwaysShown: true,
             headerRowHeight: 40,
             rowHeight: 40,
-          ));
+          ),
+        ),
+      );
     });
   }
 }

@@ -43,10 +43,10 @@ class CarrinhoPercursoRepository {
     return completer.future;
   }
 
-  Future<ExpedicaoCarrinhoPercursoModel> insert(
+  Future<List<ExpedicaoCarrinhoPercursoModel>> insert(
       ExpedicaoCarrinhoPercursoModel entity) {
     final event = '${socket.id} carrinho.percurso.insert';
-    final completer = Completer<ExpedicaoCarrinhoPercursoModel>();
+    final completer = Completer<List<ExpedicaoCarrinhoPercursoModel>>();
     final resposeIn = uuid.v4();
 
     final send = {
@@ -58,19 +58,23 @@ class CarrinhoPercursoRepository {
     socket.emit(event, jsonEncode(send));
     socket.on(resposeIn, (receiver) {
       final data = jsonDecode(receiver);
-      final mutation = data?['mutation'];
-      final carrinho = ExpedicaoCarrinhoPercursoModel.fromJson(mutation);
+      final mutation = data?['mutation'] ?? [];
+
+      final list = mutation.map<ExpedicaoCarrinhoPercursoModel>((json) {
+        return ExpedicaoCarrinhoPercursoModel.fromJson(json);
+      }).toList();
+
       socket.off(resposeIn);
-      completer.complete(carrinho);
+      completer.complete(list);
     });
 
     return completer.future;
   }
 
-  Future<ExpedicaoCarrinhoPercursoModel> update(
+  Future<List<ExpedicaoCarrinhoPercursoModel>> update(
       ExpedicaoCarrinhoPercursoModel entity) {
     final event = '${socket.id} carrinho.percurso.update';
-    final completer = Completer<ExpedicaoCarrinhoPercursoModel>();
+    final completer = Completer<List<ExpedicaoCarrinhoPercursoModel>>();
     final resposeIn = uuid.v4();
 
     final send = {
@@ -82,19 +86,23 @@ class CarrinhoPercursoRepository {
     socket.emit(event, jsonEncode(send));
     socket.on(resposeIn, (receiver) {
       final data = jsonDecode(receiver);
-      final mutation = data?['mutation'];
-      final carrinho = ExpedicaoCarrinhoPercursoModel.fromJson(mutation);
+      final mutation = data?['mutation'] ?? [];
+
+      final list = mutation.map<ExpedicaoCarrinhoPercursoModel>((json) {
+        return ExpedicaoCarrinhoPercursoModel.fromJson(json);
+      }).toList();
+
       socket.off(resposeIn);
-      completer.complete(carrinho);
+      completer.complete(list);
     });
 
     return completer.future;
   }
 
-  Future<ExpedicaoCarrinhoPercursoModel> delete(
+  Future<List<ExpedicaoCarrinhoPercursoModel>> delete(
       ExpedicaoCarrinhoPercursoModel entity) {
     final event = '${socket.id} carrinho.percurso.delete';
-    final completer = Completer<ExpedicaoCarrinhoPercursoModel>();
+    final completer = Completer<List<ExpedicaoCarrinhoPercursoModel>>();
     final resposeIn = uuid.v4();
 
     final send = {
@@ -106,10 +114,14 @@ class CarrinhoPercursoRepository {
     socket.emit(event, jsonEncode(send));
     socket.on(resposeIn, (receiver) {
       final data = jsonDecode(receiver);
-      final mutation = data?['mutation'];
-      final carrinho = ExpedicaoCarrinhoPercursoModel.fromJson(mutation);
+      final mutation = data?['mutation'] ?? [];
+
+      final list = mutation.map<ExpedicaoCarrinhoPercursoModel>((json) {
+        return ExpedicaoCarrinhoPercursoModel.fromJson(json);
+      }).toList();
+
       socket.off(resposeIn);
-      completer.complete(carrinho);
+      completer.complete(list);
     });
 
     return completer.future;
