@@ -30,7 +30,7 @@ class SeparacaoCarrinhoGrid extends StatelessWidget {
             source: SeparacaoCarrinhoGridSource(controller.itensSort),
             onCellDoubleTap: SeparacaoCarrinhoGridEvent.onCellDoubleTap,
             columns: SeparacaoCarrinhoGridColumns().columns,
-            selectionMode: SelectionMode.single,
+            selectionMode: SelectionMode.none,
             footer: SeparacaoCarrinhoGridFooter(
               codCarrinho: percursoEstagioConsulta.codCarrinho,
               item: percursoEstagioConsulta.item,

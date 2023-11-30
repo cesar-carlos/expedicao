@@ -13,11 +13,16 @@ class SeparacaoCarrinhoGridController extends GetxController {
   List<ExpedicaSeparacaoItemConsultaModel> get itensSort =>
       _itens.toList()..sort((a, b) => b.item.compareTo(a.item));
 
+  //eventos
+  void Function(ExpedicaSeparacaoItemConsultaModel item)? onPressedEditItem;
   void Function(ExpedicaSeparacaoItemConsultaModel item)? onPressedRemoveItem;
 
-  void addItem(ExpedicaSeparacaoItemConsultaModel item) => _itens.add(item);
+  void add(ExpedicaSeparacaoItemConsultaModel item) => _itens.add(item);
 
-  void removeItem(ExpedicaSeparacaoItemConsultaModel item) {
+  void addAll(List<ExpedicaSeparacaoItemConsultaModel> itens) =>
+      _itens.addAll(itens);
+
+  void remove(ExpedicaSeparacaoItemConsultaModel item) {
     _itens.removeWhere((el) =>
         el.codEmpresa == item.codEmpresa &&
         el.codSepararEstoque == item.codSepararEstoque &&
@@ -36,6 +41,13 @@ class SeparacaoCarrinhoGridController extends GetxController {
     return _itens
         .where((el) => el.codProduto == codProduto)
         .fold<double>(0.00, (acm, el) => acm + el.quantidade);
+  }
+
+  Future<void> onEditItem(
+    SeparacaoCarrinhoGridSource grid,
+    ExpedicaSeparacaoItemConsultaModel item,
+  ) async {
+    onPressedEditItem?.call(item);
   }
 
   Future<void> onRemoveItem(

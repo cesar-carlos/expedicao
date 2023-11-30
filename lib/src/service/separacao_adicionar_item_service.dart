@@ -8,6 +8,7 @@ import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_repository.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
+import 'package:app_expedicao/src/model/expedicao_item_situacao_model.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 
 class SeparacaoAdicionarItemService {
@@ -32,7 +33,7 @@ class SeparacaoAdicionarItemService {
       codSepararEstoque: carrinhoPercurso.codOrigem,
       item: '',
       sessionId: _socket.id ?? '',
-      situacao: 'SP',
+      situacao: ExpedicaoItemSituacaoModel.separado,
       codCarrinhoPercurso: percursoEstagioConsulta.codCarrinhoPercurso,
       itemCarrinhoPercurso: percursoEstagioConsulta.item,
       codSeparador: _processo.codUsuario,
@@ -71,11 +72,16 @@ class SeparacaoAdicionarItemService {
 
     final separarItens = await SepararItemRepository().select(params);
     final separacaoItens = await SeparacaoItemRepository().select(params);
+    final List<ExpedicaoSeparacaoItemModel> separacaoItensInsert = [];
 
     for (final item in separarItens) {
-      final qtdSeparadaProduto = separacaoItens.where((el) {
-        return el.codProduto == item.codProduto && el.situacao != 'CA';
-      }).fold<double>(0.00, (acm, element) => acm + element.quantidade);
+      final separacaoItensFiltrado = separacaoItens.where((el) {
+        return el.codProduto == item.codProduto &&
+            el.situacao != ExpedicaoItemSituacaoModel.cancelado;
+      }).toList();
+
+      final qtdSeparadaProduto = separacaoItensFiltrado.fold<double>(
+          0.00, (acm, element) => acm + element.quantidade);
 
       final double qtdSeparar = (item.quantidade - qtdSeparadaProduto);
 
@@ -85,7 +91,7 @@ class SeparacaoAdicionarItemService {
         codSepararEstoque: carrinhoPercurso.codOrigem,
         item: '',
         sessionId: _socket.id ?? '',
-        situacao: 'SP',
+        situacao: ExpedicaoItemSituacaoModel.separado,
         codCarrinhoPercurso: percursoEstagioConsulta.codCarrinhoPercurso,
         itemCarrinhoPercurso: percursoEstagioConsulta.item,
         codSeparador: _processo.codUsuario,
@@ -97,11 +103,28 @@ class SeparacaoAdicionarItemService {
         quantidade: qtdSeparar,
       );
 
-      await SeparacaoItemRepository().insert(itemSeparacao);
+      separacaoItensInsert.add(itemSeparacao);
     }
 
-    //TODO:: implementar retorno
+    final separacaoItensResponse =
+        await SeparacaoItemRepository().insertAll(separacaoItensInsert);
 
-    return [];
+    final paramsConsulta = separacaoItensResponse.map<String>((el) {
+      if (separacaoItensResponse.first == el) {
+        return ''' 
+              CodEmpresa = ${el.codEmpresa} 
+          AND CodSepararEstoque = ${el.codSepararEstoque}
+          AND (Item = '${el.item}'
+        ''';
+      }
+
+      if (separacaoItensResponse.last == el) {
+        return ''' Item = '${el.item}' ) ''';
+      }
+
+      return ''' Item = '${el.item}'  ''';
+    }).join('OR');
+
+    return await SeparacaoItemConsultaRepository().select(paramsConsulta);
   }
 }

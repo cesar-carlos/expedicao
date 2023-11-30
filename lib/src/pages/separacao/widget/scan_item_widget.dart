@@ -28,7 +28,7 @@ class ScanItemWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(
-              width: size.width - 100,
+              width: size.width - 115,
               child: Column(
                 children: [
                   //** SCAN **//

@@ -1,6 +1,7 @@
-import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
+import 'package:app_expedicao/src/model/expedicao_item_situacao_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_consulta_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_repository.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separacao_item_model.dart';
 
@@ -59,11 +60,10 @@ class SeparacaoRemoverItemService {
       ''',
     );
 
-    for (var el in separacaoItensConsulta) {
-      if (el.situacao != 'CA') {
-        final item = ExpedicaoSeparacaoItemModel.fromConsulta(el);
-        await repository.delete(item);
-      }
-    }
+    final itensDel = separacaoItensConsulta.map((el) {
+      return ExpedicaoSeparacaoItemModel.fromConsulta(el);
+    }).toList();
+
+    repository.deleteAll(itensDel);
   }
 }

@@ -1,3 +1,5 @@
+import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
+import 'package:app_expedicao/src/model/expedicao_item_situacao_model.dart';
 import 'package:get/get.dart';
 
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
@@ -27,7 +29,7 @@ class CarrinhoPercursoCancelarService {
   Future<void> execute() async {
     final separacaoItens = await _findSeparacaoItem();
     final newCarrinho = carrinho.copyWith(
-      situacao: ExpedicaoSituacaoModel.cancelada,
+      situacao: ExpedicaoCarrinhoSituacaoModel.liberado,
     );
 
     final newPercursoEstagio = percursoEstagio.copyWith(
@@ -37,7 +39,7 @@ class CarrinhoPercursoCancelarService {
     final newCancelamento = await _createCancelamento();
 
     final newItens = separacaoItens.map((el) {
-      return el.copyWith(situacao: ExpedicaoSituacaoModel.cancelada);
+      return el.copyWith(situacao: ExpedicaoItemSituacaoModel.cancelado);
     }).toList();
 
     await CancelamentoRepository().insert(newCancelamento);

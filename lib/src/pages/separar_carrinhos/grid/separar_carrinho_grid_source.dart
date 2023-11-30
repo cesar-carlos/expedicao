@@ -135,7 +135,7 @@ class SepararCarrinhoGridSource extends DataGridSource {
         controller.dataGridController.selectedRows.contains(row);
 
     return DataGridRowAdapter(
-        color: Colors.white60,
+        color: Colors.white,
         cells: row.getCells().map<Widget>((cell) {
           if (cell.value is double) {
             return SepararCarrinhoGridCells.defaultMoneyCell(cell.value);

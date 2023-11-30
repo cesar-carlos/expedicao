@@ -3,7 +3,7 @@ import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_expedicao/src/app/app_dialog.dart';
-import 'package:app_expedicao/src/model/expedicao_carrinho_origem_model.dart';
+import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
 import 'package:app_expedicao/src/pages/common/widget/message_dialog.widget.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinhos/carrinho_consulta_repository.dart';
@@ -115,7 +115,7 @@ class CarrinhoController extends GetxController {
     _carrinho.codCarrinho = input.codCarrinho;
     _carrinho.descricaoCarrinho = input.descricaoCarrinho;
     _carrinho.situacao = input.situacao;
-    _carrinho.local = ExpedicaoCarrinhoOrigemModel.origem[input.origem] ?? '';
+    _carrinho.local = ExpedicaoOrigemModel.getDescricao(input.origem ?? '');
     _carrinho.setor = input.nomeSetorEstoque ?? '';
     _carrinho.observacao = '';
     _carrinho.codigoBarras = input.codigoBarras;

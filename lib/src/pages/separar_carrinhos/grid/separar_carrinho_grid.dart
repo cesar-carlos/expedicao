@@ -25,7 +25,7 @@ class SepararCarrinhoGrid extends StatelessWidget {
             source: SepararCarrinhoGridSource(itens: controller.itensSort),
             onCellDoubleTap: SepararCarrinhoGridEvent.onCellDoubleTap,
             columns: SepararCarrinhoGridColumns().columns,
-            selectionMode: SelectionMode.single,
+            selectionMode: SelectionMode.none,
             footer: const SepararCarrinhoGridFooter(),
             showColumnHeaderIconOnHover: true,
             isScrollbarAlwaysShown: true,

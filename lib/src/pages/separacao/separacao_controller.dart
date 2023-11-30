@@ -1,10 +1,12 @@
-import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
+import 'package:app_expedicao/src/app/app_susses.dart';
+import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
+import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog.widget.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_expedicao/src/app/app_helper.dart';
-
+import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/service/separar_consultas_services.dart';
 import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
 import 'package:app_expedicao/src/service/separacao_remover_item_service.dart';
@@ -75,6 +77,7 @@ class SeparacaoController extends GetxController {
     _fillCarrinhoPercurso();
     _fillGridSeparacaoItens();
     _onRemoveItemSeparacaoGrid();
+    _onEditItemSeparacaoGrid();
     _listenFocusNode();
     _addLiteners();
   }
@@ -124,14 +127,15 @@ class SeparacaoController extends GetxController {
   Future<void> _fillGridSeparacaoItens() async {
     final separacaoItens = await _separarConsultasServices.itensSeparacao();
 
+    final separacaoItensFiltrados = separacaoItens.where((el) {
+      return (el.codEmpresa == percursoEstagioConsulta.codEmpresa &&
+          ExpedicaoOrigemModel.separando == percursoEstagioConsulta.origem &&
+          el.codSepararEstoque == percursoEstagioConsulta.codOrigem &&
+          el.codCarrinho == percursoEstagioConsulta.codCarrinho);
+    }).toList();
+
     _separacaoGridController.removeAll();
-    for (var el in separacaoItens) {
-      if (el.codCarrinhoPercurso ==
-              percursoEstagioConsulta.codCarrinhoPercurso &&
-          el.itemCarrinhoPercurso == percursoEstagioConsulta.item) {
-        _separacaoGridController.addItem(el);
-      }
-    }
+    _separacaoGridController.addAll(separacaoItensFiltrados);
   }
 
   bool get viewMode {
@@ -256,7 +260,7 @@ class SeparacaoController extends GetxController {
       }
 
       displayController.text = resp.right!.nomeProduto;
-      _separacaoGridController.addItem(separacaoItemConsulta);
+      _separacaoGridController.add(separacaoItemConsulta);
 
       scanController.text = '';
       quantidadeController.text = '1,000';
@@ -275,6 +279,16 @@ class SeparacaoController extends GetxController {
         _separarGridController.totalQtdProductSeparation(codProduto);
     if ((totalSeparada + value) > totalSeparar) return false;
     return true;
+  }
+
+  Future<void> _onEditItemSeparacaoGrid() async {
+    _separacaoGridController.onPressedEditItem = (el) async {
+      await ConfirmationDialogMessageWidget.show(
+        context: Get.context!,
+        message: 'Não implementado!',
+        detail: 'Não é possível editar, funcionalidade não foi implementada.',
+      );
+    };
   }
 
   Future<void> _onRemoveItemSeparacaoGrid() async {
@@ -297,7 +311,7 @@ class SeparacaoController extends GetxController {
         item: el.item,
       );
 
-      _separacaoGridController.removeItem(el);
+      _separacaoGridController.remove(el);
     };
   }
 
@@ -341,10 +355,20 @@ class SeparacaoController extends GetxController {
     }
   }
 
-  Future<void> onSeparaTudo() async {
+  Future<void> onSepararTudo() async {
     final double totalSeparar = _separarGridController.totalQuantity();
     final double totalSeparado =
         _separarGridController.totalQuantitySeparetion();
+
+    if (viewMode) {
+      await ConfirmationDialogMessageWidget.show(
+        context: Get.context!,
+        message: 'Não é possivel separar os itens!',
+        detail: 'O carrinho ja foi cancelado!',
+      );
+
+      return;
+    }
 
     if (totalSeparado >= totalSeparar) {
       await ConfirmationDialogMessageWidget.show(
@@ -359,8 +383,7 @@ class SeparacaoController extends GetxController {
     final bool? confirmation = await ConfirmationDialogWidget.show(
       context: Get.context!,
       message: 'Deseja separa tudo?',
-      detail:
-          'Todos os itens com saldo para separação serão adicionados ao carrinho!',
+      detail: 'Itens com saldo para separação serão adicionados no carrinho!',
     );
 
     if (confirmation != null && confirmation) {
@@ -370,9 +393,16 @@ class SeparacaoController extends GetxController {
         percursoEstagioConsulta: percursoEstagioConsulta,
       );
 
-      await carrinhoPercursoAdicionarItemService.addAll(
-        codEmpresa: _processoExecutavel.codEmpresa,
-        codSepararEstoque: _processoExecutavel.codOrigem,
+      LoadingProcessDialogWidget.show(
+        context: Get.context!,
+        process: () async {
+          final response = await carrinhoPercursoAdicionarItemService.addAll(
+            codEmpresa: _processoExecutavel.codEmpresa,
+            codSepararEstoque: _processoExecutavel.codOrigem,
+          );
+
+          _separacaoGridController.addAll(response);
+        },
       );
     }
   }
@@ -385,15 +415,16 @@ class SeparacaoController extends GetxController {
       callback: (data) async {
         for (var el in data.mutation) {
           final car = ExpedicaoCarrinhoPercursoConsultaModel.fromJson(el);
-          if (car.situacao == ExpedicaoCarrinhoSituacaoModel.cancelado) {
+          if (car.codEmpresa == percursoEstagioConsulta.codEmpresa &&
+              car.codCarrinho == percursoEstagioConsulta.codCarrinho &&
+              car.situacao == ExpedicaoSituacaoModel.cancelada) {
             _viewMode.value = true;
             update();
 
             await ConfirmationDialogMessageWidget.show(
               context: Get.context!,
               message: 'Carrinho cancelado!',
-              detail:
-                  'Carrinho cancelado pelo usuario: ${car.nomeUsuarioCancelamento}!',
+              detail: 'Cancelado pelo usuario: ${car.nomeUsuarioCancelamento}!',
             );
           }
         }
@@ -406,9 +437,12 @@ class SeparacaoController extends GetxController {
       callback: (data) async {
         for (var el in data.mutation) {
           final res = ExpedicaSeparacaoItemConsultaModel.fromJson(el);
-          if (res.codEmpresa == _processoExecutavel.codEmpresa &&
-              res.codSepararEstoque == _processoExecutavel.codOrigem) {
-            _separacaoGridController.addItem(res);
+          if (res.codEmpresa == percursoEstagioConsulta.codEmpresa &&
+              ExpedicaoOrigemModel.separando ==
+                  percursoEstagioConsulta.origem &&
+              res.codSepararEstoque == percursoEstagioConsulta.codOrigem &&
+              res.codCarrinho == percursoEstagioConsulta.codCarrinho) {
+            _separacaoGridController.add(res);
           }
         }
       },
@@ -420,7 +454,7 @@ class SeparacaoController extends GetxController {
       callback: (data) async {
         for (var el in data.mutation) {
           final sep = ExpedicaSeparacaoItemConsultaModel.fromJson(el);
-          _separacaoGridController.removeItem(sep);
+          _separacaoGridController.remove(sep);
         }
       },
     );

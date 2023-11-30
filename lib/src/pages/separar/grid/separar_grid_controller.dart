@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';

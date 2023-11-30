@@ -162,7 +162,7 @@ class SepararSource extends DataGridSource {
         controller.dataGridController.selectedRows.contains(row);
 
     final dataGridRowAdapter = DataGridRowAdapter(
-        color: Colors.white60,
+        color: Colors.white,
         cells: row.getCells().map<Widget>((cell) {
           if (cell.value is double) {
             return SepararGridCell.defaultMoneyCell(cell.value);
