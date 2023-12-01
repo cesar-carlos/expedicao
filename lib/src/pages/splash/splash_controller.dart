@@ -1,44 +1,40 @@
 import 'package:get/get.dart';
 
+import 'package:app_expedicao/src/app/app_socket.config.dart';
 import 'package:app_expedicao/src/service/separar_consultas_services.dart';
+import 'package:app_expedicao/src/pages/common/widget/loading_sever_dialog.widget.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
 import 'package:app_expedicao/src/service/processo_executavel_service.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/routes/app_router.dart';
 
 class SplashController extends GetxController {
+  final _isLoad = false.obs;
+
   final _processoExecutavelService = ProcessoExecutavelService();
+  final _socketClient = Get.find<AppSocketConfig>();
 
   late ProcessoExecutavelModel? _processoExecutavel;
   late SepararConsultaServices _separarConsultaServices;
   late ExpedicaoSepararConsultaModel? _separarConsulta;
 
-  final _isLoad = false.obs;
+  bool get isLoad => _isLoad.value;
 
   @override
   Future<void> onInit() async {
     super.onInit();
 
-    await _init();
+    await _loading();
+    _litener();
   }
 
-  _init() async {
+  _loading() async {
     _isLoad.value = true;
-    //delay socket connection
     await Future.delayed(const Duration(seconds: 1));
 
     _processoExecutavel = await _processoExecutavelService.executar();
-
     if (_processoExecutavel == null) {
-      const arguments = ''' 
-          Não foi possível executar o processo.
-        
-          1) Verifique se o servidor está online.
-          2) Verifique se o banco de dados está online.
-          3) Verifique se o banco de dados está configurado corretamente.
-      ''';
-
-      Get.offNamed(AppRouter.notfind, arguments: arguments);
+      Get.offNamed(AppRouter.splashError, arguments: '0001');
       return;
     }
 
@@ -49,15 +45,7 @@ class SplashController extends GetxController {
 
     _separarConsulta = await _separarConsultaServices.separar();
     if (_separarConsulta == null) {
-      const arguments = '''
-          Não foi possível localizar itens da separação.
-
-          1) Verifique se o servidor está online.
-          2) Verifique se o banco de dados está online.
-          3) Verifique se o banco de dados está configurado corretamente.
-      ''';
-
-      Get.offNamed(AppRouter.notfind, arguments: arguments);
+      Get.offNamed(AppRouter.splashError, arguments: '0002');
       return;
     }
 
@@ -65,7 +53,15 @@ class SplashController extends GetxController {
     nextPage();
   }
 
-  bool get isLoad => _isLoad.value;
+  _litener() {
+    _socketClient.isConnect.listen((event) {
+      if (event) _loading();
+
+      LoadingSeverDialogWidget.show(
+        context: Get.context!,
+      );
+    });
+  }
 
   void nextPage() async {
     Get.put<ProcessoExecutavelModel>(_processoExecutavel!);

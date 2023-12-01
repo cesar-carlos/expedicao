@@ -1,15 +1,14 @@
-import 'package:app_expedicao/src/pages/carrinho/carrinho_controller.dart';
-import 'package:app_expedicao/src/pages/separar_carrinhos/grid/separar_carrinho_grid_controller.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:app_expedicao/src/model/expedicao_separar_model.dart';
-import 'package:app_expedicao/src/service/expedicao_estagio.service.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
 import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';
+import 'package:app_expedicao/src/pages/common/widget/loading_sever_dialog.widget.dart';
 import 'package:app_expedicao/src/pages/separar_carrinhos/separar_carrinhos_controller.dart';
 import 'package:app_expedicao/src/pages/carrinho/widget/adicionar_carrinho_dialog_widget.dart';
+import 'package:app_expedicao/src/pages/separar_carrinhos/grid/separar_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/repository/expedicao_separar_item/separar_item_event_repository.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_adicionar_service.dart';
@@ -17,13 +16,17 @@ import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dar
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
 import 'package:app_expedicao/src/service/separar_consultas_services.dart';
+import 'package:app_expedicao/src/pages/carrinho/carrinho_controller.dart';
+import 'package:app_expedicao/src/service/expedicao_estagio.service.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_model.dart';
 import 'package:app_expedicao/src/service/separar_services.dart';
+import 'package:app_expedicao/src/app/app_socket.config.dart';
 
 class SepararController extends GetxController {
   bool _iniciada = false;
 
+  late AppSocketConfig _socketClient;
   late SepararConsultaServices _separarServices;
   late SepararGridController _separarGridController;
   late ProcessoExecutavelModel _processoExecutavel;
@@ -46,7 +49,6 @@ class SepararController extends GetxController {
   @override
   onInit() async {
     super.onInit();
-
     _putDependencies();
 
     _processoExecutavel = Get.find<ProcessoExecutavelModel>();
@@ -65,6 +67,7 @@ class SepararController extends GetxController {
   }
 
   _putDependencies() {
+    _socketClient = Get.find<AppSocketConfig>();
     Get.lazyPut(() => SepararCarrinhosController());
     Get.lazyPut(() => SepararGridController());
 
@@ -81,7 +84,7 @@ class SepararController extends GetxController {
   Future<void> _fillGridSepararItens() async {
     final separarItens = await _separarServices.itensSaparar();
     for (var el in separarItens) {
-      _separarGridController.addItem(el);
+      _separarGridController.add(el);
     }
   }
 
@@ -114,8 +117,7 @@ class SepararController extends GetxController {
     await ConfirmationDialogMessageWidget.show(
       context: Get.context!,
       message: 'Não implementado!',
-      detail:
-          'Não é possível pausar a separação, esta funcionalidade ainda não foi implementada.',
+      detail: 'Não é possível pausar, funcionalidade não foi implementada.',
     );
   }
 
@@ -160,11 +162,18 @@ class SepararController extends GetxController {
     final carrinhoPercursoEvent = SepararItemEventRepository.instancia;
     const uuid = Uuid();
 
+    _socketClient.isConnect.listen((event) {
+      if (event) return;
+
+      LoadingSeverDialogWidget.show(
+        context: Get.context!,
+      );
+    });
+
     carrinhoPercursoEvent.addListener(
       RepositoryEventListenerModel(
         id: uuid.v4(),
         event: Event.update,
-        allEvent: true,
         callback: (data) async {
           for (var el in data.mutation) {
             final item = ExpedicaoSepararItemConsultaModel.fromJson(el);

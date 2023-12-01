@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
+import 'package:app_expedicao/src/app/app_error.dart';
 import 'package:app_expedicao/src/model/expedicao_percurso_estagio.dart';
 import 'package:app_expedicao/src/app/app_socket.config.dart';
 
@@ -12,6 +13,8 @@ class PercursoEstagioRepository {
   var socket = Get.find<AppSocketConfig>().socket;
 
   Future<List<ExpedicaoPercursoEstagio>> select([String params = '']) {
+    if (socket.connected == false) throw AppError('Socket não conectado');
+
     final event = '${socket.id} percurso.estagio.select';
     final completer = Completer<List<ExpedicaoPercursoEstagio>>();
     final resposeIn = uuid.v4();
@@ -45,6 +48,8 @@ class PercursoEstagioRepository {
 
   Future<List<ExpedicaoPercursoEstagio>> insert(
       ExpedicaoPercursoEstagio carrinho) {
+    if (socket.connected == false) throw AppError('Socket não conectado');
+
     final event = '${socket.id} percurso.estagio.insert';
     final completer = Completer<List<ExpedicaoPercursoEstagio>>();
     final resposeIn = uuid.v4();
@@ -73,6 +78,8 @@ class PercursoEstagioRepository {
 
   Future<List<ExpedicaoPercursoEstagio>> update(
       ExpedicaoPercursoEstagio carrinho) {
+    if (socket.connected == false) throw AppError('Socket não conectado');
+
     final event = '${socket.id} percurso.estagio.update';
     final completer = Completer<List<ExpedicaoPercursoEstagio>>();
     final resposeIn = uuid.v4();
@@ -101,6 +108,8 @@ class PercursoEstagioRepository {
 
   Future<List<ExpedicaoPercursoEstagio>> delete(
       ExpedicaoPercursoEstagio carrinho) {
+    if (socket.connected == false) throw AppError('Socket não conectado');
+
     final event = '${socket.id} percurso.estagio.delete';
     final completer = Completer<List<ExpedicaoPercursoEstagio>>();
     final resposeIn = uuid.v4();

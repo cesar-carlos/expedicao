@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:flutter/widgets.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
+// ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_core/theme.dart';
 
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid_theme.dart';
@@ -26,7 +27,7 @@ class SepararGrid extends StatelessWidget {
             source: SepararSource(controller.itensSort),
             onCellDoubleTap: SepararGridEvent.onCellDoubleTap,
             columns: SepararGridColumns().columns,
-            selectionMode: SelectionMode.none,
+            selectionMode: SelectionMode.single,
             footer: const SepararGridFooter(),
             showColumnHeaderIconOnHover: true,
             isScrollbarAlwaysShown: true,

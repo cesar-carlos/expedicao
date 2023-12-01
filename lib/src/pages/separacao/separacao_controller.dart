@@ -1,24 +1,23 @@
-import 'package:app_expedicao/src/app/app_susses.dart';
-import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
-import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog.widget.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_expedicao/src/app/app_helper.dart';
+import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/service/separar_consultas_services.dart';
 import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
 import 'package:app_expedicao/src/service/separacao_remover_item_service.dart';
-import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dart';
 import 'package:app_expedicao/src/model/expedicao_separacao_item_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
+import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog.widget.dart';
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_event_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_event_repository.dart';
 import 'package:app_expedicao/src/pages/separacao/grid/separacao_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget.dart';
+import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';
 import 'package:app_expedicao/src/service/separacao_adicionar_item_service.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
@@ -129,9 +128,9 @@ class SeparacaoController extends GetxController {
 
     final separacaoItensFiltrados = separacaoItens.where((el) {
       return (el.codEmpresa == percursoEstagioConsulta.codEmpresa &&
-          ExpedicaoOrigemModel.separando == percursoEstagioConsulta.origem &&
-          el.codSepararEstoque == percursoEstagioConsulta.codOrigem &&
-          el.codCarrinho == percursoEstagioConsulta.codCarrinho);
+          el.codCarrinhoPercurso ==
+              percursoEstagioConsulta.codCarrinhoPercurso &&
+          el.itemCarrinhoPercurso == percursoEstagioConsulta.item);
     }).toList();
 
     _separacaoGridController.removeAll();
@@ -259,8 +258,17 @@ class SeparacaoController extends GetxController {
         return;
       }
 
+      //ADD ITEM NA GRID
       displayController.text = resp.right!.nomeProduto;
       _separacaoGridController.add(separacaoItemConsulta);
+
+      final itemSeparar =
+          _findItemSepararGrid(separacaoItemConsulta.codProduto)!;
+
+      _separarGridController.updateItem(itemSeparar.copyWith(
+        quantidadeSeparacao:
+            itemSeparar.quantidadeSeparacao + separacaoItemConsulta.quantidade,
+      ));
 
       scanController.text = '';
       quantidadeController.text = '1,000';
@@ -270,9 +278,11 @@ class SeparacaoController extends GetxController {
 
   bool validQuantitySeparate(String scanText, double value) {
     bool isBarCode = AppHelper.isBarCode(scanText);
-    int codProduto = isBarCode
+    int? codProduto = isBarCode
         ? _separarGridController.findcodProdutoFromBarCode(scanText.trim())
         : int.parse(scanText.trim());
+
+    if (codProduto == null) return false;
 
     final totalSeparar = _separarGridController.totalQtdProduct(codProduto);
     final totalSeparada =
@@ -307,11 +317,15 @@ class SeparacaoController extends GetxController {
         carrinhoPercurso: _carrinhoPercurso!,
         percursoEstagioConsulta: percursoEstagioConsulta,
       ).remove(
-        codSepararEstoque: el.codSepararEstoque,
         item: el.item,
       );
 
       _separacaoGridController.remove(el);
+      final itemSeparar = _findItemSepararGrid(el.codProduto)!;
+
+      _separarGridController.updateItem(itemSeparar.copyWith(
+        quantidadeSeparacao: itemSeparar.quantidadeSeparacao - el.quantidade,
+      ));
     };
   }
 
@@ -346,10 +360,15 @@ class SeparacaoController extends GetxController {
       SeparacaoRemoverItemService(
         carrinhoPercurso: _carrinhoPercurso!,
         percursoEstagioConsulta: percursoEstagioConsulta,
-      ).removeAllItensCart(
-        codSepararEstoque: percursoEstagioConsulta.codOrigem,
-        codCarrinho: percursoEstagioConsulta.codCarrinho,
-      );
+      ).removeAllItensCart();
+
+      final separacaoItemConsulta = _separacaoGridController.itens;
+      for (var el in separacaoItemConsulta) {
+        final itemSeparar = _findItemSepararGrid(el.codProduto)!;
+        _separarGridController.updateItem(itemSeparar.copyWith(
+          quantidadeSeparacao: itemSeparar.quantidadeSeparacao - el.quantidade,
+        ));
+      }
 
       _separacaoGridController.removeAll();
     }
@@ -396,15 +415,24 @@ class SeparacaoController extends GetxController {
       LoadingProcessDialogWidget.show(
         context: Get.context!,
         process: () async {
-          final response = await carrinhoPercursoAdicionarItemService.addAll(
-            codEmpresa: _processoExecutavel.codEmpresa,
-            codSepararEstoque: _processoExecutavel.codOrigem,
-          );
-
+          final response = await carrinhoPercursoAdicionarItemService.addAll();
           _separacaoGridController.addAll(response);
+
+          for (var el in response) {
+            final itemSeparar = _findItemSepararGrid(el.codProduto)!;
+            _separarGridController.updateItem(itemSeparar.copyWith(
+              quantidadeSeparacao:
+                  itemSeparar.quantidadeSeparacao + el.quantidade,
+            ));
+          }
         },
       );
     }
+  }
+
+  ExpedicaoSepararItemConsultaModel? _findItemSepararGrid(int codProduto) {
+    final el = _separarGridController.findCodProduto(codProduto);
+    return el;
   }
 
   void _addLiteners() {

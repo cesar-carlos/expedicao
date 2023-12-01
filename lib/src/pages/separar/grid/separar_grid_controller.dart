@@ -1,3 +1,5 @@
+import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
+import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_repository.dart';
 import 'package:get/get.dart';
 
 import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';
@@ -11,24 +13,27 @@ class SepararGridController extends GetxController {
   List<ExpedicaoSepararItemConsultaModel> get itensSort =>
       _itens.toList()..sort((a, b) => a.item.compareTo(b.item));
 
-  addItem(ExpedicaoSepararItemConsultaModel item) {
+  void add(ExpedicaoSepararItemConsultaModel item) {
     _itens.add(item);
   }
 
-  removeItem(ExpedicaoSepararItemConsultaModel item) {
+  void addAll(List<ExpedicaoSepararItemConsultaModel> itens) =>
+      _itens.addAll(itens);
+
+  void updateItem(ExpedicaoSepararItemConsultaModel item) {
+    final index = _itens.indexWhere((el) => el.item == item.item);
+    dataGridController.selectedIndex = index;
+    _itens[index] = item;
+  }
+
+  void remove(ExpedicaoSepararItemConsultaModel item) {
     _itens.removeWhere((el) =>
         el.codEmpresa == item.codEmpresa &&
         el.codSepararEstoque == item.codSepararEstoque &&
         el.item == item.item);
   }
 
-  updateItem(ExpedicaoSepararItemConsultaModel item) {
-    final index = _itens.indexWhere((el) => el.item == item.item);
-    dataGridController.selectedIndex = index;
-    _itens[index] = item;
-  }
-
-  removeAll() {
+  void removeAll() {
     _itens.clear();
   }
 
@@ -65,29 +70,57 @@ class SepararGridController extends GetxController {
   }
 
   bool existsBarCode(String barCode) {
-    final itens = _itens.where((el) => el.codigoBarras == barCode).toList();
-    if (itens.isEmpty) return false;
+    final el = _itens.where((el) => el.codigoBarras == barCode).toList();
+    if (el.isEmpty) return false;
     return true;
   }
 
   bool existsCodProduto(int codProduto) {
-    final item = _itens.where((el) => el.codProduto == codProduto).toList();
-    if (item.isEmpty) return false;
+    final el = _itens.where((el) => el.codProduto == codProduto).toList();
+    if (el.isEmpty) return false;
     return true;
   }
 
-  int findcodProdutoFromBarCode(String barCode) {
-    final itens = _itens.where((el) => el.codigoBarras == barCode).toList();
-    return itens.first.codProduto;
+  int? findcodProdutoFromBarCode(String barCode) {
+    final el = _itens.where((el) => el.codigoBarras == barCode).toList();
+    return el.first.codProduto;
   }
 
-  ExpedicaoSepararItemConsultaModel findBarCode(String barCode) {
-    final itens = _itens.where((el) => el.codigoBarras == barCode).toList();
-    return itens.first;
+  ExpedicaoSepararItemConsultaModel? findBarCode(String barCode) {
+    final el = _itens.where((el) => el.codigoBarras == barCode).toList();
+    return el.first;
   }
 
-  ExpedicaoSepararItemConsultaModel findCodProduto(int codProduto) {
-    final itens = _itens.where((el) => el.codProduto == codProduto).toList();
-    return itens.first;
+  ExpedicaoSepararItemConsultaModel? findCodProduto(int codProduto) {
+    final el = _itens.where((el) => el.codProduto == codProduto).toList();
+    return el.first;
+  }
+
+  Future<void> recalc() async {
+    final repository = SeparacaoItemRepository();
+    List<ExpedicaoSepararItemConsultaModel> separarItem = [];
+
+    for (var el in _itens) {
+      final separacaoItens = await repository.select('''
+            CodEmpresa = ${el.codEmpresa}
+        AND CodSepararEstoque = ${el.codSepararEstoque}
+        AND CodProduto = ${el.codProduto}
+        AND Situacao <> ${ExpedicaoSituacaoModel.cancelada}
+      ''');
+
+      if (separacaoItens.isEmpty) {
+        separarItem.add(el.copyWith(quantidadeSeparacao: 0.00));
+        continue;
+      }
+
+      double totalSeparado = separacaoItens.fold<double>(
+          0.00, (previousValue, element) => previousValue + element.quantidade);
+
+      separarItem.add(el.copyWith(quantidadeSeparacao: totalSeparado));
+    }
+
+    for (var el in separarItem) {
+      updateItem(el);
+    }
   }
 }

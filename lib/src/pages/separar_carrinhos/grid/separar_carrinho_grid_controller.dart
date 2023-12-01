@@ -19,11 +19,11 @@ class SepararCarrinhoGridController extends GetxController {
   void Function(ExpedicaoCarrinhoPercursoConsultaModel item)?
       onPressedRemoveItem;
 
-  void addItem(ExpedicaoCarrinhoPercursoConsultaModel item) {
+  void add(ExpedicaoCarrinhoPercursoConsultaModel item) {
     _itens.add(item);
   }
 
-  void removeItem(ExpedicaoCarrinhoPercursoConsultaModel item) {
+  void remove(ExpedicaoCarrinhoPercursoConsultaModel item) {
     _itens.removeWhere((el) =>
         el.codEmpresa == item.codEmpresa &&
         el.codCarrinho == item.codCarrinho &&
@@ -35,6 +35,21 @@ class SepararCarrinhoGridController extends GetxController {
         (el) => el.item == item.item && el.codCarrinho == item.codCarrinho);
     if (index == -1) return;
     _itens[index] = item;
+  }
+
+  void edit(
+    SepararCarrinhoGridSource carrinhoGrid,
+    ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta,
+  ) {
+    final dialog = SeparacaoPage(percursoEstagioConsulta);
+    dialog.show();
+  }
+
+  void save(
+    SepararCarrinhoGridSource carrinhoGrid,
+    ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta,
+  ) {
+    print('SALVAR CARRINHO SEPARACAO');
   }
 
   Future<void> onRemoveItem(
@@ -60,20 +75,5 @@ class SepararCarrinhoGridController extends GetxController {
     if (confirmation != null && confirmation) {
       onPressedRemoveItem?.call(item);
     }
-  }
-
-  void editItemGrid(
-    SepararCarrinhoGridSource carrinhoGrid,
-    ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta,
-  ) {
-    final dialog = SeparacaoPage(percursoEstagioConsulta);
-    dialog.show();
-  }
-
-  void saveItemGrid(
-    SepararCarrinhoGridSource carrinhoGrid,
-    ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta,
-  ) {
-    print('SALVAR CARRINHO SEPARACAO');
   }
 }

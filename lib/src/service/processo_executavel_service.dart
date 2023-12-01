@@ -3,29 +3,34 @@ import 'package:app_expedicao/src/repository/processo_executavel/processo_execut
 
 class ProcessoExecutavelService {
   Future<ProcessoExecutavelModel?> executar() async {
-    final repository = ProcessoExecutavelRepository();
-    const params = "Status LIKE 'Ativo'";
-    final response = await repository.select(params);
+    try {
+      final repository = ProcessoExecutavelRepository();
+      const params = "Status LIKE 'Ativo'";
 
-    if (response.isEmpty) {
+      final response = await repository.select(params);
+
+      if (response.isEmpty) {
+        return null;
+      }
+
+      response.sort((a, b) {
+        return b.dataAbertura.compareTo(a.dataAbertura);
+      });
+
+      response.sort((a, b) {
+        return b.codProcessoExecutavel.compareTo(a.codProcessoExecutavel);
+      });
+
+      final processoExecutavel = response.first;
+      final newProcessoExecutavel = processoExecutavel.copyWith(
+        status: 'Executado',
+      );
+
+      //TODO: verificar se o processo foi executado com sucesso
+      //await repository.update(newProcessoExecutavel);
+      return newProcessoExecutavel;
+    } catch (e) {
       return null;
     }
-
-    response.sort((a, b) {
-      return b.dataAbertura.compareTo(a.dataAbertura);
-    });
-
-    response.sort((a, b) {
-      return b.codProcessoExecutavel.compareTo(a.codProcessoExecutavel);
-    });
-
-    final processoExecutavel = response.first;
-    final newProcessoExecutavel = processoExecutavel.copyWith(
-      status: 'Executado',
-    );
-
-    //TODO: verificar se o processo foi executado com sucesso
-    //await repository.update(newProcessoExecutavel);
-    return newProcessoExecutavel;
   }
 }

@@ -93,7 +93,7 @@ class SepararCarrinhoGridSource extends DataGridSource {
                   ),
                   IconButton(
                     onPressed: () {
-                      controller.editItemGrid(this, i);
+                      controller.edit(this, i);
                     },
                     icon: Icon(
                       size: 17,
@@ -112,7 +112,7 @@ class SepararCarrinhoGridSource extends DataGridSource {
                   ),
                   IconButton(
                     onPressed: () {
-                      controller.saveItemGrid(this, i);
+                      controller.save(this, i);
                     },
                     icon: const Icon(
                       size: 17,
@@ -131,9 +131,6 @@ class SepararCarrinhoGridSource extends DataGridSource {
 
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
-    final selectedRow =
-        controller.dataGridController.selectedRows.contains(row);
-
     return DataGridRowAdapter(
         color: Colors.white,
         cells: row.getCells().map<Widget>((cell) {

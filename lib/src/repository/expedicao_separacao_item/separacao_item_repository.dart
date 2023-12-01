@@ -6,12 +6,15 @@ import 'package:uuid/uuid.dart';
 
 import 'package:app_expedicao/src/app/app_socket.config.dart';
 import 'package:app_expedicao/src/model/expedicao_separacao_item_model.dart';
+import 'package:app_expedicao/src/app/app_error.dart';
 
 class SeparacaoItemRepository {
   final uuid = const Uuid();
   var socket = Get.find<AppSocketConfig>().socket;
 
   Future<List<ExpedicaoSeparacaoItemModel>> select([String params = '']) {
+    if (socket.connected == false) throw AppError('Socket não conectado');
+
     final event = '${socket.id} separacao.item.select';
     final completer = Completer<List<ExpedicaoSeparacaoItemModel>>();
     final resposeIn = uuid.v4();
@@ -45,6 +48,8 @@ class SeparacaoItemRepository {
 
   Future<List<ExpedicaoSeparacaoItemModel>> insert(
       ExpedicaoSeparacaoItemModel entity) {
+    if (socket.connected == false) throw AppError('Socket não conectado');
+
     final event = '${socket.id} separacao.item.insert';
     final completer = Completer<List<ExpedicaoSeparacaoItemModel>>();
     final resposeIn = uuid.v4();
@@ -73,6 +78,8 @@ class SeparacaoItemRepository {
 
   Future<List<ExpedicaoSeparacaoItemModel>> insertAll(
       List<ExpedicaoSeparacaoItemModel> entity) {
+    if (socket.connected == false) throw AppError('Socket não conectado');
+
     final event = '${socket.id} separacao.item.insert';
     final completer = Completer<List<ExpedicaoSeparacaoItemModel>>();
     final resposeIn = uuid.v4();
@@ -101,6 +108,8 @@ class SeparacaoItemRepository {
 
   Future<List<ExpedicaoSeparacaoItemModel>> update(
       ExpedicaoSeparacaoItemModel entity) {
+    if (socket.connected == false) throw AppError('Socket não conectado');
+
     final event = '${socket.id} separacao.item.update';
     final completer = Completer<List<ExpedicaoSeparacaoItemModel>>();
     final resposeIn = uuid.v4();
@@ -129,6 +138,8 @@ class SeparacaoItemRepository {
 
   Future<List<ExpedicaoSeparacaoItemModel>> updateAll(
       List<ExpedicaoSeparacaoItemModel> entity) {
+    if (socket.connected == false) throw AppError('Socket não conectado');
+
     final event = '${socket.id} separacao.item.update';
     final completer = Completer<List<ExpedicaoSeparacaoItemModel>>();
     final resposeIn = uuid.v4();
@@ -157,6 +168,8 @@ class SeparacaoItemRepository {
 
   Future<List<ExpedicaoSeparacaoItemModel>> delete(
       ExpedicaoSeparacaoItemModel entity) {
+    if (socket.connected == false) throw AppError('Socket não conectado');
+
     final event = '${socket.id} separacao.item.delete';
     final completer = Completer<List<ExpedicaoSeparacaoItemModel>>();
     final resposeIn = uuid.v4();
@@ -185,6 +198,8 @@ class SeparacaoItemRepository {
 
   Future<List<ExpedicaoSeparacaoItemModel>> deleteAll(
       List<ExpedicaoSeparacaoItemModel> entity) {
+    if (socket.connected == false) throw AppError('Socket não conectado');
+
     final event = '${socket.id} separacao.item.delete';
     final completer = Completer<List<ExpedicaoSeparacaoItemModel>>();
     final resposeIn = uuid.v4();

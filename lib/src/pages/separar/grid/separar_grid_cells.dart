@@ -74,4 +74,12 @@ class SepararGridCell {
       ),
     );
   }
+
+  static defaultWidgetCell(Widget value) {
+    return SizedBox(
+      child: Container(
+        child: value,
+      ),
+    );
+  }
 }

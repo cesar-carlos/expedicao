@@ -61,31 +61,31 @@ class SeparacaoAdicionarItemService {
     return list.first;
   }
 
-  Future<List<ExpedicaSeparacaoItemConsultaModel>> addAll({
-    required codEmpresa,
-    required codSepararEstoque,
-  }) async {
+  Future<List<ExpedicaSeparacaoItemConsultaModel>> addAll() async {
     final params = '''
-          CodEmpresa = $codEmpresa
-      AND CodSepararEstoque = $codSepararEstoque
+          CodEmpresa = ${carrinhoPercurso.codEmpresa}
+      AND CodSepararEstoque = ${carrinhoPercurso.codOrigem}
     ''';
 
     final separarItens = await SepararItemRepository().select(params);
     final separacaoItens = await SeparacaoItemRepository().select(params);
+
     final List<ExpedicaoSeparacaoItemModel> separacaoItensInsert = [];
 
     for (final item in separarItens) {
       final separacaoItensFiltrado = separacaoItens.where((el) {
-        return el.codProduto == item.codProduto &&
+        return el.codEmpresa == item.codEmpresa &&
+            el.codSepararEstoque == item.codSepararEstoque &&
+            el.codProduto == item.codProduto &&
             el.situacao != ExpedicaoItemSituacaoModel.cancelado;
       }).toList();
 
       final qtdSeparadaProduto = separacaoItensFiltrado.fold<double>(
-          0.00, (acm, element) => acm + element.quantidade);
+          0.00, (acm, el) => acm + el.quantidade);
 
       final double qtdSeparar = (item.quantidade - qtdSeparadaProduto);
-
       if (qtdSeparar <= 0) continue;
+
       final itemSeparacao = ExpedicaoSeparacaoItemModel(
         codEmpresa: carrinhoPercurso.codEmpresa,
         codSepararEstoque: carrinhoPercurso.codOrigem,
@@ -109,21 +109,13 @@ class SeparacaoAdicionarItemService {
     final separacaoItensResponse =
         await SeparacaoItemRepository().insertAll(separacaoItensInsert);
 
-    final paramsConsulta = separacaoItensResponse.map<String>((el) {
-      if (separacaoItensResponse.first == el) {
-        return ''' 
-              CodEmpresa = ${el.codEmpresa} 
-          AND CodSepararEstoque = ${el.codSepararEstoque}
-          AND (Item = '${el.item}'
-        ''';
-      }
-
-      if (separacaoItensResponse.last == el) {
-        return ''' Item = '${el.item}' ) ''';
-      }
-
-      return ''' Item = '${el.item}'  ''';
-    }).join('OR');
+    String paramsConsulta = separacaoItensResponse.map((el) {
+      return '''
+          (CodEmpresa = ${el.codEmpresa} 
+      AND CodSepararEstoque = ${el.codSepararEstoque}
+      AND Item = '${el.item}')
+      ''';
+    }).join(' OR ');
 
     return await SeparacaoItemConsultaRepository().select(paramsConsulta);
   }

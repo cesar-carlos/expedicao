@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid_cells.dart';
-import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';
+import 'package:app_expedicao/src/pages/common/widget/complit_animation_icon_widget.dart';
+import 'package:app_expedicao/src/pages/common/widget/box_animation_icon_widget.dart';
+import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dart';
 
 class SepararSource extends DataGridSource {
   var controller = Get.find<SepararGridController>();
@@ -14,6 +16,12 @@ class SepararSource extends DataGridSource {
     _itens = itens
         .map<DataGridRow>((i) => DataGridRow(
               cells: [
+                DataGridCell<Widget>(
+                  columnName: 'indicator',
+                  value: (i.quantidade == i.quantidadeSeparacao)
+                      ? const ComplitAnimationIconWidget()
+                      : const BoxAnimationIconWidget(),
+                ),
                 DataGridCell<int>(
                   columnName: 'codEmpresa',
                   value: i.codEmpresa,
@@ -158,9 +166,6 @@ class SepararSource extends DataGridSource {
 
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
-    final selectedRow =
-        controller.dataGridController.selectedRows.contains(row);
-
     final dataGridRowAdapter = DataGridRowAdapter(
         color: Colors.white,
         cells: row.getCells().map<Widget>((cell) {
@@ -170,6 +175,10 @@ class SepararSource extends DataGridSource {
 
           if (cell.value is int) {
             return SepararGridCell.defaultIntCell(cell.value);
+          }
+
+          if (cell.value is Widget) {
+            return SepararGridCell.defaultWidgetCell(cell.value);
           }
 
           if (cell.value is Image) {

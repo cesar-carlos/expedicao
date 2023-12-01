@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_expedicao/src/pages/splash/splash_controller.dart';
-import 'package:app_expedicao/src/pages/splash/widget/carregando.widget.dart';
+import 'package:app_expedicao/src/pages/splash/widget/carregando_widget.dart';
 
 class SplashPage extends StatelessWidget {
   const SplashPage({super.key});

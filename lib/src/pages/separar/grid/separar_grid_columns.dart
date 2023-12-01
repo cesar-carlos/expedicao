@@ -16,6 +16,21 @@ class SepararGridColumns {
   void _buidColumns() {
     _columns.add(
       GridColumn(
+        visible: true,
+        maximumWidth: 30,
+        columnName: 'indicator',
+        label: Container(
+          padding: padding,
+          alignment: Alignment.center,
+          child: const Text(
+            '',
+          ),
+        ),
+      ),
+    );
+
+    _columns.add(
+      GridColumn(
         visible: false,
         columnName: 'codEmpresa',
         label: Container(
@@ -44,7 +59,7 @@ class SepararGridColumns {
 
     _columns.add(
       GridColumn(
-        visible: true,
+        visible: false,
         maximumWidth: 40,
         columnName: 'item',
         label: Container(

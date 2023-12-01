@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 
 import 'package:app_expedicao/src/pages/notfound/notfound_page.dart';
+import 'package:app_expedicao/src/pages/splash/splash_error_page.dart';
 import 'package:app_expedicao/src/pages/notfound/notfound_binding.dart';
 import 'package:app_expedicao/src/pages/footer/footer_page_controller.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
@@ -18,6 +19,14 @@ class AppPageRouter {
       binding: SplashBinding(),
       transition: Transition.fadeIn,
       page: () => const SplashPage(),
+    ),
+    GetPage(
+      name: AppRouter.splashError,
+      transition: Transition.fadeIn,
+      page: () {
+        String erroCode = Get.arguments;
+        return SplashErrorPage(erroCode: erroCode);
+      },
     ),
     GetPage(
       name: AppRouter.separar,

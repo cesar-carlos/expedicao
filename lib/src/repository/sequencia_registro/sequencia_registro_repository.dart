@@ -6,12 +6,15 @@ import 'package:uuid/uuid.dart';
 
 import 'package:app_expedicao/src/app/app_socket.config.dart';
 import 'package:app_expedicao/src/model/global_sequencia_registro_model.dart';
+import 'package:app_expedicao/src/app/app_error.dart';
 
 class SequenciaRegistroRepository {
   final uuid = const Uuid();
   var socket = Get.find<AppSocketConfig>().socket;
 
   Future<List<GlobalSequenciaRegistroModel>> select(String sequencia) {
+    if (socket.connected == false) throw AppError('Socket não conectado');
+
     final event = '${socket.id} sequencia.consulta';
     final completer = Completer<List<GlobalSequenciaRegistroModel>>();
     final resposeIn = uuid.v4();

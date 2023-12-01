@@ -41,7 +41,9 @@ class LoadingProcessDialogWidget {
               });
 
               return const Center(
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                ),
               );
             },
           ),
