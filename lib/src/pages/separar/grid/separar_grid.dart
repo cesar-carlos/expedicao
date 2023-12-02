@@ -17,9 +17,9 @@ class SepararGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<SepararGridController>(builder: (controller) {
-      return Obx(
-        () => SfDataGridTheme(
+    return GetBuilder<SepararGridController>(
+      builder: (controller) {
+        return SfDataGridTheme(
           data: SepararGridTheme.theme,
           child: SfDataGrid(
             columnWidthMode: ColumnWidthMode.fill,
@@ -34,8 +34,8 @@ class SepararGrid extends StatelessWidget {
             headerRowHeight: 40,
             rowHeight: 40,
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 }

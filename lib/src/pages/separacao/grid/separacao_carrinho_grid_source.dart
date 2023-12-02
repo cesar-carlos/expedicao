@@ -177,8 +177,8 @@ class SeparacaoCarrinhoGridSource extends DataGridSource {
 
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
-    final selectedRow =
-        controller.dataGridController.selectedRows.contains(row);
+    final selectedRow = controller.selectedoRows;
+    if (selectedRow.contains(row)) {}
 
     return DataGridRowAdapter(
         color: Colors.white,

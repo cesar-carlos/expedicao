@@ -166,7 +166,7 @@ class SepararSource extends DataGridSource {
 
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
-    final dataGridRowAdapter = DataGridRowAdapter(
+    var dataGridRowAdapter = DataGridRowAdapter(
         color: Colors.white,
         cells: row.getCells().map<Widget>((cell) {
           if (cell.value is double) {

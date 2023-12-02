@@ -11,32 +11,30 @@ class SepararCarrinhosWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<SepararCarrinhosController>(
-        init: SepararCarrinhosController(),
-        builder: (controller) {
-          return SizedBox(
+    return GetBuilder<SepararCarrinhosController>(builder: (controller) {
+      return SizedBox(
+        width: size.width,
+        height: size.height,
+        child: Column(children: [
+          Container(
             width: size.width,
-            height: size.height,
-            child: Column(children: [
-              Container(
-                width: size.width,
-                color: Theme.of(context).primaryColor,
-                child: const Center(
-                  child: Text(
-                    'CARRINHOS',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+            color: Theme.of(context).primaryColor,
+            child: const Center(
+              child: Text(
+                'CARRINHOS',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              const Expanded(
-                child: SepararCarrinhoGrid(),
-              ),
-            ]),
-          );
-        });
+            ),
+          ),
+          const Expanded(
+            child: SepararCarrinhoGrid(),
+          ),
+        ]),
+      );
+    });
   }
 }

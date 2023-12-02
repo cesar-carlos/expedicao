@@ -8,7 +8,6 @@ import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.da
 import 'package:app_expedicao/src/pages/common/widget/loading_sever_dialog.widget.dart';
 import 'package:app_expedicao/src/pages/separar_carrinhos/separar_carrinhos_controller.dart';
 import 'package:app_expedicao/src/pages/carrinho/widget/adicionar_carrinho_dialog_widget.dart';
-import 'package:app_expedicao/src/pages/separar_carrinhos/grid/separar_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/repository/expedicao_separar_item/separar_item_event_repository.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_adicionar_service.dart';
@@ -16,7 +15,6 @@ import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dar
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
 import 'package:app_expedicao/src/service/separar_consultas_services.dart';
-import 'package:app_expedicao/src/pages/carrinho/carrinho_controller.dart';
 import 'package:app_expedicao/src/service/expedicao_estagio.service.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_model.dart';
@@ -49,8 +47,8 @@ class SepararController extends GetxController {
   @override
   onInit() async {
     super.onInit();
-    _putDependencies();
 
+    _socketClient = Get.find<AppSocketConfig>();
     _processoExecutavel = Get.find<ProcessoExecutavelModel>();
     _separarConsulta = Get.find<ExpedicaoSepararConsultaModel>();
     _separarCarrinhosController = Get.find<SepararCarrinhosController>();
@@ -61,31 +59,19 @@ class SepararController extends GetxController {
       codSepararEstoque: _processoExecutavel.codOrigem,
     );
 
-    await _fillGridSepararItens();
-    await _fillCarrinhoPercurso();
     _litenerSepararItens();
   }
 
-  _putDependencies() {
-    _socketClient = Get.find<AppSocketConfig>();
-    Get.lazyPut(() => SepararCarrinhosController());
-    Get.lazyPut(() => SepararGridController());
-
-    Get.lazyPut(() => CarrinhoController());
-    Get.lazyPut(() => SepararCarrinhoGridController());
-  }
-
   @override
-  void onClose() {
-    _separarGridController.dispose();
-    super.onClose();
+  onReady() async {
+    super.onReady();
+    await _fillGridSepararItens();
+    await _fillCarrinhoPercurso();
   }
 
   Future<void> _fillGridSepararItens() async {
     final separarItens = await _separarServices.itensSaparar();
-    for (var el in separarItens) {
-      _separarGridController.add(el);
-    }
+    _separarGridController.addAllGrid(separarItens);
   }
 
   Future<void> _fillCarrinhoPercurso() async {
@@ -177,7 +163,7 @@ class SepararController extends GetxController {
         callback: (data) async {
           for (var el in data.mutation) {
             final item = ExpedicaoSepararItemConsultaModel.fromJson(el);
-            _separarGridController.updateItem(item);
+            _separarGridController.updateGrid(item);
           }
         },
       ),

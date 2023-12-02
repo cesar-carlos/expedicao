@@ -1,15 +1,15 @@
-import 'package:app_expedicao/src/pages/separacao/separacao_controller.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 
-import 'package:app_expedicao/src/pages/separar/grid/separar_grid.dart';
+import 'package:app_expedicao/src/pages/separacao/separacao_controller.dart';
 import 'package:app_expedicao/src/pages/separacao/grid/separacao_carrinho_grid.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
 import 'package:app_expedicao/src/pages/common/form_element/button_head_form_element.dart';
 import 'package:app_expedicao/src/pages/common/form_element/space_button_head_form_element.dart';
 import 'package:app_expedicao/src/pages/common/form_element/bar_head_form_element.dart';
 import 'package:app_expedicao/src/pages/separacao/widget/scan_item_widget.dart';
+import 'package:app_expedicao/src/pages/separar/grid/separar_grid.dart';
 
 class SeparacaoPage {
   late String title;

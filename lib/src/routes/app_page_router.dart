@@ -36,7 +36,6 @@ class AppPageRouter {
         ExpedicaoSepararConsultaModel separarConsulta = Get.arguments;
         Get.put(separarConsulta);
 
-        Get.put(SepararController());
         Get.put(FooterPageController());
         return SepararPage(separarConsulta: separarConsulta);
       },

@@ -6,39 +6,86 @@ import 'package:app_expedicao/src/model/expedicao_separacao_item_consulta_model.
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class SeparacaoCarrinhoGridController extends GetxController {
-  final RxList<ExpedicaSeparacaoItemConsultaModel> _itens = RxList.empty();
-  final dataGridController = DataGridController();
+  final DataGridController dataGridController = DataGridController();
+  late List<ExpedicaSeparacaoItemConsultaModel> _itensGrid;
 
-  List<ExpedicaSeparacaoItemConsultaModel> get itens => _itens;
+  List<ExpedicaSeparacaoItemConsultaModel> get itens => _itensGrid;
   List<ExpedicaSeparacaoItemConsultaModel> get itensSort =>
-      _itens.toList()..sort((a, b) => b.item.compareTo(a.item));
+      _itensGrid.toList()..sort((a, b) => b.item.compareTo(a.item));
+
+  List<DataGridRow> get selectedoRows => dataGridController.selectedRows;
 
   //eventos
   void Function(ExpedicaSeparacaoItemConsultaModel item)? onPressedEditItem;
   void Function(ExpedicaSeparacaoItemConsultaModel item)? onPressedRemoveItem;
 
-  void add(ExpedicaSeparacaoItemConsultaModel item) => _itens.add(item);
+  @override
+  void onInit() {
+    super.onInit();
 
-  void addAll(List<ExpedicaSeparacaoItemConsultaModel> itens) =>
-      _itens.addAll(itens);
+    _itensGrid = [];
+  }
 
-  void remove(ExpedicaSeparacaoItemConsultaModel item) {
-    _itens.removeWhere((el) =>
+  void addGrid(ExpedicaSeparacaoItemConsultaModel item) {
+    _itensGrid.add(item);
+
+    final index = _itensGrid.indexWhere((el) => el.item == item.item);
+    setSelectedRow(index);
+    update();
+  }
+
+  void addAllGrid(List<ExpedicaSeparacaoItemConsultaModel> itens) {
+    _itensGrid.addAll(itens);
+    update();
+  }
+
+  void updateGrid(ExpedicaSeparacaoItemConsultaModel item) {
+    final index = _itensGrid.indexWhere((el) => el.item == item.item);
+    _itensGrid[index] = item;
+    setSelectedRow(index);
+    update();
+  }
+
+  void updateAllGrid(List<ExpedicaSeparacaoItemConsultaModel> itens) {
+    for (var el in itens) {
+      final index = _itensGrid.indexWhere((i) => i.item == el.item);
+      _itensGrid[index] = el;
+    }
+
+    update();
+  }
+
+  void removeGrid(ExpedicaSeparacaoItemConsultaModel item) {
+    _itensGrid.removeWhere((el) =>
         el.codEmpresa == item.codEmpresa &&
         el.codSepararEstoque == item.codSepararEstoque &&
         el.item == item.item);
+
+    update();
   }
 
-  void removeAll() {
-    _itens.clear();
+  void removeAllGrid() {
+    _itensGrid.clear();
+    update();
+  }
+
+  void setSelectedRow(int index) {
+    // Future.delayed(const Duration(milliseconds: 150), () async {
+    //   dataGridController.selectedIndex = index;
+    //   dataGridController.scrollToRow(
+    //     index.toDouble(),
+    //     canAnimate: true,
+    //     position: DataGridScrollPosition.center,
+    //   );
+    // });
   }
 
   double totalQuantity() {
-    return _itens.fold<double>(0.00, (acm, el) => acm + el.quantidade);
+    return _itensGrid.fold<double>(0.00, (acm, el) => acm + el.quantidade);
   }
 
   double totalQtdProduct(int codProduto) {
-    return _itens
+    return _itensGrid
         .where((el) => el.codProduto == codProduto)
         .fold<double>(0.00, (acm, el) => acm + el.quantidade);
   }
@@ -63,11 +110,5 @@ class SeparacaoCarrinhoGridController extends GetxController {
     if (confirmation != null && confirmation) {
       onPressedRemoveItem?.call(item);
     }
-  }
-
-  @override
-  void onClose() {
-    _itens.close();
-    super.onClose();
   }
 }

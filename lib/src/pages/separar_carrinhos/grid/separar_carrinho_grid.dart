@@ -16,22 +16,20 @@ class SepararCarrinhoGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<SepararCarrinhoGridController>(builder: (controller) {
-      return Obx(
-        () => SfDataGridTheme(
-          data: SepararCarrinhoGridTheme.theme,
-          child: SfDataGrid(
-            columnWidthMode: ColumnWidthMode.fill,
-            controller: controller.dataGridController,
-            source: SepararCarrinhoGridSource(itens: controller.itensSort),
-            onCellDoubleTap: SepararCarrinhoGridEvent.onCellDoubleTap,
-            columns: SepararCarrinhoGridColumns().columns,
-            selectionMode: SelectionMode.none,
-            footer: const SepararCarrinhoGridFooter(),
-            showColumnHeaderIconOnHover: true,
-            isScrollbarAlwaysShown: true,
-            headerRowHeight: 30,
-            rowHeight: 40,
-          ),
+      return SfDataGridTheme(
+        data: SepararCarrinhoGridTheme.theme,
+        child: SfDataGrid(
+          columnWidthMode: ColumnWidthMode.fill,
+          controller: controller.dataGridController,
+          source: SepararCarrinhoGridSource(itens: controller.itensSort),
+          onCellDoubleTap: SepararCarrinhoGridEvent.onCellDoubleTap,
+          columns: SepararCarrinhoGridColumns().columns,
+          selectionMode: SelectionMode.none,
+          footer: const SepararCarrinhoGridFooter(),
+          showColumnHeaderIconOnHover: true,
+          isScrollbarAlwaysShown: true,
+          headerRowHeight: 30,
+          rowHeight: 40,
         ),
       );
     });

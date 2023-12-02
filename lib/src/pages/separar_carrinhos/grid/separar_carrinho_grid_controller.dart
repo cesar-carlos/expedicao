@@ -1,43 +1,75 @@
 import 'package:get/get.dart';
 
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:app_expedicao/src/pages/separacao/separacao_page.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
 import 'package:app_expedicao/src/pages/separar_carrinhos/grid/separar_carrinho_grid_source.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
-import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class SepararCarrinhoGridController extends GetxController {
-  final RxList<ExpedicaoCarrinhoPercursoConsultaModel> _itens = RxList.empty();
-  final dataGridController = DataGridController();
+  final DataGridController dataGridController = DataGridController();
+  late List<ExpedicaoCarrinhoPercursoConsultaModel> _itensGrid;
 
-  List<ExpedicaoCarrinhoPercursoConsultaModel> get itens => _itens;
+  List<ExpedicaoCarrinhoPercursoConsultaModel> get itens => _itensGrid;
   List<ExpedicaoCarrinhoPercursoConsultaModel> get itensSort =>
-      _itens.toList()..sort((a, b) => b.item.compareTo(a.item));
+      _itensGrid.toList()..sort((a, b) => b.item.compareTo(a.item));
+
+  @override
+  void onInit() {
+    super.onInit();
+
+    _itensGrid = [];
+  }
 
   void Function(ExpedicaoCarrinhoPercursoConsultaModel item)?
       onPressedRemoveItem;
 
-  void add(ExpedicaoCarrinhoPercursoConsultaModel item) {
-    _itens.add(item);
+  void addGrid(ExpedicaoCarrinhoPercursoConsultaModel item) {
+    _itensGrid.add(item);
+
+    final index = _itensGrid.indexWhere((el) => el.item == item.item);
+    setSelectedRow(index);
+    update();
   }
 
-  void remove(ExpedicaoCarrinhoPercursoConsultaModel item) {
-    _itens.removeWhere((el) =>
+  void addAllGrid(List<ExpedicaoCarrinhoPercursoConsultaModel> itens) {
+    _itensGrid.addAll(itens);
+    update();
+  }
+
+  void updateGrid(ExpedicaoCarrinhoPercursoConsultaModel item) {
+    final index = _itensGrid.indexWhere((el) => el.item == item.item);
+    _itensGrid[index] = item;
+    setSelectedRow(index);
+    update();
+  }
+
+  void updateAllGrid(List<ExpedicaoCarrinhoPercursoConsultaModel> itens) {
+    for (var el in itens) {
+      final index = _itensGrid.indexWhere((i) => i.item == el.item);
+      _itensGrid[index] = el;
+    }
+
+    update();
+  }
+
+  void removeGrid(ExpedicaoCarrinhoPercursoConsultaModel item) {
+    _itensGrid.removeWhere((el) =>
         el.codEmpresa == item.codEmpresa &&
         el.codCarrinho == item.codCarrinho &&
         el.item == item.item);
+
+    update();
   }
 
-  void updateItem(ExpedicaoCarrinhoPercursoConsultaModel item) {
-    final index = _itens.indexWhere(
-        (el) => el.item == item.item && el.codCarrinho == item.codCarrinho);
-    if (index == -1) return;
-    _itens[index] = item;
+  void removeAllGrid() {
+    _itensGrid.clear();
+    update();
   }
 
-  void edit(
+  void editGrid(
     SepararCarrinhoGridSource carrinhoGrid,
     ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta,
   ) {
@@ -45,7 +77,7 @@ class SepararCarrinhoGridController extends GetxController {
     dialog.show();
   }
 
-  void save(
+  void saveGrid(
     SepararCarrinhoGridSource carrinhoGrid,
     ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta,
   ) {
@@ -75,5 +107,16 @@ class SepararCarrinhoGridController extends GetxController {
     if (confirmation != null && confirmation) {
       onPressedRemoveItem?.call(item);
     }
+  }
+
+  void setSelectedRow(int index) {
+    Future.delayed(const Duration(milliseconds: 150), () async {
+      dataGridController.selectedIndex = index;
+      dataGridController.scrollToRow(
+        index.toDouble(),
+        canAnimate: true,
+        position: DataGridScrollPosition.center,
+      );
+    });
   }
 }

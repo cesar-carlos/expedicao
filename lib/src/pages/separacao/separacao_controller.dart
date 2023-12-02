@@ -33,17 +33,15 @@ class SeparacaoController extends GetxController {
   final _separacaoItemEvent = SeparacaoItemEventRepository.instancia;
   final List<RepositoryEventListenerModel> _listerner = [];
 
+  late ProdutoService _produtoService;
+  late ProcessoExecutavelModel _processoExecutavel;
   late SepararGridController _separarGridController;
   late SeparacaoCarrinhoGridController _separacaoGridController;
-  late ProcessoExecutavelModel _processoExecutavel;
-
   late SepararConsultaServices _separarConsultasServices;
 
-  late ProdutoService _produtoService;
-
-  late TextEditingController scanController;
   late TextEditingController quantidadeController;
   late TextEditingController displayController;
+  late TextEditingController scanController;
 
   late FocusNode scanFocusNode;
   late FocusNode quantidadeFocusNode;
@@ -54,14 +52,15 @@ class SeparacaoController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    Get.lazyPut(() => SeparacaoCarrinhoGridController());
 
     _produtoService = ProdutoService();
     scanController = TextEditingController();
     displayController = TextEditingController(text: '');
     quantidadeController = TextEditingController(text: '1,000');
 
-    _separacaoGridController = Get.find<SeparacaoCarrinhoGridController>();
     _separarGridController = Get.find<SepararGridController>();
+    _separacaoGridController = Get.find<SeparacaoCarrinhoGridController>();
     _processoExecutavel = Get.find<ProcessoExecutavelModel>();
 
     scanFocusNode = FocusNode()..requestFocus();
@@ -133,8 +132,8 @@ class SeparacaoController extends GetxController {
           el.itemCarrinhoPercurso == percursoEstagioConsulta.item);
     }).toList();
 
-    _separacaoGridController.removeAll();
-    _separacaoGridController.addAll(separacaoItensFiltrados);
+    _separacaoGridController.removeAllGrid();
+    _separacaoGridController.addAllGrid(separacaoItensFiltrados);
   }
 
   bool get viewMode {
@@ -260,12 +259,12 @@ class SeparacaoController extends GetxController {
 
       //ADD ITEM NA GRID
       displayController.text = resp.right!.nomeProduto;
-      _separacaoGridController.add(separacaoItemConsulta);
+      _separacaoGridController.addGrid(separacaoItemConsulta);
 
       final itemSeparar =
           _findItemSepararGrid(separacaoItemConsulta.codProduto)!;
 
-      _separarGridController.updateItem(itemSeparar.copyWith(
+      _separarGridController.updateGrid(itemSeparar.copyWith(
         quantidadeSeparacao:
             itemSeparar.quantidadeSeparacao + separacaoItemConsulta.quantidade,
       ));
@@ -320,10 +319,10 @@ class SeparacaoController extends GetxController {
         item: el.item,
       );
 
-      _separacaoGridController.remove(el);
+      _separacaoGridController.removeGrid(el);
       final itemSeparar = _findItemSepararGrid(el.codProduto)!;
 
-      _separarGridController.updateItem(itemSeparar.copyWith(
+      _separarGridController.updateGrid(itemSeparar.copyWith(
         quantidadeSeparacao: itemSeparar.quantidadeSeparacao - el.quantidade,
       ));
     };
@@ -363,14 +362,16 @@ class SeparacaoController extends GetxController {
       ).removeAllItensCart();
 
       final separacaoItemConsulta = _separacaoGridController.itens;
+      final List<ExpedicaoSepararItemConsultaModel> itensGridSeparar = [];
       for (var el in separacaoItemConsulta) {
         final itemSeparar = _findItemSepararGrid(el.codProduto)!;
-        _separarGridController.updateItem(itemSeparar.copyWith(
+        itensGridSeparar.add(itemSeparar.copyWith(
           quantidadeSeparacao: itemSeparar.quantidadeSeparacao - el.quantidade,
         ));
       }
 
-      _separacaoGridController.removeAll();
+      _separacaoGridController.removeAllGrid();
+      _separarGridController.updateAllGrid(itensGridSeparar);
     }
   }
 
@@ -416,15 +417,19 @@ class SeparacaoController extends GetxController {
         context: Get.context!,
         process: () async {
           final response = await carrinhoPercursoAdicionarItemService.addAll();
-          _separacaoGridController.addAll(response);
+          _separacaoGridController.addAllGrid(response);
 
+          final List<ExpedicaoSepararItemConsultaModel> itensGridSeparar = [];
           for (var el in response) {
             final itemSeparar = _findItemSepararGrid(el.codProduto)!;
-            _separarGridController.updateItem(itemSeparar.copyWith(
+
+            itensGridSeparar.add(itemSeparar.copyWith(
               quantidadeSeparacao:
                   itemSeparar.quantidadeSeparacao + el.quantidade,
             ));
           }
+
+          _separarGridController.updateAllGrid(itensGridSeparar);
         },
       );
     }
@@ -470,7 +475,7 @@ class SeparacaoController extends GetxController {
                   percursoEstagioConsulta.origem &&
               res.codSepararEstoque == percursoEstagioConsulta.codOrigem &&
               res.codCarrinho == percursoEstagioConsulta.codCarrinho) {
-            _separacaoGridController.add(res);
+            _separacaoGridController.addGrid(res);
           }
         }
       },
@@ -482,7 +487,7 @@ class SeparacaoController extends GetxController {
       callback: (data) async {
         for (var el in data.mutation) {
           final sep = ExpedicaSeparacaoItemConsultaModel.fromJson(el);
-          _separacaoGridController.remove(sep);
+          _separacaoGridController.removeGrid(sep);
         }
       },
     );

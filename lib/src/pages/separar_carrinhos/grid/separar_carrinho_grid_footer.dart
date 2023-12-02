@@ -8,22 +8,22 @@ class SepararCarrinhoGridFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var controller = Get.find<SepararCarrinhoGridController>();
-
-    return Container(
-      height: 30,
-      color: Colors.grey[200],
-      child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-        Obx(
-          () => Text(
-            'Total de Itens: ${controller.itens.length}',
-            style: const TextStyle(
-              color: Colors.black,
-              fontSize: 12,
+    return GetBuilder<SepararCarrinhoGridController>(
+      builder: (controller) {
+        return Container(
+          height: 30,
+          color: Colors.grey[200],
+          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Text(
+              'Total de Itens: ${controller.itens.length}',
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 12,
+              ),
             ),
-          ),
-        )
-      ]),
+          ]),
+        );
+      },
     );
   }
 }

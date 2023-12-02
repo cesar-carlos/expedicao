@@ -7,6 +7,6 @@ import 'package:syncfusion_flutter_core/theme.dart';
 class SepararGridTheme {
   static SfDataGridThemeData get theme => SfDataGridThemeData(
         rowHoverColor: Theme.of(Get.context!).primaryColor.withOpacity(0.1),
-        selectionColor: Theme.of(Get.context!).primaryColor.withOpacity(0.4),
+        selectionColor: Theme.of(Get.context!).primaryColor.withOpacity(0.1),
       );
 }

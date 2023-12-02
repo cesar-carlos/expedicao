@@ -93,7 +93,7 @@ class SepararCarrinhoGridSource extends DataGridSource {
                   ),
                   IconButton(
                     onPressed: () {
-                      controller.edit(this, i);
+                      controller.editGrid(this, i);
                     },
                     icon: Icon(
                       size: 17,
@@ -112,7 +112,7 @@ class SepararCarrinhoGridSource extends DataGridSource {
                   ),
                   IconButton(
                     onPressed: () {
-                      controller.save(this, i);
+                      controller.saveGrid(this, i);
                     },
                     icon: const Icon(
                       size: 17,
