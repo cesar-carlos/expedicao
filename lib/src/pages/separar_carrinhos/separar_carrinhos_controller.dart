@@ -1,4 +1,3 @@
-import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
@@ -10,6 +9,7 @@ import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_mod
 import 'package:app_expedicao/src/pages/separar_carrinhos/grid/separar_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_consulta_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_event_repository.dart';
+import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_cancelar_service.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
@@ -41,18 +41,25 @@ class SepararCarrinhosController extends GetxController {
       codSepararEstoque: _processoExecutavel.codOrigem,
     );
 
-    await _fillGridSepararCarrinhos();
     _onRemoveItemSepararCarrinhoGrid();
     _litenerCarrinhoPercurso();
+  }
+
+  @override
+  onReady() async {
+    super.onReady();
+    await _fillGridSepararCarrinhos();
   }
 
   Future<void> _fillGridSepararCarrinhos() async {
     final separarCarrinhos = await _separarServices.carrinhosPercurso();
     _separarCarrinhoGridController.addAllGrid(separarCarrinhos);
+    _separarCarrinhoGridController.update();
   }
 
   void addCarrinho(ExpedicaoCarrinhoPercursoConsultaModel model) {
     _separarCarrinhoGridController.addGrid(model);
+    _separarCarrinhoGridController.update();
   }
 
   _onRemoveItemSepararCarrinhoGrid() {
@@ -82,6 +89,7 @@ class SepararCarrinhosController extends GetxController {
           item.copyWith(situacao: ExpedicaoSituacaoModel.cancelada);
 
       _separarCarrinhoGridController.updateGrid(carrinhoPercurso);
+      _separarCarrinhoGridController.update();
 
       final separacaoItens = await SeparacaoItemConsultaRepository().select(
         ''' CodEmpresa = ${_separarConsulta.codEmpresa} 
@@ -115,6 +123,7 @@ class SepararCarrinhosController extends GetxController {
       }
 
       _separarGridController.updateAllGrid(newSepararItens);
+      _separarGridController.update();
     };
   }
 
@@ -133,6 +142,7 @@ class SepararCarrinhosController extends GetxController {
                 car.origem == _processoExecutavel.origem &&
                 car.codOrigem == _processoExecutavel.codOrigem) {
               _separarCarrinhoGridController.addGrid(car);
+              _separarCarrinhoGridController.update();
             }
           }
         },
@@ -147,6 +157,7 @@ class SepararCarrinhosController extends GetxController {
           for (var el in data.mutation) {
             final car = ExpedicaoCarrinhoPercursoConsultaModel.fromJson(el);
             _separarCarrinhoGridController.updateGrid(car);
+            _separarCarrinhoGridController.update();
           }
         },
       ),
@@ -160,6 +171,7 @@ class SepararCarrinhosController extends GetxController {
           for (var el in data.mutation) {
             final car = ExpedicaoCarrinhoPercursoConsultaModel.fromJson(el);
             _separarCarrinhoGridController.removeGrid(car);
+            _separarCarrinhoGridController.update();
           }
         },
       ),

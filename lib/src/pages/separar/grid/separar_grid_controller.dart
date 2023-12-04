@@ -6,6 +6,7 @@ import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class SepararGridController extends GetxController {
+  static const gridName = 'separarGrid';
   final DataGridController dataGridController = DataGridController();
   late List<ExpedicaoSepararItemConsultaModel> _itensGrid;
 
@@ -23,22 +24,15 @@ class SepararGridController extends GetxController {
 
   void addGrid(ExpedicaoSepararItemConsultaModel item) {
     _itensGrid.add(item);
-
-    final index = _itensGrid.indexWhere((el) => el.item == item.item);
-    setSelectedRow(index);
-    update();
   }
 
   void addAllGrid(List<ExpedicaoSepararItemConsultaModel> itens) {
     _itensGrid.addAll(itens);
-    update();
   }
 
   void updateGrid(ExpedicaoSepararItemConsultaModel item) {
     final index = _itensGrid.indexWhere((el) => el.item == item.item);
     _itensGrid[index] = item;
-    setSelectedRow(index);
-    update();
   }
 
   void updateAllGrid(List<ExpedicaoSepararItemConsultaModel> itens) {
@@ -46,8 +40,6 @@ class SepararGridController extends GetxController {
       final index = _itensGrid.indexWhere((i) => i.item == el.item);
       _itensGrid[index] = el;
     }
-
-    update();
   }
 
   void removeGrid(ExpedicaoSepararItemConsultaModel item) {
@@ -55,13 +47,10 @@ class SepararGridController extends GetxController {
         el.codEmpresa == item.codEmpresa &&
         el.codSepararEstoque == item.codSepararEstoque &&
         el.item == item.item);
-
-    update();
   }
 
   void removeAllGrid() {
     _itensGrid.clear();
-    update();
   }
 
   void setSelectedRow(int index) {
@@ -123,6 +112,11 @@ class SepararGridController extends GetxController {
   int? findcodProdutoFromBarCode(String barCode) {
     final el = _itensGrid.where((el) => el.codigoBarras == barCode).toList();
     return el.first.codProduto;
+  }
+
+  int findIndexCodProduto(int codProduto) {
+    final el = _itensGrid.where((el) => el.codProduto == codProduto).toList();
+    return _itensGrid.indexOf(el.first);
   }
 
   ExpedicaoSepararItemConsultaModel? findBarCode(String barCode) {

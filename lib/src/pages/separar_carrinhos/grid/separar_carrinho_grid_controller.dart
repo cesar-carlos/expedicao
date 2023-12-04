@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+
 import 'package:app_expedicao/src/pages/separacao/separacao_page.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
 import 'package:app_expedicao/src/pages/separar_carrinhos/grid/separar_carrinho_grid_source.dart';
@@ -9,6 +9,7 @@ import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 
 class SepararCarrinhoGridController extends GetxController {
+  static const gridName = 'separarCarrinhoGrid';
   final DataGridController dataGridController = DataGridController();
   late List<ExpedicaoCarrinhoPercursoConsultaModel> _itensGrid;
 
@@ -28,22 +29,15 @@ class SepararCarrinhoGridController extends GetxController {
 
   void addGrid(ExpedicaoCarrinhoPercursoConsultaModel item) {
     _itensGrid.add(item);
-
-    final index = _itensGrid.indexWhere((el) => el.item == item.item);
-    setSelectedRow(index);
-    update();
   }
 
   void addAllGrid(List<ExpedicaoCarrinhoPercursoConsultaModel> itens) {
     _itensGrid.addAll(itens);
-    update();
   }
 
   void updateGrid(ExpedicaoCarrinhoPercursoConsultaModel item) {
     final index = _itensGrid.indexWhere((el) => el.item == item.item);
     _itensGrid[index] = item;
-    setSelectedRow(index);
-    update();
   }
 
   void updateAllGrid(List<ExpedicaoCarrinhoPercursoConsultaModel> itens) {
@@ -51,8 +45,6 @@ class SepararCarrinhoGridController extends GetxController {
       final index = _itensGrid.indexWhere((i) => i.item == el.item);
       _itensGrid[index] = el;
     }
-
-    update();
   }
 
   void removeGrid(ExpedicaoCarrinhoPercursoConsultaModel item) {
@@ -60,13 +52,10 @@ class SepararCarrinhoGridController extends GetxController {
         el.codEmpresa == item.codEmpresa &&
         el.codCarrinho == item.codCarrinho &&
         el.item == item.item);
-
-    update();
   }
 
   void removeAllGrid() {
     _itensGrid.clear();
-    update();
   }
 
   void editGrid(
@@ -80,9 +69,7 @@ class SepararCarrinhoGridController extends GetxController {
   void saveGrid(
     SepararCarrinhoGridSource carrinhoGrid,
     ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta,
-  ) {
-    print('SALVAR CARRINHO SEPARACAO');
-  }
+  ) {}
 
   Future<void> onRemoveItem(
     SepararCarrinhoGridSource grid,

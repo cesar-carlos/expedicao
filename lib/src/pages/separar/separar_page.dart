@@ -22,6 +22,7 @@ class SepararPage extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return GetBuilder<SepararController>(
+      //init:
       builder: (controller) {
         return Scaffold(
           body: SizedBox.expand(

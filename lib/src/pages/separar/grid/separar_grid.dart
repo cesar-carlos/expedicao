@@ -18,6 +18,7 @@ class SepararGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<SepararGridController>(
+      //tag: SepararGridController.gridName,
       builder: (controller) {
         return SfDataGridTheme(
           data: SepararGridTheme.theme,

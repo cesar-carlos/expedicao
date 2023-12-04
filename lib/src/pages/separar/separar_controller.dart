@@ -58,8 +58,6 @@ class SepararController extends GetxController {
       codEmpresa: _processoExecutavel.codEmpresa,
       codSepararEstoque: _processoExecutavel.codOrigem,
     );
-
-    _litenerSepararItens();
   }
 
   @override
@@ -67,11 +65,14 @@ class SepararController extends GetxController {
     super.onReady();
     await _fillGridSepararItens();
     await _fillCarrinhoPercurso();
+
+    _litenerSepararItens();
   }
 
   Future<void> _fillGridSepararItens() async {
     final separarItens = await _separarServices.itensSaparar();
     _separarGridController.addAllGrid(separarItens);
+    _separarGridController.update();
   }
 
   Future<void> _fillCarrinhoPercurso() async {
@@ -139,7 +140,6 @@ class SepararController extends GetxController {
               ..where((el) => el.item == percursoEstagio.item).toList();
 
         _separarCarrinhosController.addCarrinho(percursoEstagioConsulta.last);
-        update();
       }
     }
   }
@@ -164,6 +164,7 @@ class SepararController extends GetxController {
           for (var el in data.mutation) {
             final item = ExpedicaoSepararItemConsultaModel.fromJson(el);
             _separarGridController.updateGrid(item);
+            _separarGridController.update();
           }
         },
       ),

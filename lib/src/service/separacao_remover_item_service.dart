@@ -1,9 +1,8 @@
-import 'package:app_expedicao/src/model/expedicao_item_situacao_model.dart';
+import 'package:app_expedicao/src/model/expedicao_separacao_item_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_consulta_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_repository.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
-import 'package:app_expedicao/src/model/expedicao_separacao_item_model.dart';
 
 class SeparacaoRemoverItemService {
   final ExpedicaoCarrinhoPercursoModel carrinhoPercurso;

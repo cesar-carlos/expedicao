@@ -72,12 +72,18 @@ class SeparacaoController extends GetxController {
       codSepararEstoque: _processoExecutavel.codOrigem,
     );
 
-    _fillCarrinhoPercurso();
-    _fillGridSeparacaoItens();
     _onRemoveItemSeparacaoGrid();
     _onEditItemSeparacaoGrid();
-    _listenFocusNode();
+  }
+
+  @override
+  void onReady() async {
+    super.onReady();
+
     _addLiteners();
+    _listenFocusNode();
+    _fillCarrinhoPercurso();
+    _fillGridSeparacaoItens();
   }
 
   @override
@@ -260,6 +266,11 @@ class SeparacaoController extends GetxController {
       //ADD ITEM NA GRID
       displayController.text = resp.right!.nomeProduto;
       _separacaoGridController.addGrid(separacaoItemConsulta);
+      final indexAdd = _separarGridController
+          .findIndexCodProduto(separacaoItemConsulta.codProduto);
+      _separarGridController.setSelectedRow(indexAdd);
+      _separacaoGridController.update();
+      _separarGridController.update();
 
       final itemSeparar =
           _findItemSepararGrid(separacaoItemConsulta.codProduto)!;
@@ -321,6 +332,8 @@ class SeparacaoController extends GetxController {
 
       _separacaoGridController.removeGrid(el);
       final itemSeparar = _findItemSepararGrid(el.codProduto)!;
+      _separacaoGridController.update();
+      _separarGridController.update();
 
       _separarGridController.updateGrid(itemSeparar.copyWith(
         quantidadeSeparacao: itemSeparar.quantidadeSeparacao - el.quantidade,
@@ -370,8 +383,10 @@ class SeparacaoController extends GetxController {
         ));
       }
 
-      _separacaoGridController.removeAllGrid();
       _separarGridController.updateAllGrid(itensGridSeparar);
+      _separacaoGridController.removeAllGrid();
+      _separacaoGridController.update();
+      _separarGridController.update();
     }
   }
 
@@ -430,6 +445,8 @@ class SeparacaoController extends GetxController {
           }
 
           _separarGridController.updateAllGrid(itensGridSeparar);
+          _separacaoGridController.update();
+          _separarGridController.update();
         },
       );
     }

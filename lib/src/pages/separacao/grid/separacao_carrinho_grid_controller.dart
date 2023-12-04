@@ -6,6 +6,7 @@ import 'package:app_expedicao/src/model/expedicao_separacao_item_consulta_model.
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class SeparacaoCarrinhoGridController extends GetxController {
+  static const gridName = 'separacaoCarrinhoGrid';
   final DataGridController dataGridController = DataGridController();
   late List<ExpedicaSeparacaoItemConsultaModel> _itensGrid;
 
@@ -28,22 +29,15 @@ class SeparacaoCarrinhoGridController extends GetxController {
 
   void addGrid(ExpedicaSeparacaoItemConsultaModel item) {
     _itensGrid.add(item);
-
-    final index = _itensGrid.indexWhere((el) => el.item == item.item);
-    setSelectedRow(index);
-    update();
   }
 
   void addAllGrid(List<ExpedicaSeparacaoItemConsultaModel> itens) {
     _itensGrid.addAll(itens);
-    update();
   }
 
   void updateGrid(ExpedicaSeparacaoItemConsultaModel item) {
     final index = _itensGrid.indexWhere((el) => el.item == item.item);
     _itensGrid[index] = item;
-    setSelectedRow(index);
-    update();
   }
 
   void updateAllGrid(List<ExpedicaSeparacaoItemConsultaModel> itens) {
@@ -51,8 +45,6 @@ class SeparacaoCarrinhoGridController extends GetxController {
       final index = _itensGrid.indexWhere((i) => i.item == el.item);
       _itensGrid[index] = el;
     }
-
-    update();
   }
 
   void removeGrid(ExpedicaSeparacaoItemConsultaModel item) {
@@ -60,13 +52,10 @@ class SeparacaoCarrinhoGridController extends GetxController {
         el.codEmpresa == item.codEmpresa &&
         el.codSepararEstoque == item.codSepararEstoque &&
         el.item == item.item);
-
-    update();
   }
 
   void removeAllGrid() {
     _itensGrid.clear();
-    update();
   }
 
   void setSelectedRow(int index) {

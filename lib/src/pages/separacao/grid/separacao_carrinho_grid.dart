@@ -19,26 +19,29 @@ class SeparacaoCarrinhoGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<SeparacaoCarrinhoGridController>(builder: (controller) {
-      return SfDataGridTheme(
-        data: SeparacaoCarrinhoGridTheme.theme,
-        child: SfDataGrid(
-          columnWidthMode: ColumnWidthMode.fill,
-          controller: controller.dataGridController,
-          source: SeparacaoCarrinhoGridSource(controller.itensSort),
-          onCellDoubleTap: SeparacaoCarrinhoGridEvent.onCellDoubleTap,
-          columns: SeparacaoCarrinhoGridColumns().columns,
-          selectionMode: SelectionMode.none,
-          footer: SeparacaoCarrinhoGridFooter(
-            codCarrinho: percursoEstagioConsulta.codCarrinho,
-            item: percursoEstagioConsulta.item,
+    return GetBuilder<SeparacaoCarrinhoGridController>(
+      //tag: SeparacaoCarrinhoGridController.gridName,
+      builder: (controller) {
+        return SfDataGridTheme(
+          data: SeparacaoCarrinhoGridTheme.theme,
+          child: SfDataGrid(
+            columnWidthMode: ColumnWidthMode.fill,
+            controller: controller.dataGridController,
+            source: SeparacaoCarrinhoGridSource(controller.itensSort),
+            onCellDoubleTap: SeparacaoCarrinhoGridEvent.onCellDoubleTap,
+            columns: SeparacaoCarrinhoGridColumns().columns,
+            selectionMode: SelectionMode.none,
+            footer: SeparacaoCarrinhoGridFooter(
+              codCarrinho: percursoEstagioConsulta.codCarrinho,
+              item: percursoEstagioConsulta.item,
+            ),
+            showColumnHeaderIconOnHover: true,
+            isScrollbarAlwaysShown: true,
+            headerRowHeight: 40,
+            rowHeight: 40,
           ),
-          showColumnHeaderIconOnHover: true,
-          isScrollbarAlwaysShown: true,
-          headerRowHeight: 40,
-          rowHeight: 40,
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 }

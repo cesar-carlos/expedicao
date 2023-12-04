@@ -5,7 +5,6 @@ import 'package:app_expedicao/src/pages/splash/splash_error_page.dart';
 import 'package:app_expedicao/src/pages/notfound/notfound_binding.dart';
 import 'package:app_expedicao/src/pages/footer/footer_page_controller.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
-import 'package:app_expedicao/src/pages/separar/separar_controller.dart';
 import 'package:app_expedicao/src/pages/separar/separar_binding.dart';
 import 'package:app_expedicao/src/pages/splash/splash_binding.dart';
 import 'package:app_expedicao/src/pages/separar/separar_page.dart';
