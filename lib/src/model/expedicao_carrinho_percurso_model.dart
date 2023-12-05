@@ -1,4 +1,5 @@
 import 'package:app_expedicao/src/app/app_helper.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
 
 class ExpedicaoCarrinhoPercursoModel {
   final int codEmpresa;
@@ -74,6 +75,21 @@ class ExpedicaoCarrinhoPercursoModel {
       'DataFinalizacao': dataFinalizacao,
       'HoraFinalizacao': horaFinalizacao,
     };
+  }
+
+  factory ExpedicaoCarrinhoPercursoModel.fromConsulta(
+      ExpedicaoCarrinhoPercursoConsultaModel item) {
+    return ExpedicaoCarrinhoPercursoModel(
+      codEmpresa: item.codEmpresa,
+      codCarrinhoPercurso: item.codCarrinhoPercurso,
+      origem: item.origem,
+      codOrigem: item.codOrigem,
+      situacao: item.situacao,
+      dataInicio: item.dataInicio,
+      horaInicio: item.horaInicio,
+      dataFinalizacao: item.dataFinalizacao,
+      horaFinalizacao: item.horaFinalizacao,
+    );
   }
 
   @override

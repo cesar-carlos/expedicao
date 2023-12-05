@@ -59,6 +59,15 @@ class SepararPage extends StatelessWidget {
                       size: 33,
                     ),
                   ),
+                  ButtonHeadForm(
+                    title: 'Finalizar Separação',
+                    onPressed: controller.finalizarSeparacao,
+                    icon: const Icon(
+                      BootstrapIcons.grid_3x3_gap_fill,
+                      color: Colors.white,
+                      size: 33,
+                    ),
+                  ),
                 ]),
 
                 //** SEPARAR ITENS **//

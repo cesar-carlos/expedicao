@@ -1,11 +1,10 @@
-import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
-import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
 import 'package:app_expedicao/src/repository/sequencia_registro/sequencia_registro_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_consulta_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_estagio_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinhos/carrinho_repository.dart';
-import 'package:app_expedicao/src/model/expedicao_percurso_estagio_model.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 
 class CarrinhoPercursoServices {
   final sequenciaName = 'CarrinhoPercurso_Sequencia_1';
@@ -21,14 +20,9 @@ class CarrinhoPercursoServices {
     return await repositoryConsulta.select(params);
   }
 
-  Future<List<ExpedicaoCarrinhoPercursoModel>> selectPercurso(
+  Future<List<ExpedicaoCarrinhoPercursoModel>> select(
       [String params = '']) async {
     final respose = await repositoryPercurso.select(params);
     return respose;
-  }
-
-  Future<List<ExpedicaoPercursoEstagioModel>> selectEstagio(
-      [String params = '']) async {
-    return await repositoryEstagio.select(params);
   }
 }

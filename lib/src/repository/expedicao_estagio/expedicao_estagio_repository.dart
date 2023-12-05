@@ -5,18 +5,18 @@ import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:app_expedicao/src/app/app_error.dart';
-import 'package:app_expedicao/src/model/expedicao_percurso_estagio.dart';
+import 'package:app_expedicao/src/model/expedicao_estagio_model.dart';
 import 'package:app_expedicao/src/app/app_socket.config.dart';
 
-class PercursoEstagioRepository {
+class ExpedicaoEstagioRepository {
   final uuid = const Uuid();
   var socket = Get.find<AppSocketConfig>().socket;
 
-  Future<List<ExpedicaoPercursoEstagio>> select([String params = '']) {
+  Future<List<ExpedicaoEstagioModel>> select([String params = '']) {
     if (socket.connected == false) throw AppError('Socket não conectado');
 
-    final event = '${socket.id} percurso.estagio.select';
-    final completer = Completer<List<ExpedicaoPercursoEstagio>>();
+    final event = '${socket.id} expedicao.estagio.select';
+    final completer = Completer<List<ExpedicaoEstagioModel>>();
     final resposeIn = uuid.v4();
 
     final send = {
@@ -35,8 +35,8 @@ class PercursoEstagioRepository {
         return;
       }
 
-      final list = data.map<ExpedicaoPercursoEstagio>((json) {
-        return ExpedicaoPercursoEstagio.fromJson(json);
+      final list = data.map<ExpedicaoEstagioModel>((json) {
+        return ExpedicaoEstagioModel.fromJson(json);
       }).toList();
 
       socket.off(resposeIn);
@@ -46,12 +46,11 @@ class PercursoEstagioRepository {
     return completer.future;
   }
 
-  Future<List<ExpedicaoPercursoEstagio>> insert(
-      ExpedicaoPercursoEstagio carrinho) {
+  Future<List<ExpedicaoEstagioModel>> insert(ExpedicaoEstagioModel carrinho) {
     if (socket.connected == false) throw AppError('Socket não conectado');
 
-    final event = '${socket.id} percurso.estagio.insert';
-    final completer = Completer<List<ExpedicaoPercursoEstagio>>();
+    final event = '${socket.id} expedicao.estagio.insert';
+    final completer = Completer<List<ExpedicaoEstagioModel>>();
     final resposeIn = uuid.v4();
 
     final send = {
@@ -65,8 +64,8 @@ class PercursoEstagioRepository {
       final data = jsonDecode(receiver);
       final mutation = data?['mutation'] ?? [];
 
-      final list = mutation.map<ExpedicaoPercursoEstagio>((json) {
-        return ExpedicaoPercursoEstagio.fromJson(json);
+      final list = mutation.map<ExpedicaoEstagioModel>((json) {
+        return ExpedicaoEstagioModel.fromJson(json);
       }).toList();
 
       socket.off(resposeIn);
@@ -76,12 +75,11 @@ class PercursoEstagioRepository {
     return completer.future;
   }
 
-  Future<List<ExpedicaoPercursoEstagio>> update(
-      ExpedicaoPercursoEstagio carrinho) {
+  Future<List<ExpedicaoEstagioModel>> update(ExpedicaoEstagioModel carrinho) {
     if (socket.connected == false) throw AppError('Socket não conectado');
 
-    final event = '${socket.id} percurso.estagio.update';
-    final completer = Completer<List<ExpedicaoPercursoEstagio>>();
+    final event = '${socket.id} expedicao.estagio.update';
+    final completer = Completer<List<ExpedicaoEstagioModel>>();
     final resposeIn = uuid.v4();
 
     final send = {
@@ -95,8 +93,8 @@ class PercursoEstagioRepository {
       final data = jsonDecode(receiver);
       final mutation = data?['mutation'] ?? [];
 
-      final list = mutation.map<ExpedicaoPercursoEstagio>((json) {
-        return ExpedicaoPercursoEstagio.fromJson(json);
+      final list = mutation.map<ExpedicaoEstagioModel>((json) {
+        return ExpedicaoEstagioModel.fromJson(json);
       }).toList();
 
       socket.off(resposeIn);
@@ -106,12 +104,11 @@ class PercursoEstagioRepository {
     return completer.future;
   }
 
-  Future<List<ExpedicaoPercursoEstagio>> delete(
-      ExpedicaoPercursoEstagio carrinho) {
+  Future<List<ExpedicaoEstagioModel>> delete(ExpedicaoEstagioModel carrinho) {
     if (socket.connected == false) throw AppError('Socket não conectado');
 
-    final event = '${socket.id} percurso.estagio.delete';
-    final completer = Completer<List<ExpedicaoPercursoEstagio>>();
+    final event = '${socket.id} expedicao.estagio.delete';
+    final completer = Completer<List<ExpedicaoEstagioModel>>();
     final resposeIn = uuid.v4();
 
     final send = {
@@ -125,8 +122,8 @@ class PercursoEstagioRepository {
       final data = jsonDecode(receiver);
       final mutation = data?['mutation'] ?? [];
 
-      final list = mutation.map<ExpedicaoPercursoEstagio>((json) {
-        return ExpedicaoPercursoEstagio.fromJson(json);
+      final list = mutation.map<ExpedicaoEstagioModel>((json) {
+        return ExpedicaoEstagioModel.fromJson(json);
       }).toList();
 
       socket.off(resposeIn);

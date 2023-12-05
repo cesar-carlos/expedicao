@@ -1,40 +1,40 @@
-class ExpedicaoPercursoEstagio {
+class ExpedicaoEstagioModel {
   final int codPercursoEstagio;
   final String descricao;
   final String ativo;
-  final String sigla;
+  final String origem;
   final int sequencia;
 
-  ExpedicaoPercursoEstagio({
+  ExpedicaoEstagioModel({
     required this.codPercursoEstagio,
     required this.descricao,
     required this.ativo,
-    required this.sigla,
+    required this.origem,
     required this.sequencia,
   });
 
-  ExpedicaoPercursoEstagio copyWith({
+  ExpedicaoEstagioModel copyWith({
     int? codPercursoEstagio,
     String? descricao,
     String? ativo,
-    String? sigla,
+    String? origem,
     int? sequencia,
   }) {
-    return ExpedicaoPercursoEstagio(
+    return ExpedicaoEstagioModel(
       codPercursoEstagio: codPercursoEstagio ?? this.codPercursoEstagio,
       descricao: descricao ?? this.descricao,
       ativo: ativo ?? this.ativo,
-      sigla: sigla ?? this.sigla,
+      origem: origem ?? this.origem,
       sequencia: sequencia ?? this.sequencia,
     );
   }
 
-  factory ExpedicaoPercursoEstagio.fromJson(Map<String, dynamic> map) {
-    return ExpedicaoPercursoEstagio(
+  factory ExpedicaoEstagioModel.fromJson(Map<String, dynamic> map) {
+    return ExpedicaoEstagioModel(
       codPercursoEstagio: map['CodPercursoEstagio'],
       descricao: map['Descricao'],
       ativo: map['Ativo'],
-      sigla: map['Sigla'],
+      origem: map['Origem'],
       sequencia: map['Sequencia'],
     );
   }
@@ -44,8 +44,13 @@ class ExpedicaoPercursoEstagio {
       'CodPercursoEstagio': codPercursoEstagio,
       'Descricao': descricao,
       'Ativo': ativo,
-      'Sigla': sigla,
+      'Origem': origem,
       'Sequencia': sequencia,
     };
+  }
+
+  @override
+  String toString() {
+    return 'ExpedicaoEstagioModel(codPercursoEstagio: $codPercursoEstagio, descricao: $descricao, ativo: $ativo, origem: $origem, sequencia: $sequencia)';
   }
 }

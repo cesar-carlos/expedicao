@@ -59,14 +59,14 @@ class SeparacaoCarrinhoGridController extends GetxController {
   }
 
   void setSelectedRow(int index) {
-    // Future.delayed(const Duration(milliseconds: 150), () async {
-    //   dataGridController.selectedIndex = index;
-    //   dataGridController.scrollToRow(
-    //     index.toDouble(),
-    //     canAnimate: true,
-    //     position: DataGridScrollPosition.center,
-    //   );
-    // });
+    Future.delayed(const Duration(milliseconds: 150), () async {
+      dataGridController.selectedIndex = index;
+      dataGridController.scrollToRow(
+        index.toDouble(),
+        canAnimate: true,
+        position: DataGridScrollPosition.center,
+      );
+    });
   }
 
   double totalQuantity() {

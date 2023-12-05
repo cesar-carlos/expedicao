@@ -72,18 +72,18 @@ class SeparacaoController extends GetxController {
       codSepararEstoque: _processoExecutavel.codOrigem,
     );
 
-    _onRemoveItemSeparacaoGrid();
-    _onEditItemSeparacaoGrid();
+    _fillGridSeparacaoItens();
+    _fillCarrinhoPercurso();
   }
 
   @override
   void onReady() async {
     super.onReady();
 
-    _addLiteners();
+    _onEditItemSeparacaoGrid();
+    _onRemoveItemSeparacaoGrid();
     _listenFocusNode();
-    _fillCarrinhoPercurso();
-    _fillGridSeparacaoItens();
+    _addLiteners();
   }
 
   @override
@@ -115,7 +115,6 @@ class SeparacaoController extends GetxController {
     });
   }
 
-  //TODO: TRY ERROR NOT FOUND CARRINHO, IN OPEN FORM
   Future<void> _fillCarrinhoPercurso() async {
     final params = ''' CodEmpresa = ${_processoExecutavel.codEmpresa} 
           AND Origem = '${_processoExecutavel.origem}' 
@@ -123,7 +122,7 @@ class SeparacaoController extends GetxController {
         
         ''';
 
-    final carrinhosPe = await CarrinhoPercursoServices().selectPercurso(params);
+    final carrinhosPe = await CarrinhoPercursoServices().select(params);
     if (carrinhosPe.isEmpty) return;
     _carrinhoPercurso = carrinhosPe.last;
   }
@@ -140,10 +139,12 @@ class SeparacaoController extends GetxController {
 
     _separacaoGridController.removeAllGrid();
     _separacaoGridController.addAllGrid(separacaoItensFiltrados);
+    _separacaoGridController.update();
   }
 
   bool get viewMode {
-    if (percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.cancelada) {
+    if (percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.cancelada ||
+        percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.finalizada) {
       _viewMode.value = true;
     }
 
@@ -316,8 +317,8 @@ class SeparacaoController extends GetxController {
       if (viewMode) {
         await ConfirmationDialogMessageWidget.show(
           context: Get.context!,
-          message: 'Não é possivel remover o item!',
-          detail: 'O carrinho ja foi cancelado!',
+          message: 'Não é possivel remover!',
+          detail: 'O carrinho esta em modo de visualização..',
         );
 
         return;
@@ -345,8 +346,8 @@ class SeparacaoController extends GetxController {
     if (viewMode) {
       await ConfirmationDialogMessageWidget.show(
         context: Get.context!,
-        message: 'Não é possivel remover os itens!',
-        detail: 'O carrinho ja foi cancelado!',
+        message: 'Não é possivel reconferir!',
+        detail: 'O carrinho esta em modo de visualização..',
       );
 
       return;
@@ -398,8 +399,8 @@ class SeparacaoController extends GetxController {
     if (viewMode) {
       await ConfirmationDialogMessageWidget.show(
         context: Get.context!,
-        message: 'Não é possivel separar os itens!',
-        detail: 'O carrinho ja foi cancelado!',
+        message: 'Não é possivel separar tudo!',
+        detail: 'O carrinho esta em modo de visualização..',
       );
 
       return;

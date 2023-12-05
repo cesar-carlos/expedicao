@@ -21,7 +21,6 @@ class CarrinhoController extends GetxController {
   late TextEditingController textControllerCodigoCarrinho;
   late FocusNode focusNodeBtnAdicionarCarrinho;
   late FocusNode focusNodeCodigoCarrinho;
-  //late AppClientHttp httpClient;
 
   @override
   void onInit() {

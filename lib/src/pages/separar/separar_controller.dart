@@ -1,21 +1,22 @@
+import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:app_expedicao/src/model/expedicao_separar_model.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
 import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';
 import 'package:app_expedicao/src/pages/common/widget/loading_sever_dialog.widget.dart';
 import 'package:app_expedicao/src/pages/separar_carrinhos/separar_carrinhos_controller.dart';
 import 'package:app_expedicao/src/pages/carrinho/widget/adicionar_carrinho_dialog_widget.dart';
 import 'package:app_expedicao/src/repository/expedicao_separar_item/separar_item_event_repository.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
-import 'package:app_expedicao/src/service/carrinho_percurso_adicionar_service.dart';
+import 'package:app_expedicao/src/service/carrinho_percurso_estagio_adicionar_service.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
 import 'package:app_expedicao/src/service/separar_consultas_services.dart';
-import 'package:app_expedicao/src/service/expedicao_estagio.service.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_model.dart';
 import 'package:app_expedicao/src/service/separar_services.dart';
@@ -76,7 +77,7 @@ class SepararController extends GetxController {
   }
 
   Future<void> _fillCarrinhoPercurso() async {
-    final carrinhoPercursos = await CarrinhoPercursoServices().selectPercurso(
+    final carrinhoPercursos = await CarrinhoPercursoServices().select(
       ''' CodEmpresa = ${_processoExecutavel.codEmpresa} 
         AND Origem = '${_processoExecutavel.origem}' 
         AND CodOrigem = ${_processoExecutavel.codOrigem}
@@ -122,16 +123,12 @@ class SepararController extends GetxController {
         descricao: carrinhoConsulta.descricaoCarrinho,
         ativo: carrinhoConsulta.ativo,
         codigoBarras: carrinhoConsulta.codigoBarras,
-        situacao: carrinhoConsulta.situacao,
+        situacao: ExpedicaoCarrinhoSituacaoModel.emSeparacao,
       );
 
-      final estagio = await ExpedicaoEstagioService().separacao();
-
-      final percursoEstagio = await CarrinhoPercursoAdicionarService(
+      final percursoEstagio = await CarrinhoPercursoEstagioAdicionarService(
         carrinho: carrinho,
         carrinhoPercurso: _carrinhoPercurso!,
-        percursoEstagio: estagio,
-        processo: _processoExecutavel,
       ).execute();
 
       if (percursoEstagio != null) {
@@ -141,6 +138,31 @@ class SepararController extends GetxController {
 
         _separarCarrinhosController.addCarrinho(percursoEstagioConsulta.last);
       }
+    }
+  }
+
+  Future<void> finalizarSeparacao() async {
+    final itensSaparar = await _separarServices.itensSaparar();
+    final isComplete =
+        itensSaparar.every((el) => el.quantidade == el.quantidadeSeparacao);
+
+    if (!isComplete) {
+      await ConfirmationDialogMessageWidget.show(
+        context: Get.context!,
+        message: 'Separação não finalizada!',
+        detail: 'Separação não finalizada, existem itens não separados.',
+      );
+      return;
+    }
+
+    final bool? confirmation = await ConfirmationDialogWidget.show(
+      context: Get.context!,
+      message: 'Deseja realmente finalizar?',
+      detail: 'Não será possível adicionar ou alterar mais os carrinhos.',
+    );
+
+    if (confirmation != null && confirmation) {
+      print('confirmation');
     }
   }
 

@@ -87,25 +87,6 @@ class ExpedicaoSeparacaoItemModel {
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      "CodEmpresa": codEmpresa,
-      "CodSepararEstoque": codSepararEstoque,
-      "Item": item,
-      "SessionId": sessionId,
-      "Situacao": situacao,
-      "CodCarrinhoPercurso": codCarrinhoPercurso,
-      "ItemCarrinhoPercurso": itemCarrinhoPercurso,
-      "CodSeparador": codSeparador,
-      "NomeSeparador": nomeSeparador,
-      "DataSeparacao": dataSeparacao.toIso8601String(),
-      "HoraSeparacao": horaSeparacao,
-      "CodProduto": codProduto,
-      "CodUnidadeMedida": codUnidadeMedida,
-      "Quantidade": quantidade.toStringAsFixed(4),
-    };
-  }
-
   factory ExpedicaoSeparacaoItemModel.fromConsulta(
       ExpedicaSeparacaoItemConsultaModel model) {
     return ExpedicaoSeparacaoItemModel(
@@ -124,6 +105,25 @@ class ExpedicaoSeparacaoItemModel {
       codUnidadeMedida: model.codUnidadeMedida,
       quantidade: model.quantidade,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "CodEmpresa": codEmpresa,
+      "CodSepararEstoque": codSepararEstoque,
+      "Item": item,
+      "SessionId": sessionId,
+      "Situacao": situacao,
+      "CodCarrinhoPercurso": codCarrinhoPercurso,
+      "ItemCarrinhoPercurso": itemCarrinhoPercurso,
+      "CodSeparador": codSeparador,
+      "NomeSeparador": nomeSeparador,
+      "DataSeparacao": dataSeparacao.toIso8601String(),
+      "HoraSeparacao": horaSeparacao,
+      "CodProduto": codProduto,
+      "CodUnidadeMedida": codUnidadeMedida,
+      "Quantidade": quantidade.toStringAsFixed(4),
+    };
   }
 
   @override

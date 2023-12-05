@@ -57,7 +57,7 @@ class SeparacaoPage {
               title: 'Separar tudo',
               onPressed: _controller.onSepararTudo,
               icon: const Icon(
-                BootstrapIcons.magic,
+                BootstrapIcons.list_check,
                 color: Colors.white,
                 size: 33,
               ),

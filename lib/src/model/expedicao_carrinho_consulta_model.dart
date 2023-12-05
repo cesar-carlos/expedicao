@@ -14,8 +14,8 @@ class ExpedicaoCarrinhoConsultaModel {
   final int? codOrigem;
   final DateTime? dataInicio;
   final String? horaInicio;
-  final int? codUsuario;
-  final String? nomeUsuario;
+  final int? codUsuarioInicio;
+  final String? nomeUsuarioInicio;
   final int? codSetorEstoque;
   final String? nomeSetorEstoque;
 
@@ -33,8 +33,8 @@ class ExpedicaoCarrinhoConsultaModel {
     this.codOrigem,
     this.dataInicio,
     this.horaInicio,
-    this.codUsuario,
-    this.nomeUsuario,
+    this.codUsuarioInicio,
+    this.nomeUsuarioInicio,
     this.codSetorEstoque,
     this.nomeSetorEstoque,
   });
@@ -54,8 +54,8 @@ class ExpedicaoCarrinhoConsultaModel {
       codOrigem: map['CodOrigem'],
       dataInicio: AppHelper.tryStringToDate(map['DataInicio']),
       horaInicio: map['HoraInicio'],
-      codUsuario: map['CodUsuario'],
-      nomeUsuario: map['NomeUsuario'],
+      codUsuarioInicio: map['CodUsuarioInicio'],
+      nomeUsuarioInicio: map['NomeUsuarioInicio'],
       codSetorEstoque: map['CodSetorEstoque'],
       nomeSetorEstoque: map['NomeSetorEstoque'],
     );
@@ -76,8 +76,8 @@ class ExpedicaoCarrinhoConsultaModel {
       'CodOrigem': codOrigem,
       'DataInicio': dataInicio,
       'HoraInicio': horaInicio,
-      'CodUsuario': codUsuario,
-      'NomeUsuario': nomeUsuario,
+      'CodUsuarioInicio': codUsuarioInicio,
+      'NomeUsuarioInicio': nomeUsuarioInicio,
       'CodSetorEstoque': codSetorEstoque,
       'NomeSetorEstoque': nomeSetorEstoque,
     };
@@ -85,6 +85,6 @@ class ExpedicaoCarrinhoConsultaModel {
 
   @override
   String toString() {
-    return 'ExpedicaoCarrinhoConsultaModel(codEmpresa: $codEmpresa, codCarrinho: $codCarrinho, descricaoCarrinho: $descricaoCarrinho, ativo: $ativo, situacao: $situacao, codigoBarras: $codigoBarras, codCarrinhoPercurso: $codCarrinhoPercurso, codPercursoEstagio: $codPercursoEstagio, descricaoPercursoEstagio: $descricaoPercursoEstagio, origem: $origem, codOrigem: $codOrigem, dataInicio: $dataInicio, horaInicio: $horaInicio, codUsuario: $codUsuario, nomeUsuario: $nomeUsuario, codSetorEstoque: $codSetorEstoque, nomeSetorEstoque: $nomeSetorEstoque)';
+    return 'ExpedicaoCarrinhoConsultaModel(codEmpresa: $codEmpresa, codCarrinho: $codCarrinho, descricaoCarrinho: $descricaoCarrinho, ativo: $ativo, situacao: $situacao, codigoBarras: $codigoBarras, codCarrinhoPercurso: $codCarrinhoPercurso, codPercursoEstagio: $codPercursoEstagio, descricaoPercursoEstagio: $descricaoPercursoEstagio, origem: $origem, codOrigem: $codOrigem, dataInicio: $dataInicio, horaInicio: $horaInicio, codUsuario: $codUsuarioInicio, nomeUsuario: $nomeUsuarioInicio, codSetorEstoque: $codSetorEstoque, nomeSetorEstoque: $nomeSetorEstoque)';
   }
 }

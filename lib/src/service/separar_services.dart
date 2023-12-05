@@ -1,6 +1,6 @@
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_repository.dart';
-import 'package:app_expedicao/src/repository/expedicao_percurso_estagio/percurso_estagio_repository.dart';
+import 'package:app_expedicao/src/repository/expedicao_estagio/expedicao_estagio_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_separar/separar_repository.dart';
 import 'package:app_expedicao/src/service/expedicao_percurso_adicionar_service.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_model.dart';
@@ -10,7 +10,7 @@ class SepararServices {
   final ExpedicaoSepararModel separar;
 
   final repositorySeparar = SepararRepository();
-  final repositoryEstagio = PercursoEstagioRepository();
+  final repositoryEstagio = ExpedicaoEstagioRepository();
 
   SepararServices({required this.separar});
 

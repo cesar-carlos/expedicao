@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/pages/separar_carrinhos/grid/separar_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/pages/separar_carrinhos/grid/separar_carrinho_grid_cells.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
@@ -62,27 +61,21 @@ class SepararCarrinhoGridSource extends DataGridSource {
               ),
               DataGridCell<int>(
                 columnName: 'codUsuario',
-                value: i.codUsuario,
+                value: i.codUsuarioInicio,
               ),
               DataGridCell<String>(
                 columnName: 'nomeUsuario',
-                value: i.nomeUsuario,
+                value: i.nomeUsuarioInicio,
               ),
               DataGridCell<Widget>(
                 columnName: 'actions',
                 value:
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   IconButton(
+                    icon: controller.iconRemove(i),
                     onPressed: () {
                       controller.onRemoveItem(this, i);
                     },
-                    icon: Icon(
-                      size: 17,
-                      Icons.delete,
-                      color: i.situacao != ExpedicaoSituacaoModel.cancelada
-                          ? Colors.red
-                          : Colors.grey,
-                    ),
                   ),
                   const SizedBox(
                     width: 10,
@@ -92,16 +85,10 @@ class SepararCarrinhoGridSource extends DataGridSource {
                     ),
                   ),
                   IconButton(
+                    icon: controller.iconEdit(i),
                     onPressed: () {
                       controller.editGrid(this, i);
                     },
-                    icon: Icon(
-                      size: 17,
-                      i.situacao != ExpedicaoSituacaoModel.cancelada
-                          ? Icons.edit
-                          : Icons.visibility,
-                      color: Colors.blue,
-                    ),
                   ),
                   const SizedBox(
                     width: 10,
@@ -111,14 +98,10 @@ class SepararCarrinhoGridSource extends DataGridSource {
                     ),
                   ),
                   IconButton(
+                    icon: controller.iconSave(i),
                     onPressed: () {
-                      controller.saveGrid(this, i);
+                      controller.onSavetem(this, i);
                     },
-                    icon: const Icon(
-                      size: 17,
-                      Icons.save_sharp,
-                      color: Colors.blue,
-                    ),
                   ),
                 ]),
               ),

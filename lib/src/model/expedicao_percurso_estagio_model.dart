@@ -9,10 +9,12 @@ class ExpedicaoPercursoEstagioModel {
   final String situacao;
   final DateTime dataInicio;
   final String horaInicio;
+  final int codUsuarioInicio;
+  final String nomeUsuarioInicio;
   final DateTime? dataFinalizacao;
   final String? horaFinalizacao;
-  final int codUsuario;
-  final String nomeUsuario;
+  final int? codUsuarioFinalizacao;
+  final String? nomeUsuarioFinalizacao;
 
   ExpedicaoPercursoEstagioModel({
     required this.codEmpresa,
@@ -23,10 +25,12 @@ class ExpedicaoPercursoEstagioModel {
     required this.situacao,
     required this.dataInicio,
     required this.horaInicio,
+    required this.codUsuarioInicio,
+    required this.nomeUsuarioInicio,
     this.dataFinalizacao,
     this.horaFinalizacao,
-    required this.codUsuario,
-    required this.nomeUsuario,
+    this.codUsuarioFinalizacao,
+    this.nomeUsuarioFinalizacao,
   });
 
   ExpedicaoPercursoEstagioModel copyWith({
@@ -38,10 +42,12 @@ class ExpedicaoPercursoEstagioModel {
     String? situacao,
     DateTime? dataInicio,
     String? horaInicio,
+    int? codUsuarioInicio,
+    String? nomeUsuarioInicio,
     DateTime? dataFinalizacao,
     String? horaFinalizacao,
-    int? codUsuario,
-    String? nomeUsuario,
+    int? codUsuarioFinalizacao,
+    String? nomeUsuarioFinalizacao,
   }) {
     return ExpedicaoPercursoEstagioModel(
       codEmpresa: codEmpresa ?? this.codEmpresa,
@@ -52,10 +58,14 @@ class ExpedicaoPercursoEstagioModel {
       situacao: situacao ?? this.situacao,
       dataInicio: dataInicio ?? this.dataInicio,
       horaInicio: horaInicio ?? this.horaInicio,
+      codUsuarioInicio: codUsuarioInicio ?? this.codUsuarioInicio,
+      nomeUsuarioInicio: nomeUsuarioInicio ?? this.nomeUsuarioInicio,
       dataFinalizacao: dataFinalizacao ?? this.dataFinalizacao,
       horaFinalizacao: horaFinalizacao ?? this.horaFinalizacao,
-      codUsuario: codUsuario ?? this.codUsuario,
-      nomeUsuario: nomeUsuario ?? this.nomeUsuario,
+      codUsuarioFinalizacao:
+          codUsuarioFinalizacao ?? this.codUsuarioFinalizacao,
+      nomeUsuarioFinalizacao:
+          nomeUsuarioFinalizacao ?? this.nomeUsuarioFinalizacao,
     );
   }
 
@@ -67,12 +77,14 @@ class ExpedicaoPercursoEstagioModel {
       codPercursoEstagio: map['CodPercursoEstagio'],
       codCarrinho: map['CodCarrinho'],
       situacao: map['Situacao'],
-      dataInicio: AppHelper.tryStringToDate(map['DataInicio']),
-      horaInicio: map['HoraInicio'] ?? '00:00:00',
+      dataInicio: DateTime.parse(map['DataInicio']),
+      horaInicio: map['HoraInicio'],
+      codUsuarioInicio: map['CodUsuarioInicio'],
+      nomeUsuarioInicio: map['NomeUsuarioInicio'],
       dataFinalizacao: AppHelper.tryStringToDateOrNull(map['DataFinalizacao']),
       horaFinalizacao: map['HoraFinalizacao'],
-      codUsuario: map['CodUsuario'],
-      nomeUsuario: map['NomeUsuario'],
+      codUsuarioFinalizacao: map['CodUsuarioFinalizacao'],
+      nomeUsuarioFinalizacao: map['NomeUsuarioFinalizacao'],
     );
   }
 
@@ -86,15 +98,17 @@ class ExpedicaoPercursoEstagioModel {
       'Situacao': situacao,
       'DataInicio': dataInicio.toIso8601String(),
       'HoraInicio': horaInicio,
+      'CodUsuarioInicio': codUsuarioInicio,
+      'NomeUsuarioInicio': nomeUsuarioInicio,
       'DataFinalizacao': dataFinalizacao?.toIso8601String(),
       'HoraFinalizacao': horaFinalizacao,
-      'CodUsuario': codUsuario,
-      'NomeUsuario': nomeUsuario,
+      'CodUsuarioFinalizacao': codUsuarioFinalizacao,
+      'NomeUsuarioFinalizacao': nomeUsuarioFinalizacao,
     };
   }
 
   @override
   String toString() {
-    return 'ExpedicaoPercursoEstagioModel(codEmpresa: $codEmpresa, codCarrinhoPercurso: $codCarrinhoPercurso, item: $item, codPercursoEstagio: $codPercursoEstagio, codCarrinho: $codCarrinho, situacao: $situacao, dataInicio: $dataInicio, horaInicio: $horaInicio, dataFinalizacao: $dataFinalizacao, horaFinalizacao: $horaFinalizacao, codUsuario: $codUsuario, nomeUsuario: $nomeUsuario)';
+    return 'ExpedicaoPercursoEstagioModel(codEmpresa: $codEmpresa, codCarrinhoPercurso: $codCarrinhoPercurso, item: $item, codPercursoEstagio: $codPercursoEstagio, codCarrinho: $codCarrinho, situacao: $situacao, dataInicio: $dataInicio, horaInicio: $horaInicio, codUsuarioInicio: $codUsuarioInicio, nomeUsuarioInicio: $nomeUsuarioInicio, dataFinalizacao: $dataFinalizacao, horaFinalizacao: $horaFinalizacao, codUsuarioFinalizacao: $codUsuarioFinalizacao, nomeUsuarioFinalizacao: $nomeUsuarioFinalizacao)';
   }
 }

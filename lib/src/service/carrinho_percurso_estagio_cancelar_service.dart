@@ -1,27 +1,27 @@
-import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
-import 'package:app_expedicao/src/model/expedicao_item_situacao_model.dart';
 import 'package:get/get.dart';
 
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separacao_item_model.dart';
 import 'package:app_expedicao/src/model/expedicao_percurso_estagio_model.dart';
-import 'package:app_expedicao/src/repository/sequencia_registro/sequencia_tabelas.dart';
+import 'package:app_expedicao/src/repository/expedicao_estagio/expedicao_estagio_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_cancelamento/cancelamento_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_estagio_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_repository.dart';
-import 'package:app_expedicao/src/repository/sequencia_registro/sequencia_registro_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinhos/carrinho_repository.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
+import 'package:app_expedicao/src/model/expedicao_item_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_cancelamento_model.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_model.dart';
+import 'package:app_expedicao/src/model/expedicao_estagio_model.dart';
 
-class CarrinhoPercursoCancelarService {
+class CarrinhoPercursoEstagioCancelarService {
   final _processo = Get.find<ProcessoExecutavelModel>();
 
   final ExpedicaoCarrinhoModel carrinho;
   final ExpedicaoPercursoEstagioModel percursoEstagio;
 
-  CarrinhoPercursoCancelarService({
+  CarrinhoPercursoEstagioCancelarService({
     required this.carrinho,
     required this.percursoEstagio,
   });
@@ -60,13 +60,10 @@ class CarrinhoPercursoCancelarService {
   }
 
   Future<ExpedicaoCancelamentoModel> _createCancelamento() async {
-    final sequencia = await SequenciaRegistroRepository()
-        .select(SequenciaTabelas.expedicaoCancelamento);
-
     return ExpedicaoCancelamentoModel(
       codEmpresa: percursoEstagio.codEmpresa,
-      codCancelamento: sequencia.first.valor,
-      origem: 'SE',
+      codCancelamento: 0,
+      origem: _processo.origem,
       codOrigem: percursoEstagio.codCarrinhoPercurso,
       itemOrigem: percursoEstagio.item,
       codMotivoCancelamento: 1,
@@ -76,5 +73,16 @@ class CarrinhoPercursoCancelarService {
       nomeUsuarioCancelamento: _processo.nomeUsuario,
       observacaoCancelamento: null,
     );
+  }
+
+  // ignore: unused_element
+  Future<ExpedicaoEstagioModel?> _findcodPercursoEstagio() async {
+    final repository = ExpedicaoEstagioRepository();
+    final params = ''' Origem LIKE '${_processo.origem}' AND Ativo = 'S' ''';
+
+    final estagios = await repository.select(params);
+    if (estagios.isEmpty) return null;
+    estagios.sort((a, b) => a.sequencia.compareTo(b.sequencia));
+    return estagios.first;
   }
 }
