@@ -25,10 +25,10 @@ class SepararItensWidget extends StatelessWidget {
                   color: Theme.of(context).primaryColor,
                 ),
                 width: size.width,
-                child: const Center(
+                child: Center(
                   child: Text(
-                    'SEPARAR ITENS',
-                    style: TextStyle(
+                    'SEPARAR ITENS - ${controller.expedicaoSituacaoDisplay.toUpperCase()}',
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 17,
                       fontWeight: FontWeight.bold,
@@ -36,7 +36,7 @@ class SepararItensWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              Expanded(child: SepararGrid())
+              const Expanded(child: SepararGrid())
             ],
           ),
         );

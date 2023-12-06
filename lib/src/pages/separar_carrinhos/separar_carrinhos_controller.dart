@@ -52,7 +52,7 @@ class SepararCarrinhosController extends GetxController {
     super.onReady();
 
     _evetsCarrinhoGrid();
-    _litenerCarrinhoPercurso();
+    _liteners();
   }
 
   Future<void> _fillGridSepararCarrinhos() async {
@@ -157,7 +157,7 @@ class SepararCarrinhosController extends GetxController {
     };
   }
 
-  _litenerCarrinhoPercurso() {
+  _liteners() {
     final carrinhoPercursoEvent = CarrinhoPercursoEventRepository.instancia;
     const uuid = Uuid();
 

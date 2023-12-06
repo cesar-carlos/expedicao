@@ -51,6 +51,8 @@ class SepararController extends GetxController {
   }
 
   String get expedicaoSituacaoModel => _expedicaoSituacaoModel;
+  String get expedicaoSituacaoDisplay =>
+      ExpedicaoSituacaoModel.situacao[_expedicaoSituacaoModel] ?? '';
 
   @override
   onInit() async {
@@ -107,6 +109,9 @@ class SepararController extends GetxController {
     final separar = ExpedicaoSepararModel.fromConsulta(_separarConsulta);
     final separarServices = SepararServices(separar: separar);
     await separarServices.iniciar();
+    _expedicaoSituacaoModel = ExpedicaoSituacaoModel.emAndamento;
+    _separarConsulta.situacao = ExpedicaoSituacaoModel.emAndamento;
+    update();
   }
 
   Future<void> pausarSeparacao() async {
@@ -207,6 +212,7 @@ class SepararController extends GetxController {
 
       _expedicaoSituacaoModel = ExpedicaoSituacaoModel.finalizada;
       _separarConsulta.situacao = ExpedicaoSituacaoModel.finalizada;
+      update();
     }
   }
 
@@ -245,6 +251,7 @@ class SepararController extends GetxController {
             final item = ExpedicaoSepararModel.fromJson(el);
             _expedicaoSituacaoModel = item.situacao;
             _separarConsulta.situacao = item.situacao;
+            update();
           }
         },
       ),

@@ -83,7 +83,7 @@ class SeparacaoController extends GetxController {
     _onEditItemSeparacaoGrid();
     _onRemoveItemSeparacaoGrid();
     _listenFocusNode();
-    _addLiteners();
+    _liteners();
   }
 
   @override
@@ -458,8 +458,9 @@ class SeparacaoController extends GetxController {
     return el;
   }
 
-  void _addLiteners() {
+  void _liteners() {
     const uuid = Uuid();
+
     final updateCarrinhoPercurso = RepositoryEventListenerModel(
       id: uuid.v4(),
       event: Event.update,
@@ -470,7 +471,6 @@ class SeparacaoController extends GetxController {
               car.codCarrinho == percursoEstagioConsulta.codCarrinho &&
               car.situacao == ExpedicaoSituacaoModel.cancelada) {
             _viewMode.value = true;
-            update();
 
             await ConfirmationDialogMessageWidget.show(
               context: Get.context!,
@@ -494,6 +494,7 @@ class SeparacaoController extends GetxController {
               res.codSepararEstoque == percursoEstagioConsulta.codOrigem &&
               res.codCarrinho == percursoEstagioConsulta.codCarrinho) {
             _separacaoGridController.addGrid(res);
+            _separacaoGridController.update();
           }
         }
       },
@@ -506,6 +507,7 @@ class SeparacaoController extends GetxController {
         for (var el in data.mutation) {
           final sep = ExpedicaSeparacaoItemConsultaModel.fromJson(el);
           _separacaoGridController.removeGrid(sep);
+          _separacaoGridController.update();
         }
       },
     );

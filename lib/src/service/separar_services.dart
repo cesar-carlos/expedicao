@@ -35,14 +35,6 @@ class SepararServices {
     await repositorySeparar.update(newSeparar);
   }
 
-  Future<void> cancelar() async {
-    //not implemented
-  }
-
-  Future<void> finalizar() async {
-    //not implemented
-  }
-
   Future<void> _iniciarPercurso() async {
     await ExpedicaoPercursoAdicionarService(
       codEmpresa: separar.codEmpresa,
