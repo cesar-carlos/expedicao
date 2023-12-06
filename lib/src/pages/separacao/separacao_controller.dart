@@ -1,3 +1,4 @@
+import 'package:date_format/date_format.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
@@ -471,6 +472,7 @@ class SeparacaoController extends GetxController {
               car.codCarrinho == percursoEstagioConsulta.codCarrinho &&
               car.situacao == ExpedicaoSituacaoModel.cancelada) {
             _viewMode.value = true;
+            update();
 
             await ConfirmationDialogMessageWidget.show(
               context: Get.context!,

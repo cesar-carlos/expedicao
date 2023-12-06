@@ -51,9 +51,10 @@ class SeparacaoAdicionarItemService {
     if (newSeparacaoItem.isEmpty) return null;
 
     final params = '''
-          CodEmpresa = ${newSeparacaoItem.first.codEmpresa} 
+        CodEmpresa = ${newSeparacaoItem.first.codEmpresa} 
       AND CodSepararEstoque = ${newSeparacaoItem.first.codSepararEstoque}
       AND Item = '${newSeparacaoItem.first.item}'
+
     ''';
 
     final list = await SeparacaoItemConsultaRepository().select(params);
@@ -63,8 +64,9 @@ class SeparacaoAdicionarItemService {
 
   Future<List<ExpedicaSeparacaoItemConsultaModel>> addAll() async {
     final params = '''
-          CodEmpresa = ${carrinhoPercurso.codEmpresa}
+        CodEmpresa = ${carrinhoPercurso.codEmpresa}
       AND CodSepararEstoque = ${carrinhoPercurso.codOrigem}
+
     ''';
 
     final separarItens = await SepararItemRepository().select(params);
@@ -111,9 +113,10 @@ class SeparacaoAdicionarItemService {
 
     String paramsConsulta = separacaoItensResponse.map((el) {
       return '''
-          (CodEmpresa = ${el.codEmpresa} 
+        (CodEmpresa = ${el.codEmpresa} 
       AND CodSepararEstoque = ${el.codSepararEstoque}
       AND Item = '${el.item}')
+
       ''';
     }).join(' OR ');
 

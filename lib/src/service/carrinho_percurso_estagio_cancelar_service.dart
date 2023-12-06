@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 
+import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separacao_item_model.dart';
 import 'package:app_expedicao/src/model/expedicao_percurso_estagio_model.dart';
@@ -50,7 +51,7 @@ class CarrinhoPercursoEstagioCancelarService {
 
   Future<List<ExpedicaoSeparacaoItemModel>> _findSeparacaoItem() async {
     final params = ''' 
-          CodEmpresa = ${percursoEstagio.codEmpresa} 
+        CodEmpresa = ${percursoEstagio.codEmpresa} 
       AND CodCarrinhoPercurso = ${percursoEstagio.codCarrinhoPercurso} 
       AND ItemCarrinhoPercurso = ${percursoEstagio.item} 
       
@@ -63,7 +64,7 @@ class CarrinhoPercursoEstagioCancelarService {
     return ExpedicaoCancelamentoModel(
       codEmpresa: percursoEstagio.codEmpresa,
       codCancelamento: 0,
-      origem: _processo.origem,
+      origem: ExpedicaoOrigemModel.carrinhoPercurso,
       codOrigem: percursoEstagio.codCarrinhoPercurso,
       itemOrigem: percursoEstagio.item,
       codMotivoCancelamento: 1,

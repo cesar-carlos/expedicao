@@ -40,21 +40,21 @@ class SeparacaoRemoverItemService {
   }
 
   Future<void> removeAllItensCart() async {
-    final repository = SeparacaoItemRepository();
-
-    final separacaoItensConsulta =
-        await SeparacaoItemConsultaRepository().select(
-      ''' CodEmpresa = ${percursoEstagioConsulta.codEmpresa}
+    final params = ''' 
+        CodEmpresa = ${percursoEstagioConsulta.codEmpresa}
       AND CodSepararEstoque = ${carrinhoPercurso.codOrigem}
       AND CodCarrinhoPercurso = ${percursoEstagioConsulta.codCarrinhoPercurso}  
       AND ItemCarrinhoPercurso = '${percursoEstagioConsulta.item}'
-      ''',
-    );
+
+      ''';
+
+    final separacaoItensConsulta =
+        await SeparacaoItemConsultaRepository().select(params);
 
     final itensDel = separacaoItensConsulta.map((el) {
       return ExpedicaoSeparacaoItemModel.fromConsulta(el);
     }).toList();
 
-    repository.deleteAll(itensDel);
+    await SeparacaoItemRepository().deleteAll(itensDel);
   }
 }
