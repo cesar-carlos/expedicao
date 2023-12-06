@@ -138,34 +138,56 @@ class SepararCarrinhoGridController extends GetxController {
   }
 
   Icon iconEdit(ExpedicaoCarrinhoPercursoConsultaModel item) {
+    Color color = Colors.blue;
+
+    switch (item.situacao) {
+      case ExpedicaoSituacaoModel.cancelada:
+        color = Colors.black;
+      case ExpedicaoSituacaoModel.finalizada:
+        color = Colors.green;
+    }
+
     return Icon(
       size: 17,
       item.situacao != ExpedicaoSituacaoModel.cancelada &&
               item.situacao != ExpedicaoSituacaoModel.finalizada
           ? Icons.edit
           : Icons.visibility,
-      color: Colors.blue,
+      color: color,
     );
   }
 
   Icon iconRemove(ExpedicaoCarrinhoPercursoConsultaModel item) {
+    Color color = Colors.red;
+
+    switch (item.situacao) {
+      case ExpedicaoSituacaoModel.cancelada:
+        color = Colors.grey;
+      case ExpedicaoSituacaoModel.finalizada:
+        color = Colors.grey;
+    }
+
     return Icon(
       size: 17,
       Icons.delete,
-      color: item.situacao != ExpedicaoSituacaoModel.cancelada &&
-              item.situacao != ExpedicaoSituacaoModel.finalizada
-          ? Colors.red
-          : Colors.grey,
+      color: color,
     );
   }
 
   Icon iconSave(ExpedicaoCarrinhoPercursoConsultaModel item) {
+    Color color = Colors.blue;
+
+    switch (item.situacao) {
+      case ExpedicaoSituacaoModel.cancelada:
+        color = Colors.grey;
+      case ExpedicaoSituacaoModel.finalizada:
+        color = Colors.green;
+    }
+
     return Icon(
       size: 17,
       Icons.save,
-      color: item.situacao == ExpedicaoSituacaoModel.finalizada
-          ? Colors.green
-          : Colors.blue,
+      color: color,
     );
   }
 

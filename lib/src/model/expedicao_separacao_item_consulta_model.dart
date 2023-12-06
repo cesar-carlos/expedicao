@@ -142,7 +142,7 @@ class ExpedicaSeparacaoItemConsultaModel {
       'Endereco': endereco,
       'CodSeparador': codSeparador,
       'NomeSeparador': nomeSeparador,
-      'DataSeparacao': dataSeparacao,
+      'DataSeparacao': dataSeparacao.toIso8601String(),
       'HoraSeparacao': horaSeparacao,
       'Quantidade': quantidade.toStringAsFixed(4),
     };

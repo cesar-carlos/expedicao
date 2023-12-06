@@ -1,4 +1,4 @@
-import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget.dart';
+import 'package:app_expedicao/src/repository/expedicao_separar/separar_event_repository.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
@@ -7,6 +7,7 @@ import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
 import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';
+import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget.dart';
 import 'package:app_expedicao/src/pages/common/widget/loading_sever_dialog.widget.dart';
 import 'package:app_expedicao/src/pages/separar_carrinhos/separar_carrinhos_controller.dart';
 import 'package:app_expedicao/src/pages/carrinho/widget/adicionar_carrinho_dialog_widget.dart';
@@ -17,8 +18,10 @@ import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dar
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
 import 'package:app_expedicao/src/service/separar_consultas_services.dart';
+import 'package:app_expedicao/src/service/separar_finalizar_service.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_model.dart';
+import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/service/separar_services.dart';
 import 'package:app_expedicao/src/app/app_socket.config.dart';
 
@@ -26,11 +29,13 @@ class SepararController extends GetxController {
   bool _iniciada = false;
 
   late AppSocketConfig _socketClient;
+  late String _expedicaoSituacaoModel;
   late SepararConsultaServices _separarServices;
   late SepararGridController _separarGridController;
-  late ProcessoExecutavelModel _processoExecutavel;
-  late ExpedicaoSepararConsultaModel _separarConsulta;
   late SepararCarrinhosController _separarCarrinhosController;
+  late ExpedicaoSepararConsultaModel _separarConsulta;
+  late ProcessoExecutavelModel _processoExecutavel;
+
   ExpedicaoCarrinhoPercursoModel? _carrinhoPercurso;
 
   ExpedicaoSepararConsultaModel get separarConsulta => _separarConsulta;
@@ -45,6 +50,8 @@ class SepararController extends GetxController {
     }
   }
 
+  String get expedicaoSituacaoModel => _expedicaoSituacaoModel;
+
   @override
   onInit() async {
     super.onInit();
@@ -54,6 +61,7 @@ class SepararController extends GetxController {
     _separarConsulta = Get.find<ExpedicaoSepararConsultaModel>();
     _separarCarrinhosController = Get.find<SepararCarrinhosController>();
     _separarGridController = Get.find<SepararGridController>();
+    _expedicaoSituacaoModel = _separarConsulta.situacao;
 
     _separarServices = SepararConsultaServices(
       codEmpresa: _processoExecutavel.codEmpresa,
@@ -67,7 +75,7 @@ class SepararController extends GetxController {
     await _fillGridSepararItens();
     await _fillCarrinhoPercurso();
 
-    _litenerSepararItens();
+    _liteners();
   }
 
   Future<void> _fillGridSepararItens() async {
@@ -110,6 +118,16 @@ class SepararController extends GetxController {
   }
 
   Future<void> adicionarCarrinho() async {
+    if (_expedicaoSituacaoModel == ExpedicaoSituacaoModel.finalizada) {
+      await ConfirmationDialogMessageWidget.show(
+        context: Get.context!,
+        message: 'Separação já finalizada!',
+        detail: 'Separação já finalizada, não é possível finalizar novamente.',
+      );
+
+      return;
+    }
+
     final dialog = AdicionarCarrinhoDialogWidget();
     final carrinhoConsulta = await dialog.show();
 
@@ -142,9 +160,18 @@ class SepararController extends GetxController {
   }
 
   Future<void> finalizarSeparacao() async {
-    final itensSaparar = await _separarServices.itensSaparar();
-    final isComplete =
-        itensSaparar.every((el) => el.quantidade == el.quantidadeSeparacao);
+    final isComplete = await _separarServices.isComplete();
+    final existsOpenCart = await _separarServices.existsOpenCart();
+
+    if (_expedicaoSituacaoModel == ExpedicaoSituacaoModel.finalizada) {
+      await ConfirmationDialogMessageWidget.show(
+        context: Get.context!,
+        message: 'Separação já finalizada!',
+        detail: 'Separação já finalizada, não é possível finalizar novamente.',
+      );
+
+      return;
+    }
 
     if (!isComplete) {
       await ConfirmationDialogMessageWidget.show(
@@ -152,6 +179,17 @@ class SepararController extends GetxController {
         message: 'Separação não finalizada!',
         detail: 'Separação não finalizada, existem itens não separados.',
       );
+
+      return;
+    }
+
+    if (existsOpenCart) {
+      await ConfirmationDialogMessageWidget.show(
+        context: Get.context!,
+        message: 'Separação não finalizada!',
+        detail: 'Separação não finalizada, existem carrinhos em aberto.',
+      );
+
       return;
     }
 
@@ -162,17 +200,23 @@ class SepararController extends GetxController {
     );
 
     if (confirmation != null && confirmation) {
-      print('confirmation');
+      await SepararFinalizarService(
+        codEmpresa: _separarConsulta.codEmpresa,
+        codSepararEstoque: _separarConsulta.codSepararEstoque,
+      ).execute();
+
+      _expedicaoSituacaoModel = ExpedicaoSituacaoModel.finalizada;
+      _separarConsulta.situacao = ExpedicaoSituacaoModel.finalizada;
     }
   }
 
-  _litenerSepararItens() {
-    final carrinhoPercursoEvent = SepararItemEventRepository.instancia;
+  _liteners() {
     const uuid = Uuid();
+    final separarEvent = SepararEventRepository.instancia;
+    final carrinhoPercursoEvent = SepararItemEventRepository.instancia;
 
     _socketClient.isConnect.listen((event) {
       if (event) return;
-
       LoadingSeverDialogWidget.show(
         context: Get.context!,
       );
@@ -187,6 +231,20 @@ class SepararController extends GetxController {
             final item = ExpedicaoSepararItemConsultaModel.fromJson(el);
             _separarGridController.updateGrid(item);
             _separarGridController.update();
+          }
+        },
+      ),
+    );
+
+    separarEvent.addListener(
+      RepositoryEventListenerModel(
+        id: uuid.v4(),
+        event: Event.update,
+        callback: (data) async {
+          for (var el in data.mutation) {
+            final item = ExpedicaoSepararModel.fromJson(el);
+            _expedicaoSituacaoModel = item.situacao;
+            _separarConsulta.situacao = item.situacao;
           }
         },
       ),

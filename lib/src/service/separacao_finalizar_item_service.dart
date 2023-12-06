@@ -4,9 +4,6 @@ import 'package:app_expedicao/src/model/expedicao_separacao_item_consulta_model.
 import 'package:app_expedicao/src/model/expedicao_item_situacao_model.dart';
 
 class SeparacaoFinalizarItemService {
-  // final _socket = Get.find<AppSocketConfig>().socket;
-  // final _processo = Get.find<ProcessoExecutavelModel>();
-
   Future<void> update(
     ExpedicaSeparacaoItemConsultaModel item,
   ) async {

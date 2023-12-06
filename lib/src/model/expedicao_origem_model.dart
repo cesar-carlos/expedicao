@@ -1,5 +1,5 @@
 abstract class ExpedicaoOrigemModel {
-  static const String separando = 'SE';
+  static const String separacao = 'SE';
   static const String conferencia = 'CO';
   static const String expedicao = 'EX';
   static const String carrinhoPercurso = 'CP';
@@ -10,7 +10,7 @@ abstract class ExpedicaoOrigemModel {
   }
 
   static final Map<String?, String> _origem = {
-    'SE': 'Separando',
+    'SE': 'Separação',
     'CO': 'Conferencia',
     'EX': 'Expedição',
     'CP': 'Carrinho Percurso',

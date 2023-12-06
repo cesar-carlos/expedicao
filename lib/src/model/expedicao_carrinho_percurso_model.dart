@@ -72,7 +72,7 @@ class ExpedicaoCarrinhoPercursoModel {
       'Situacao': situacao,
       'DataInicio': dataInicio.toIso8601String(),
       'HoraInicio': horaInicio,
-      'DataFinalizacao': dataFinalizacao,
+      'DataFinalizacao': dataFinalizacao?.toIso8601String(),
       'HoraFinalizacao': horaFinalizacao,
     };
   }

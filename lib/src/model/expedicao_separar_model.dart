@@ -146,7 +146,7 @@ class ExpedicaoSepararModel {
       "Historico": historico,
       "Observacao": observacao,
       "CodMotivoCancelamento": codMotivoCancelamento,
-      "DataCancelamento": dataCancelamento,
+      "DataCancelamento": dataCancelamento?.toIso8601String(),
       "HoraCancelamento": horaCancelamento,
       "CodUsuarioCancelamento": codUsuarioCancelamento,
       "NomeUsuarioCancelamento": nomeUsuarioCancelamento,

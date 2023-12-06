@@ -74,7 +74,7 @@ class ExpedicaoCarrinhoConsultaModel {
       'DescricaoPercursoEstagio': descricaoPercursoEstagio,
       'Origem': origem,
       'CodOrigem': codOrigem,
-      'DataInicio': dataInicio,
+      'DataInicio': dataInicio?.toIso8601String(),
       'HoraInicio': horaInicio,
       'CodUsuarioInicio': codUsuarioInicio,
       'NomeUsuarioInicio': nomeUsuarioInicio,

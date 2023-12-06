@@ -5,7 +5,7 @@ class ExpedicaoSepararConsultaModel {
   final int codSepararEstoque;
   final int codTipoOperacao;
   final String nomeTipoOperacao;
-  final String situacao;
+  String situacao;
   final String tipoEntidade;
   final DateTime dataEmissao;
   final String horaEmissao;
@@ -32,6 +32,40 @@ class ExpedicaoSepararConsultaModel {
     this.historico,
     this.observacao,
   });
+
+  ExpedicaoSepararConsultaModel copyWith({
+    int? codEmpresa,
+    int? codSepararEstoque,
+    int? codTipoOperacao,
+    String? nomeTipoOperacao,
+    String? situacao,
+    String? tipoEntidade,
+    DateTime? dataEmissao,
+    String? horaEmissao,
+    int? codEntidade,
+    String? nomeEntidade,
+    int? codPrioridade,
+    String? nomePrioridade,
+    String? historico,
+    String? observacao,
+  }) {
+    return ExpedicaoSepararConsultaModel(
+      codEmpresa: codEmpresa ?? this.codEmpresa,
+      codSepararEstoque: codSepararEstoque ?? this.codSepararEstoque,
+      codTipoOperacao: codTipoOperacao ?? this.codTipoOperacao,
+      nomeTipoOperacao: nomeTipoOperacao ?? this.nomeTipoOperacao,
+      situacao: situacao ?? this.situacao,
+      tipoEntidade: tipoEntidade ?? this.tipoEntidade,
+      dataEmissao: dataEmissao ?? this.dataEmissao,
+      horaEmissao: horaEmissao ?? this.horaEmissao,
+      codEntidade: codEntidade ?? this.codEntidade,
+      nomeEntidade: nomeEntidade ?? this.nomeEntidade,
+      codPrioridade: codPrioridade ?? this.codPrioridade,
+      nomePrioridade: nomePrioridade ?? this.nomePrioridade,
+      historico: historico ?? this.historico,
+      observacao: observacao ?? this.observacao,
+    );
+  }
 
   factory ExpedicaoSepararConsultaModel.fromJson(Map<String, dynamic> map) {
     return ExpedicaoSepararConsultaModel(
@@ -60,7 +94,7 @@ class ExpedicaoSepararConsultaModel {
       'NomeTipoOperacaoExpedicao': nomeTipoOperacao,
       'Situacao': situacao,
       'TipoEntidade': tipoEntidade,
-      'DataEmissao': dataEmissao,
+      'DataEmissao': dataEmissao.toIso8601String(),
       'HoraEmissao': horaEmissao,
       'CodEntidade': codEntidade,
       'NomeEntidade': nomeEntidade,

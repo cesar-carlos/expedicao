@@ -489,7 +489,7 @@ class SeparacaoController extends GetxController {
         for (var el in data.mutation) {
           final res = ExpedicaSeparacaoItemConsultaModel.fromJson(el);
           if (res.codEmpresa == percursoEstagioConsulta.codEmpresa &&
-              ExpedicaoOrigemModel.separando ==
+              ExpedicaoOrigemModel.separacao ==
                   percursoEstagioConsulta.origem &&
               res.codSepararEstoque == percursoEstagioConsulta.codOrigem &&
               res.codCarrinho == percursoEstagioConsulta.codCarrinho) {

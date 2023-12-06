@@ -11,10 +11,8 @@ import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_mod
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_finalizar_service.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
 import 'package:app_expedicao/src/pages/separar_carrinhos/grid/separar_carrinho_grid_controller.dart';
-import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_consulta_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_event_repository.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_cancelar_service.dart';
-import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
@@ -46,14 +44,15 @@ class SepararCarrinhosController extends GetxController {
       codSepararEstoque: _processoExecutavel.codOrigem,
     );
 
-    _evetsCarrinhoGrid();
-    _litenerCarrinhoPercurso();
+    await _fillGridSepararCarrinhos();
   }
 
   @override
   onReady() async {
     super.onReady();
-    await _fillGridSepararCarrinhos();
+
+    _evetsCarrinhoGrid();
+    _litenerCarrinhoPercurso();
   }
 
   Future<void> _fillGridSepararCarrinhos() async {

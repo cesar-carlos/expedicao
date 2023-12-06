@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 
 import 'package:app_expedicao/src/app/app_socket.config.dart';
+import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separacao_item_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separacao_item_consulta_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_separar_item/separar_item_repository.dart';
@@ -9,7 +10,6 @@ import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 import 'package:app_expedicao/src/model/expedicao_item_situacao_model.dart';
-import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 
 class SeparacaoAdicionarItemService {
   final _socket = Get.find<AppSocketConfig>().socket;
