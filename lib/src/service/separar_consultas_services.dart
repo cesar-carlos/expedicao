@@ -26,7 +26,6 @@ class SepararConsultaServices {
     ''';
 
     final response = await SepararConsultaRepository().select(params);
-
     if (response.isEmpty) {
       return null;
     }

@@ -9,4 +9,5 @@ class AppErrorCode {
   static const int socketDesconected = 5;
   static const int separarEncontrado = 6;
   static const int separarEstagioNaoEncontrado = 7;
+  static const int erroCriarExpedicaoConferir = 8;
 }

@@ -59,13 +59,13 @@ class SepararFinalizarService {
       situacao: ExpedicaoSituacaoModel.separando,
     );
 
-    final percursoFinalizada = carrinhoPercurso.first.copyWith(
-      situacao: ExpedicaoSituacaoModel.separando,
-      dataFinalizacao: DateTime.now(),
-      horaFinalizacao: DateTime.now().toString().substring(11, 19),
-    );
+    // final percursoFinalizada = carrinhoPercurso.first.copyWith(
+    //   situacao: ExpedicaoSituacaoModel.separando,
+    //   dataFinalizacao: DateTime.now(),
+    //   horaFinalizacao: DateTime.now().toString().substring(11, 19),
+    // );
 
     await separarRepository.update(separarFinalizada);
-    await carrinhoPercursoRepository.update(percursoFinalizada);
+    //await carrinhoPercursoRepository.update(percursoFinalizada);
   }
 }

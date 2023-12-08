@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_expedicao/src/pages/separar/separar_controller.dart';
-import 'package:app_expedicao/src/pages/separar/view_model/separar_obs_view_model.dart';
 import 'package:app_expedicao/src/pages/common/form_element/bar_head_form_element.dart';
 import 'package:app_expedicao/src/pages/common/form_element/button_form_element.dart';
 
@@ -12,11 +11,10 @@ class SepararOBsDialogWidget {
   final controller = Get.find<SepararController>();
   final spaceBarHeadFormElement = 30.5;
 
-  SepararObsViewModel? separarObsViewModel;
-  SepararOBsDialogWidget([this.separarObsViewModel]);
+  SepararOBsDialogWidget();
 
-  Future<SepararObsViewModel?> show() async {
-    return await showDialog<SepararObsViewModel>(
+  Future<bool?> show() async {
+    return await showDialog<bool>(
       context: context,
       builder: (context) => Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -69,11 +67,10 @@ class SepararOBsDialogWidget {
                                   height: 60,
                                   child: TextField(
                                     maxLength: 50,
+                                    controller: controller.historicoController,
                                     decoration: InputDecoration(
                                       contentPadding: const EdgeInsets.only(
-                                        left: 10,
-                                        right: 10,
-                                      ),
+                                          left: 10, right: 10),
                                       border: const OutlineInputBorder(),
                                       enabledBorder: OutlineInputBorder(
                                         borderSide: const BorderSide(
@@ -102,6 +99,7 @@ class SepararOBsDialogWidget {
                                   child: TextField(
                                     maxLines: 10,
                                     keyboardType: TextInputType.multiline,
+                                    controller: controller.observacaoController,
                                     decoration: InputDecoration(
                                       contentPadding: const EdgeInsets.only(
                                           top: 10, left: 10, right: 10),
@@ -131,12 +129,12 @@ class SepararOBsDialogWidget {
                           ButtonFormElement(
                             name: 'Cancelar',
                             padding: const EdgeInsets.only(left: 5),
-                            onPressed: () {},
+                            onPressed: () => Get.back(),
                           ),
                           ButtonFormElement(
-                            name: 'Adicionar',
+                            name: '   Salvar   ',
                             padding: const EdgeInsets.only(left: 5),
-                            onPressed: () {},
+                            onPressed: () => Get.back(result: true),
                           )
                         ],
                       ),

@@ -13,8 +13,8 @@ class ExpedicaoSepararConsultaModel {
   final String nomeEntidade;
   final int codPrioridade;
   final String nomePrioridade;
-  final String? historico;
-  final String? observacao;
+  String? historico;
+  String? observacao;
 
   ExpedicaoSepararConsultaModel({
     required this.codEmpresa,

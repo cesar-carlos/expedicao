@@ -74,4 +74,9 @@ class ExpedicaoConferirItemModel {
     data['QuantidadeConferida'] = quantidadeConferida.toStringAsFixed(4);
     return data;
   }
+
+  @override
+  String toString() {
+    return 'ExpedicaoConferirItemModel(codEmpresa: $codEmpresa, codConferir: $codConferir, item: $item, codCarrinhoPercurso: $codCarrinhoPercurso, itemCarrinhoPercurso: $itemCarrinhoPercurso, codProduto: $codProduto, codUnidadeMedida: $codUnidadeMedida, quantidade: $quantidade, quantidadeConferida: $quantidadeConferida)';
+  }
 }

@@ -1,6 +1,7 @@
-import 'package:app_expedicao/src/pages/separar/view_model/separar_obs_view_model.dart';
+import 'package:app_expedicao/src/service/conferir_separacao_adicionar_service.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
+import 'package:flutter/material.dart';
 
 import 'package:app_expedicao/src/model/expedicao_separar_model.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
@@ -12,10 +13,10 @@ import 'package:app_expedicao/src/pages/common/widget/loading_sever_dialog.widge
 import 'package:app_expedicao/src/pages/separar_carrinhos/separar_carrinhos_controller.dart';
 import 'package:app_expedicao/src/pages/carrinho/widget/adicionar_carrinho_dialog_widget.dart';
 import 'package:app_expedicao/src/repository/expedicao_separar_item/separar_item_event_repository.dart';
-import 'package:app_expedicao/src/pages/separar/widget/separar_obs_dialog_widget.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
 import 'package:app_expedicao/src/repository/expedicao_separar/separar_event_repository.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_adicionar_service.dart';
+import 'package:app_expedicao/src/pages/separar/widget/separar_obs_dialog_widget.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
@@ -31,13 +32,16 @@ class SepararController extends GetxController {
   bool _iniciada = false;
 
   late String _expedicaoSituacao;
-  late SepararConsultaServices _separarServices;
   late SepararGridController _separarGridController;
+  late SepararConsultaServices _separarConsultaServices;
   late SepararCarrinhosController _separarCarrinhosController;
   final List<RepositoryEventListenerModel> _pageListerner = [];
   late ExpedicaoSepararConsultaModel _separarConsulta;
   late ProcessoExecutavelModel _processoExecutavel;
   late AppSocketConfig _socketClient;
+
+  late TextEditingController historicoController;
+  late TextEditingController observacaoController;
 
   ExpedicaoCarrinhoPercursoModel? _carrinhoPercurso;
 
@@ -73,29 +77,45 @@ class SepararController extends GetxController {
     _separarGridController = Get.find<SepararGridController>();
     _expedicaoSituacao = _separarConsulta.situacao;
 
-    _separarServices = SepararConsultaServices(
+    _separarConsultaServices = SepararConsultaServices(
       codEmpresa: _processoExecutavel.codEmpresa,
       codSepararEstoque: _processoExecutavel.codOrigem,
     );
+
+    historicoController = TextEditingController();
+    observacaoController = TextEditingController();
+
+    historicoController.addListener(() {
+      final txt = historicoController.text.toUpperCase();
+      historicoController.value = historicoController.value.copyWith(
+        text: txt,
+        selection:
+            TextSelection(baseOffset: txt.length, extentOffset: txt.length),
+        composing: TextRange.empty,
+      );
+    });
   }
 
   @override
   onReady() async {
     super.onReady();
+
     await _fillGridSepararItens();
     await _fillCarrinhoPercurso();
-
     _liteners();
   }
 
   @override
   onClose() {
     _removeAllliteners();
+    historicoController.dispose();
+    observacaoController.dispose();
+
     super.onClose();
   }
 
   Future<void> _fillGridSepararItens() async {
-    final separarItens = await _separarServices.itensSaparar();
+    final separarItens = await _separarConsultaServices.itensSaparar();
     _separarGridController.addAllGrid(separarItens);
     _separarGridController.update();
   }
@@ -122,8 +142,7 @@ class SepararController extends GetxController {
     }
 
     final separar = ExpedicaoSepararModel.fromConsulta(_separarConsulta);
-    final separarServices = SepararServices(separar: separar);
-    await separarServices.iniciar();
+    await SepararServices(separar).iniciar();
     _expedicaoSituacao = ExpedicaoSituacaoModel.emAndamento;
     _separarConsulta.situacao = ExpedicaoSituacaoModel.emAndamento;
     update();
@@ -171,7 +190,7 @@ class SepararController extends GetxController {
 
       if (percursoEstagio != null) {
         final percursoEstagioConsulta =
-            await _separarServices.carrinhosPercurso()
+            await _separarConsultaServices.carrinhosPercurso()
               ..where((el) => el.item == percursoEstagio.item).toList();
 
         _separarCarrinhosController.addCarrinho(percursoEstagioConsulta.last);
@@ -182,18 +201,24 @@ class SepararController extends GetxController {
   }
 
   Future<void> adicionarObservacao() async {
-    final obs = SepararObsViewModel(
-      title: 'Adicionar Observação',
-      historico: _separarConsulta.historico,
-      observacao: _separarConsulta.observacao,
-    );
+    final currentSeparar = await _separarConsultaServices.separar();
 
-    final newObs = await SepararOBsDialogWidget(obs).show();
+    historicoController.text = currentSeparar?.historico ?? '';
+    observacaoController.text = currentSeparar?.observacao ?? '';
+
+    final result = await SepararOBsDialogWidget().show();
+    if (result != null) {
+      _separarConsulta.historico = historicoController.text;
+      _separarConsulta.observacao = observacaoController.text;
+
+      final separar = ExpedicaoSepararModel.fromConsulta(_separarConsulta);
+      SepararServices(separar).atualizar();
+    }
   }
 
   Future<void> finalizarSeparacao() async {
-    final isComplete = await _separarServices.isComplete();
-    final existsOpenCart = await _separarServices.existsOpenCart();
+    final isComplete = await _separarConsultaServices.isComplete();
+    final existsOpenCart = await _separarConsultaServices.existsOpenCart();
 
     if (_expedicaoSituacao == ExpedicaoSituacaoModel.separando) {
       await ConfirmationDialogMessageWidget.show(
@@ -239,6 +264,12 @@ class SepararController extends GetxController {
 
       _expedicaoSituacao = ExpedicaoSituacaoModel.separando;
       _separarConsulta.situacao = ExpedicaoSituacaoModel.separando;
+
+      //ADD CARRINHO PERCURSO CONFERIR
+      await ConferirSeparacaoAdicionarService(
+        carrinhoPercurso: _carrinhoPercurso!,
+      ).execute();
+
       update();
     }
   }

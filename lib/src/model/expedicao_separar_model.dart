@@ -153,4 +153,9 @@ class ExpedicaoSepararModel {
       "ObservacaoCancelamento": observacaoCancelamento,
     };
   }
+
+  @override
+  String toString() {
+    return 'ExpedicaoSepararModel(codEmpresa: $codEmpresa, codSepararEstoque: $codSepararEstoque, codTipoOperacaoExpedicao: $codTipoOperacaoExpedicao, tipoEntidade: $tipoEntidade, codEntidade: $codEntidade, nomeEntidade: $nomeEntidade, situacao: $situacao, data: $data, hora: $hora, codPrioridade: $codPrioridade, historico: $historico, observacao: $observacao, codMotivoCancelamento: $codMotivoCancelamento, dataCancelamento: $dataCancelamento, horaCancelamento: $horaCancelamento, codUsuarioCancelamento: $codUsuarioCancelamento, nomeUsuarioCancelamento: $nomeUsuarioCancelamento, observacaoCancelamento: $observacaoCancelamento)';
+  }
 }

@@ -1,54 +1,104 @@
-import 'package:get/get.dart';
-
-import 'package:app_expedicao/src/app/app_error.dart';
-import 'package:app_expedicao/src/app/app_error_code.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
+import 'package:app_expedicao/src/model/expedicao_conferir_item_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
-import 'package:app_expedicao/src/repository/expedicao_separar/separar_repository.dart';
-import 'package:app_expedicao/src/model/processo_executavel_model.dart';
-import 'package:app_expedicao/src/model/expedicao_separar_model.dart';
+import 'package:app_expedicao/src/model/expedicao_conferir_item_separacao_consulta_model.dart';
+import 'package:app_expedicao/src/repository/expedicao_conferir_item/conferir_item_repository.dart';
+import 'package:app_expedicao/src/repository/expedicao_conferir_item/conferir_item_consulta_separacao_repository.dart';
+import 'package:app_expedicao/src/repository/expedicao_conferir/conferir_repository.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_model.dart';
 import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
+import 'package:app_expedicao/src/app/app_error_code.dart';
+import 'package:app_expedicao/src/app/app_error.dart';
 
 class ConferirSeparacaoAdicionarService {
-  final _processo = Get.find<ProcessoExecutavelModel>();
-  final ExpedicaoCarrinhoPercursoModel carrinhoPercurso;
-  late ExpedicaoSepararModel _separar;
+  //final _processo = Get.find<ProcessoExecutavelModel>();
 
-  ConferirSeparacaoAdicionarService({required this.carrinhoPercurso}) {
-    _build();
-  }
+  final ExpedicaoCarrinhoPercursoModel carrinhoPercurso;
+  late List<ExpedicaoConferirItemSeparacaoConsultaModel>
+      _conferirItensSeparacaoConsulta;
+
+  ConferirSeparacaoAdicionarService({required this.carrinhoPercurso});
 
   _build() async {
-    final result = await SepararRepository().select('''
+    final params = '''
         CodEmpresa = ${carrinhoPercurso.codEmpresa}
-      AND CodSeparar = ${carrinhoPercurso.codOrigem}
-      AND Situacao <> '${ExpedicaoSituacaoModel.cancelada}'
+      AND CodSepararEstoque = ${carrinhoPercurso.codOrigem}
+      AND CodCarrinhoPercurso = ${carrinhoPercurso.codCarrinhoPercurso}
+      AND Situacao = '${ExpedicaoSituacaoModel.separando}'
    
-    ''');
+    ''';
+
+    final result =
+        await ConferirItemConsultaSeparacaoRepository().select(params);
 
     if (result.isEmpty) {
       throw throw AppError(
         AppErrorCode.separarEstagioNaoEncontrado,
-        'Separar Estagio não encontrado',
+        'conferir separacao item consulta, não encontrado',
       );
     }
 
-    _separar = result.first;
+    _conferirItensSeparacaoConsulta = result;
   }
 
-  Future<void> execute() async {}
+  Future<void> execute() async {
+    await _build();
 
-  Future<ExpedicaoConferirModel> _createConferir() async {
+    final conferir = _createConferir(_conferirItensSeparacaoConsulta.first);
+    final newConferirs = await ConferirRepository().insert(conferir);
+
+    if (newConferirs.isEmpty) {
+      throw AppError(
+        AppErrorCode.erroCriarExpedicaoConferir,
+        'erro tenta criar (Expedicao.Conferir)',
+      );
+    }
+
+    final newItensConferir = _createItensConferir(
+      newConferirs.first,
+      _conferirItensSeparacaoConsulta,
+    );
+
+    await ConferirItemRepository().insertAll(newItensConferir);
+  }
+
+  ExpedicaoConferirModel _createConferir(
+    ExpedicaoConferirItemSeparacaoConsultaModel item,
+  ) {
     return ExpedicaoConferirModel(
-      codEmpresa: _processo.codEmpresa,
-      codConferir: _separar.codPrioridade,
+      codEmpresa: item.codEmpresa,
+      codConferir: 0,
       origem: ExpedicaoOrigemModel.separacao,
-      codOrigem: _separar.codSepararEstoque,
-      codPrioridade: _separar.codPrioridade,
+      codOrigem: item.codSepararEstoque,
+      codPrioridade: item.codPrioridade,
       situacao: ExpedicaoSituacaoModel.aguardando,
       data: DateTime.now(),
-      hora: DateTime.now().toString(),
+      hora: DateTime.now().toString().substring(11, 19),
     );
+  }
+
+  List<ExpedicaoConferirItemModel> _createItensConferir(
+    ExpedicaoConferirModel conferir,
+    List<ExpedicaoConferirItemSeparacaoConsultaModel> itens,
+  ) {
+    final newItens = <ExpedicaoConferirItemModel>[];
+
+    for (var el in itens) {
+      final newItem = ExpedicaoConferirItemModel(
+        codEmpresa: el.codEmpresa,
+        codConferir: conferir.codConferir,
+        item: '',
+        codCarrinhoPercurso: el.codCarrinhoPercurso,
+        itemCarrinhoPercurso: el.itemCarrinhoPercurso,
+        codProduto: el.codProduto,
+        codUnidadeMedida: el.codUnidadeMedida,
+        quantidade: el.quantidadeSeparacao,
+        quantidadeConferida: el.quantidadeSeparacao,
+      );
+
+      newItens.add(newItem);
+    }
+
+    return newItens;
   }
 }

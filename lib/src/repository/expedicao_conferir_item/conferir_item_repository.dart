@@ -87,6 +87,41 @@ class ConferirItemRepository {
     return completer.future;
   }
 
+  Future<List<ExpedicaoConferirItemModel>> insertAll(
+      List<ExpedicaoConferirItemModel> entity) {
+    if (socket.connected == false) {
+      throw AppError(
+        AppErrorCode.socketDesconected,
+        'Socket não conectado',
+      );
+    }
+
+    final event = '${socket.id} conferir.item.insert';
+    final completer = Completer<List<ExpedicaoConferirItemModel>>();
+    final resposeIn = uuid.v4();
+
+    final send = {
+      "session": socket.id,
+      "resposeIn": resposeIn,
+      "mutation": entity.map((el) => el.toJson()).toList(),
+    };
+
+    socket.emit(event, jsonEncode(send));
+    socket.on(resposeIn, (receiver) {
+      final data = jsonDecode(receiver);
+      final mutation = data?['mutation'] ?? [];
+
+      final list = mutation.map<ExpedicaoConferirItemModel>((json) {
+        return ExpedicaoConferirItemModel.fromJson(json);
+      }).toList();
+
+      socket.off(resposeIn);
+      completer.complete(list);
+    });
+
+    return completer.future;
+  }
+
   Future<List<ExpedicaoConferirItemModel>> update(
       ExpedicaoConferirItemModel entity) {
     if (socket.connected == false) {
@@ -122,6 +157,41 @@ class ConferirItemRepository {
     return completer.future;
   }
 
+  Future<List<ExpedicaoConferirItemModel>> updateAll(
+      List<ExpedicaoConferirItemModel> entity) {
+    if (socket.connected == false) {
+      throw AppError(
+        AppErrorCode.socketDesconected,
+        'Socket não conectado',
+      );
+    }
+
+    final event = '${socket.id} conferir.item.update';
+    final completer = Completer<List<ExpedicaoConferirItemModel>>();
+    final resposeIn = uuid.v4();
+
+    final send = {
+      "session": socket.id,
+      "resposeIn": resposeIn,
+      "mutation": entity.map((el) => el.toJson()).toList(),
+    };
+
+    socket.emit(event, jsonEncode(send));
+    socket.on(resposeIn, (receiver) {
+      final data = jsonDecode(receiver);
+      final mutation = data?['mutation'] ?? [];
+
+      final list = mutation.map<ExpedicaoConferirItemModel>((json) {
+        return ExpedicaoConferirItemModel.fromJson(json);
+      }).toList();
+
+      socket.off(resposeIn);
+      completer.complete(list);
+    });
+
+    return completer.future;
+  }
+
   Future<List<ExpedicaoConferirItemModel>> delete(
       ExpedicaoConferirItemModel entity) {
     if (socket.connected == false) {
@@ -139,6 +209,41 @@ class ConferirItemRepository {
       "session": socket.id,
       "resposeIn": resposeIn,
       "mutation": entity.toJson(),
+    };
+
+    socket.emit(event, jsonEncode(send));
+    socket.on(resposeIn, (receiver) {
+      final data = jsonDecode(receiver);
+      final mutation = data?['mutation'] ?? [];
+
+      final list = mutation.map<ExpedicaoConferirItemModel>((json) {
+        return ExpedicaoConferirItemModel.fromJson(json);
+      }).toList();
+
+      socket.off(resposeIn);
+      completer.complete(list);
+    });
+
+    return completer.future;
+  }
+
+  Future<List<ExpedicaoConferirItemModel>> deleteAll(
+      List<ExpedicaoConferirItemModel> entity) {
+    if (socket.connected == false) {
+      throw AppError(
+        AppErrorCode.socketDesconected,
+        'Socket não conectado',
+      );
+    }
+
+    final event = '${socket.id} conferir.item.delete';
+    final completer = Completer<List<ExpedicaoConferirItemModel>>();
+    final resposeIn = uuid.v4();
+
+    final send = {
+      "session": socket.id,
+      "resposeIn": resposeIn,
+      "mutation": entity.map((el) => el.toJson()).toList(),
     };
 
     socket.emit(event, jsonEncode(send));

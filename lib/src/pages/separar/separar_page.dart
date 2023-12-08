@@ -60,7 +60,7 @@ class SepararPage extends StatelessWidget {
                     ),
                   ),
                   ButtonHeadForm(
-                    title: 'Adicionar Observação',
+                    title: 'Histórico/Observação',
                     onPressed: controller.adicionarObservacao,
                     icon: const Icon(
                       BootstrapIcons.file_text_fill,
