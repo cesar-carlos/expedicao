@@ -36,6 +36,21 @@ class CarrinhoPercursoEventRepository implements EventContract {
     _listener.removeWhere((element) => element.id == listerner.id);
   }
 
+  @override
+  void removeListeners(List<RepositoryEventListenerModel> listerner) {
+    _listener.removeWhere((element) => listerner.contains(element));
+  }
+
+  @override
+  removeAllListener() {
+    _listener.clear();
+  }
+
+  @override
+  void removeListenerById(String id) {
+    listener.removeWhere((el) => el.id == id);
+  }
+
   void _onInsert() {
     const event = 'carrinho.percurso.estagio.insert.listen';
     _appSocket.socket.on(event, (data) {

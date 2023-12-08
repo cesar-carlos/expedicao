@@ -37,12 +37,12 @@ class ScanItemWidget extends StatelessWidget {
                       Expanded(
                         flex: 5,
                         child: TextField(
+                          cursorHeight: 22,
                           enabled: !controller.viewMode,
                           controller: controller.scanController,
                           focusNode: controller.scanFocusNode,
                           onSubmitted: controller.onSubmittedScan,
                           textAlign: TextAlign.start,
-                          cursorHeight: 22,
                           decoration: InputDecoration(
                             contentPadding:
                                 const EdgeInsets.only(left: 10, right: 10),

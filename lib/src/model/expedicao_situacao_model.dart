@@ -6,20 +6,20 @@ abstract class ExpedicaoSituacaoModel {
   static const cancelada = 'CANCELADA';
   static const entregue = 'ENTREGUE';
   static const devolvida = 'DEVOLVIDA';
-  static const separada = 'SEPARADA';
   static const separando = 'SEPARANDO';
+  static const conferido = 'CONFERIDO';
+
   static const naoLocalizada = 'NÃO LOCALIZADO';
 
   static Map<String, String> situacao = {
     aguardando: 'Aguardando',
     emAndamento: 'Em Andamento',
     emPausa: 'Em Pausa',
-    finalizada: 'Finalizada',
     cancelada: 'Cancelada',
     entregue: 'Entregue',
     devolvida: 'Devolvida',
-    separada: 'Separada',
     separando: 'Separando',
+    conferido: 'Conferido',
     naoLocalizada: 'Não Localizada',
     '': ''
   };

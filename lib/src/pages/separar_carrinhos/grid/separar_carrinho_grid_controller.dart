@@ -81,7 +81,7 @@ class SepararCarrinhoGridController extends GetxController {
       return;
     }
 
-    if (item.situacao == ExpedicaoSituacaoModel.finalizada) {
+    if (item.situacao == ExpedicaoSituacaoModel.separando) {
       await ConfirmationDialogMessageWidget.show(
         context: Get.context!,
         message: 'Carrinho já finalizado!',
@@ -116,7 +116,7 @@ class SepararCarrinhoGridController extends GetxController {
       return;
     }
 
-    if (item.situacao == ExpedicaoSituacaoModel.finalizada) {
+    if (item.situacao == ExpedicaoSituacaoModel.separando) {
       await ConfirmationDialogMessageWidget.show(
         context: Get.context!,
         message: 'Carrinho já finalizado!',
@@ -143,14 +143,14 @@ class SepararCarrinhoGridController extends GetxController {
     switch (item.situacao) {
       case ExpedicaoSituacaoModel.cancelada:
         color = Colors.black;
-      case ExpedicaoSituacaoModel.finalizada:
+      case ExpedicaoSituacaoModel.separando:
         color = Colors.green;
     }
 
     return Icon(
       size: 17,
       item.situacao != ExpedicaoSituacaoModel.cancelada &&
-              item.situacao != ExpedicaoSituacaoModel.finalizada
+              item.situacao != ExpedicaoSituacaoModel.separando
           ? Icons.edit
           : Icons.visibility,
       color: color,
@@ -163,7 +163,7 @@ class SepararCarrinhoGridController extends GetxController {
     switch (item.situacao) {
       case ExpedicaoSituacaoModel.cancelada:
         color = Colors.grey;
-      case ExpedicaoSituacaoModel.finalizada:
+      case ExpedicaoSituacaoModel.separando:
         color = Colors.grey;
     }
 
@@ -180,7 +180,7 @@ class SepararCarrinhoGridController extends GetxController {
     switch (item.situacao) {
       case ExpedicaoSituacaoModel.cancelada:
         color = Colors.grey;
-      case ExpedicaoSituacaoModel.finalizada:
+      case ExpedicaoSituacaoModel.separando:
         color = Colors.green;
     }
 

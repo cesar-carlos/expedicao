@@ -4,6 +4,8 @@ class ExpedicaoPercursoEstagioModel {
   final int codEmpresa;
   final int codCarrinhoPercurso;
   final String item;
+  final String origem;
+  final int codOrigem;
   final int codPercursoEstagio;
   final int codCarrinho;
   final String situacao;
@@ -20,6 +22,8 @@ class ExpedicaoPercursoEstagioModel {
     required this.codEmpresa,
     required this.codCarrinhoPercurso,
     required this.item,
+    required this.origem,
+    required this.codOrigem,
     required this.codPercursoEstagio,
     required this.codCarrinho,
     required this.situacao,
@@ -37,6 +41,8 @@ class ExpedicaoPercursoEstagioModel {
     int? codEmpresa,
     int? codCarrinhoPercurso,
     String? item,
+    String? origem,
+    int? codOrigem,
     int? codPercursoEstagio,
     int? codCarrinho,
     String? situacao,
@@ -53,6 +59,8 @@ class ExpedicaoPercursoEstagioModel {
       codEmpresa: codEmpresa ?? this.codEmpresa,
       codCarrinhoPercurso: codCarrinhoPercurso ?? this.codCarrinhoPercurso,
       item: item ?? this.item,
+      origem: origem ?? this.origem,
+      codOrigem: codOrigem ?? this.codOrigem,
       codPercursoEstagio: codPercursoEstagio ?? this.codPercursoEstagio,
       codCarrinho: codCarrinho ?? this.codCarrinho,
       situacao: situacao ?? this.situacao,
@@ -74,6 +82,8 @@ class ExpedicaoPercursoEstagioModel {
       codEmpresa: map['CodEmpresa'],
       codCarrinhoPercurso: map['CodCarrinhoPercurso'],
       item: map['Item'],
+      origem: map['Origem'],
+      codOrigem: map['CodOrigem'],
       codPercursoEstagio: map['CodPercursoEstagio'],
       codCarrinho: map['CodCarrinho'],
       situacao: map['Situacao'],
@@ -93,6 +103,8 @@ class ExpedicaoPercursoEstagioModel {
       'CodEmpresa': codEmpresa,
       'CodCarrinhoPercurso': codCarrinhoPercurso,
       'Item': item,
+      'Origem': origem,
+      'CodOrigem': codOrigem,
       'CodPercursoEstagio': codPercursoEstagio,
       'CodCarrinho': codCarrinho,
       'Situacao': situacao,
@@ -109,6 +121,6 @@ class ExpedicaoPercursoEstagioModel {
 
   @override
   String toString() {
-    return 'ExpedicaoPercursoEstagioModel(codEmpresa: $codEmpresa, codCarrinhoPercurso: $codCarrinhoPercurso, item: $item, codPercursoEstagio: $codPercursoEstagio, codCarrinho: $codCarrinho, situacao: $situacao, dataInicio: $dataInicio, horaInicio: $horaInicio, codUsuarioInicio: $codUsuarioInicio, nomeUsuarioInicio: $nomeUsuarioInicio, dataFinalizacao: $dataFinalizacao, horaFinalizacao: $horaFinalizacao, codUsuarioFinalizacao: $codUsuarioFinalizacao, nomeUsuarioFinalizacao: $nomeUsuarioFinalizacao)';
+    return 'ExpedicaoPercursoEstagioModel(codEmpresa: $codEmpresa, codCarrinhoPercurso: $codCarrinhoPercurso, item: $item, origem: $origem, codOrigem: $codOrigem, codPercursoEstagio: $codPercursoEstagio, codCarrinho: $codCarrinho, situacao: $situacao, dataInicio: $dataInicio, horaInicio: $horaInicio, codUsuarioInicio: $codUsuarioInicio, nomeUsuarioInicio: $nomeUsuarioInicio, dataFinalizacao: $dataFinalizacao, horaFinalizacao: $horaFinalizacao, codUsuarioFinalizacao: $codUsuarioFinalizacao, nomeUsuarioFinalizacao: $nomeUsuarioFinalizacao)';
   }
 }

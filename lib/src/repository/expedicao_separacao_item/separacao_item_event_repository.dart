@@ -36,6 +36,21 @@ class SeparacaoItemEventRepository implements EventContract {
     _listener.removeWhere((element) => element.id == listerner.id);
   }
 
+  @override
+  void removeListeners(List<RepositoryEventListenerModel> listerners) {
+    _listener.removeWhere((element) => listerners.contains(element));
+  }
+
+  @override
+  void removeListenerById(String id) {
+    listener.removeWhere((el) => el.id == id);
+  }
+
+  @override
+  void removeAllListener() {
+    _listener.clear();
+  }
+
   void _onInsert() {
     const event = 'separacao.item.insert.listen';
     _appSocket.socket.on(event, (data) {

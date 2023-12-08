@@ -1,3 +1,4 @@
+import 'package:app_expedicao/src/app/app_error_code.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_separar/separar_repository.dart';
@@ -41,19 +42,25 @@ class SepararFinalizarService {
     );
 
     if (separarEstoque.isEmpty) {
-      throw AppError('Separar não encontrado');
+      throw AppError(
+        AppErrorCode.separarEncontrado,
+        'Separar não encontrado',
+      );
     }
 
     if (carrinhoPercurso.isEmpty) {
-      throw AppError('Percurso não encontrado');
+      throw AppError(
+        AppErrorCode.separarEstagioNaoEncontrado,
+        'Percurso não encontrado',
+      );
     }
 
     final separarFinalizada = separarEstoque.first.copyWith(
-      situacao: ExpedicaoSituacaoModel.finalizada,
+      situacao: ExpedicaoSituacaoModel.separando,
     );
 
     final percursoFinalizada = carrinhoPercurso.first.copyWith(
-      situacao: ExpedicaoSituacaoModel.finalizada,
+      situacao: ExpedicaoSituacaoModel.separando,
       dataFinalizacao: DateTime.now(),
       horaFinalizacao: DateTime.now().toString().substring(11, 19),
     );

@@ -1,4 +1,3 @@
-import 'package:date_format/date_format.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
@@ -30,9 +29,9 @@ class SeparacaoController extends GetxController {
 
   ExpedicaoCarrinhoPercursoModel? _carrinhoPercurso;
   final ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta;
-  final _carrinhoPercursoEvent = CarrinhoPercursoEventRepository.instancia;
-  final _separacaoItemEvent = SeparacaoItemEventRepository.instancia;
-  final List<RepositoryEventListenerModel> _listerner = [];
+  //final _carrinhoPercursoEvent = CarrinhoPercursoEventRepository.instancia;
+  //final _separacaoItemEvent = SeparacaoItemEventRepository.instancia;
+  final List<RepositoryEventListenerModel> _pageListerner = [];
 
   late ProdutoService _produtoService;
   late ProcessoExecutavelModel _processoExecutavel;
@@ -145,7 +144,7 @@ class SeparacaoController extends GetxController {
 
   bool get viewMode {
     if (percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.cancelada ||
-        percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.finalizada) {
+        percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.separando) {
       _viewMode.value = true;
     }
 
@@ -461,6 +460,8 @@ class SeparacaoController extends GetxController {
 
   void _liteners() {
     const uuid = Uuid();
+    final carrinhoPercursoEvent = CarrinhoPercursoEventRepository.instancia;
+    final separacaoItemEvent = SeparacaoItemEventRepository.instancia;
 
     final updateCarrinhoPercurso = RepositoryEventListenerModel(
       id: uuid.v4(),
@@ -514,19 +515,20 @@ class SeparacaoController extends GetxController {
       },
     );
 
-    _carrinhoPercursoEvent.addListener(updateCarrinhoPercurso);
-    _separacaoItemEvent.addListener(insertSeparacaoItem);
-    _separacaoItemEvent.addListener(deleteSeparacaoItem);
+    carrinhoPercursoEvent.addListener(updateCarrinhoPercurso);
+    separacaoItemEvent.addListener(insertSeparacaoItem);
+    separacaoItemEvent.addListener(deleteSeparacaoItem);
 
-    _listerner.add(updateCarrinhoPercurso);
-    _listerner.add(insertSeparacaoItem);
-    _listerner.add(deleteSeparacaoItem);
+    _pageListerner.add(updateCarrinhoPercurso);
+    _pageListerner.add(insertSeparacaoItem);
+    _pageListerner.add(deleteSeparacaoItem);
   }
 
   void _removeliteners() {
-    for (var el in _listerner) {
-      _carrinhoPercursoEvent.removeListener(el);
-      _separacaoItemEvent.removeListener(el);
-    }
+    final carrinhoPercursoEvent = CarrinhoPercursoEventRepository.instancia;
+    final separacaoItemEvent = SeparacaoItemEventRepository.instancia;
+
+    carrinhoPercursoEvent.removeListeners(_pageListerner);
+    separacaoItemEvent.removeListeners(_pageListerner);
   }
 }

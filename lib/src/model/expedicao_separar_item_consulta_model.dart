@@ -69,43 +69,6 @@ class ExpedicaoSepararItemConsultaModel {
     required this.quantidadeSeparacao,
   });
 
-  factory ExpedicaoSepararItemConsultaModel.fromJson(Map<String, dynamic> map) {
-    return ExpedicaoSepararItemConsultaModel(
-      codEmpresa: map['CodEmpresa'],
-      codSepararEstoque: map['CodSepararEstoque'],
-      item: map['Item'],
-      origem: map['Origem'],
-      codOrigem: map['CodOrigem'],
-      itemOrigem: map['ItemOrigem'],
-      codProduto: map['CodProduto'],
-      nomeProduto: map['NomeProduto'],
-      ativo: map['Ativo'],
-      codTipoProduto: map['CodTipoProduto'],
-      codUnidadeMedida: map['CodUnidadeMedida'],
-      nomeUnidadeMedida: map['NomeUnidadeMedida'],
-      codGrupoProduto: map['CodGrupoProduto'],
-      nomeGrupoProduto: map['NomeGrupoProduto'],
-      codMarca: map['CodMarca'],
-      nomeMarca: map['NomeMarca'],
-      codSetorEstoque: map['CodSetorEstoque'],
-      nomeSetorEstoque: map['NomeSetorEstoque'],
-      ncm: map['NCM'] ?? '00000000',
-      codigoBarras: map['CodigoBarras'],
-      codigoBarras2: map['CodigoBarras2'],
-      codigoReferencia: map['CodigoReferencia'],
-      codigoFornecedor: map['CodigoFornecedor'],
-      codigoFabricante: map['CodigoFabricante'],
-      codigoOriginal: map['CodigoOriginal'],
-      endereco: map['Endereco'],
-      codLocaArmazenagem: map['CodLocaArmazenagem'],
-      nomeLocaArmazenagem: map['NomeLocaArmazenagem'],
-      quantidade: AppHelper.stringToDouble(map['Quantidade']),
-      quantidadeInterna: AppHelper.stringToDouble(map['QuantidadeInterna']),
-      quantidadeExterna: AppHelper.stringToDouble(map['QuantidadeExterna']),
-      quantidadeSeparacao: AppHelper.stringToDouble(map['QuantidadeSeparacao']),
-    );
-  }
-
   ExpedicaoSepararItemConsultaModel copyWith({
     int? codEmpresa,
     int? codSepararEstoque,
@@ -173,6 +136,43 @@ class ExpedicaoSepararItemConsultaModel {
       quantidadeInterna: quantidadeInterna ?? this.quantidadeInterna,
       quantidadeExterna: quantidadeExterna ?? this.quantidadeExterna,
       quantidadeSeparacao: quantidadeSeparacao ?? this.quantidadeSeparacao,
+    );
+  }
+
+  factory ExpedicaoSepararItemConsultaModel.fromJson(Map<String, dynamic> map) {
+    return ExpedicaoSepararItemConsultaModel(
+      codEmpresa: map['CodEmpresa'],
+      codSepararEstoque: map['CodSepararEstoque'],
+      item: map['Item'],
+      origem: map['Origem'],
+      codOrigem: map['CodOrigem'],
+      itemOrigem: map['ItemOrigem'],
+      codProduto: map['CodProduto'],
+      nomeProduto: map['NomeProduto'],
+      ativo: map['Ativo'],
+      codTipoProduto: map['CodTipoProduto'],
+      codUnidadeMedida: map['CodUnidadeMedida'],
+      nomeUnidadeMedida: map['NomeUnidadeMedida'],
+      codGrupoProduto: map['CodGrupoProduto'],
+      nomeGrupoProduto: map['NomeGrupoProduto'],
+      codMarca: map['CodMarca'],
+      nomeMarca: map['NomeMarca'],
+      codSetorEstoque: map['CodSetorEstoque'],
+      nomeSetorEstoque: map['NomeSetorEstoque'],
+      ncm: map['NCM'] ?? '00000000',
+      codigoBarras: map['CodigoBarras'],
+      codigoBarras2: map['CodigoBarras2'],
+      codigoReferencia: map['CodigoReferencia'],
+      codigoFornecedor: map['CodigoFornecedor'],
+      codigoFabricante: map['CodigoFabricante'],
+      codigoOriginal: map['CodigoOriginal'],
+      endereco: map['Endereco'],
+      codLocaArmazenagem: map['CodLocaArmazenagem'],
+      nomeLocaArmazenagem: map['NomeLocaArmazenagem'],
+      quantidade: AppHelper.stringToDouble(map['Quantidade']),
+      quantidadeInterna: AppHelper.stringToDouble(map['QuantidadeInterna']),
+      quantidadeExterna: AppHelper.stringToDouble(map['QuantidadeExterna']),
+      quantidadeSeparacao: AppHelper.stringToDouble(map['QuantidadeSeparacao']),
     );
   }
 

@@ -115,7 +115,7 @@ class SepararCarrinhosController extends GetxController {
 
       await SeparacaoFinalizarItemService().updateAll(itensSeparacaoCarrinho);
       final newCarrinhoPercursoConsulta = item.copyWith(
-        situacao: ExpedicaoSituacaoModel.finalizada,
+        situacao: ExpedicaoSituacaoModel.separando,
       );
 
       _separarCarrinhoGridController.updateGrid(newCarrinhoPercursoConsulta);

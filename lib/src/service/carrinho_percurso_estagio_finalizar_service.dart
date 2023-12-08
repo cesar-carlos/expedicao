@@ -23,7 +23,7 @@ class CarrinhoPercursoEstagioFinalizarService {
 
   Future<void> execute() async {
     final currentEstado = carrinhoPercursoEstagio.copyWith(
-      situacao: ExpedicaoSituacaoModel.finalizada,
+      situacao: ExpedicaoSituacaoModel.separando,
       dataFinalizacao: DateTime.now(),
       horaFinalizacao: DateTime.now().toString().substring(11, 19),
       codUsuarioFinalizacao: _processo.codUsuario,

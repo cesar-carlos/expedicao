@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 
 import 'package:app_expedicao/src/app/app_socket.config.dart';
+import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
 import 'package:app_expedicao/src/service/separar_consultas_services.dart';
 import 'package:app_expedicao/src/pages/common/widget/loading_sever_dialog.widget.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
@@ -65,6 +66,17 @@ class SplashController extends GetxController {
 
   void nextPage() async {
     Get.put<ProcessoExecutavelModel>(_processoExecutavel!);
-    Get.offNamed(AppRouter.separar, arguments: _separarConsulta);
+
+    if (_processoExecutavel!.origem == ExpedicaoOrigemModel.separacao) {
+      Get.offNamed(AppRouter.separar, arguments: _separarConsulta);
+      return;
+    }
+
+    if (_processoExecutavel!.origem == ExpedicaoOrigemModel.conferencia) {
+      Get.offNamed(AppRouter.conferencia);
+      return;
+    }
+
+    Get.offNamed(AppRouter.notfind);
   }
 }

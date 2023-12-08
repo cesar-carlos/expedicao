@@ -27,7 +27,7 @@ class SepararItensWidget extends StatelessWidget {
                 width: size.width,
                 child: Center(
                   child: Text(
-                    'SEPARAR ITENS - ${controller.expedicaoSituacaoDisplay.toUpperCase()}',
+                    'SEPARAÇÃO ITENS - ${controller.expedicaoSituacaoDisplay.toUpperCase()}',
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 17,

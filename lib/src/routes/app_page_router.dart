@@ -1,3 +1,5 @@
+import 'package:app_expedicao/src/pages/conferencia/conferencia_binding.dart';
+import 'package:app_expedicao/src/pages/conferencia/conferencia_page.dart';
 import 'package:get/get.dart';
 
 import 'package:app_expedicao/src/pages/notfound/notfound_page.dart';
@@ -33,10 +35,18 @@ class AppPageRouter {
       transition: Transition.fadeIn,
       page: () {
         ExpedicaoSepararConsultaModel separarConsulta = Get.arguments;
-        Get.put(separarConsulta);
 
+        Get.put(separarConsulta);
         Get.put(FooterPageController());
         return SepararPage(separarConsulta: separarConsulta);
+      },
+    ),
+    GetPage(
+      name: AppRouter.conferencia,
+      binding: ConferenciaBinding(),
+      transition: Transition.fadeIn,
+      page: () {
+        return const ConferenciaPage();
       },
     ),
     GetPage(

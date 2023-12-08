@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
+import 'package:app_expedicao/src/app/app_error_code.dart';
 import 'package:app_expedicao/src/app/app_socket.config.dart';
 import 'package:app_expedicao/src/model/global_sequencia_registro_model.dart';
 import 'package:app_expedicao/src/app/app_error.dart';
@@ -13,7 +14,12 @@ class SequenciaRegistroRepository {
   var socket = Get.find<AppSocketConfig>().socket;
 
   Future<List<GlobalSequenciaRegistroModel>> select(String sequencia) {
-    if (socket.connected == false) throw AppError('Socket não conectado');
+    if (socket.connected == false) {
+      throw AppError(
+        AppErrorCode.socketDesconected,
+        'Socket não conectado',
+      );
+    }
 
     final event = '${socket.id} sequencia.consulta';
     final completer = Completer<List<GlobalSequenciaRegistroModel>>();

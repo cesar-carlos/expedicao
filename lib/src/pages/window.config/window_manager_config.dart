@@ -1,13 +1,13 @@
 import 'dart:ui' as ui;
-
-import 'package:app_expedicao/src/app/app_platform.dart';
 import 'package:flutter/material.dart';
+
 import 'package:window_manager/window_manager.dart';
 import 'package:app_expedicao/src/pages/window.config/window_event.dart';
+import 'package:app_expedicao/src/app/app_platform.dart';
 
 class WindowManagerConfig {
   final WindowOptions _windowOptions = const WindowOptions(
-    title: 'Separação de Estoque',
+    title: 'Expedição de Estoque',
     size: ui.Size(1300, 800),
     minimumSize: ui.Size(1300, 800),
     backgroundColor: Colors.transparent,

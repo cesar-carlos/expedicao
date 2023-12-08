@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:app_expedicao/src/app/app_error.dart';
+import 'package:app_expedicao/src/app/app_error_code.dart';
 import 'package:app_expedicao/src/model/expedicao_estagio_model.dart';
 import 'package:app_expedicao/src/app/app_socket.config.dart';
 
@@ -13,7 +14,12 @@ class ExpedicaoEstagioRepository {
   var socket = Get.find<AppSocketConfig>().socket;
 
   Future<List<ExpedicaoEstagioModel>> select([String params = '']) {
-    if (socket.connected == false) throw AppError('Socket não conectado');
+    if (socket.connected == false) {
+      throw AppError(
+        AppErrorCode.socketDesconected,
+        'Socket não conectado',
+      );
+    }
 
     final event = '${socket.id} expedicao.estagio.select';
     final completer = Completer<List<ExpedicaoEstagioModel>>();
@@ -47,7 +53,12 @@ class ExpedicaoEstagioRepository {
   }
 
   Future<List<ExpedicaoEstagioModel>> insert(ExpedicaoEstagioModel carrinho) {
-    if (socket.connected == false) throw AppError('Socket não conectado');
+    if (socket.connected == false) {
+      throw AppError(
+        AppErrorCode.socketDesconected,
+        'Socket não conectado',
+      );
+    }
 
     final event = '${socket.id} expedicao.estagio.insert';
     final completer = Completer<List<ExpedicaoEstagioModel>>();
@@ -76,7 +87,12 @@ class ExpedicaoEstagioRepository {
   }
 
   Future<List<ExpedicaoEstagioModel>> update(ExpedicaoEstagioModel carrinho) {
-    if (socket.connected == false) throw AppError('Socket não conectado');
+    if (socket.connected == false) {
+      throw AppError(
+        AppErrorCode.socketDesconected,
+        'Socket não conectado',
+      );
+    }
 
     final event = '${socket.id} expedicao.estagio.update';
     final completer = Completer<List<ExpedicaoEstagioModel>>();
@@ -105,7 +121,12 @@ class ExpedicaoEstagioRepository {
   }
 
   Future<List<ExpedicaoEstagioModel>> delete(ExpedicaoEstagioModel carrinho) {
-    if (socket.connected == false) throw AppError('Socket não conectado');
+    if (socket.connected == false) {
+      throw AppError(
+        AppErrorCode.socketDesconected,
+        'Socket não conectado',
+      );
+    }
 
     final event = '${socket.id} expedicao.estagio.delete';
     final completer = Completer<List<ExpedicaoEstagioModel>>();

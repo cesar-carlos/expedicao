@@ -35,10 +35,10 @@ class SepararPage extends StatelessWidget {
                     title: controller.iniciada
                         ? 'Pausar Separação'
                         : 'Iniciar Separação',
-                    onPressed: !controller.iniciada
-                        ? controller.iniciarSeparacao
-                        : controller.pausarSeparacao,
-                    icon: !controller.iniciada
+                    // onPressed: !controller.iniciada
+                    //     ? controller.iniciarSeparacao
+                    //     : controller.pausarSeparacao,
+                    icon: controller.iniciada
                         ? const Icon(
                             BootstrapIcons.pause_btn_fill,
                             color: Colors.white,
@@ -55,6 +55,15 @@ class SepararPage extends StatelessWidget {
                     onPressed: controller.adicionarCarrinho,
                     icon: const Icon(
                       BootstrapIcons.cart4,
+                      color: Colors.white,
+                      size: 33,
+                    ),
+                  ),
+                  ButtonHeadForm(
+                    title: 'Adicionar Observação',
+                    onPressed: controller.adicionarObservacao,
+                    icon: const Icon(
+                      BootstrapIcons.file_text_fill,
                       color: Colors.white,
                       size: 33,
                     ),
