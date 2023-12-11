@@ -5,6 +5,7 @@ import 'package:app_expedicao/src/model/expedicao_conferir_item_separacao_consul
 import 'package:app_expedicao/src/repository/expedicao_conferir_item/conferir_item_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_conferir_item/conferir_item_consulta_separacao_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_conferir/conferir_repository.dart';
+import 'package:app_expedicao/src/repository/expedicao_separar/separar_repository.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_model.dart';
 import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
 import 'package:app_expedicao/src/app/app_error_code.dart';
@@ -44,7 +45,8 @@ class ConferirSeparacaoAdicionarService {
   Future<void> execute() async {
     await _build();
 
-    final conferir = _createConferir(_conferirItensSeparacaoConsulta.first);
+    final conferir =
+        await _createConferir(_conferirItensSeparacaoConsulta.first);
     final newConferirs = await ConferirRepository().insert(conferir);
 
     if (newConferirs.isEmpty) {
@@ -62,9 +64,14 @@ class ConferirSeparacaoAdicionarService {
     await ConferirItemRepository().insertAll(newItensConferir);
   }
 
-  ExpedicaoConferirModel _createConferir(
+  Future<ExpedicaoConferirModel> _createConferir(
     ExpedicaoConferirItemSeparacaoConsultaModel item,
-  ) {
+  ) async {
+    final separar = await SepararRepository().select('''
+        CodEmpresa = ${item.codEmpresa}
+      AND CodSepararEstoque = ${item.codSepararEstoque}
+    ''');
+
     return ExpedicaoConferirModel(
       codEmpresa: item.codEmpresa,
       codConferir: 0,
@@ -74,6 +81,8 @@ class ConferirSeparacaoAdicionarService {
       situacao: ExpedicaoSituacaoModel.aguardando,
       data: DateTime.now(),
       hora: DateTime.now().toString().substring(11, 19),
+      historico: separar.last.historico,
+      observacao: separar.last.observacao,
     );
   }
 
@@ -93,7 +102,7 @@ class ConferirSeparacaoAdicionarService {
         codProduto: el.codProduto,
         codUnidadeMedida: el.codUnidadeMedida,
         quantidade: el.quantidadeSeparacao,
-        quantidadeConferida: el.quantidadeSeparacao,
+        quantidadeConferida: 0.00,
       );
 
       newItens.add(newItem);

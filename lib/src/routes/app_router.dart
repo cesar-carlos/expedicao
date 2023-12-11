@@ -4,6 +4,7 @@ class AppRouter {
   static const home = '/home';
   static const separar = '/separar';
   static const separacao = '/separacao';
+  static const conferir = '/conferir';
   static const conferencia = '/conferencia';
   static const adicionarCarrinho = '/adicionarcarrinho';
   static const notfind = '/notfind';

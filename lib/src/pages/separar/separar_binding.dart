@@ -2,8 +2,8 @@ import 'package:get/get.dart';
 
 import 'package:app_expedicao/src/pages/carrinho/carrinho_controller.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dart';
-import 'package:app_expedicao/src/pages/separar_carrinhos/grid/separar_carrinho_grid_controller.dart';
-import 'package:app_expedicao/src/pages/separar_carrinhos/separar_carrinhos_controller.dart';
+import 'package:app_expedicao/src/pages/separarado_carrinhos/grid/separarado_carrinho_grid_controller.dart';
+import 'package:app_expedicao/src/pages/separarado_carrinhos/separarado_carrinhos_controller.dart';
 import 'package:app_expedicao/src/pages/separar/separar_controller.dart';
 
 class SepararBinding implements Bindings {
@@ -11,8 +11,8 @@ class SepararBinding implements Bindings {
   void dependencies() {
     Get.lazyPut(() => SepararController());
     Get.lazyPut(() => SepararGridController());
-    Get.lazyPut(() => SepararCarrinhosController());
-    Get.lazyPut(() => SepararCarrinhoGridController());
+    Get.lazyPut(() => SeparadoCarrinhosController());
+    Get.lazyPut(() => SeparadoCarrinhoGridController());
     Get.lazyPut(() => CarrinhoController());
   }
 }

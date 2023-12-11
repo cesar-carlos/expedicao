@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 
 import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
-import 'package:app_expedicao/src/pages/separar_carrinhos/separar_carrinhos_page.dart';
+import 'package:app_expedicao/src/pages/separarado_carrinhos/separarado_carrinhos_page.dart';
 import 'package:app_expedicao/src/pages/common/form_element/space_button_head_form_element.dart';
 import 'package:app_expedicao/src/pages/common/form_element/button_head_form_element.dart';
 import 'package:app_expedicao/src/pages/separar/widget/separar_itens_widget.dart';
@@ -85,7 +85,7 @@ class SepararPage extends StatelessWidget {
                 ),
 
                 //** SEPARAR CARRINHOS **//
-                SepararCarrinhoPage(
+                SeparadoCarrinhoPage(
                   size: Size(size.width, (size.height - 81) * .4),
                 ),
 

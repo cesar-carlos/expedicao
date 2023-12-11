@@ -1,17 +1,18 @@
-import 'package:app_expedicao/src/pages/conferencia/conferencia_binding.dart';
-import 'package:app_expedicao/src/pages/conferencia/conferencia_page.dart';
 import 'package:get/get.dart';
 
+import 'package:app_expedicao/src/routes/app_router.dart';
+import 'package:app_expedicao/src/pages/splash/splash_page.dart';
 import 'package:app_expedicao/src/pages/notfound/notfound_page.dart';
 import 'package:app_expedicao/src/pages/splash/splash_error_page.dart';
 import 'package:app_expedicao/src/pages/notfound/notfound_binding.dart';
 import 'package:app_expedicao/src/pages/footer/footer_page_controller.dart';
+import 'package:app_expedicao/src/model/expedicao_conferir_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
+import 'package:app_expedicao/src/pages/conferir/conferir_binding.dart';
+import 'package:app_expedicao/src/pages/conferir/conferir_page.dart';
 import 'package:app_expedicao/src/pages/separar/separar_binding.dart';
 import 'package:app_expedicao/src/pages/splash/splash_binding.dart';
 import 'package:app_expedicao/src/pages/separar/separar_page.dart';
-import 'package:app_expedicao/src/pages/splash/splash_page.dart';
-import 'package:app_expedicao/src/routes/app_router.dart';
 
 class AppPageRouter {
   static final List<GetPage> pages = [
@@ -42,11 +43,15 @@ class AppPageRouter {
       },
     ),
     GetPage(
-      name: AppRouter.conferencia,
-      binding: ConferenciaBinding(),
+      name: AppRouter.conferir,
+      binding: ConferirBinding(),
       transition: Transition.fadeIn,
       page: () {
-        return const ConferenciaPage();
+        ExpedicaoConferirConsultaModel conferirConsulta = Get.arguments;
+
+        Get.put(FooterPageController());
+        Get.put(conferirConsulta);
+        return const ConferirPage();
       },
     ),
     GetPage(

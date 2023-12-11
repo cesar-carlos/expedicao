@@ -1,7 +1,5 @@
-import 'package:get/get_state_manager/src/simple/get_controllers.dart';
+import 'package:get/get.dart';
+import 'package:uuid/uuid.dart';
+import 'package:flutter/material.dart';
 
-class ConferenciaController extends GetxController {
-  final bool _iniciada = false;
-
-  bool get iniciada => _iniciada;
-}
+class ConferenciaController extends GetxController {}

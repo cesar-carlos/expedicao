@@ -65,7 +65,7 @@ class ExpedicaoConferirConsultaModel {
       nomePrioridade: map['NomePrioridade'],
       situacao: map['Situacao'],
       data: AppHelper.tryStringToDate(map['Data']),
-      hora: map['Hora'],
+      hora: map['Hora'] ?? '00:00:00',
       historico: map['Historico'],
       observacao: map['Observacao'],
     );

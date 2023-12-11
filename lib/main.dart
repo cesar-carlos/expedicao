@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'Separação de Estoque',
+      title: 'Expedição de Estoque',
       debugShowCheckedModeBanner: false,
       home: const Scaffold(body: SplashPage()),
       initialBinding: SplashBinding(),

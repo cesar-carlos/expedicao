@@ -27,11 +27,11 @@ class ExpedicaConferenciaItemConsultaModel {
   final String? codigoFabricante;
   final String? codigoOriginal;
   final String? endereco;
-  final String? codConferente;
-  final String? nomeConferente;
-  final DateTime? dataConferencia;
-  final String? horaConferencia;
-  final double? quantidade;
+  final int codConferente;
+  final String nomeConferente;
+  final DateTime dataConferencia;
+  final String horaConferencia;
+  final double quantidade;
 
   ExpedicaConferenciaItemConsultaModel({
     required this.codEmpresa,
@@ -60,11 +60,11 @@ class ExpedicaConferenciaItemConsultaModel {
     this.codigoFabricante,
     this.codigoOriginal,
     this.endereco,
-    this.codConferente,
-    this.nomeConferente,
-    this.dataConferencia,
-    this.horaConferencia,
-    this.quantidade,
+    required this.codConferente,
+    required this.nomeConferente,
+    required this.dataConferencia,
+    required this.horaConferencia,
+    required this.quantidade,
   });
 
   ExpedicaConferenciaItemConsultaModel copyWith({
@@ -94,7 +94,7 @@ class ExpedicaConferenciaItemConsultaModel {
     String? codigoFabricante,
     String? codigoOriginal,
     String? endereco,
-    String? codConferente,
+    int? codConferente,
     String? nomeConferente,
     DateTime? dataConferencia,
     String? horaConferencia,
@@ -165,8 +165,8 @@ class ExpedicaConferenciaItemConsultaModel {
       endereco: map['Endereco'],
       codConferente: map['CodConferente'],
       nomeConferente: map['NomeConferente'],
-      dataConferencia: AppHelper.tryStringToDateOrNull(map['DataConferencia']),
-      horaConferencia: map['HoraConferencia'],
+      dataConferencia: AppHelper.tryStringToDate(map['DataConferencia']),
+      horaConferencia: map['HoraConferencia'] ?? '00:00:00',
       quantidade: AppHelper.stringToDouble(map['Quantidade']),
     );
   }
@@ -203,7 +203,7 @@ class ExpedicaConferenciaItemConsultaModel {
       'NomeConferente': nomeConferente,
       'DataConferencia': dataConferencia,
       'HoraConferencia': horaConferencia,
-      'Quantidade': quantidade?.toStringAsFixed(4),
+      'Quantidade': quantidade.toStringAsFixed(4),
     };
   }
 }

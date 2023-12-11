@@ -6,6 +6,8 @@ class ExpedicaoConferirItemConsultaModel {
   final String item;
   final String origem;
   final int codOrigem;
+  final int codCarrinhoPercurso;
+  final String itemCarrinhoPercurso;
   final int codProduto;
   final String nomeProduto;
   final String ativo;
@@ -16,6 +18,9 @@ class ExpedicaoConferirItemConsultaModel {
   final String nomeGrupoProduto;
   final int? codMarca;
   final String? nomeMarca;
+  final int? codSetorEstoque;
+  final String? nomeSetorEstoque;
+
   final String? ncm;
   final String? codigoBarras;
   final String? codigoBarras2;
@@ -33,6 +38,8 @@ class ExpedicaoConferirItemConsultaModel {
     required this.item,
     required this.origem,
     required this.codOrigem,
+    required this.codCarrinhoPercurso,
+    required this.itemCarrinhoPercurso,
     required this.codProduto,
     required this.nomeProduto,
     required this.ativo,
@@ -43,6 +50,8 @@ class ExpedicaoConferirItemConsultaModel {
     required this.nomeGrupoProduto,
     this.codMarca,
     this.nomeMarca,
+    this.codSetorEstoque,
+    this.nomeSetorEstoque,
     this.ncm,
     this.codigoBarras,
     this.codigoBarras2,
@@ -61,6 +70,8 @@ class ExpedicaoConferirItemConsultaModel {
     String? item,
     String? origem,
     int? codOrigem,
+    int? codCarrinhoPercurso,
+    String? itemCarrinhoPercurso,
     int? codProduto,
     String? nomeProduto,
     String? ativo,
@@ -71,6 +82,8 @@ class ExpedicaoConferirItemConsultaModel {
     String? nomeGrupoProduto,
     int? codMarca,
     String? nomeMarca,
+    int? codSetorEstoque,
+    String? nomeSetorEstoque,
     String? ncm,
     String? codigoBarras,
     String? codigoBarras2,
@@ -88,6 +101,8 @@ class ExpedicaoConferirItemConsultaModel {
       item: item ?? this.item,
       origem: origem ?? this.origem,
       codOrigem: codOrigem ?? this.codOrigem,
+      codCarrinhoPercurso: codCarrinhoPercurso ?? this.codCarrinhoPercurso,
+      itemCarrinhoPercurso: itemCarrinhoPercurso ?? this.itemCarrinhoPercurso,
       codProduto: codProduto ?? this.codProduto,
       nomeProduto: nomeProduto ?? this.nomeProduto,
       ativo: ativo ?? this.ativo,
@@ -98,6 +113,8 @@ class ExpedicaoConferirItemConsultaModel {
       nomeGrupoProduto: nomeGrupoProduto ?? this.nomeGrupoProduto,
       codMarca: codMarca ?? this.codMarca,
       nomeMarca: nomeMarca ?? this.nomeMarca,
+      codSetorEstoque: codSetorEstoque ?? this.codSetorEstoque,
+      nomeSetorEstoque: nomeSetorEstoque ?? this.nomeSetorEstoque,
       ncm: ncm ?? this.ncm,
       codigoBarras: codigoBarras ?? this.codigoBarras,
       codigoBarras2: codigoBarras2 ?? this.codigoBarras2,
@@ -118,6 +135,8 @@ class ExpedicaoConferirItemConsultaModel {
       item: map['Item'],
       origem: map['Origem'],
       codOrigem: map['CodOrigem'],
+      codCarrinhoPercurso: map['CodCarrinhoPercurso'],
+      itemCarrinhoPercurso: map['ItemCarrinhoPercurso'],
       codProduto: map['CodProduto'],
       nomeProduto: map['NomeProduto'],
       ativo: map['Ativo'],
@@ -128,6 +147,8 @@ class ExpedicaoConferirItemConsultaModel {
       nomeGrupoProduto: map['NomeGrupoProduto'],
       codMarca: map['CodMarca'],
       nomeMarca: map['NomeMarca'],
+      codSetorEstoque: map['CodSetorEstoque'],
+      nomeSetorEstoque: map['NomeSetorEstoque'],
       ncm: map['NCM'],
       codigoBarras: map['CodigoBarras'],
       codigoBarras2: map['CodigoBarras2'],
@@ -148,6 +169,8 @@ class ExpedicaoConferirItemConsultaModel {
       'Item': item,
       'Origem': origem,
       'CodOrigem': codOrigem,
+      'CodCarrinhoPercurso': codCarrinhoPercurso,
+      'ItemCarrinhoPercurso': itemCarrinhoPercurso,
       'CodProduto': codProduto,
       'NomeProduto': nomeProduto,
       'Ativo': ativo,
@@ -158,6 +181,8 @@ class ExpedicaoConferirItemConsultaModel {
       'NomeGrupoProduto': nomeGrupoProduto,
       'CodMarca': codMarca,
       'NomeMarca': nomeMarca,
+      'CodSetorEstoque': codSetorEstoque,
+      'NomeSetorEstoque': nomeSetorEstoque,
       'NCM': ncm,
       'CodigoBarras': codigoBarras,
       'CodigoBarras2': codigoBarras2,
@@ -173,6 +198,6 @@ class ExpedicaoConferirItemConsultaModel {
 
   @override
   String toString() {
-    return 'ExpedicaoConferirItemConsultaModel(codEmpresa: $codEmpresa, codConferir: $codConferir, item: $item, origem: $origem, codOrigem: $codOrigem, codProduto: $codProduto, nomeProduto: $nomeProduto, ativo: $ativo, codTipoProduto: $codTipoProduto, codUnidadeMedida: $codUnidadeMedida, nomeUnidadeMedida: $nomeUnidadeMedida, codGrupoProduto: $codGrupoProduto, nomeGrupoProduto: $nomeGrupoProduto, codMarca: $codMarca, nomeMarca: $nomeMarca, ncm: $ncm, codigoBarras: $codigoBarras, codigoBarras2: $codigoBarras2, codigoReferencia: $codigoReferencia, codigoFornecedor: $codigoFornecedor, codigoFabricante: $codigoFabricante, codigoOriginal: $codigoOriginal, endereco: $endereco, quantidade: $quantidade, quantidadeConferida: $quantidadeConferida)';
+    return 'ExpedicaoConferirItemConsultaModel(codEmpresa: $codEmpresa, codConferir: $codConferir, item: $item, origem: $origem, codOrigem: $codOrigem, codCarrinhoPercurso: $codCarrinhoPercurso, itemCarrinhoPercurso: $itemCarrinhoPercurso, codProduto: $codProduto, nomeProduto: $nomeProduto, ativo: $ativo, codTipoProduto: $codTipoProduto, codUnidadeMedida: $codUnidadeMedida, nomeUnidadeMedida: $nomeUnidadeMedida, codGrupoProduto: $codGrupoProduto, nomeGrupoProduto: $nomeGrupoProduto, codMarca: $codMarca, nomeMarca: $nomeMarca, codSetorEstoque: $codSetorEstoque, nomeSetorEstoque: $nomeSetorEstoque, ncm: $ncm, codigoBarras: $codigoBarras, codigoBarras2: $codigoBarras2, codigoReferencia: $codigoReferencia, codigoFornecedor: $codigoFornecedor, codigoFabricante: $codigoFabricante, codigoOriginal: $codigoOriginal, endereco: $endereco, quantidade: $quantidade, quantidadeConferida: $quantidadeConferida)';
   }
 }

@@ -1,4 +1,3 @@
-import 'package:app_expedicao/src/service/conferir_separacao_adicionar_service.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
@@ -8,9 +7,10 @@ import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
 import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';
+import 'package:app_expedicao/src/service/conferir_separacao_adicionar_service.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget.dart';
 import 'package:app_expedicao/src/pages/common/widget/loading_sever_dialog.widget.dart';
-import 'package:app_expedicao/src/pages/separar_carrinhos/separar_carrinhos_controller.dart';
+import 'package:app_expedicao/src/pages/separarado_carrinhos/separarado_carrinhos_controller.dart';
 import 'package:app_expedicao/src/pages/carrinho/widget/adicionar_carrinho_dialog_widget.dart';
 import 'package:app_expedicao/src/repository/expedicao_separar_item/separar_item_event_repository.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
@@ -34,7 +34,7 @@ class SepararController extends GetxController {
   late String _expedicaoSituacao;
   late SepararGridController _separarGridController;
   late SepararConsultaServices _separarConsultaServices;
-  late SepararCarrinhosController _separarCarrinhosController;
+  late SeparadoCarrinhosController _separarCarrinhosController;
   final List<RepositoryEventListenerModel> _pageListerner = [];
   late ExpedicaoSepararConsultaModel _separarConsulta;
   late ProcessoExecutavelModel _processoExecutavel;
@@ -73,7 +73,7 @@ class SepararController extends GetxController {
     _socketClient = Get.find<AppSocketConfig>();
     _processoExecutavel = Get.find<ProcessoExecutavelModel>();
     _separarConsulta = Get.find<ExpedicaoSepararConsultaModel>();
-    _separarCarrinhosController = Get.find<SepararCarrinhosController>();
+    _separarCarrinhosController = Get.find<SeparadoCarrinhosController>();
     _separarGridController = Get.find<SepararGridController>();
     _expedicaoSituacao = _separarConsulta.situacao;
 
