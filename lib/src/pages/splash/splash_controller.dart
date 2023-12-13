@@ -1,11 +1,10 @@
-import 'package:app_expedicao/src/model/expedicao_carrinho_conferir_consulta_model.dart';
-import 'package:app_expedicao/src/model/expedicao_conferir_consulta_model.dart';
-import 'package:app_expedicao/src/service/conferir_consultas_services.dart';
 import 'package:get/get.dart';
 
 import 'package:app_expedicao/src/app/app_socket.config.dart';
 import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
 import 'package:app_expedicao/src/service/separar_consultas_services.dart';
+import 'package:app_expedicao/src/service/conferir_consultas_services.dart';
+import 'package:app_expedicao/src/model/expedicao_conferir_consulta_model.dart';
 import 'package:app_expedicao/src/pages/common/widget/loading_sever_dialog.widget.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
 import 'package:app_expedicao/src/service/processo_executavel_service.dart';
@@ -14,12 +13,10 @@ import 'package:app_expedicao/src/routes/app_router.dart';
 
 class SplashController extends GetxController {
   final _isLoad = false.obs;
-
   final _processoExecutavelService = ProcessoExecutavelService();
   final _socketClient = Get.find<AppSocketConfig>();
 
   late ProcessoExecutavelModel? _processoExecutavel;
-
   late ExpedicaoSepararConsultaModel? _separarConsulta;
   late ExpedicaoConferirConsultaModel? _conferirConsulta;
 

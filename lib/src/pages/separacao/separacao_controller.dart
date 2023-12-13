@@ -29,8 +29,6 @@ class SeparacaoController extends GetxController {
 
   ExpedicaoCarrinhoPercursoModel? _carrinhoPercurso;
   final ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta;
-  //final _carrinhoPercursoEvent = CarrinhoPercursoEventRepository.instancia;
-  //final _separacaoItemEvent = SeparacaoItemEventRepository.instancia;
   final List<RepositoryEventListenerModel> _pageListerner = [];
 
   late ProdutoService _produtoService;
@@ -116,15 +114,15 @@ class SeparacaoController extends GetxController {
   }
 
   Future<void> _fillCarrinhoPercurso() async {
-    final params = ''' CodEmpresa = ${_processoExecutavel.codEmpresa} 
-          AND Origem = '${_processoExecutavel.origem}' 
-          AND CodOrigem = ${_processoExecutavel.codOrigem}
+    final params = ''' CodEmpresa = ${percursoEstagioConsulta.codEmpresa} 
+          AND CodEmpresa = '${percursoEstagioConsulta.codEmpresa}' 
+          AND CodCarrinhoPercurso = ${percursoEstagioConsulta.codCarrinhoPercurso}
         
         ''';
 
-    final carrinhosPe = await CarrinhoPercursoServices().select(params);
-    if (carrinhosPe.isEmpty) return;
-    _carrinhoPercurso = carrinhosPe.last;
+    final carrinhosPercurso = await CarrinhoPercursoServices().select(params);
+    if (carrinhosPercurso.isEmpty) return;
+    _carrinhoPercurso = carrinhosPercurso.last;
   }
 
   Future<void> _fillGridSeparacaoItens() async {
@@ -188,7 +186,8 @@ class SeparacaoController extends GetxController {
     }
 
     if (!_separarGridController.existsBarCode(scanValue.trim()) &&
-        !_separarGridController.existsCodProduto(int.parse(scanValue.trim()))) {
+        !_separarGridController.existsCodProduto(
+            AppHelper.tryStringToIntOrZero(scanValue.trim()))) {
       await ConfirmationDialogMessageWidget.show(
         context: Get.context!,
         message: 'Produto não encontrado!',
@@ -239,7 +238,6 @@ class SeparacaoController extends GetxController {
     if (resp.right != null) {
       final carrinhoPercursoAdicionarItemService =
           SeparacaoAdicionarItemService(
-        carrinhoPercurso: _carrinhoPercurso!,
         percursoEstagioConsulta: percursoEstagioConsulta,
       );
 
@@ -325,7 +323,6 @@ class SeparacaoController extends GetxController {
       }
 
       await SeparacaoRemoverItemService(
-        carrinhoPercurso: _carrinhoPercurso!,
         percursoEstagioConsulta: percursoEstagioConsulta,
       ).remove(
         item: el.item,
@@ -371,7 +368,6 @@ class SeparacaoController extends GetxController {
 
     if (confirmation != null && confirmation) {
       SeparacaoRemoverItemService(
-        carrinhoPercurso: _carrinhoPercurso!,
         percursoEstagioConsulta: percursoEstagioConsulta,
       ).removeAllItensCart();
 
@@ -380,7 +376,7 @@ class SeparacaoController extends GetxController {
       for (var el in separacaoItemConsulta) {
         final itemSeparar = _findItemSepararGrid(el.codProduto)!;
         itensGridSeparar.add(itemSeparar.copyWith(
-          quantidadeSeparacao: itemSeparar.quantidadeSeparacao - el.quantidade,
+          quantidadeSeparacao: 0.00,
         ));
       }
 
@@ -425,7 +421,6 @@ class SeparacaoController extends GetxController {
     if (confirmation != null && confirmation) {
       final carrinhoPercursoAdicionarItemService =
           SeparacaoAdicionarItemService(
-        carrinhoPercurso: _carrinhoPercurso!,
         percursoEstagioConsulta: percursoEstagioConsulta,
       );
 

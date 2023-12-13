@@ -80,14 +80,6 @@ class ConferenciaCarrinhoGridSource extends DataGridSource {
                 columnName: 'nomeMarca',
                 value: i.nomeMarca,
               ),
-              // DataGridCell<int>(
-              //   columnName: 'codSetorEstoque',
-              //   value: i.codSetorEstoque,
-              // ),
-              // DataGridCell<String>(
-              //   columnName: 'nomeSetorEstoque',
-              //   value: i.nomeSetorEstoque,
-              // ),
               DataGridCell<String>(
                 columnName: 'codigoBarras',
                 value: i.codigoBarras,
@@ -117,7 +109,7 @@ class ConferenciaCarrinhoGridSource extends DataGridSource {
                 value: i.endereco,
               ),
               DataGridCell<int>(
-                columnName: 'codSeparador',
+                columnName: 'codConferente',
                 value: i.codConferente,
               ),
               DataGridCell<String>(

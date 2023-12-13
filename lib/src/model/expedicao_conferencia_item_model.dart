@@ -1,4 +1,5 @@
 import 'package:app_expedicao/src/app/app_helper.dart';
+import 'package:app_expedicao/src/model/expedicao_conferencia_item_consulta_model.dart';
 
 class ExpedicaoConferenciaItemModel {
   final int codEmpresa;
@@ -64,6 +65,26 @@ class ExpedicaoConferenciaItemModel {
       codProduto: codProduto ?? this.codProduto,
       codUnidadeMedida: codUnidadeMedida ?? this.codUnidadeMedida,
       quantidade: quantidade ?? this.quantidade,
+    );
+  }
+
+  factory ExpedicaoConferenciaItemModel.fromConsulta(
+      ExpedicaConferenciaItemConsultaModel model) {
+    return ExpedicaoConferenciaItemModel(
+      codEmpresa: model.codEmpresa,
+      codConferir: model.codConferir,
+      item: model.item,
+      sessionId: model.sessionId,
+      situacao: model.situacao,
+      codCarrinhoPercurso: model.codCarrinhoPercurso,
+      itemCarrinhoPercurso: model.itemCarrinhoPercurso,
+      codConferente: model.codConferente,
+      nomeConferente: model.nomeConferente,
+      dataConferencia: model.dataConferencia,
+      horaConferencia: model.horaConferencia,
+      codProduto: model.codProduto,
+      codUnidadeMedida: model.codUnidadeMedida,
+      quantidade: model.quantidade,
     );
   }
 

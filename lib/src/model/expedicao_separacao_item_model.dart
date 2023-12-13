@@ -68,25 +68,6 @@ class ExpedicaoSeparacaoItemModel {
     );
   }
 
-  factory ExpedicaoSeparacaoItemModel.fromJson(Map<String, dynamic> map) {
-    return ExpedicaoSeparacaoItemModel(
-      codEmpresa: map['CodEmpresa'],
-      codSepararEstoque: map['CodSepararEstoque'],
-      item: map['Item'],
-      sessionId: map['SessionId'],
-      situacao: map['Situacao'],
-      codCarrinhoPercurso: map['CodCarrinhoPercurso'],
-      itemCarrinhoPercurso: map['ItemCarrinhoPercurso'],
-      codSeparador: map['CodSeparador'],
-      nomeSeparador: map['NomeSeparador'],
-      dataSeparacao: AppHelper.tryStringToDate(map['DataSeparacao']),
-      horaSeparacao: map['HoraSeparacao'] ?? '00:00:00',
-      codProduto: map['CodProduto'],
-      codUnidadeMedida: map['CodUnidadeMedida'],
-      quantidade: AppHelper.stringToDouble(map['Quantidade']),
-    );
-  }
-
   factory ExpedicaoSeparacaoItemModel.fromConsulta(
       ExpedicaSeparacaoItemConsultaModel model) {
     return ExpedicaoSeparacaoItemModel(
@@ -104,6 +85,25 @@ class ExpedicaoSeparacaoItemModel {
       codProduto: model.codProduto,
       codUnidadeMedida: model.codUnidadeMedida,
       quantidade: model.quantidade,
+    );
+  }
+
+  factory ExpedicaoSeparacaoItemModel.fromJson(Map<String, dynamic> map) {
+    return ExpedicaoSeparacaoItemModel(
+      codEmpresa: map['CodEmpresa'],
+      codSepararEstoque: map['CodSepararEstoque'],
+      item: map['Item'],
+      sessionId: map['SessionId'],
+      situacao: map['Situacao'],
+      codCarrinhoPercurso: map['CodCarrinhoPercurso'],
+      itemCarrinhoPercurso: map['ItemCarrinhoPercurso'],
+      codSeparador: map['CodSeparador'],
+      nomeSeparador: map['NomeSeparador'],
+      dataSeparacao: AppHelper.tryStringToDate(map['DataSeparacao']),
+      horaSeparacao: map['HoraSeparacao'] ?? '00:00:00',
+      codProduto: map['CodProduto'],
+      codUnidadeMedida: map['CodUnidadeMedida'],
+      quantidade: AppHelper.stringToDouble(map['Quantidade']),
     );
   }
 

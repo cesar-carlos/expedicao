@@ -16,6 +16,21 @@ class ConferirCarrinhoGridColumns {
   void _buidColumns() {
     _columns.add(
       GridColumn(
+        visible: true,
+        maximumWidth: 30,
+        columnName: 'indicator',
+        label: Container(
+          padding: padding,
+          alignment: Alignment.center,
+          child: const Text(
+            '',
+          ),
+        ),
+      ),
+    );
+
+    _columns.add(
+      GridColumn(
         visible: false,
         columnName: 'codEmpresa',
         maximumWidth: 60,
@@ -33,7 +48,7 @@ class ConferirCarrinhoGridColumns {
       GridColumn(
         visible: true,
         columnName: 'codConferir',
-        maximumWidth: 90,
+        maximumWidth: 70,
         label: Container(
           padding: padding,
           alignment: Alignment.centerLeft,
@@ -357,20 +372,20 @@ class ConferirCarrinhoGridColumns {
       ),
     );
 
-    _columns.add(
-      GridColumn(
-        visible: true,
-        minimumWidth: 140,
-        columnName: 'actions',
-        maximumWidth: 140,
-        label: Container(
-          padding: padding,
-          alignment: Alignment.center,
-          child: const Text(
-            'Ações',
-          ),
-        ),
-      ),
-    );
+    // _columns.add(
+    //   GridColumn(
+    //     visible: true,
+    //     minimumWidth: 140,
+    //     columnName: 'actions',
+    //     maximumWidth: 140,
+    //     label: Container(
+    //       padding: padding,
+    //       alignment: Alignment.center,
+    //       child: const Text(
+    //         'Ações',
+    //       ),
+    //     ),
+    //   ),
+    // );
   }
 }

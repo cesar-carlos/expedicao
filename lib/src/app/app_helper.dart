@@ -46,6 +46,17 @@ class AppHelper {
     }
   }
 
+  static int tryStringToIntOrZero(String? value) {
+    try {
+      if (value == null) return 0;
+      if (value == '') return 0;
+
+      return int.parse(value);
+    } catch (err) {
+      return 0;
+    }
+  }
+
   static double stringToDouble(String? value) {
     try {
       if (value == null) return 0.0000;

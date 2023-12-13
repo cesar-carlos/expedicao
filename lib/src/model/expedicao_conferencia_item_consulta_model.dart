@@ -19,7 +19,6 @@ class ExpedicaConferenciaItemConsultaModel {
   final String nomeGrupoProduto;
   final int? codMarca;
   final String? nomeMarca;
-  final String? ncm;
   final String? codigoBarras;
   final String? codigoBarras2;
   final String? codigoReferencia;
@@ -52,7 +51,6 @@ class ExpedicaConferenciaItemConsultaModel {
     required this.nomeGrupoProduto,
     this.codMarca,
     this.nomeMarca,
-    this.ncm,
     this.codigoBarras,
     this.codigoBarras2,
     this.codigoReferencia,
@@ -86,7 +84,6 @@ class ExpedicaConferenciaItemConsultaModel {
     String? nomeGrupoProduto,
     int? codMarca,
     String? nomeMarca,
-    String? ncm,
     String? codigoBarras,
     String? codigoBarras2,
     String? codigoReferencia,
@@ -119,7 +116,6 @@ class ExpedicaConferenciaItemConsultaModel {
       nomeGrupoProduto: nomeGrupoProduto ?? this.nomeGrupoProduto,
       codMarca: codMarca ?? this.codMarca,
       nomeMarca: nomeMarca ?? this.nomeMarca,
-      ncm: ncm ?? this.ncm,
       codigoBarras: codigoBarras ?? this.codigoBarras,
       codigoBarras2: codigoBarras2 ?? this.codigoBarras2,
       codigoReferencia: codigoReferencia ?? this.codigoReferencia,
@@ -138,7 +134,7 @@ class ExpedicaConferenciaItemConsultaModel {
   factory ExpedicaConferenciaItemConsultaModel.fromJson(Map map) {
     return ExpedicaConferenciaItemConsultaModel(
       codEmpresa: map['CodEmpresa'],
-      codConferir: map['codConferir'],
+      codConferir: map['CodConferir'],
       item: map['Item'],
       sessionId: map['SessionId'],
       situacao: map['Situacao'],
@@ -155,7 +151,6 @@ class ExpedicaConferenciaItemConsultaModel {
       nomeGrupoProduto: map['NomeGrupoProduto'],
       codMarca: map['CodMarca'],
       nomeMarca: map['NomeMarca'],
-      ncm: map['NCM'],
       codigoBarras: map['CodigoBarras'],
       codigoBarras2: map['CodigoBarras2'],
       codigoReferencia: map['CodigoReferencia'],
@@ -191,7 +186,6 @@ class ExpedicaConferenciaItemConsultaModel {
       'NomeGrupoProduto': nomeGrupoProduto,
       'CodMarca': codMarca,
       'NomeMarca': nomeMarca,
-      'NCM': ncm,
       'CodigoBarras': codigoBarras,
       'CodigoBarras2': codigoBarras2,
       'CodigoReferencia': codigoReferencia,

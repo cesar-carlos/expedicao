@@ -5,6 +5,7 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_conferir_consulta_model.dart';
 import 'package:app_expedicao/src/pages/conferir_carrinhos/grid/conferir_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/pages/conferir_carrinhos/grid/conferir_carrinho_grid_cells.dart';
+import 'package:app_expedicao/src/pages/common/widget/cart_infull_animation_icon_widget.dart';
 import 'package:app_expedicao/src/app/app_helper.dart';
 
 class ConferirCarrinhoGridSource extends DataGridSource {
@@ -15,6 +16,10 @@ class ConferirCarrinhoGridSource extends DataGridSource {
       {required List<ExpedicaoCarrinhoConferirConsultaModel> itens}) {
     _itens = itens
         .map<DataGridRow>((i) => DataGridRow(cells: [
+              const DataGridCell<Widget>(
+                columnName: 'indicator',
+                value: CartInfullAnimationIconWidget(),
+              ),
               DataGridCell<int>(
                 columnName: 'codEmpresa',
                 value: i.codEmpresa,
@@ -115,44 +120,44 @@ class ConferirCarrinhoGridSource extends DataGridSource {
                 columnName: 'horaFinalizacaoEstagio',
                 value: i.horaFinalizacaoEstagio,
               ),
-              DataGridCell<Widget>(
-                columnName: 'actions',
-                value:
-                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  IconButton(
-                    icon: controller.iconRemove(i),
-                    onPressed: () {
-                      controller.onRemoveItem(this, i);
-                    },
-                  ),
-                  const SizedBox(
-                    width: 10,
-                    child: VerticalDivider(
-                      color: Colors.grey,
-                      thickness: 0.5,
-                    ),
-                  ),
-                  IconButton(
-                    icon: controller.iconEdit(i),
-                    onPressed: () {
-                      controller.editGrid(this, i);
-                    },
-                  ),
-                  const SizedBox(
-                    width: 10,
-                    child: VerticalDivider(
-                      color: Colors.grey,
-                      thickness: 0.5,
-                    ),
-                  ),
-                  IconButton(
-                    icon: controller.iconSave(i),
-                    onPressed: () {
-                      controller.onSavetem(this, i);
-                    },
-                  ),
-                ]),
-              ),
+              // DataGridCell<Widget>(
+              //   columnName: 'actions',
+              //   value:
+              //       Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              //     IconButton(
+              //       icon: controller.iconRemove(i),
+              //       onPressed: () {
+              //         controller.onRemoveItem(this, i);
+              //       },
+              //     ),
+              //     const SizedBox(
+              //       width: 10,
+              //       child: VerticalDivider(
+              //         color: Colors.grey,
+              //         thickness: 0.5,
+              //       ),
+              //     ),
+              //     IconButton(
+              //       icon: controller.iconEdit(i),
+              //       onPressed: () {
+              //         controller.editGrid(this, i);
+              //       },
+              //     ),
+              //     const SizedBox(
+              //       width: 10,
+              //       child: VerticalDivider(
+              //         color: Colors.grey,
+              //         thickness: 0.5,
+              //       ),
+              //     ),
+              //     IconButton(
+              //       icon: controller.iconSave(i),
+              //       onPressed: () {
+              //         controller.onSavetem(this, i);
+              //       },
+              //     ),
+              //   ]),
+              // ),
             ]))
         .toList();
   }

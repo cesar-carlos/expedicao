@@ -21,6 +21,7 @@ import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dar
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
 import 'package:app_expedicao/src/service/separar_consultas_services.dart';
+import 'package:app_expedicao/src/pages/carrinho/carrinho_controller.dart';
 import 'package:app_expedicao/src/service/separar_finalizar_service.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_model.dart';
@@ -167,7 +168,8 @@ class SepararController extends GetxController {
       return;
     }
 
-    final dialog = AdicionarCarrinhoDialogWidget();
+    final carrinhoController = CarrinhoController();
+    final dialog = AdicionarCarrinhoDialogWidget(carrinhoController);
     final carrinhoConsulta = await dialog.show();
 
     if (carrinhoConsulta != null) {

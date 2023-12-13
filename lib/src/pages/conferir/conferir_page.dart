@@ -5,8 +5,8 @@ import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:app_expedicao/src/pages/footer/footer_page.dart';
 import 'package:app_expedicao/src/pages/common/form_element/button_head_form_element.dart';
 import 'package:app_expedicao/src/pages/common/form_element/space_button_head_form_element.dart';
+import 'package:app_expedicao/src/pages/conferido_carrinhos/conferido_carrinhos_page.dart';
 import 'package:app_expedicao/src/pages/conferir_carrinhos/conferir_carrinhos_page.dart';
-import 'package:app_expedicao/src/pages/conferir/widget/conferir_itens_widget.dart';
 import 'package:app_expedicao/src/pages/conferir/conferir_controller.dart';
 
 class ConferirPage extends StatelessWidget {
@@ -47,7 +47,7 @@ class ConferirPage extends StatelessWidget {
                     ),
                     ButtonHeadForm(
                       title: 'Conferir Carrinho',
-                      onPressed: () {}, //controller.adicionarCarrinho,
+                      onPressed: controller.adicionarCarrinho,
                       icon: const Icon(
                         BootstrapIcons.cart4,
                         color: Colors.white,
@@ -55,8 +55,17 @@ class ConferirPage extends StatelessWidget {
                       ),
                     ),
                     ButtonHeadForm(
+                      title: 'Histórico/Observação',
+                      onPressed: controller.adicionarObservacao,
+                      icon: const Icon(
+                        BootstrapIcons.file_text_fill,
+                        color: Colors.white,
+                        size: 33,
+                      ),
+                    ),
+                    ButtonHeadForm(
                       title: 'Finalizar Conferencia',
-                      onPressed: () {}, //controller.finalizarSeparacao,
+                      onPressed: controller.finalizarSeparacao,
                       icon: const Icon(
                         BootstrapIcons.grid_3x3_gap_fill,
                         color: Colors.white,
@@ -68,12 +77,11 @@ class ConferirPage extends StatelessWidget {
 
                 //** CONFERIR CARRINHOS **//
                 ConferirCarrinhoPage(
-                  size: Size(size.width, (size.height - 81) * .4),
+                  size: Size(size.width, (size.height - 81) * .43),
                 ),
 
-                //** CONFERIR ITENS **//
-                ConferirItensWidget(
-                  size: Size(size.width, ((size.height - 81) * .6)),
+                ConferidoCarrinhoPage(
+                  size: Size(size.width, ((size.height - 81) * .57)),
                 ),
 
                 //** FOOTER **//

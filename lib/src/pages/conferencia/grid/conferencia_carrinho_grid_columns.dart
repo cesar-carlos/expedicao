@@ -119,34 +119,6 @@ class ConferenciaCarrinhoGridColumns {
 
     _columns.add(
       GridColumn(
-        visible: false,
-        columnName: 'codCarrinhoPercurso',
-        label: Container(
-          padding: padding,
-          alignment: Alignment.center,
-          child: const Text(
-            'Carrinho Percurso',
-          ),
-        ),
-      ),
-    );
-
-    _columns.add(
-      GridColumn(
-        visible: false,
-        columnName: 'itemCarrinhoPercurso',
-        label: Container(
-          padding: padding,
-          alignment: Alignment.center,
-          child: const Text(
-            'ItemCarrinhoPercurso',
-          ),
-        ),
-      ),
-    );
-
-    _columns.add(
-      GridColumn(
         visible: true,
         maximumWidth: 80,
         columnName: 'codProduto',
@@ -370,7 +342,7 @@ class ConferenciaCarrinhoGridColumns {
         label: Container(
           padding: padding,
           alignment: Alignment.centerLeft,
-          child: const Text('Dt. Conferencia'),
+          child: const Text('Dt. Conferenci'),
         ),
       ),
     );
@@ -396,7 +368,7 @@ class ConferenciaCarrinhoGridColumns {
         label: Container(
           padding: padding,
           alignment: Alignment.centerLeft,
-          child: const Text('Qtd. Conferencia'),
+          child: const Text('Qtd. Conferido'),
         ),
       ),
     );

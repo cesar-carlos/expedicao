@@ -19,7 +19,10 @@ class ProdutoService {
         right: null,
       );
     } else {
-      return (left: null, right: produtos.first);
+      return (
+        left: null,
+        right: produtos.first,
+      );
     }
   }
 
@@ -36,7 +39,10 @@ class ProdutoService {
             message: 'O produto não foi encontrado na base de dados!')
       );
     } else {
-      return (left: null, right: produtos.first);
+      return (
+        left: null,
+        right: produtos.first,
+      );
     }
   }
 }

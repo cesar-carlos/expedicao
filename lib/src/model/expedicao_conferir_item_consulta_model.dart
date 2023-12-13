@@ -8,6 +8,7 @@ class ExpedicaoConferirItemConsultaModel {
   final int codOrigem;
   final int codCarrinhoPercurso;
   final String itemCarrinhoPercurso;
+  final int codCarrinho;
   final int codProduto;
   final String nomeProduto;
   final String ativo;
@@ -40,6 +41,7 @@ class ExpedicaoConferirItemConsultaModel {
     required this.codOrigem,
     required this.codCarrinhoPercurso,
     required this.itemCarrinhoPercurso,
+    required this.codCarrinho,
     required this.codProduto,
     required this.nomeProduto,
     required this.ativo,
@@ -72,6 +74,7 @@ class ExpedicaoConferirItemConsultaModel {
     int? codOrigem,
     int? codCarrinhoPercurso,
     String? itemCarrinhoPercurso,
+    int? codCarrinho,
     int? codProduto,
     String? nomeProduto,
     String? ativo,
@@ -103,6 +106,7 @@ class ExpedicaoConferirItemConsultaModel {
       codOrigem: codOrigem ?? this.codOrigem,
       codCarrinhoPercurso: codCarrinhoPercurso ?? this.codCarrinhoPercurso,
       itemCarrinhoPercurso: itemCarrinhoPercurso ?? this.itemCarrinhoPercurso,
+      codCarrinho: codCarrinho ?? this.codCarrinho,
       codProduto: codProduto ?? this.codProduto,
       nomeProduto: nomeProduto ?? this.nomeProduto,
       ativo: ativo ?? this.ativo,
@@ -137,6 +141,7 @@ class ExpedicaoConferirItemConsultaModel {
       codOrigem: map['CodOrigem'],
       codCarrinhoPercurso: map['CodCarrinhoPercurso'],
       itemCarrinhoPercurso: map['ItemCarrinhoPercurso'],
+      codCarrinho: map['CodCarrinho'],
       codProduto: map['CodProduto'],
       nomeProduto: map['NomeProduto'],
       ativo: map['Ativo'],
@@ -171,6 +176,7 @@ class ExpedicaoConferirItemConsultaModel {
       'CodOrigem': codOrigem,
       'CodCarrinhoPercurso': codCarrinhoPercurso,
       'ItemCarrinhoPercurso': itemCarrinhoPercurso,
+      'CodCarrinho': codCarrinho,
       'CodProduto': codProduto,
       'NomeProduto': nomeProduto,
       'Ativo': ativo,
@@ -198,6 +204,6 @@ class ExpedicaoConferirItemConsultaModel {
 
   @override
   String toString() {
-    return 'ExpedicaoConferirItemConsultaModel(codEmpresa: $codEmpresa, codConferir: $codConferir, item: $item, origem: $origem, codOrigem: $codOrigem, codCarrinhoPercurso: $codCarrinhoPercurso, itemCarrinhoPercurso: $itemCarrinhoPercurso, codProduto: $codProduto, nomeProduto: $nomeProduto, ativo: $ativo, codTipoProduto: $codTipoProduto, codUnidadeMedida: $codUnidadeMedida, nomeUnidadeMedida: $nomeUnidadeMedida, codGrupoProduto: $codGrupoProduto, nomeGrupoProduto: $nomeGrupoProduto, codMarca: $codMarca, nomeMarca: $nomeMarca, codSetorEstoque: $codSetorEstoque, nomeSetorEstoque: $nomeSetorEstoque, ncm: $ncm, codigoBarras: $codigoBarras, codigoBarras2: $codigoBarras2, codigoReferencia: $codigoReferencia, codigoFornecedor: $codigoFornecedor, codigoFabricante: $codigoFabricante, codigoOriginal: $codigoOriginal, endereco: $endereco, quantidade: $quantidade, quantidadeConferida: $quantidadeConferida)';
+    return 'ExpedicaoConferirItemConsultaModel(codEmpresa: $codEmpresa, codConferir: $codConferir, item: $item, origem: $origem, codOrigem: $codOrigem, codCarrinhoPercurso: $codCarrinhoPercurso, itemCarrinhoPercurso: $itemCarrinhoPercurso, codCarrinho: $codCarrinho, codProduto: $codProduto, nomeProduto: $nomeProduto, ativo: $ativo, codTipoProduto: $codTipoProduto, codUnidadeMedida: $codUnidadeMedida, nomeUnidadeMedida: $nomeUnidadeMedida, codGrupoProduto: $codGrupoProduto, nomeGrupoProduto: $nomeGrupoProduto, codMarca: $codMarca, nomeMarca: $nomeMarca, codSetorEstoque: $codSetorEstoque, nomeSetorEstoque: $nomeSetorEstoque, ncm: $ncm, codigoBarras: $codigoBarras, codigoBarras2: $codigoBarras2, codigoReferencia: $codigoReferencia, codigoFornecedor: $codigoFornecedor, codigoFabricante: $codigoFabricante, codigoOriginal: $codigoOriginal, endereco: $endereco, quantidade: $quantidade, quantidadeConferida: $quantidadeConferida)';
   }
 }

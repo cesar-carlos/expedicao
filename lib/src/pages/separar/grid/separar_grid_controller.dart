@@ -1,3 +1,6 @@
+import 'package:app_expedicao/src/pages/common/widget/alert_animation_icon_widget.dart';
+import 'package:app_expedicao/src/pages/common/widget/box_animation_icon_widget.dart';
+import 'package:app_expedicao/src/pages/common/widget/complit_animation_icon_widget.dart';
 import 'package:get/get.dart';
 
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
@@ -155,5 +158,17 @@ class SepararGridController extends GetxController {
     for (var el in separarItem) {
       updateGrid(el);
     }
+  }
+
+  iconIndicator(ExpedicaoSepararItemConsultaModel item) {
+    if (item.quantidade == item.quantidadeSeparacao) {
+      return const ComplitAnimationIconWidget();
+    }
+
+    if (item.quantidade < item.quantidadeSeparacao) {
+      return const AlertAnimationIconWidget();
+    }
+
+    return const BoxAnimationIconWidget();
   }
 }

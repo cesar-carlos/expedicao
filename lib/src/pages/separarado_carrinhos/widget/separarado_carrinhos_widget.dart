@@ -23,7 +23,7 @@ class SeparadoCarrinhosWidget extends StatelessWidget {
               color: Theme.of(context).primaryColor,
               child: const Center(
                 child: Text(
-                  'CARRINHOS',
+                  'CARRINHOS SEPARADOS',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 17,

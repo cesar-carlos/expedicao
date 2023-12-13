@@ -1,30 +1,37 @@
 import 'package:get/get.dart';
-import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 
+import 'package:app_expedicao/src/model/expedicao_carrinho_model.dart';
+import 'package:app_expedicao/src/pages/carrinho/carrinho_controller.dart';
 import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_consulta_model.dart';
+import 'package:app_expedicao/src/service/carrinho_percurso_estagio_adicionar_service.dart';
+import 'package:app_expedicao/src/pages/conferido_carrinhos/conferido_carrinhos_controller.dart';
+import 'package:app_expedicao/src/pages/carrinho/widget/adicionar_carrinho_dialog_widget.dart';
 import 'package:app_expedicao/src/pages/conferir_carrinhos/conferir_carrinhos_controller.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
 import 'package:app_expedicao/src/pages/conferir/grid/conferir_grid_controller.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
 import 'package:app_expedicao/src/service/conferir_consultas_services.dart';
+import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/app/app_socket.config.dart';
 
 class ConferirController extends GetxController {
-  final List<RepositoryEventListenerModel> _pageListerner = [];
   bool _iniciada = false;
+  final List<RepositoryEventListenerModel> _pageListerner = [];
+  late AppSocketConfig _socketClient;
 
   late String _expedicaoSituacao;
-  late ConferirGridController _conferirGridController;
+  //late ConferirGridController _conferirGridController;
   late ConferirConsultaServices _conferirConsultaServices;
   late ConferirCarrinhosController _conferirCarrinhosController;
+  late ConferidoCarrinhosController _conferidoCarrinhosController;
 
   late ExpedicaoConferirConsultaModel _conferirConsulta;
   late ProcessoExecutavelModel _processoExecutavel;
-  late AppSocketConfig _socketClient;
 
   late TextEditingController historicoController;
   late TextEditingController observacaoController;
@@ -60,7 +67,8 @@ class ConferirController extends GetxController {
     _processoExecutavel = Get.find<ProcessoExecutavelModel>();
     _conferirConsulta = Get.find<ExpedicaoConferirConsultaModel>();
     _conferirCarrinhosController = Get.find<ConferirCarrinhosController>();
-    _conferirGridController = Get.find<ConferirGridController>();
+    _conferidoCarrinhosController = Get.find<ConferidoCarrinhosController>();
+    //_conferirGridController = Get.find<ConferirGridController>();
     _expedicaoSituacao = _conferirConsulta.situacao;
 
     _conferirConsultaServices = ConferirConsultaServices(
@@ -87,7 +95,6 @@ class ConferirController extends GetxController {
     super.onReady();
 
     await _fillCarrinhoConferir();
-    await _fillGridConferirItens();
     await _fillCarrinhoPercurso();
     _liteners();
   }
@@ -108,41 +115,35 @@ class ConferirController extends GetxController {
     _conferirCarrinhosController.update();
   }
 
-  Future<void> _fillGridConferirItens() async {
-    final conferirItens = await _conferirConsultaServices.itensConferir();
-    _conferirGridController.addAllGrid(conferirItens);
-    _conferirGridController.update();
-  }
-
   Future<void> _fillCarrinhoPercurso() async {
-    // final params = '''
-    //     CodEmpresa = ${_processoExecutavel.codEmpresa}
-    //   AND Origem = '${_processoExecutavel.origem}'
-    //   AND CodOrigem = ${_processoExecutavel.codOrigem}
+    final params = '''
+        CodEmpresa = ${_conferirConsulta.codEmpresa}
+      AND Origem = '${_conferirConsulta.origem}'
+      AND CodOrigem = ${_conferirConsulta.codOrigem}
 
-    // ''';
+    ''';
 
-    // final carrinhoPercursos = await CarrinhoPercursoServices().select(params);
+    final carrinhoPercursos = await CarrinhoPercursoServices().select(params);
 
-    // if (carrinhoPercursos.isNotEmpty) {
-    //   _carrinhoPercurso = carrinhoPercursos.first;
-    // }
+    if (carrinhoPercursos.isNotEmpty) {
+      _carrinhoPercurso = carrinhoPercursos.first;
+    }
   }
 
-  Future<void> iniciarSeparacao() async {
-    // _iniciada = !_iniciada;
-    // if (_carrinhoPercurso == null) {
-    //   await _fillCarrinhoPercurso();
-    // }
+  // Future<void> iniciarConferencia() async {
+  //   _iniciada = !_iniciada;
+  //   if (_carrinhoPercurso == null) {
+  //     await _fillCarrinhoPercurso();
+  //   }
 
-    // final conferir = ExpedicaoConferirModel.fromConsulta(_conferirConsulta);
-    // await ConferirServices(conferir).iniciar();
-    // _expedicaoSituacao = ExpedicaoSituacaoModel.emAndamento;
-    // _conferirConsulta.situacao = ExpedicaoSituacaoModel.emAndamento;
-    // update();
-  }
+  //   final conferir = ExpedicaoConferirModel.fromConsulta(_conferirConsulta);
+  //   await ConferirServices(conferir).iniciar();
+  //   _expedicaoSituacao = ExpedicaoSituacaoModel.emAndamento;
+  //   _conferirConsulta.situacao = ExpedicaoSituacaoModel.emAndamento;
+  //   update();
+  // }
 
-  Future<void> pausarSeparacao() async {
+  Future<void> pausarConferencia() async {
     await ConfirmationDialogMessageWidget.show(
       context: Get.context!,
       message: 'Não implementado!',
@@ -151,47 +152,45 @@ class ConferirController extends GetxController {
   }
 
   Future<void> adicionarCarrinho() async {
-    // if (_expedicaoSituacao == ExpedicaoSituacaoModel.separando) {
-    //   await ConfirmationDialogMessageWidget.show(
-    //     context: Get.context!,
-    //     message: 'Separação já finalizada!',
-    //     detail: 'Separação já finalizada, não é possível finalizar novamente.',
-    //   );
+    if (_expedicaoSituacao == ExpedicaoSituacaoModel.conferido) {
+      await ConfirmationDialogMessageWidget.show(
+        context: Get.context!,
+        message: 'Separação já finalizada!',
+        detail: 'Separação já finalizada, não é possível finalizar novamente.',
+      );
 
-    //   return;
-    // }
+      return;
+    }
 
-    // final dialog = AdicionarCarrinhoDialogWidget();
-    // final carrinhoConsulta = await dialog.show();
+    final carrinhoController = CarrinhoController();
+    final dialog = AdicionarCarrinhoDialogWidget(carrinhoController);
+    final carrinhoConsulta = await dialog.show();
 
-    // if (carrinhoConsulta != null) {
-    //   await iniciarSeparacao();
-    //   await _fillCarrinhoPercurso();
+    if (carrinhoConsulta != null) {
+      final carrinho = ExpedicaoCarrinhoModel(
+        codEmpresa: carrinhoConsulta.codEmpresa,
+        codCarrinho: carrinhoConsulta.codCarrinho,
+        descricao: carrinhoConsulta.descricaoCarrinho,
+        ativo: carrinhoConsulta.ativo,
+        codigoBarras: carrinhoConsulta.codigoBarras,
+        situacao: ExpedicaoCarrinhoSituacaoModel.conferindo,
+      );
 
-    // final carrinho = ExpedicaoCarrinhoModel(
-    //   codEmpresa: carrinhoConsulta.codEmpresa,
-    //   codCarrinho: carrinhoConsulta.codCarrinho,
-    //   descricao: carrinhoConsulta.descricaoCarrinho,
-    //   ativo: carrinhoConsulta.ativo,
-    //   codigoBarras: carrinhoConsulta.codigoBarras,
-    //   situacao: ExpedicaoCarrinhoSituacaoModel.emSeparacao,
-    // );
+      final percursoEstagio = await CarrinhoPercursoEstagioAdicionarService(
+        carrinho: carrinho,
+        carrinhoPercurso: _carrinhoPercurso!,
+      ).execute();
 
-    // final percursoEstagio = await CarrinhoPercursoEstagioAdicionarService(
-    //   carrinho: carrinho,
-    //   carrinhoPercurso: _carrinhoPercurso!,
-    // ).execute();
+      if (percursoEstagio != null) {
+        final percursoEstagioConsulta =
+            await _conferirConsultaServices.carrinhosPercurso()
+              ..where((el) => el.item == percursoEstagio.item).toList();
 
-    // if (percursoEstagio != null) {
-    //   final percursoEstagioConsulta =
-    //       await _conferirConsultaServices.carrinhosPercurso()
-    //         ..where((el) => el.item == percursoEstagio.item).toList();
-
-    //   _conferirCarrinhosController.addCarrinho(percursoEstagioConsulta.last);
-    //   _conferirCarrinhosController.update();
-    //   update();
-    // }
-    // }
+        _conferidoCarrinhosController.addCarrinho(percursoEstagioConsulta.last);
+        _conferidoCarrinhosController.update();
+        update();
+      }
+    }
   }
 
   Future<void> adicionarObservacao() async {

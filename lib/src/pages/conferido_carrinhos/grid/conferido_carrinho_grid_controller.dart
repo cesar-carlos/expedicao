@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-import 'package:app_expedicao/src/pages/separacao/separacao_page.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
 import 'package:app_expedicao/src/pages/conferido_carrinhos/grid/conferido_carrinho_grid_source.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
@@ -25,6 +24,7 @@ class ConferidoCarrinhoGridController extends GetxController {
     _itensGrid = [];
   }
 
+  void Function(ExpedicaoCarrinhoPercursoConsultaModel item)? onPressedEdit;
   void Function(ExpedicaoCarrinhoPercursoConsultaModel item)? onPressedRemove;
   void Function(ExpedicaoCarrinhoPercursoConsultaModel item)? onPressedSave;
 
@@ -60,11 +60,10 @@ class ConferidoCarrinhoGridController extends GetxController {
   }
 
   void editGrid(
-    ConferidoCarrinhoGridSource carrinhoGrid,
-    ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta,
+    ConferidoCarrinhoGridSource grid,
+    ExpedicaoCarrinhoPercursoConsultaModel item,
   ) {
-    final dialog = SeparacaoPage(percursoEstagioConsulta);
-    dialog.show();
+    onPressedEdit?.call(item);
   }
 
   Future<void> onRemoveItem(
@@ -81,7 +80,7 @@ class ConferidoCarrinhoGridController extends GetxController {
       return;
     }
 
-    if (item.situacao == ExpedicaoSituacaoModel.separando) {
+    if (item.situacao == ExpedicaoSituacaoModel.conferido) {
       await ConfirmationDialogMessageWidget.show(
         context: Get.context!,
         message: 'Carrinho já finalizado!',
@@ -116,7 +115,7 @@ class ConferidoCarrinhoGridController extends GetxController {
       return;
     }
 
-    if (item.situacao == ExpedicaoSituacaoModel.separando) {
+    if (item.situacao == ExpedicaoSituacaoModel.conferido) {
       await ConfirmationDialogMessageWidget.show(
         context: Get.context!,
         message: 'Carrinho já finalizado!',
@@ -143,14 +142,14 @@ class ConferidoCarrinhoGridController extends GetxController {
     switch (item.situacao) {
       case ExpedicaoSituacaoModel.cancelada:
         color = Colors.black;
-      case ExpedicaoSituacaoModel.separando:
+      case ExpedicaoSituacaoModel.conferido:
         color = Colors.green;
     }
 
     return Icon(
       size: 17,
       item.situacao != ExpedicaoSituacaoModel.cancelada &&
-              item.situacao != ExpedicaoSituacaoModel.separando
+              item.situacao != ExpedicaoSituacaoModel.conferido
           ? Icons.edit
           : Icons.visibility,
       color: color,
@@ -163,7 +162,7 @@ class ConferidoCarrinhoGridController extends GetxController {
     switch (item.situacao) {
       case ExpedicaoSituacaoModel.cancelada:
         color = Colors.grey;
-      case ExpedicaoSituacaoModel.separando:
+      case ExpedicaoSituacaoModel.conferido:
         color = Colors.grey;
     }
 
@@ -180,7 +179,7 @@ class ConferidoCarrinhoGridController extends GetxController {
     switch (item.situacao) {
       case ExpedicaoSituacaoModel.cancelada:
         color = Colors.grey;
-      case ExpedicaoSituacaoModel.separando:
+      case ExpedicaoSituacaoModel.conferido:
         color = Colors.green;
     }
 

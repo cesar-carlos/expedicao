@@ -12,32 +12,21 @@ import 'package:app_expedicao/src/model/expedicao_carrinho_consulta_model.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 
 class CarrinhoController extends GetxController {
+  late ProcessoExecutavelModel _processoExecutavel;
+  Uuid uuid = const Uuid();
+
   final CarrinhoViewModel _carrinho = CarrinhoViewModel.empty();
   final repotory = CarrinhoConsultaRepository();
 
-  Uuid uuid = const Uuid();
-
-  late ProcessoExecutavelModel _processoExecutavel;
   late TextEditingController textControllerCodigoCarrinho;
   late FocusNode focusNodeBtnAdicionarCarrinho;
   late FocusNode focusNodeCodigoCarrinho;
 
-  @override
-  void onInit() {
-    super.onInit();
-
+  CarrinhoController() {
     _processoExecutavel = Get.find<ProcessoExecutavelModel>();
     textControllerCodigoCarrinho = TextEditingController();
     focusNodeBtnAdicionarCarrinho = FocusNode();
     focusNodeCodigoCarrinho = FocusNode();
-  }
-
-  @override
-  void onClose() {
-    textControllerCodigoCarrinho.dispose();
-    focusNodeBtnAdicionarCarrinho.dispose();
-    focusNodeCodigoCarrinho.dispose();
-    super.onClose();
   }
 
   CarrinhoViewModel get carrinho => _carrinho;
@@ -53,9 +42,14 @@ class CarrinhoController extends GetxController {
         ExpedicaoCarrinhoConsultaModel? carrinhoConsulta,
         AppDialog? dialog
       })?> getCarrinho(String codigoBarras) async {
-    final carrinhos = await repotory.select(
-      "CodEmpresa = ${_processoExecutavel.codEmpresa} AND CodigoBarras = '$codigoBarras'",
-    );
+    final params = '''
+        CodEmpresa = ${_processoExecutavel.codEmpresa} 
+      AND CodigoBarras = '$codigoBarras'
+      
+      ''';
+
+    final List<ExpedicaoCarrinhoConsultaModel> carrinhos =
+        await repotory.select(params);
 
     if (carrinhos.isEmpty) {
       final appDialog = AppDialog(
@@ -81,7 +75,6 @@ class CarrinhoController extends GetxController {
       );
 
       focusNodeCodigoCarrinho.requestFocus();
-      clear();
       update();
       return;
     }
@@ -106,7 +99,6 @@ class CarrinhoController extends GetxController {
       return;
     }
 
-    clear();
     Get.back(result: output.carrinhoConsulta!);
   }
 
@@ -121,15 +113,18 @@ class CarrinhoController extends GetxController {
   }
 
   bool validCarrinho(ExpedicaoCarrinhoConsultaModel input) {
-    if (input.situacao == ExpedicaoCarrinhoSituacaoModel.liberado) {
-      return true;
+    if (_processoExecutavel.origem == ExpedicaoOrigemModel.separacao) {
+      if (input.situacao == ExpedicaoCarrinhoSituacaoModel.liberado) {
+        return true;
+      }
+    }
+
+    if (_processoExecutavel.origem == ExpedicaoOrigemModel.conferencia) {
+      if (input.situacao == ExpedicaoCarrinhoSituacaoModel.emConferencia) {
+        return true;
+      }
     }
 
     return false;
-  }
-
-  void clear() {
-    textControllerCodigoCarrinho.clear();
-    _carrinho.clear();
   }
 }

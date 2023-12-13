@@ -1,15 +1,16 @@
 import 'package:get/get.dart';
 
+import 'package:app_expedicao/src/service/carrinho_services.dart';
+import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_conferir_consulta_model.dart';
 import 'package:app_expedicao/src/pages/conferir_carrinhos/grid/conferir_carrinho_grid_controller.dart';
-import 'package:app_expedicao/src/pages/conferir/grid/conferir_grid_controller.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_consulta_model.dart';
 import 'package:app_expedicao/src/service/conferir_consultas_services.dart';
-import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 
 class ConferirCarrinhosController extends GetxController {
   late ProcessoExecutavelModel _processoExecutavel;
-  late ConferirGridController _conferirGridController;
+
+  //late ConferirGridController _conferirGridController;
   late ConferirCarrinhoGridController _conferirCarrinhoGridController;
   late ExpedicaoConferirConsultaModel _conferirConsulta;
   late ConferirConsultaServices _conferirServices;
@@ -22,7 +23,7 @@ class ConferirCarrinhosController extends GetxController {
     super.onInit();
 
     _conferirConsulta = Get.find<ExpedicaoConferirConsultaModel>();
-    _conferirGridController = Get.find<ConferirGridController>();
+    //_conferirGridController = Get.find<ConferirGridController>();
     _conferirCarrinhoGridController =
         Get.find<ConferirCarrinhoGridController>();
     _processoExecutavel = Get.find<ProcessoExecutavelModel>();
@@ -60,94 +61,96 @@ class ConferirCarrinhosController extends GetxController {
   }
 
   _evetsCarrinhoGrid() {
-    //   _conferirCarrinhoGridController.onPressedSave = (item) async {
-    //     final itensSeparacao = await _conferirServices.itensSeparacao();
-    //     final itensSeparacaoCarrinho = itensSeparacao
-    //         .where((el) =>
-    //             el.situacao != ExpedicaoItemSituacaoModel.cancelado &&
-    //             el.codCarrinho == item.codCarrinho)
-    //         .toList();
+    // _conferirCarrinhoGridController.onPressedSave = (item) async {
+    //   final itensSeparacao = await _conferirServices.itensSeparacao();
+    //   final itensSeparacaoCarrinho = itensSeparacao
+    //       .where((el) =>
+    //           el.situacao != ExpedicaoItemSituacaoModel.cancelado &&
+    //           el.codCarrinho == item.codCarrinho)
+    //       .toList();
 
-    //     if (itensSeparacaoCarrinho.isEmpty) {
-    //       await ConfirmationDialogMessageWidget.show(
-    //         context: Get.context!,
-    //         message: 'Carrinho vazio!',
-    //         detail: 'Adicione itens ao carrinho para finalizar!',
-    //       );
-
-    //       return;
-    //     }
-
-    //     final carrinho = await CarrinhoServices().select(
-    //       "CodEmpresa = ${item.codEmpresa} AND CodCarrinho = ${item.codCarrinho}",
+    //   if (itensSeparacaoCarrinho.isEmpty) {
+    //     await ConfirmationDialogMessageWidget.show(
+    //       context: Get.context!,
+    //       message: 'Carrinho vazio!',
+    //       detail: 'Adicione itens ao carrinho para finalizar!',
     //     );
 
-    //     final carrinhoPercurso =
-    //         ExpedicaoCarrinhoPercursoModel.fromConsulta(item);
+    //     return;
+    //   }
 
-    //     final carrinhoPercursoEstagio =
-    //         await CarrinhoPercursoEstagioServices().select('''
-    //                 CodEmpresa = ${item.codEmpresa}
-    //             AND CodCarrinhoPercurso = ${item.codCarrinhoPercurso}
-    //             AND CodPercursoEstagio = ${item.codPercursoEstagio}
-    //             AND CodCarrinho = ${item.codCarrinho}
-    //             AND Item = ${item.item}
+    //   final carrinho = await CarrinhoServices().select(
+    //     "CodEmpresa = ${item.codEmpresa} AND CodCarrinho = ${item.codCarrinho}",
+    //   );
 
-    //           ''');
+    //   final carrinhoPercurso =
+    //       ExpedicaoCarrinhoPercursoModel.fromConsulta(item);
 
-    //     if (carrinho.isEmpty || carrinhoPercursoEstagio.isEmpty) return;
-    //     final newCarrinho = carrinho.first.copyWith(
-    //       situacao: ExpedicaoCarrinhoSituacaoModel.emConferencia,
-    //     );
-
-    //     await CarrinhoPercursoEstagioFinalizarService(
-    //       carrinho: newCarrinho,
-    //       carrinhoPercurso: carrinhoPercurso,
-    //       carrinhoPercursoEstagio: carrinhoPercursoEstagio.first,
-    //     ).execute();
-
-    //     await SeparacaoFinalizarItemService().updateAll(itensSeparacaoCarrinho);
-    //     final newCarrinhoPercursoConsulta = item.copyWith(
-    //       situacao: ExpedicaoSituacaoModel.separando,
-    //     );
-
-    //     _conferirCarrinhoGridController.updateGrid(newCarrinhoPercursoConsulta);
-    //     _conferirCarrinhoGridController.update();
-    //   };
-
-    //   /// Cancelar carrinho
-    //   _conferirCarrinhoGridController.onPressedRemove = (item) async {
-    //     final carrinho = await CarrinhoServices().select(
-    //       "CodEmpresa = ${item.codEmpresa} AND CodCarrinho = ${item.codCarrinho}",
-    //     );
-
-    //     final carrinhoPercursoEstagio =
-    //         await CarrinhoPercursoEstagioServices().select('''
+    //   final carrinhoPercursoEstagio =
+    //       await CarrinhoPercursoEstagioServices().select('''
     //               CodEmpresa = ${item.codEmpresa}
-    //             AND CodCarrinhoPercurso = ${item.codCarrinhoPercurso}
-    //             AND CodPercursoEstagio = ${item.codPercursoEstagio}
-    //             AND CodCarrinho = ${item.codCarrinho}
-    //             AND Item = ${item.item}
+    //           AND CodCarrinhoPercurso = ${item.codCarrinhoPercurso}
+    //           AND CodPercursoEstagio = ${item.codPercursoEstagio}
+    //           AND CodCarrinho = ${item.codCarrinho}
+    //           AND Item = ${item.item}
 
-    //           ''');
+    //         ''');
 
-    //     if (carrinho.isEmpty || carrinhoPercursoEstagio.isEmpty) return;
+    //   if (carrinho.isEmpty || carrinhoPercursoEstagio.isEmpty) return;
+    //   final newCarrinho = carrinho.first.copyWith(
+    //     situacao: ExpedicaoCarrinhoSituacaoModel.emConferencia,
+    //   );
 
-    //     await CarrinhoPercursoEstagioCancelarService(
-    //       carrinho: carrinho.first,
-    //       percursoEstagio: carrinhoPercursoEstagio.first,
-    //     ).execute();
+    //   await CarrinhoPercursoEstagioFinalizarService(
+    //     carrinho: newCarrinho,
+    //     carrinhoPercurso: carrinhoPercurso,
+    //     carrinhoPercursoEstagio: carrinhoPercursoEstagio.first,
+    //   ).execute();
 
-    //     final carrinhoPercurso = item.copyWith(
-    //       situacao: ExpedicaoSituacaoModel.cancelada,
-    //     );
+    //   await SeparacaoFinalizarItemService().updateAll(itensSeparacaoCarrinho);
+    //   final newCarrinhoPercursoConsulta = item.copyWith(
+    //     situacao: ExpedicaoSituacaoModel.separando,
+    //   );
 
-    //     final newConferirItens = await _conferirServices.itensSaparar();
-    //     _conferirCarrinhoGridController.updateGrid(carrinhoPercurso);
-    //     _conferirGridController.updateAllGrid(newConferirItens);
-    //     _conferirCarrinhoGridController.update();
-    //     _conferirGridController.update();
-    //   };
+    //   _conferirCarrinhoGridController.updateGrid(newCarrinhoPercursoConsulta);
+    //   _conferirCarrinhoGridController.update();
+    // };
+
+    // Cancelar carrinho
+    _conferirCarrinhoGridController.onPressedRemove = (item) async {
+      final carrinho = await CarrinhoServices().select(
+        "CodEmpresa = ${item.codEmpresa} AND CodCarrinho = ${item.codCarrinho}",
+      );
+
+      print(carrinho);
+
+      // final carrinhoPercursoEstagio =
+      //     await CarrinhoPercursoEstagioServices().select('''
+      //             CodEmpresa = ${item.codEmpresa}
+      //           AND CodCarrinhoPercurso = ${item.codCarrinhoPercurso}
+      //           AND CodPercursoEstagio = ${item.codPercursoEstagio}
+      //           AND CodCarrinho = ${item.codCarrinho}
+      //           AND Item = ${item.item}
+
+      //         ''');
+
+      // if (carrinho.isEmpty || carrinhoPercursoEstagio.isEmpty) return;
+
+      // await CarrinhoPercursoEstagioCancelarService(
+      //   carrinho: carrinho.first,
+      //   percursoEstagio: carrinhoPercursoEstagio.first,
+      // ).execute();
+
+      // final carrinhoPercurso = item.copyWith(
+      //   situacao: ExpedicaoSituacaoModel.cancelada,
+      // );
+
+      // final newConferirItens = await _conferirServices.itensSaparar();
+      // _conferirCarrinhoGridController.updateGrid(carrinhoPercurso);
+      // _conferirGridController.updateAllGrid(newConferirItens);
+      // _conferirCarrinhoGridController.update();
+      // _conferirGridController.update();
+    };
   }
 
   _liteners() {

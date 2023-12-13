@@ -8,11 +8,11 @@ import 'package:app_expedicao/src/model/expedicao_carrinho_consulta_model.dart';
 
 class AdicionarCarrinhoDialogWidget {
   double spaceBarHeadFormElement = 30.5;
-  final controller = Get.find<CarrinhoController>();
+  final CarrinhoController controller;
   final BuildContext context = Get.context!;
   final Size size = Get.size;
 
-  AdicionarCarrinhoDialogWidget();
+  AdicionarCarrinhoDialogWidget(this.controller);
 
   Future<ExpedicaoCarrinhoConsultaModel?> show() async {
     return await showDialog<ExpedicaoCarrinhoConsultaModel>(
@@ -28,7 +28,6 @@ class AdicionarCarrinhoDialogWidget {
               BarHeadFormElement(
                 widthBar: size.width,
                 title: 'Adicionar Carrinho',
-                onPressedCloseBar: controller.clear,
               ),
 
               //** BODY **//
@@ -165,7 +164,6 @@ class AdicionarCarrinhoDialogWidget {
                             name: 'Cancelar',
                             padding: const EdgeInsets.only(left: 5),
                             onPressed: () {
-                              controller.clear();
                               Get.back();
                             },
                           ),
@@ -188,9 +186,5 @@ class AdicionarCarrinhoDialogWidget {
         ),
       ),
     );
-  }
-
-  void clear() {
-    controller.clear();
   }
 }

@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid_cells.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';
-import 'package:app_expedicao/src/pages/common/widget/complit_animation_icon_widget.dart';
-import 'package:app_expedicao/src/pages/common/widget/box_animation_icon_widget.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dart';
 
 class SepararSource extends DataGridSource {
@@ -18,9 +16,7 @@ class SepararSource extends DataGridSource {
               cells: [
                 DataGridCell<Widget>(
                   columnName: 'indicator',
-                  value: (i.quantidade == i.quantidadeSeparacao)
-                      ? const ComplitAnimationIconWidget()
-                      : const BoxAnimationIconWidget(),
+                  value: controller.iconIndicator(i),
                 ),
                 DataGridCell<int>(
                   columnName: 'codEmpresa',

@@ -1,3 +1,4 @@
+import 'package:app_expedicao/src/pages/common/widget/box_animation_icon_widget.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -114,7 +115,7 @@ class ConferidoCarrinhoGridSource extends DataGridSource {
 
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
-    return DataGridRowAdapter(
+    var dataGridRowAdapter = DataGridRowAdapter(
         color: Colors.white,
         cells: row.getCells().map<Widget>((cell) {
           if (cell.value is double) {
@@ -129,7 +130,21 @@ class ConferidoCarrinhoGridSource extends DataGridSource {
             return ConferidoCarrinhoGridCells.defaultWidgetCell(cell.value);
           }
 
+          if (cell.value is Image) {
+            return ConferidoCarrinhoGridCells.defaultImageCell(cell.value);
+          }
+
+          if (cell.columnName == 'item' ||
+              cell.columnName == 'codUnidadeMedida') {
+            return ConferidoCarrinhoGridCells.defaultCells(
+              cell.value,
+              alignment: Alignment.center,
+            );
+          }
+
           return ConferidoCarrinhoGridCells.defaultCells(cell.value);
         }).toList());
+
+    return dataGridRowAdapter;
   }
 }

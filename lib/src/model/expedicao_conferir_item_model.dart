@@ -1,4 +1,5 @@
 import 'package:app_expedicao/src/app/app_helper.dart';
+import 'package:app_expedicao/src/model/expedicao_conferir_item_consulta_model.dart';
 
 class ExpedicaoConferirItemModel {
   final int codEmpresa;
@@ -44,6 +45,21 @@ class ExpedicaoConferirItemModel {
       codUnidadeMedida: codUnidadeMedida ?? this.codUnidadeMedida,
       quantidade: quantidade ?? this.quantidade,
       quantidadeConferida: quantidadeConferida ?? this.quantidadeConferida,
+    );
+  }
+
+  factory ExpedicaoConferirItemModel.fromConsulta(
+      ExpedicaoConferirItemConsultaModel item) {
+    return ExpedicaoConferirItemModel(
+      codEmpresa: item.codEmpresa,
+      codConferir: item.codConferir,
+      item: item.item,
+      codCarrinhoPercurso: item.codCarrinhoPercurso,
+      itemCarrinhoPercurso: item.itemCarrinhoPercurso,
+      codProduto: item.codProduto,
+      codUnidadeMedida: item.codUnidadeMedida,
+      quantidade: item.quantidade,
+      quantidadeConferida: item.quantidadeConferida,
     );
   }
 

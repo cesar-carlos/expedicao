@@ -2,26 +2,23 @@ import 'package:app_expedicao/src/model/expedicao_separacao_item_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_consulta_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_repository.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
-import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 
 class SeparacaoRemoverItemService {
-  final ExpedicaoCarrinhoPercursoModel carrinhoPercurso;
   final ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta;
 
   SeparacaoRemoverItemService({
-    required this.carrinhoPercurso,
     required this.percursoEstagioConsulta,
   });
 
   Future<void> remove({required item}) async {
-    final repository = SeparacaoItemRepository();
-    final response = await repository.select(
-      '''
-          CodEmpresa = ${percursoEstagioConsulta.codEmpresa}
-      AND CodSepararEstoque = ${carrinhoPercurso.codOrigem}
+    final params = ''' 
+        CodEmpresa = ${percursoEstagioConsulta.codEmpresa}
+      AND CodSepararEstoque = ${percursoEstagioConsulta.codOrigem}
       AND Item = '$item'
-      ''',
-    );
+    ''';
+
+    final repository = SeparacaoItemRepository();
+    final response = await repository.select(params);
 
     for (var el in response) {
       await repository.delete(el);
@@ -29,20 +26,20 @@ class SeparacaoRemoverItemService {
   }
 
   Future<void> removeAll() async {
-    final repository = SeparacaoItemRepository();
-    final response = await repository.select(
-      ''' CodEmpresa = ${carrinhoPercurso.codEmpresa}
-      AND CodSepararEstoque = ${carrinhoPercurso.codOrigem}
-      ''',
-    );
+    final params = ''' 
+        CodEmpresa = ${percursoEstagioConsulta.codEmpresa}
+      AND CodSepararEstoque = ${percursoEstagioConsulta.codOrigem}
+      ''';
 
+    final repository = SeparacaoItemRepository();
+    final response = await repository.select(params);
     repository.deleteAll(response);
   }
 
   Future<void> removeAllItensCart() async {
     final params = ''' 
         CodEmpresa = ${percursoEstagioConsulta.codEmpresa}
-      AND CodSepararEstoque = ${carrinhoPercurso.codOrigem}
+      AND CodSepararEstoque = ${percursoEstagioConsulta.codOrigem}
       AND CodCarrinhoPercurso = ${percursoEstagioConsulta.codCarrinhoPercurso}  
       AND ItemCarrinhoPercurso = '${percursoEstagioConsulta.item}'
 

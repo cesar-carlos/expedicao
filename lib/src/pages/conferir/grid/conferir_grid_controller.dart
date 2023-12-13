@@ -2,7 +2,10 @@ import 'package:get/get.dart';
 
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_item_consulta_model.dart';
+import 'package:app_expedicao/src/pages/common/widget/complit_animation_icon_widget.dart';
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_repository.dart';
+import 'package:app_expedicao/src/pages/common/widget/alert_animation_icon_widget.dart';
+import 'package:app_expedicao/src/pages/common/widget/box_animation_icon_widget.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class ConferirGridController extends GetxController {
@@ -123,7 +126,7 @@ class ConferirGridController extends GetxController {
 
     for (var el in _itensGrid) {
       final separacaoItens = await repository.select('''
-            CodEmpresa = ${el.codEmpresa}
+          CodEmpresa = ${el.codEmpresa}
         AND CodConferirEstoque = ${el.codConferir}
         AND CodProduto = ${el.codProduto}
         AND Situacao <> ${ExpedicaoSituacaoModel.cancelada}
@@ -143,5 +146,17 @@ class ConferirGridController extends GetxController {
     for (var el in conferirItem) {
       updateGrid(el);
     }
+  }
+
+  iconIndicator(ExpedicaoConferirItemConsultaModel item) {
+    if (item.quantidade == item.quantidadeConferida) {
+      return const ComplitAnimationIconWidget();
+    }
+
+    if (item.quantidade < item.quantidadeConferida) {
+      return const AlertAnimationIconWidget();
+    }
+
+    return const BoxAnimationIconWidget();
   }
 }

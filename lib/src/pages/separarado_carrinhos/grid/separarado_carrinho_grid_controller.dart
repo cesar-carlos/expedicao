@@ -2,12 +2,9 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-import 'package:app_expedicao/src/pages/separacao/separacao_page.dart';
-import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
+import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/pages/separarado_carrinhos/grid/separarado_carrinho_grid_source.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
-import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget.dart';
-import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 
 class SeparadoCarrinhoGridController extends GetxController {
   static const gridName = 'separadoCarrinhoGrid';
@@ -25,6 +22,7 @@ class SeparadoCarrinhoGridController extends GetxController {
     _itensGrid = [];
   }
 
+  void Function(ExpedicaoCarrinhoPercursoConsultaModel item)? onPressedEdit;
   void Function(ExpedicaoCarrinhoPercursoConsultaModel item)? onPressedRemove;
   void Function(ExpedicaoCarrinhoPercursoConsultaModel item)? onPressedSave;
 
@@ -60,81 +58,24 @@ class SeparadoCarrinhoGridController extends GetxController {
   }
 
   void editGrid(
-    SeparadoCarrinhoGridSource carrinhoGrid,
-    ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta,
+    SeparadoCarrinhoGridSource grid,
+    ExpedicaoCarrinhoPercursoConsultaModel item,
   ) {
-    final dialog = SeparacaoPage(percursoEstagioConsulta);
-    dialog.show();
+    onPressedEdit?.call(item);
   }
 
   Future<void> onRemoveItem(
     SeparadoCarrinhoGridSource grid,
     ExpedicaoCarrinhoPercursoConsultaModel item,
   ) async {
-    if (item.situacao == ExpedicaoSituacaoModel.cancelada) {
-      await ConfirmationDialogMessageWidget.show(
-        context: Get.context!,
-        message: 'Carrinho já cancelado!',
-        detail: 'Não é possível cancelar um carrinho já cancelado!',
-      );
-
-      return;
-    }
-
-    if (item.situacao == ExpedicaoSituacaoModel.separando) {
-      await ConfirmationDialogMessageWidget.show(
-        context: Get.context!,
-        message: 'Carrinho já finalizado!',
-        detail: 'Não é possível cancelar um carrinho já finalizado!',
-      );
-
-      return;
-    }
-
-    final bool? confirmation = await ConfirmationDialogWidget.show(
-      context: Get.context!,
-      message: 'Deseja realmente cancelar?',
-      detail: 'Ao cancelar, os itens serão removido do carrinho!',
-    );
-
-    if (confirmation != null && confirmation) {
-      onPressedRemove?.call(item);
-    }
+    onPressedRemove?.call(item);
   }
 
   Future<void> onSavetem(
     SeparadoCarrinhoGridSource grid,
     ExpedicaoCarrinhoPercursoConsultaModel item,
   ) async {
-    if (item.situacao == ExpedicaoSituacaoModel.cancelada) {
-      await ConfirmationDialogMessageWidget.show(
-        context: Get.context!,
-        message: 'Carrinho já cancelado!',
-        detail: 'Não é possível salva um carrinho que esteja cancelado!',
-      );
-
-      return;
-    }
-
-    if (item.situacao == ExpedicaoSituacaoModel.separando) {
-      await ConfirmationDialogMessageWidget.show(
-        context: Get.context!,
-        message: 'Carrinho já finalizado!',
-        detail: 'Não é possível salva um carrinho que esteja finalizado!',
-      );
-
-      return;
-    }
-
-    final bool? confirmation = await ConfirmationDialogWidget.show(
-      context: Get.context!,
-      message: 'Deseja Salva?',
-      detail: 'Ao salvar, o carrinho não podera ser mais alterado!',
-    );
-
-    if (confirmation != null && confirmation) {
-      onPressedSave?.call(item);
-    }
+    onPressedSave?.call(item);
   }
 
   Icon iconEdit(ExpedicaoCarrinhoPercursoConsultaModel item) {

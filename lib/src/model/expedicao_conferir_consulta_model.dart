@@ -7,7 +7,7 @@ class ExpedicaoConferirConsultaModel {
   final int codOrigem;
   final int codPrioridade;
   final String nomePrioridade;
-  final String situacao;
+  String situacao;
   final DateTime data;
   final String hora;
   final String? historico;

@@ -49,6 +49,21 @@ class ExpedicaoCarrinhoPercursoModel {
     );
   }
 
+  factory ExpedicaoCarrinhoPercursoModel.fromConsulta(
+      ExpedicaoCarrinhoPercursoConsultaModel item) {
+    return ExpedicaoCarrinhoPercursoModel(
+      codEmpresa: item.codEmpresa,
+      codCarrinhoPercurso: item.codCarrinhoPercurso,
+      origem: item.origem,
+      codOrigem: item.codOrigem,
+      situacao: item.situacao,
+      dataInicio: item.dataInicio,
+      horaInicio: item.horaInicio,
+      dataFinalizacao: item.dataFinalizacao,
+      horaFinalizacao: item.horaFinalizacao,
+    );
+  }
+
   factory ExpedicaoCarrinhoPercursoModel.fromJson(Map<String, dynamic> map) {
     return ExpedicaoCarrinhoPercursoModel(
       codEmpresa: map['CodEmpresa'],
@@ -75,21 +90,6 @@ class ExpedicaoCarrinhoPercursoModel {
       'DataFinalizacao': dataFinalizacao?.toIso8601String(),
       'HoraFinalizacao': horaFinalizacao,
     };
-  }
-
-  factory ExpedicaoCarrinhoPercursoModel.fromConsulta(
-      ExpedicaoCarrinhoPercursoConsultaModel item) {
-    return ExpedicaoCarrinhoPercursoModel(
-      codEmpresa: item.codEmpresa,
-      codCarrinhoPercurso: item.codCarrinhoPercurso,
-      origem: item.origem,
-      codOrigem: item.codOrigem,
-      situacao: item.situacao,
-      dataInicio: item.dataInicio,
-      horaInicio: item.horaInicio,
-      dataFinalizacao: item.dataFinalizacao,
-      horaFinalizacao: item.horaFinalizacao,
-    );
   }
 
   @override

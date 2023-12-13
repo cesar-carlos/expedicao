@@ -2,15 +2,15 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 
-import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
 import 'package:number_text_input_formatter/number_text_input_formatter.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
 import 'package:app_expedicao/src/pages/separacao/separacao_controller.dart';
 
-class ScanItemWidget extends StatelessWidget {
+class ScanSeparacaoItemWidget extends StatelessWidget {
   final Size size;
   final ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta;
 
-  const ScanItemWidget(
+  const ScanSeparacaoItemWidget(
     this.percursoEstagioConsulta, {
     required this.size,
     super.key,

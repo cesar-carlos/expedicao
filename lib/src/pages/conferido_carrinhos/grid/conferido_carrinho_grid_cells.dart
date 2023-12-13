@@ -59,6 +59,22 @@ class ConferidoCarrinhoGridCells {
     );
   }
 
+  static defaultImageCell(Image value) {
+    return SizedBox(
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Colors.grey,
+            width: 0.2,
+          ),
+        ),
+        child: value,
+      ),
+    );
+  }
+
   static defaultWidgetCell(Widget value) {
     return SizedBox(
       child: Container(

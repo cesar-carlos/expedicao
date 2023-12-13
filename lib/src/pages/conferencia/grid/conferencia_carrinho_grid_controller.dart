@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 
-import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget.dart';
 import 'package:app_expedicao/src/pages/conferencia/grid/conferencia_carrinho_grid_source.dart';
 import 'package:app_expedicao/src/model/expedicao_conferencia_item_consulta_model.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -90,14 +89,6 @@ class ConferenciaCarrinhoGridController extends GetxController {
     ConferenciaCarrinhoGridSource grid,
     ExpedicaConferenciaItemConsultaModel item,
   ) async {
-    final bool? confirmation = await ConfirmationDialogWidget.show(
-      context: Get.context!,
-      message: 'Deseja realmente cancelar?',
-      detail: 'Ao cancelar, os itens serão removido do carrinho!',
-    );
-
-    if (confirmation != null && confirmation) {
-      onPressedRemoveItem?.call(item);
-    }
+    onPressedRemoveItem?.call(item);
   }
 }
