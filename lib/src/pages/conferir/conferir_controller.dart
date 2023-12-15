@@ -10,7 +10,6 @@ import 'package:app_expedicao/src/pages/conferido_carrinhos/conferido_carrinhos_
 import 'package:app_expedicao/src/pages/carrinho/widget/adicionar_carrinho_dialog_widget.dart';
 import 'package:app_expedicao/src/pages/conferir_carrinhos/conferir_carrinhos_controller.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
-import 'package:app_expedicao/src/pages/conferir/grid/conferir_grid_controller.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
 import 'package:app_expedicao/src/service/conferir_consultas_services.dart';

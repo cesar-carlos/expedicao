@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:app_expedicao/src/service/conferencia_situacao_carrinho_service.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
@@ -80,14 +83,22 @@ class CarrinhoController extends GetxController {
     }
 
     viewFromCarrinhoConsulta(output!.carrinhoConsulta!);
-    final valid = validCarrinho(output.carrinhoConsulta!);
     update();
 
-    if (!valid) {
+    String? validMsg;
+    if (_processoExecutavel.origem == ExpedicaoOrigemModel.separacao) {
+      validMsg = await validCarrinhoSeparacao(output.carrinhoConsulta!);
+    }
+
+    if (_processoExecutavel.origem == ExpedicaoOrigemModel.conferencia) {
+      validMsg = await validCarrinhoConferencia(output.carrinhoConsulta!);
+    }
+
+    if (validMsg != null) {
       await customDialog(
         Get.context!,
         title: 'Carrinho',
-        message: 'Carrinho não está liberado!',
+        message: validMsg,
       );
 
       textControllerCodigoCarrinho.selection = TextSelection(
@@ -112,19 +123,31 @@ class CarrinhoController extends GetxController {
     _carrinho.codigoBarras = input.codigoBarras;
   }
 
-  bool validCarrinho(ExpedicaoCarrinhoConsultaModel input) {
-    if (_processoExecutavel.origem == ExpedicaoOrigemModel.separacao) {
-      if (input.situacao == ExpedicaoCarrinhoSituacaoModel.liberado) {
-        return true;
-      }
+  FutureOr<String?> validCarrinhoSeparacao(
+      ExpedicaoCarrinhoConsultaModel input) {
+    if (input.situacao == ExpedicaoCarrinhoSituacaoModel.liberado) {
+      return 'Carrinho não está liberado. Somente carrinhos liberados podem ser adicionados.';
     }
 
-    if (_processoExecutavel.origem == ExpedicaoOrigemModel.conferencia) {
-      if (input.situacao == ExpedicaoCarrinhoSituacaoModel.emConferencia) {
-        return true;
-      }
+    return null;
+  }
+
+  Future<String?> validCarrinhoConferencia(
+      ExpedicaoCarrinhoConsultaModel input) async {
+    final carrinhoConsulta = await ConferenciaSituacaoCarrinhoService(
+      codEmpresa: _processoExecutavel.codEmpresa,
+      codConferir: _processoExecutavel.codOrigem,
+    ).consulta(input.codCarrinho);
+
+    if (carrinhoConsulta == null) {
+      return 'Carrinho não listado para esta conferência.';
     }
 
-    return false;
+    if (carrinhoConsulta.situacaoCarrinho !=
+        ExpedicaoCarrinhoSituacaoModel.emConferencia) {
+      return 'Carrinho com situação inválida. Situacao carrinho: ${carrinhoConsulta.situacaoCarrinho}';
+    }
+
+    return null;
   }
 }

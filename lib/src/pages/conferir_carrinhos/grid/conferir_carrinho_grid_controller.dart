@@ -1,3 +1,6 @@
+import 'package:app_expedicao/src/pages/common/widget/alert_animation_icon_widget.dart';
+import 'package:app_expedicao/src/pages/common/widget/box_animation_icon_widget.dart';
+import 'package:app_expedicao/src/pages/common/widget/complit_animation_icon_widget.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -47,6 +50,14 @@ class ConferirCarrinhoGridController extends GetxController {
       final index = _itensGrid
           .indexWhere((i) => i.itemCarrinhoPercurso == el.itemCarrinhoPercurso);
       _itensGrid[index] = el;
+    }
+  }
+
+  void updateGridSituationCarrinho(int codCarrinho, String situacao) {
+    for (var el in _itensGrid) {
+      if (el.codCarrinho == codCarrinho) {
+        el.situacaoCarrinho = situacao;
+      }
     }
   }
 
@@ -202,5 +213,17 @@ class ConferirCarrinhoGridController extends GetxController {
         position: DataGridScrollPosition.center,
       );
     });
+  }
+
+  iconIndicator(ExpedicaoCarrinhoConferirConsultaModel item) {
+    // if (item.quantidade == item.quantidadeConferida) {
+    //   return const ComplitAnimationIconWidget();
+    // }
+
+    // if (item.quantidade < item.quantidadeConferida) {
+    //   return const AlertAnimationIconWidget();
+    // }
+
+    return const BoxAnimationIconWidget();
   }
 }

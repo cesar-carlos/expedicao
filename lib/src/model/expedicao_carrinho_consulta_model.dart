@@ -52,7 +52,7 @@ class ExpedicaoCarrinhoConsultaModel {
       descricaoPercursoEstagio: map['DescricaoPercursoEstagio'],
       origem: map['Origem'] ?? '',
       codOrigem: map['CodOrigem'],
-      dataInicio: AppHelper.tryStringToDate(map['DataInicio']),
+      dataInicio: AppHelper.tryStringToDateOrNull(map['DataInicio']),
       horaInicio: map['HoraInicio'],
       codUsuarioInicio: map['CodUsuarioInicio'],
       nomeUsuarioInicio: map['NomeUsuarioInicio'],
@@ -85,6 +85,6 @@ class ExpedicaoCarrinhoConsultaModel {
 
   @override
   String toString() {
-    return 'ExpedicaoCarrinhoConsultaModel(codEmpresa: $codEmpresa, codCarrinho: $codCarrinho, descricaoCarrinho: $descricaoCarrinho, ativo: $ativo, situacao: $situacao, codigoBarras: $codigoBarras, codCarrinhoPercurso: $codCarrinhoPercurso, codPercursoEstagio: $codPercursoEstagio, descricaoPercursoEstagio: $descricaoPercursoEstagio, origem: $origem, codOrigem: $codOrigem, dataInicio: $dataInicio, horaInicio: $horaInicio, codUsuario: $codUsuarioInicio, nomeUsuario: $nomeUsuarioInicio, codSetorEstoque: $codSetorEstoque, nomeSetorEstoque: $nomeSetorEstoque)';
+    return 'ExpedicaoCarrinhoConsultaModel(codEmpresa: $codEmpresa, codCarrinho: $codCarrinho, descricaoCarrinho: $descricaoCarrinho, ativo: $ativo, situacao: $situacao, codigoBarras: $codigoBarras, codCarrinhoPercurso: $codCarrinhoPercurso, codPercursoEstagio: $codPercursoEstagio, descricaoPercursoEstagio: $descricaoPercursoEstagio, origem: $origem, codOrigem: $codOrigem, dataInicio: $dataInicio, horaInicio: $horaInicio, codUsuarioInicio: $codUsuarioInicio, nomeUsuarioInicio: $nomeUsuarioInicio, codSetorEstoque: $codSetorEstoque, nomeSetorEstoque: $nomeSetorEstoque)';
   }
 }

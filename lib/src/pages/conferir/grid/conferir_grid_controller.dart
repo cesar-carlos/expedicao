@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_item_consulta_model.dart';
@@ -6,7 +7,6 @@ import 'package:app_expedicao/src/pages/common/widget/complit_animation_icon_wid
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_repository.dart';
 import 'package:app_expedicao/src/pages/common/widget/alert_animation_icon_widget.dart';
 import 'package:app_expedicao/src/pages/common/widget/box_animation_icon_widget.dart';
-import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class ConferirGridController extends GetxController {
   static const gridName = 'conferirGrid';

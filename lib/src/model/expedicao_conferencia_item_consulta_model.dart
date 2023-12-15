@@ -200,4 +200,9 @@ class ExpedicaConferenciaItemConsultaModel {
       'Quantidade': quantidade.toStringAsFixed(4),
     };
   }
+
+  @override
+  String toString() {
+    return 'ExpedicaConferenciaItemConsultaModel(codEmpresa: $codEmpresa, codConferir: $codConferir, item: $item, sessionId: $sessionId, situacao: $situacao, codCarrinho: $codCarrinho, nomeCarrinho: $nomeCarrinho, codigoBarrasCarrinho: $codigoBarrasCarrinho, codCarrinhoPercurso: $codCarrinhoPercurso, itemCarrinhoPercurso: $itemCarrinhoPercurso, codProduto: $codProduto, nomeProduto: $nomeProduto, codUnidadeMedida: $codUnidadeMedida, nomeUnidadeMedida: $nomeUnidadeMedida, codGrupoProduto: $codGrupoProduto, nomeGrupoProduto: $nomeGrupoProduto, codMarca: $codMarca, nomeMarca: $nomeMarca, codigoBarras: $codigoBarras, codigoBarras2: $codigoBarras2, codigoReferencia: $codigoReferencia, codigoFornecedor: $codigoFornecedor, codigoFabricante: $codigoFabricante, codigoOriginal: $codigoOriginal, endereco: $endereco, codConferente: $codConferente, nomeConferente: $nomeConferente, dataConferencia: $dataConferencia, horaConferencia: $horaConferencia, quantidade: $quantidade)';
+  }
 }

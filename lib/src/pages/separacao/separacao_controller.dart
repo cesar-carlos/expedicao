@@ -94,6 +94,7 @@ class SeparacaoController extends GetxController {
     _viewMode.close();
 
     _removeliteners();
+
     super.onClose();
   }
 

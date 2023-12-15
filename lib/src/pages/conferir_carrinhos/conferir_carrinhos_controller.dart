@@ -1,4 +1,8 @@
+import 'package:app_expedicao/src/model/expedicao_carrinho_consulta_model.dart';
+import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
+import 'package:app_expedicao/src/repository/expedicao_carrinhos/carrinho_event_repository.dart';
 import 'package:get/get.dart';
+import 'package:uuid/uuid.dart';
 
 import 'package:app_expedicao/src/service/carrinho_services.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
@@ -10,6 +14,7 @@ import 'package:app_expedicao/src/service/conferir_consultas_services.dart';
 class ConferirCarrinhosController extends GetxController {
   late ProcessoExecutavelModel _processoExecutavel;
 
+  final List<RepositoryEventListenerModel> _pageListerner = [];
   //late ConferirGridController _conferirGridController;
   late ConferirCarrinhoGridController _conferirCarrinhoGridController;
   late ExpedicaoConferirConsultaModel _conferirConsulta;
@@ -42,6 +47,13 @@ class ConferirCarrinhosController extends GetxController {
 
     _evetsCarrinhoGrid();
     _liteners();
+  }
+
+  @override
+  void onClose() {
+    _removeliteners();
+
+    super.onClose();
   }
 
   Future<void> _fillGridConferirCarrinhos() async {
@@ -118,11 +130,9 @@ class ConferirCarrinhosController extends GetxController {
 
     // Cancelar carrinho
     _conferirCarrinhoGridController.onPressedRemove = (item) async {
-      final carrinho = await CarrinhoServices().select(
-        "CodEmpresa = ${item.codEmpresa} AND CodCarrinho = ${item.codCarrinho}",
-      );
-
-      print(carrinho);
+      // final carrinho = await CarrinhoServices().select(
+      //   "CodEmpresa = ${item.codEmpresa} AND CodCarrinho = ${item.codCarrinho}",
+      // );
 
       // final carrinhoPercursoEstagio =
       //     await CarrinhoPercursoEstagioServices().select('''
@@ -154,8 +164,27 @@ class ConferirCarrinhosController extends GetxController {
   }
 
   _liteners() {
-    // final carrinhoPercursoEvent = CarrinhoPercursoEventRepository.instancia;
-    // const uuid = Uuid();
+    const uuid = Uuid();
+    final carrinhoEvent = CarrinhoEventRepository.instancia;
+
+    //final carrinhoPercursoEvent = CarrinhoPercursoEventRepository.instancia;
+
+    final updateCarrinho = RepositoryEventListenerModel(
+      id: uuid.v4(),
+      allEvent: true,
+      event: Event.update,
+      callback: (data) async {
+        for (var el in data.mutation) {
+          final carrinho = ExpedicaoCarrinhoConsultaModel.fromJson(el);
+          _conferirCarrinhoGridController.updateGridSituationCarrinho(
+            carrinho.codCarrinho,
+            carrinho.situacao,
+          );
+
+          _conferirCarrinhoGridController.update();
+        }
+      },
+    );
 
     // carrinhoPercursoEvent.addListener(
     //   RepositoryEventListenerModel(
@@ -202,5 +231,13 @@ class ConferirCarrinhosController extends GetxController {
     //     },
     //   ),
     // );
+
+    carrinhoEvent.addListener(updateCarrinho);
+    _pageListerner.add(updateCarrinho);
+  }
+
+  void _removeliteners() {
+    final carrinhoEvent = CarrinhoEventRepository.instancia;
+    carrinhoEvent.removeListeners(_pageListerner);
   }
 }

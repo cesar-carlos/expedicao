@@ -8,6 +8,7 @@ abstract class ExpedicaoCarrinhoSituacaoModel {
   static const conferido = 'CONFERIDO';
   static const cancelado = 'CANCELADO';
   static const finalizado = 'FINALIZADO';
+  static const aguardando = 'AGUARDANDO';
 
   static Map<String, String> situacao = {
     liberado: 'Liberado',
@@ -19,6 +20,7 @@ abstract class ExpedicaoCarrinhoSituacaoModel {
     conferido: 'Conferido',
     cancelado: 'Cancelado',
     finalizado: 'Finalizado',
+    aguardando: 'Aguardando',
     '': ''
   };
 }

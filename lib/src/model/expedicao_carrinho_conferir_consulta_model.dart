@@ -13,7 +13,7 @@ class ExpedicaoCarrinhoConferirConsultaModel {
   final int codCarrinho;
   final String nomeCarrinho;
   final String codigoBarrasCarrinho;
-  final String situacaoCarrinho;
+  String situacaoCarrinho;
   final DateTime dataInicioPercurso;
   final String horaInicioPercurso;
   final int codPercursoEstagio;
@@ -26,6 +26,8 @@ class ExpedicaoCarrinhoConferirConsultaModel {
   final String nomeUsuarioFinalizacaoEstagio;
   final DateTime dataFinalizacaoEstagio;
   final String horaFinalizacaoEstagio;
+  final double totalItemConferir;
+  final double totalItemConferido;
 
   ExpedicaoCarrinhoConferirConsultaModel({
     required this.codEmpresa,
@@ -53,6 +55,8 @@ class ExpedicaoCarrinhoConferirConsultaModel {
     required this.nomeUsuarioFinalizacaoEstagio,
     required this.dataFinalizacaoEstagio,
     required this.horaFinalizacaoEstagio,
+    required this.totalItemConferir,
+    required this.totalItemConferido,
   });
 
   factory ExpedicaoCarrinhoConferirConsultaModel.fromJson(
@@ -84,6 +88,8 @@ class ExpedicaoCarrinhoConferirConsultaModel {
       dataFinalizacaoEstagio:
           AppHelper.tryStringToDate(map['DataFinalizacaoEstagio']),
       horaFinalizacaoEstagio: map['HoraFinalizacaoEstagio'],
+      totalItemConferir: AppHelper.stringToDouble(map['TotalItemConferir']),
+      totalItemConferido: AppHelper.stringToDouble(map['TotalItemConferido']),
     );
   }
 
@@ -114,11 +120,13 @@ class ExpedicaoCarrinhoConferirConsultaModel {
       'NomeUsuarioFinalizacaoEstagio': nomeUsuarioFinalizacaoEstagio,
       'DataFinalizacaoEstagio': dataFinalizacaoEstagio.toIso8601String(),
       'HoraFinalizacaoEstagio': horaFinalizacaoEstagio,
+      'TotalItemConferir': totalItemConferir,
+      'TotalItemConferido': totalItemConferido,
     };
   }
 
   @override
   String toString() {
-    return 'ExpedicaoCarrinhoConferirConsultaModel(codEmpresa: $codEmpresa, codConferir: $codConferir, origem: $origem, codOrigem: $codOrigem, situacao: $situacao, codCarrinhoPercurso: $codCarrinhoPercurso, itemCarrinhoPercurso: $itemCarrinhoPercurso, codPrioridade: $codPrioridade, nomePrioridade: $nomePrioridade, codCarrinho: $codCarrinho, nomeCarrinho: $nomeCarrinho, codigoBarrasCarrinho: $codigoBarrasCarrinho, situacaoCarrinho: $situacaoCarrinho, dataInicioPercurso: $dataInicioPercurso, horaInicioPercurso: $horaInicioPercurso, codPercursoEstagio: $codPercursoEstagio, nomePercursoEstagio: $nomePercursoEstagio, codUsuarioInicioEstagio: $codUsuarioInicioEstagio, nomeUsuarioInicioEstagio: $nomeUsuarioInicioEstagio, dataInicioEstagio: $dataInicioEstagio, horaInicioEstagio: $horaInicioEstagio, codUsuarioFinalizacaoEstagio: $codUsuarioFinalizacaoEstagio, nomeUsuarioFinalizacaoEstagio: $nomeUsuarioFinalizacaoEstagio, dataFinalizacaoEstagio: $dataFinalizacaoEstagio, horaFinalizacaoEstagio: $horaFinalizacaoEstagio)';
+    return 'ExpedicaoCarrinhoConferirConsultaModel(codEmpresa: $codEmpresa, codConferir: $codConferir, origem: $origem, codOrigem: $codOrigem, situacao: $situacao, codCarrinhoPercurso: $codCarrinhoPercurso, itemCarrinhoPercurso: $itemCarrinhoPercurso, codPrioridade: $codPrioridade, nomePrioridade: $nomePrioridade, codCarrinho: $codCarrinho, nomeCarrinho: $nomeCarrinho, codigoBarrasCarrinho: $codigoBarrasCarrinho, situacaoCarrinho: $situacaoCarrinho, dataInicioPercurso: $dataInicioPercurso, horaInicioPercurso: $horaInicioPercurso, codPercursoEstagio: $codPercursoEstagio, nomePercursoEstagio: $nomePercursoEstagio, codUsuarioInicioEstagio: $codUsuarioInicioEstagio, nomeUsuarioInicioEstagio: $nomeUsuarioInicioEstagio, dataInicioEstagio: $dataInicioEstagio, horaInicioEstagio: $horaInicioEstagio, codUsuarioFinalizacaoEstagio: $codUsuarioFinalizacaoEstagio, nomeUsuarioFinalizacaoEstagio: $nomeUsuarioFinalizacaoEstagio, dataFinalizacaoEstagio: $dataFinalizacaoEstagio, horaFinalizacaoEstagio: $horaFinalizacaoEstagio, totalItemConferir: $totalItemConferir, totalItemConferido: $totalItemConferido)';
   }
 }
