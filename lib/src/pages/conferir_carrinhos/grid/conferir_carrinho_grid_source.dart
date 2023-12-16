@@ -5,7 +5,6 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_conferir_consulta_model.dart';
 import 'package:app_expedicao/src/pages/conferir_carrinhos/grid/conferir_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/pages/conferir_carrinhos/grid/conferir_carrinho_grid_cells.dart';
-import 'package:app_expedicao/src/pages/common/widget/complit_animation_icon_widget.dart';
 import 'package:app_expedicao/src/app/app_helper.dart';
 
 class ConferirCarrinhoGridSource extends DataGridSource {

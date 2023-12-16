@@ -1,5 +1,3 @@
-import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget.dart';
-import 'package:app_expedicao/src/service/separacao_cancelar_item_service.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
@@ -15,8 +13,9 @@ import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_messag
 import 'package:app_expedicao/src/pages/separarado_carrinhos/grid/separarado_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_event_repository.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_cancelar_service.dart';
+import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dart';
-import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
+import 'package:app_expedicao/src/service/separacao_cancelar_item_service.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
 import 'package:app_expedicao/src/service/separar_consultas_services.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
@@ -125,9 +124,6 @@ class SeparadoCarrinhosController extends GetxController {
           '''CodEmpresa = ${item.codEmpresa} AND CodCarrinho = ${item.codCarrinho}''',
         );
 
-        final carrinhoPercurso =
-            ExpedicaoCarrinhoPercursoModel.fromConsulta(item);
-
         final carrinhoPercursoEstagio =
             await CarrinhoPercursoEstagioServices().select('''
                 CodEmpresa = ${item.codEmpresa}
@@ -145,7 +141,6 @@ class SeparadoCarrinhosController extends GetxController {
 
         await CarrinhoPercursoEstagioFinalizarService(
           carrinho: newCarrinho,
-          carrinhoPercurso: carrinhoPercurso,
           carrinhoPercursoEstagio: carrinhoPercursoEstagio.last,
         ).execute();
 

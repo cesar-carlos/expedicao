@@ -1,6 +1,3 @@
-import 'package:app_expedicao/src/model/expedicao_item_situacao_model.dart';
-import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget.dart';
-import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
 import 'package:get/get.dart';
 
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
@@ -10,6 +7,10 @@ import 'package:app_expedicao/src/pages/conferencia/conferencia_binding.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_consulta_model.dart';
 import 'package:app_expedicao/src/pages/conferencia/conferencia_controller.dart';
 import 'package:app_expedicao/src/service/conferencia_cancelar_item_service.dart';
+import 'package:app_expedicao/src/service/conferencia_finalizar_item_service.dart';
+import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget.dart';
+import 'package:app_expedicao/src/service/carrinho_percurso_estagio_finalizar_service.dart';
+import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
 import 'package:app_expedicao/src/pages/conferencia/grid/conferencia_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/pages/conferido_carrinhos/grid/conferido_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_cancelar_service.dart';
@@ -17,7 +18,10 @@ import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_mod
 import 'package:app_expedicao/src/pages/conferir/grid/conferir_grid_controller.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_services.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
+import 'package:app_expedicao/src/model/expedicao_percurso_estagio_model.dart';
+import 'package:app_expedicao/src/model/expedicao_item_situacao_model.dart';
 import 'package:app_expedicao/src/pages/conferencia/conferencia_page.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_model.dart';
 import 'package:app_expedicao/src/service/carrinho_services.dart';
 
 class ConferidoCarrinhosController extends GetxController {
@@ -138,48 +142,51 @@ class ConferidoCarrinhosController extends GetxController {
             context: Get.context!,
             message: 'Carrinho não conferido!',
             detail:
-                'Existem itens que não foram conferidos, não é possível salva!',
+                'Existem itens com conferencia incorreta, não é possível salva!',
           );
 
           return;
         }
+
+        final newPercursoEstagio = ExpedicaoPercursoEstagioModel(
+          codEmpresa: item.codEmpresa,
+          codCarrinhoPercurso: item.codCarrinhoPercurso,
+          item: item.item,
+          origem: item.origem,
+          codOrigem: item.codOrigem,
+          codPercursoEstagio: item.codPercursoEstagio,
+          codCarrinho: item.codCarrinho,
+          situacao: ExpedicaoSituacaoModel.conferido,
+          dataInicio: item.dataInicio,
+          horaInicio: item.horaInicio,
+          codUsuarioInicio: item.codUsuarioInicio,
+          nomeUsuarioInicio: item.nomeUsuarioInicio,
+        );
+
+        final newCarrinho = ExpedicaoCarrinhoModel(
+          codEmpresa: item.codEmpresa,
+          codCarrinho: item.codCarrinho,
+          descricao: item.nomeCarrinho,
+          ativo: item.ativo,
+          codigoBarras: item.codigoBarrasCarrinho,
+          situacao: ExpedicaoCarrinhoSituacaoModel.conferido,
+        );
+
+        await CarrinhoPercursoEstagioFinalizarService(
+          carrinhoPercursoEstagio: newPercursoEstagio,
+          carrinho: newCarrinho,
+        ).execute();
+
+        await ConferenciaFinalizarItemService()
+            .updateAll(itensConferenciaCarrinho);
+
+        for (var el in itensConferenciaCarrinho) {
+          _conferidoCarrinhoGridController.updateGridSituationItem(
+              el.itemCarrinhoPercurso, ExpedicaoSituacaoModel.conferido);
+        }
+
+        _conferidoCarrinhoGridController.update();
       }
-
-      //   final carrinho = await CarrinhoServices().select(
-      //     "CodEmpresa = ${item.codEmpresa} AND CodCarrinho = ${item.codCarrinho}",
-      //   );
-
-      //   final carrinhoPercurso =
-      //       ExpedicaoCarrinhoPercursoModel.fromConsulta(item);
-
-      //   final carrinhoPercursoEstagio =
-      //       await CarrinhoPercursoEstagioServices().select('''
-      //               CodEmpresa = ${item.codEmpresa}
-      //           AND CodCarrinhoPercurso = ${item.codCarrinhoPercurso}
-      //           AND CodPercursoEstagio = ${item.codPercursoEstagio}
-      //           AND CodCarrinho = ${item.codCarrinho}
-      //           AND Item = ${item.item}
-
-      //         ''');
-
-      //   if (carrinho.isEmpty || carrinhoPercursoEstagio.isEmpty) return;
-      //   final newCarrinho = carrinho.first.copyWith(
-      //     situacao: ExpedicaoCarrinhoSituacaoModel.emConferencia,
-      //   );
-
-      //   await CarrinhoPercursoEstagioFinalizarService(
-      //     carrinho: newCarrinho,
-      //     carrinhoPercurso: carrinhoPercurso,
-      //     carrinhoPercursoEstagio: carrinhoPercursoEstagio.first,
-      //   ).execute();
-
-      //   await SeparacaoFinalizarItemService().updateAll(itensSeparacaoCarrinho);
-      //   final newCarrinhoPercursoConsulta = item.copyWith(
-      //     situacao: ExpedicaoSituacaoModel.separando,
-      //   );
-
-      //   _conferidoCarrinhoGridController.updateGrid(newCarrinhoPercursoConsulta);
-      //   _conferidoCarrinhoGridController.update();
     };
 
     // Cancelar carrinho

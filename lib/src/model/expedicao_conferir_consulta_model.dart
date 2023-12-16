@@ -10,8 +10,8 @@ class ExpedicaoConferirConsultaModel {
   String situacao;
   final DateTime data;
   final String hora;
-  final String? historico;
-  final String? observacao;
+  String? historico;
+  String? observacao;
 
   ExpedicaoConferirConsultaModel({
     required this.codEmpresa,

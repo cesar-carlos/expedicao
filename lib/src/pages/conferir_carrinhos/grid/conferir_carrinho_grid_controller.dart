@@ -1,10 +1,9 @@
-import 'package:app_expedicao/src/pages/common/widget/alert_animation_icon_widget.dart';
-import 'package:app_expedicao/src/pages/common/widget/box_animation_icon_widget.dart';
 import 'package:app_expedicao/src/pages/common/widget/complit_animation_icon_widget.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
+import 'package:app_expedicao/src/pages/common/widget/box_animation_icon_widget.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
 import 'package:app_expedicao/src/pages/conferir_carrinhos/grid/conferir_carrinho_grid_source.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_conferir_consulta_model.dart';
@@ -216,13 +215,9 @@ class ConferirCarrinhoGridController extends GetxController {
   }
 
   iconIndicator(ExpedicaoCarrinhoConferirConsultaModel item) {
-    // if (item.quantidade == item.quantidadeConferida) {
-    //   return const ComplitAnimationIconWidget();
-    // }
-
-    // if (item.quantidade < item.quantidadeConferida) {
-    //   return const AlertAnimationIconWidget();
-    // }
+    if (item.situacaoCarrinho == ExpedicaoSituacaoModel.conferido) {
+      return const ComplitAnimationIconWidget();
+    }
 
     return const BoxAnimationIconWidget();
   }

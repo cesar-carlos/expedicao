@@ -1,10 +1,12 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
+import 'package:app_expedicao/src/service/conferir_services.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_model.dart';
 import 'package:app_expedicao/src/pages/carrinho/carrinho_controller.dart';
 import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_consulta_model.dart';
+import 'package:app_expedicao/src/pages/conferir/widget/conferir_obs_dialog_widget.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_adicionar_service.dart';
 import 'package:app_expedicao/src/pages/conferido_carrinhos/conferido_carrinhos_controller.dart';
 import 'package:app_expedicao/src/pages/carrinho/widget/adicionar_carrinho_dialog_widget.dart';
@@ -15,6 +17,7 @@ import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
 import 'package:app_expedicao/src/service/conferir_consultas_services.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
+import 'package:app_expedicao/src/model/expedicao_conferir_model.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/app/app_socket.config.dart';
 
@@ -193,19 +196,19 @@ class ConferirController extends GetxController {
   }
 
   Future<void> adicionarObservacao() async {
-    // final currentConferir = await _conferirConsultaServices.conferir();
+    final currentConferir = await _conferirConsultaServices.conferir();
 
-    // historicoController.text = currentConferir?.historico ?? '';
-    // observacaoController.text = currentConferir?.observacao ?? '';
+    historicoController.text = currentConferir?.historico ?? '';
+    observacaoController.text = currentConferir?.observacao ?? '';
 
-    // final result = await ConferirOBsDialogWidget().show();
-    // if (result != null) {
-    //   _conferirConsulta.historico = historicoController.text;
-    //   _conferirConsulta.observacao = observacaoController.text;
+    final result = await ConferirOBsDialogWidget().show();
+    if (result != null) {
+      _conferirConsulta.historico = historicoController.text;
+      _conferirConsulta.observacao = observacaoController.text;
 
-    //   final conferir = ExpedicaoConferirModel.fromConsulta(_conferirConsulta);
-    //   ConferirServices(conferir).atualizar();
-    // }
+      final conferir = ExpedicaoConferirModel.fromConsulta(_conferirConsulta);
+      ConferirServices(conferir).atualizar();
+    }
   }
 
   Future<void> finalizarSeparacao() async {

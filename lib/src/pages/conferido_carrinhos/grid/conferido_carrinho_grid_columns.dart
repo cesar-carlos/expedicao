@@ -44,8 +44,9 @@ class ConferidoCarrinhoGridColumns {
 
     _columns.add(
       GridColumn(
-        visible: false,
+        visible: true,
         columnName: 'item',
+        maximumWidth: 50,
         label: Container(
           padding: padding,
           alignment: Alignment.centerLeft,
@@ -112,6 +113,7 @@ class ConferidoCarrinhoGridColumns {
     _columns.add(
       GridColumn(
         visible: true,
+        maximumWidth: 150,
         columnName: 'codigoBarrasCarrinho',
         label: Container(
           padding: padding,
@@ -125,6 +127,7 @@ class ConferidoCarrinhoGridColumns {
     _columns.add(
       GridColumn(
         visible: true,
+        maximumWidth: 150,
         columnName: 'situacao',
         label: Container(
           padding: padding,
@@ -138,6 +141,7 @@ class ConferidoCarrinhoGridColumns {
     _columns.add(
       GridColumn(
         visible: true,
+        maximumWidth: 120,
         columnName: 'dataInicio',
         label: Container(
           padding: padding,
@@ -151,6 +155,7 @@ class ConferidoCarrinhoGridColumns {
     _columns.add(
       GridColumn(
         visible: true,
+        maximumWidth: 90,
         columnName: 'horaInicio',
         label: Container(
           padding: padding,
@@ -177,6 +182,7 @@ class ConferidoCarrinhoGridColumns {
     _columns.add(
       GridColumn(
         visible: true,
+        maximumWidth: 150,
         columnName: 'nomeUsuario',
         label: Container(
           padding: padding,

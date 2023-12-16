@@ -36,14 +36,22 @@ class ConferidoCarrinhoGridController extends GetxController {
 
   void updateGrid(ExpedicaoCarrinhoPercursoConsultaModel item) {
     final index = _itensGrid.indexWhere((el) => el.item == item.item);
+    if (index == -1) return;
     _itensGrid[index] = item;
   }
 
   void updateAllGrid(List<ExpedicaoCarrinhoPercursoConsultaModel> itens) {
     for (var el in itens) {
       final index = _itensGrid.indexWhere((i) => i.item == el.item);
+      if (index == -1) return;
       _itensGrid[index] = el;
     }
+  }
+
+  void updateGridSituationItem(String item, String situacao) {
+    final index = _itensGrid.indexWhere((el) => el.item == item);
+    if (index == -1) return;
+    _itensGrid[index] = _itensGrid[index].copyWith(situacao: situacao);
   }
 
   void removeGrid(ExpedicaoCarrinhoPercursoConsultaModel item) {

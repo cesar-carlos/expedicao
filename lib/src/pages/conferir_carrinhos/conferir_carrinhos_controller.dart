@@ -1,14 +1,13 @@
-import 'package:app_expedicao/src/model/expedicao_carrinho_consulta_model.dart';
-import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
-import 'package:app_expedicao/src/repository/expedicao_carrinhos/carrinho_event_repository.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
-import 'package:app_expedicao/src/service/carrinho_services.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_conferir_consulta_model.dart';
+import 'package:app_expedicao/src/repository/expedicao_carrinhos/carrinho_event_repository.dart';
 import 'package:app_expedicao/src/pages/conferir_carrinhos/grid/conferir_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_consulta_model.dart';
+import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
 import 'package:app_expedicao/src/service/conferir_consultas_services.dart';
 
 class ConferirCarrinhosController extends GetxController {

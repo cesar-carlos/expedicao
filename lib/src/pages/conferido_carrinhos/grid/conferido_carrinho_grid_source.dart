@@ -1,4 +1,3 @@
-import 'package:app_expedicao/src/pages/common/widget/box_animation_icon_widget.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';

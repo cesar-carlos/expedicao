@@ -21,8 +21,8 @@ class ConferenciaPage {
 
   ConferenciaPage(this.percursoEstagioConsulta) {
     title = _controller.viewMode
-        ? 'Separação - Visualização'
-        : 'Separação - Edição';
+        ? 'Confereicia - Visualização'
+        : 'Confereicia - Edição';
   }
 
   Future<void> show() async {
@@ -65,6 +65,15 @@ class ConferenciaPage {
               onPressed: _controller.onReconferirTudo,
               icon: const Icon(
                 BootstrapIcons.list_task,
+                color: Colors.white,
+                size: 33,
+              ),
+            ),
+            ButtonHeadForm(
+              title: 'Sobra de carrinho',
+              onPressed: () {},
+              icon: const Icon(
+                BootstrapIcons.exclamation_circle_fill,
                 color: Colors.white,
                 size: 33,
               ),
