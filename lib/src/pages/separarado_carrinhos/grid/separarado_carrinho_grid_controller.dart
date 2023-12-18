@@ -83,15 +83,17 @@ class SeparadoCarrinhoGridController extends GetxController {
 
     switch (item.situacao) {
       case ExpedicaoSituacaoModel.cancelada:
-        color = Colors.black;
+        color = Colors.red;
       case ExpedicaoSituacaoModel.separando:
+        color = Colors.lightBlue;
+      case ExpedicaoSituacaoModel.separado:
         color = Colors.green;
     }
 
     return Icon(
       size: 17,
       item.situacao != ExpedicaoSituacaoModel.cancelada &&
-              item.situacao != ExpedicaoSituacaoModel.separando
+              item.situacao != ExpedicaoSituacaoModel.separado
           ? Icons.edit
           : Icons.visibility,
       color: color,
@@ -105,6 +107,8 @@ class SeparadoCarrinhoGridController extends GetxController {
       case ExpedicaoSituacaoModel.cancelada:
         color = Colors.grey;
       case ExpedicaoSituacaoModel.separando:
+        color = Colors.lightBlue;
+      case ExpedicaoSituacaoModel.separado:
         color = Colors.grey;
     }
 
@@ -122,6 +126,10 @@ class SeparadoCarrinhoGridController extends GetxController {
       case ExpedicaoSituacaoModel.cancelada:
         color = Colors.grey;
       case ExpedicaoSituacaoModel.separando:
+        color = Colors.green;
+      case ExpedicaoSituacaoModel.separado:
+        color = Colors.grey;
+      case ExpedicaoSituacaoModel.emAndamento:
         color = Colors.green;
     }
 

@@ -91,7 +91,7 @@ class ConferidoCarrinhoGridController extends GetxController {
 
     switch (item.situacao) {
       case ExpedicaoSituacaoModel.cancelada:
-        color = Colors.black;
+        color = Colors.red;
       case ExpedicaoSituacaoModel.conferido:
         color = Colors.green;
     }
@@ -130,7 +130,7 @@ class ConferidoCarrinhoGridController extends GetxController {
       case ExpedicaoSituacaoModel.cancelada:
         color = Colors.grey;
       case ExpedicaoSituacaoModel.conferido:
-        color = Colors.green;
+        color = Colors.grey;
     }
 
     return Icon(

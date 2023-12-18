@@ -27,6 +27,7 @@ import 'package:app_expedicao/src/service/produto_service.dart';
 class SeparacaoController extends GetxController {
   final RxBool _viewMode = false.obs;
 
+  // ignore: unused_field
   ExpedicaoCarrinhoPercursoModel? _carrinhoPercurso;
   final ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta;
   final List<RepositoryEventListenerModel> _pageListerner = [];
@@ -143,7 +144,7 @@ class SeparacaoController extends GetxController {
 
   bool get viewMode {
     if (percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.cancelada ||
-        percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.separando) {
+        percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.separado) {
       _viewMode.value = true;
     }
 
@@ -468,6 +469,19 @@ class SeparacaoController extends GetxController {
           if (car.codEmpresa == percursoEstagioConsulta.codEmpresa &&
               car.codCarrinho == percursoEstagioConsulta.codCarrinho &&
               car.situacao == ExpedicaoSituacaoModel.cancelada) {
+            _viewMode.value = true;
+            update();
+
+            await ConfirmationDialogMessageWidget.show(
+              context: Get.context!,
+              message: 'Carrinho cancelado!',
+              detail: 'Cancelado pelo usuario: ${car.nomeUsuarioCancelamento}!',
+            );
+          }
+
+          if (car.codEmpresa == percursoEstagioConsulta.codEmpresa &&
+              car.codCarrinho == percursoEstagioConsulta.codCarrinho &&
+              car.situacao == ExpedicaoSituacaoModel.separando) {
             _viewMode.value = true;
             update();
 

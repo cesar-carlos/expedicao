@@ -83,7 +83,7 @@ class SeparadoCarrinhosController extends GetxController {
               el.codCarrinho == item.codCarrinho)
           .toList();
 
-      if (item.situacao == ExpedicaoSituacaoModel.separando) {
+      if (item.situacao == ExpedicaoSituacaoModel.separado) {
         await ConfirmationDialogMessageWidget.show(
           context: Get.context!,
           message: 'Carrinho já finalizado!',
@@ -121,7 +121,11 @@ class SeparadoCarrinhosController extends GetxController {
 
       if (confirmation != null && confirmation) {
         final carrinho = await CarrinhoServices().select(
-          '''CodEmpresa = ${item.codEmpresa} AND CodCarrinho = ${item.codCarrinho}''',
+          '''
+          CodEmpresa = ${item.codEmpresa} 
+            AND CodCarrinho = ${item.codCarrinho}
+           
+           ''',
         );
 
         final carrinhoPercursoEstagio =
@@ -135,18 +139,20 @@ class SeparadoCarrinhosController extends GetxController {
             ''');
 
         if (carrinho.isEmpty || carrinhoPercursoEstagio.isEmpty) return;
-        final newCarrinho = carrinho.last.copyWith(
-          situacao: ExpedicaoCarrinhoSituacaoModel.emSeparacao,
-        );
+        final newCarrinho = carrinho.last
+            .copyWith(situacao: ExpedicaoCarrinhoSituacaoModel.separado);
+
+        final newCarrinhoPercursoEstagio = carrinhoPercursoEstagio.last
+            .copyWith(situacao: ExpedicaoCarrinhoSituacaoModel.separado);
 
         await CarrinhoPercursoEstagioFinalizarService(
           carrinho: newCarrinho,
-          carrinhoPercursoEstagio: carrinhoPercursoEstagio.last,
+          carrinhoPercursoEstagio: newCarrinhoPercursoEstagio,
         ).execute();
 
         await SeparacaoFinalizarItemService().updateAll(itensSeparacaoCarrinho);
         final newCarrinhoPercursoConsulta = item.copyWith(
-          situacao: ExpedicaoSituacaoModel.separando,
+          situacao: ExpedicaoSituacaoModel.separado,
         );
 
         _separadoCarrinhoGridController.updateGrid(newCarrinhoPercursoConsulta);
@@ -166,7 +172,7 @@ class SeparadoCarrinhosController extends GetxController {
         return;
       }
 
-      if (item.situacao == ExpedicaoSituacaoModel.separando) {
+      if (item.situacao == ExpedicaoSituacaoModel.separado) {
         await ConfirmationDialogMessageWidget.show(
           context: Get.context!,
           message: 'Carrinho já finalizado!',
@@ -211,13 +217,14 @@ class SeparadoCarrinhosController extends GetxController {
           situacao: ExpedicaoSituacaoModel.cancelada,
         );
 
-        SeparacaoCancelarItemService(
+        await SeparacaoCancelarItemService(
           percursoEstagioConsulta: carrinhoPercursoConsulta,
         ).cancelarAllItensCart();
 
         final newSepararItens = await _separarServices.itensSaparar();
         _separadoCarrinhoGridController.updateGrid(carrinhoPercursoConsulta);
         _separarGridController.updateAllGrid(newSepararItens);
+
         _separadoCarrinhoGridController.update();
         _separarGridController.update();
       }

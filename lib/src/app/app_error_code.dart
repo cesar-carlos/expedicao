@@ -7,7 +7,9 @@ class AppErrorCode {
   static const int databaseError = 4;
 
   static const int socketDesconected = 5;
-  static const int separarEncontrado = 6;
+  static const int separarNaoEncontrado = 6;
   static const int separarEstagioNaoEncontrado = 7;
   static const int erroCriarExpedicaoConferir = 8;
+
+  static const int confeirNaoEncontrado = 9;
 }

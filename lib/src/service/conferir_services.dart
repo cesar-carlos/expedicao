@@ -50,8 +50,8 @@ class ConferirServices {
   Future<bool> _existsPercurso() async {
     final params = ''' 
         CodEmpresa = ${conferir.codEmpresa} 
-      AND Origem = '$origem' 
-      AND CodOrigem = ${conferir.codConferir} 
+      AND Origem = '${conferir.origem}' 
+      AND CodOrigem = ${conferir.codOrigem} 
       AND Situacao <> '${ExpedicaoSituacaoModel.cancelada}' 
       
       ''';

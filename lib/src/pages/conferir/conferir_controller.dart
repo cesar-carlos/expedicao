@@ -1,24 +1,31 @@
 import 'package:get/get.dart';
+import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_expedicao/src/service/conferir_services.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_model.dart';
+import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/pages/carrinho/carrinho_controller.dart';
 import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_consulta_model.dart';
+import 'package:app_expedicao/src/model/expedicao_conferir_item_consulta_model.dart';
 import 'package:app_expedicao/src/pages/conferir/widget/conferir_obs_dialog_widget.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_adicionar_service.dart';
+import 'package:app_expedicao/src/repository/expedicao_conferir_item/conferir_item_event_repository.dart';
+import 'package:app_expedicao/src/repository/expedicao_conferir/conferir_event_repository.dart';
 import 'package:app_expedicao/src/pages/conferido_carrinhos/conferido_carrinhos_controller.dart';
 import 'package:app_expedicao/src/pages/carrinho/widget/adicionar_carrinho_dialog_widget.dart';
 import 'package:app_expedicao/src/pages/conferir_carrinhos/conferir_carrinhos_controller.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
+import 'package:app_expedicao/src/pages/common/widget/loading_sever_dialog.widget.dart';
+import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
+import 'package:app_expedicao/src/service/conferencia_finalizar_service.dart';
 import 'package:app_expedicao/src/service/conferir_consultas_services.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_model.dart';
-import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/app/app_socket.config.dart';
 
 class ConferirController extends GetxController {
@@ -27,16 +34,16 @@ class ConferirController extends GetxController {
   late AppSocketConfig _socketClient;
 
   late String _expedicaoSituacao;
-  //late ConferirGridController _conferirGridController;
+
+  late TextEditingController historicoController;
+  late TextEditingController observacaoController;
+
   late ConferirConsultaServices _conferirConsultaServices;
   late ConferirCarrinhosController _conferirCarrinhosController;
   late ConferidoCarrinhosController _conferidoCarrinhosController;
 
   late ExpedicaoConferirConsultaModel _conferirConsulta;
   late ProcessoExecutavelModel _processoExecutavel;
-
-  late TextEditingController historicoController;
-  late TextEditingController observacaoController;
 
   ExpedicaoCarrinhoPercursoModel? _carrinhoPercurso;
 
@@ -54,7 +61,7 @@ class ConferirController extends GetxController {
 
   String get expedicaoSituacaoModel => _expedicaoSituacao;
   String get expedicaoSituacaoDisplay {
-    if (_expedicaoSituacao == ExpedicaoSituacaoModel.separando) {
+    if (_expedicaoSituacao == ExpedicaoSituacaoModel.conferido) {
       return ExpedicaoSituacaoModel.finalizada;
     }
 
@@ -70,9 +77,8 @@ class ConferirController extends GetxController {
     _conferirConsulta = Get.find<ExpedicaoConferirConsultaModel>();
     _conferirCarrinhosController = Get.find<ConferirCarrinhosController>();
     _conferidoCarrinhosController = Get.find<ConferidoCarrinhosController>();
-    //_conferirGridController = Get.find<ConferirGridController>();
-    _expedicaoSituacao = _conferirConsulta.situacao;
 
+    _expedicaoSituacao = _conferirConsulta.situacao;
     _conferirConsultaServices = ConferirConsultaServices(
       codEmpresa: _processoExecutavel.codEmpresa,
       codConferir: _processoExecutavel.codOrigem,
@@ -80,16 +86,6 @@ class ConferirController extends GetxController {
 
     historicoController = TextEditingController();
     observacaoController = TextEditingController();
-
-    // historicoController.addListener(() {
-    //   final txt = historicoController.text.toUpperCase();
-    //   historicoController.value = historicoController.value.copyWith(
-    //     text: txt,
-    //     selection:
-    //         TextSelection(baseOffset: txt.length, extentOffset: txt.length),
-    //     composing: TextRange.empty,
-    //   );
-    // });
   }
 
   @override
@@ -106,7 +102,6 @@ class ConferirController extends GetxController {
     _removeAllliteners();
     historicoController.dispose();
     observacaoController.dispose();
-
     super.onClose();
   }
 
@@ -132,18 +127,21 @@ class ConferirController extends GetxController {
     }
   }
 
-  // Future<void> iniciarConferencia() async {
-  //   _iniciada = !_iniciada;
-  //   if (_carrinhoPercurso == null) {
-  //     await _fillCarrinhoPercurso();
-  //   }
+  Future<void> iniciarConferencia() async {
+    _iniciada = !_iniciada;
+    if (_carrinhoPercurso == null) {
+      await _fillCarrinhoPercurso();
+    }
 
-  //   final conferir = ExpedicaoConferirModel.fromConsulta(_conferirConsulta);
-  //   await ConferirServices(conferir).iniciar();
-  //   _expedicaoSituacao = ExpedicaoSituacaoModel.emAndamento;
-  //   _conferirConsulta.situacao = ExpedicaoSituacaoModel.emAndamento;
-  //   update();
-  // }
+    final conferir = ExpedicaoConferirModel.fromConsulta(_conferirConsulta);
+    await ConferirServices(conferir).iniciar();
+
+    if (_expedicaoSituacao != ExpedicaoSituacaoModel.emAndamento) {
+      _expedicaoSituacao = ExpedicaoSituacaoModel.emAndamento;
+      _conferirConsulta.situacao = ExpedicaoSituacaoModel.emAndamento;
+      update();
+    }
+  }
 
   Future<void> pausarConferencia() async {
     await ConfirmationDialogMessageWidget.show(
@@ -154,11 +152,14 @@ class ConferirController extends GetxController {
   }
 
   Future<void> adicionarCarrinho() async {
+    await iniciarConferencia();
+
     if (_expedicaoSituacao == ExpedicaoSituacaoModel.conferido) {
       await ConfirmationDialogMessageWidget.show(
         context: Get.context!,
-        message: 'Separação já finalizada!',
-        detail: 'Separação já finalizada, não é possível finalizar novamente.',
+        message: 'Conferencia já finalizada!',
+        detail:
+            'Conferencia já finalizada, não é possível finalizar novamente.',
       );
 
       return;
@@ -212,112 +213,107 @@ class ConferirController extends GetxController {
   }
 
   Future<void> finalizarSeparacao() async {
-    // final isComplete = await _conferirConsultaServices.isComplete();
-    // final existsOpenCart = await _conferirConsultaServices.existsOpenCart();
+    final isComplete = await _conferirConsultaServices.isComplete();
+    final existsOpenCart = await _conferirConsultaServices.existsOpenCart();
 
-    // if (_expedicaoSituacao == ExpedicaoSituacaoModel.separando) {
-    //   await ConfirmationDialogMessageWidget.show(
-    //     context: Get.context!,
-    //     message: 'Separação já finalizada!',
-    //     detail: 'Separação já finalizada, não é possível finalizar novamente.',
-    //   );
+    if (_expedicaoSituacao == ExpedicaoSituacaoModel.conferido) {
+      await ConfirmationDialogMessageWidget.show(
+        context: Get.context!,
+        message: 'Conferencia já finalizada!',
+        detail:
+            'Conferencia já finalizada, não é possível finalizar novamente.',
+      );
 
-    //   return;
-    // }
+      return;
+    }
 
-    // if (!isComplete) {
-    //   await ConfirmationDialogMessageWidget.show(
-    //     context: Get.context!,
-    //     message: 'Separação não finalizada!',
-    //     detail: 'Separação não finalizada, existem itens não separados.',
-    //   );
+    if (!isComplete) {
+      await ConfirmationDialogMessageWidget.show(
+        context: Get.context!,
+        message: 'Conferencia não finalizada!',
+        detail: 'Conferencia não finalizada, existem itens não separados.',
+      );
 
-    //   return;
-    // }
+      return;
+    }
 
-    // if (existsOpenCart) {
-    //   await ConfirmationDialogMessageWidget.show(
-    //     context: Get.context!,
-    //     message: 'Separação não finalizada!',
-    //     detail: 'Separação não finalizada, existem carrinhos em aberto.',
-    //   );
+    if (existsOpenCart) {
+      await ConfirmationDialogMessageWidget.show(
+        context: Get.context!,
+        message: 'Conferencia não finalizada!',
+        detail: 'Conferencia não finalizada, existem carrinhos em aberto.',
+      );
 
-    //   return;
-    // }
+      return;
+    }
 
-    // final bool? confirmation = await ConfirmationDialogWidget.show(
-    //   context: Get.context!,
-    //   message: 'Deseja realmente finalizar?',
-    //   detail: 'Não será possível adicionar ou alterar mais os carrinhos.',
-    // );
+    final bool? confirmation = await ConfirmationDialogWidget.show(
+      context: Get.context!,
+      message: 'Deseja realmente finalizar?',
+      detail: 'Não será possível adicionar ou alterar mais os carrinhos.',
+    );
 
-    //if (confirmation != null && confirmation) {
-    // await ConferirFinalizarService(
-    //   codEmpresa: _conferirConsulta.codEmpresa,
-    //   codConferirEstoque: _conferirConsulta.codConferirEstoque,
-    // ).execute();
+    if (confirmation != null && confirmation) {
+      await ConferirFinalizarService(
+        codEmpresa: _conferirConsulta.codEmpresa,
+        codConferir: _conferirConsulta.codConferir,
+      ).execute();
 
-    // _expedicaoSituacao = ExpedicaoSituacaoModel.separando;
-    // _conferirConsulta.situacao = ExpedicaoSituacaoModel.separando;
-
-    // //ADD CARRINHO PERCURSO CONFERIR
-    // await ConferirSeparacaoAdicionarService(
-    //   carrinhoPercurso: _carrinhoPercurso!,
-    // ).execute();
-
-    // update();
-    //}
+      _expedicaoSituacao = ExpedicaoSituacaoModel.conferido;
+      _conferirConsulta.situacao = ExpedicaoSituacaoModel.conferido;
+      update();
+    }
   }
 
   _liteners() {
-    // const uuid = Uuid();
-    // final conferirEvent = ConferirEventRepository.instancia;
-    // final carrinhoPercursoEvent = ConferirItemEventRepository.instancia;
+    const uuid = Uuid();
+    final conferirEvent = ConferirEventRepository.instancia;
+    final carrinhoPercursoEvent = ConferirItemEventRepository.instancia;
 
-    // _socketClient.isConnect.listen((event) {
-    //   if (event) return;
-    //   LoadingSeverDialogWidget.show(
-    //     context: Get.context!,
-    //   );
-    // });
+    _socketClient.isConnect.listen((event) {
+      if (event) return;
+      LoadingSeverDialogWidget.show(
+        context: Get.context!,
+      );
+    });
 
-    // final conferirItemConsulta = RepositoryEventListenerModel(
-    //   id: uuid.v4(),
-    //   event: Event.update,
-    //   callback: (data) async {
-    //     for (var el in data.mutation) {
-    //       final item = ExpedicaoConferirItemConsultaModel.fromJson(el);
-    //       _conferirGridController.updateGrid(item);
-    //       _conferirGridController.update();
-    //     }
-    //   },
-    // );
+    final conferirItemConsulta = RepositoryEventListenerModel(
+      id: uuid.v4(),
+      event: Event.update,
+      callback: (data) async {
+        for (var el in data.mutation) {
+          final item = ExpedicaoConferirItemConsultaModel.fromJson(el);
+          // _conferirGridController.updateGrid(item);
+          // _conferirGridController.update();
+        }
+      },
+    );
 
-    // final conferir = RepositoryEventListenerModel(
-    //   id: uuid.v4(),
-    //   event: Event.update,
-    //   callback: (data) async {
-    //     for (var el in data.mutation) {
-    //       final item = ExpedicaoConferirModel.fromJson(el);
-    //       _expedicaoSituacao = item.situacao;
-    //       _conferirConsulta.situacao = item.situacao;
-    //       update();
-    //     }
-    //   },
-    // );
+    final conferir = RepositoryEventListenerModel(
+      id: uuid.v4(),
+      event: Event.update,
+      callback: (data) async {
+        for (var el in data.mutation) {
+          final item = ExpedicaoConferirModel.fromJson(el);
+          // _expedicaoSituacao = item.situacao;
+          // _conferirConsulta.situacao = item.situacao;
+          // update();
+        }
+      },
+    );
 
-    // _pageListerner.add(conferir);
-    // _pageListerner.add(conferirItemConsulta);
-    // carrinhoPercursoEvent.addListener(conferirItemConsulta);
-    // conferirEvent.addListener(conferir);
+    _pageListerner.add(conferir);
+    _pageListerner.add(conferirItemConsulta);
+    carrinhoPercursoEvent.addListener(conferirItemConsulta);
+    conferirEvent.addListener(conferir);
   }
 
   void _removeAllliteners() {
-    // final conferirEvent = ConferirEventRepository.instancia;
-    // final carrinhoPercursoEvent = ConferirItemEventRepository.instancia;
+    final conferirEvent = ConferirEventRepository.instancia;
+    final carrinhoPercursoEvent = ConferirItemEventRepository.instancia;
 
-    // conferirEvent.removeListeners(_pageListerner);
-    // carrinhoPercursoEvent.removeListeners(_pageListerner);
-    // _pageListerner.clear();
+    conferirEvent.removeListeners(_pageListerner);
+    carrinhoPercursoEvent.removeListeners(_pageListerner);
+    _pageListerner.clear();
   }
 }

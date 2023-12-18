@@ -60,7 +60,7 @@ class SepararController extends GetxController {
 
   String get expedicaoSituacaoModel => _expedicaoSituacao;
   String get expedicaoSituacaoDisplay {
-    if (_expedicaoSituacao == ExpedicaoSituacaoModel.separando) {
+    if (_expedicaoSituacao == ExpedicaoSituacaoModel.separado) {
       return ExpedicaoSituacaoModel.finalizada;
     }
 
@@ -158,7 +158,7 @@ class SepararController extends GetxController {
   }
 
   Future<void> adicionarCarrinho() async {
-    if (_expedicaoSituacao == ExpedicaoSituacaoModel.separando) {
+    if (_expedicaoSituacao == ExpedicaoSituacaoModel.separado) {
       await ConfirmationDialogMessageWidget.show(
         context: Get.context!,
         message: 'Separação já finalizada!',
@@ -222,7 +222,7 @@ class SepararController extends GetxController {
     final isComplete = await _separarConsultaServices.isComplete();
     final existsOpenCart = await _separarConsultaServices.existsOpenCart();
 
-    if (_expedicaoSituacao == ExpedicaoSituacaoModel.separando) {
+    if (_expedicaoSituacao == ExpedicaoSituacaoModel.separado) {
       await ConfirmationDialogMessageWidget.show(
         context: Get.context!,
         message: 'Separação já finalizada!',
@@ -264,8 +264,8 @@ class SepararController extends GetxController {
         codSepararEstoque: _separarConsulta.codSepararEstoque,
       ).execute();
 
-      _expedicaoSituacao = ExpedicaoSituacaoModel.separando;
-      _separarConsulta.situacao = ExpedicaoSituacaoModel.separando;
+      _expedicaoSituacao = ExpedicaoSituacaoModel.separado;
+      _separarConsulta.situacao = ExpedicaoSituacaoModel.separado;
 
       //ADD CARRINHO PERCURSO CONFERIR
       await ConferirSeparacaoAdicionarService(

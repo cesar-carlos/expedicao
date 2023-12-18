@@ -452,6 +452,10 @@ class ConferenciaController extends GetxController {
     }
   }
 
+  Future<void> onSobraCarrinho() async {
+    print('onSobraCarrinho');
+  }
+
   ExpedicaoConferirItemConsultaModel? _findItemConferirGrid(int codProduto) {
     final el = _conferirGridController.findCodProduto(codProduto);
     return el;

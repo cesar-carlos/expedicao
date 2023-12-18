@@ -64,6 +64,15 @@ class ConferirPage extends StatelessWidget {
                       ),
                     ),
                     ButtonHeadForm(
+                      title: 'Ajuste de carrinho',
+                      onPressed: () {}, //controller.onSobraCarrinho,
+                      icon: const Icon(
+                        BootstrapIcons.exclamation_circle_fill,
+                        color: Colors.white,
+                        size: 33,
+                      ),
+                    ),
+                    ButtonHeadForm(
                       title: 'Finalizar Conferencia',
                       onPressed: controller.finalizarSeparacao,
                       icon: const Icon(

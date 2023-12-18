@@ -69,15 +69,15 @@ class ConferenciaPage {
                 size: 33,
               ),
             ),
-            ButtonHeadForm(
-              title: 'Sobra de carrinho',
-              onPressed: () {},
-              icon: const Icon(
-                BootstrapIcons.exclamation_circle_fill,
-                color: Colors.white,
-                size: 33,
-              ),
-            ),
+            // ButtonHeadForm(
+            //   title: 'Sobra de carrinho',
+            //   onPressed: _controller.onSobraCarrinho,
+            //   icon: const Icon(
+            //     BootstrapIcons.exclamation_circle_fill,
+            //     color: Colors.white,
+            //     size: 33,
+            //   ),
+            // ),
           ],
         ),
 

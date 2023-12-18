@@ -21,7 +21,6 @@ class SepararFinalizarService {
     final paramsSeparar = '''
         CodEmpresa = $codEmpresa
       AND CodSepararEstoque = $codSepararEstoque
-      AND Situacao = '${ExpedicaoSituacaoModel.emAndamento}'
 
     ''';
 
@@ -33,17 +32,14 @@ class SepararFinalizarService {
 
     ''';
 
-    final separarEstoque = await separarRepository.select(
-      paramsSeparar,
-    );
+    final separarEstoque = await separarRepository.select(paramsSeparar);
 
-    final carrinhoPercurso = await carrinhoPercursoRepository.select(
-      paramsPercurso,
-    );
+    final carrinhoPercurso =
+        await carrinhoPercursoRepository.select(paramsPercurso);
 
     if (separarEstoque.isEmpty) {
       throw AppError(
-        AppErrorCode.separarEncontrado,
+        AppErrorCode.separarNaoEncontrado,
         'Separar não encontrado',
       );
     }
@@ -56,16 +52,9 @@ class SepararFinalizarService {
     }
 
     final separarFinalizada = separarEstoque.first.copyWith(
-      situacao: ExpedicaoSituacaoModel.separando,
+      situacao: ExpedicaoSituacaoModel.separado,
     );
 
-    // final percursoFinalizada = carrinhoPercurso.first.copyWith(
-    //   situacao: ExpedicaoSituacaoModel.separando,
-    //   dataFinalizacao: DateTime.now(),
-    //   horaFinalizacao: DateTime.now().toString().substring(11, 19),
-    // );
-
     await separarRepository.update(separarFinalizada);
-    //await carrinhoPercursoRepository.update(percursoFinalizada);
   }
 }

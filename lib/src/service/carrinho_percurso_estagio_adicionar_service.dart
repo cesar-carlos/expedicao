@@ -45,7 +45,7 @@ class CarrinhoPercursoEstagioAdicionarService {
       codOrigem: _processo.codOrigem,
       codPercursoEstagio: percurso?.codPercursoEstagio ?? 0,
       codCarrinho: carrinho.codCarrinho,
-      situacao: ExpedicaoSituacaoModel.emAndamento,
+      situacao: ExpedicaoSituacaoModel.conferindo,
       dataInicio: DateTime.now(),
       horaInicio: DateTime.now().toString().substring(11, 19),
       codUsuarioInicio: _processo.codUsuario,

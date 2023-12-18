@@ -77,6 +77,7 @@ class SepararConsultaServices {
       return el.situacao == ExpedicaoSituacaoModel.emAndamento;
     });
 
+    //print(carrinhosEmAndamento.map((e) => e.situacao).toList());
     if (carrinhosEmAndamento.isEmpty) return false;
     return true;
   }

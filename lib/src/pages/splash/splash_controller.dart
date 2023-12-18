@@ -33,8 +33,8 @@ class SplashController extends GetxController {
   _loading() async {
     _isLoad.value = true;
     await Future.delayed(const Duration(seconds: 1));
-
     _processoExecutavel = await _processoExecutavelService.executar();
+
     if (_processoExecutavel == null) {
       Get.offNamed(AppRouter.splashError, arguments: '0001');
       return;
@@ -50,6 +50,7 @@ class SplashController extends GetxController {
       _separarConsulta = await separarConsultaServices.separar();
       if (_separarConsulta == null) {
         Get.offNamed(AppRouter.splashError, arguments: '0002');
+
         return;
       }
     }

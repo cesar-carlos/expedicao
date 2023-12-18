@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:app_expedicao/src/service/conferencia_situacao_carrinho_service.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +8,7 @@ import 'package:app_expedicao/src/app/app_dialog.dart';
 import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
 import 'package:app_expedicao/src/pages/common/widget/message_dialog.widget.dart';
+import 'package:app_expedicao/src/service/conferencia_situacao_carrinho_service.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinhos/carrinho_consulta_repository.dart';
 import 'package:app_expedicao/src/pages/carrinho/view_model/carrinho_view_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_consulta_model.dart';
@@ -125,7 +125,7 @@ class CarrinhoController extends GetxController {
 
   FutureOr<String?> validCarrinhoSeparacao(
       ExpedicaoCarrinhoConsultaModel input) {
-    if (input.situacao == ExpedicaoCarrinhoSituacaoModel.liberado) {
+    if (input.situacao != ExpedicaoCarrinhoSituacaoModel.liberado) {
       return 'Carrinho não está liberado. Somente carrinhos liberados podem ser adicionados.';
     }
 
@@ -144,7 +144,9 @@ class CarrinhoController extends GetxController {
     }
 
     if (carrinhoConsulta.situacaoCarrinho !=
-        ExpedicaoCarrinhoSituacaoModel.emConferencia) {
+            ExpedicaoCarrinhoSituacaoModel.emConferencia &&
+        carrinhoConsulta.situacaoCarrinho !=
+            ExpedicaoCarrinhoSituacaoModel.separado) {
       return 'Carrinho com situação inválida. Situacao carrinho: ${carrinhoConsulta.situacaoCarrinho}';
     }
 

@@ -1,8 +1,10 @@
 import 'package:get/get.dart';
+import 'package:uuid/uuid.dart';
 
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/service/conferir_consultas_services.dart';
+import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
 import 'package:app_expedicao/src/pages/conferencia/conferencia_binding.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_consulta_model.dart';
 import 'package:app_expedicao/src/pages/conferencia/conferencia_controller.dart';
@@ -12,6 +14,7 @@ import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_finalizar_service.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
 import 'package:app_expedicao/src/pages/conferencia/grid/conferencia_carrinho_grid_controller.dart';
+import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_event_repository.dart';
 import 'package:app_expedicao/src/pages/conferido_carrinhos/grid/conferido_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_cancelar_service.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
@@ -258,53 +261,53 @@ class ConferidoCarrinhosController extends GetxController {
   }
 
   _liteners() {
-    //   final carrinhoPercursoEvent = CarrinhoPercursoEventRepository.instancia;
-    //   const uuid = Uuid();
+    final carrinhoPercursoEvent = CarrinhoPercursoEventRepository.instancia;
+    const uuid = Uuid();
 
-    //   carrinhoPercursoEvent.addListener(
-    //     RepositoryEventListenerModel(
-    //       id: uuid.v4(),
-    //       event: Event.insert,
-    //       callback: (data) async {
-    //         for (var el in data.mutation) {
-    //           final car = ExpedicaoCarrinhoPercursoConsultaModel.fromJson(el);
-    //           if (car.codEmpresa == _processoExecutavel.codEmpresa &&
-    //               car.origem == _processoExecutavel.origem &&
-    //               car.codOrigem == _processoExecutavel.codOrigem) {
-    //             _conferidoCarrinhoGridController.addGrid(car);
-    //             _conferidoCarrinhoGridController.update();
-    //           }
-    //         }
-    //       },
-    //     ),
-    //   );
+    carrinhoPercursoEvent.addListener(
+      RepositoryEventListenerModel(
+        id: uuid.v4(),
+        event: Event.insert,
+        callback: (data) async {
+          for (var el in data.mutation) {
+            final car = ExpedicaoCarrinhoPercursoConsultaModel.fromJson(el);
+            if (car.codEmpresa == _processoExecutavel.codEmpresa &&
+                car.origem == _processoExecutavel.origem &&
+                car.codOrigem == _processoExecutavel.codOrigem) {
+              _conferidoCarrinhoGridController.addGrid(car);
+              _conferidoCarrinhoGridController.update();
+            }
+          }
+        },
+      ),
+    );
 
-    //   carrinhoPercursoEvent.addListener(
-    //     RepositoryEventListenerModel(
-    //       id: uuid.v4(),
-    //       event: Event.update,
-    //       callback: (data) async {
-    //         for (var el in data.mutation) {
-    //           final car = ExpedicaoCarrinhoPercursoConsultaModel.fromJson(el);
-    //           _conferidoCarrinhoGridController.updateGrid(car);
-    //           _conferidoCarrinhoGridController.update();
-    //         }
-    //       },
-    //     ),
-    //   );
+    carrinhoPercursoEvent.addListener(
+      RepositoryEventListenerModel(
+        id: uuid.v4(),
+        event: Event.update,
+        callback: (data) async {
+          for (var el in data.mutation) {
+            final car = ExpedicaoCarrinhoPercursoConsultaModel.fromJson(el);
+            _conferidoCarrinhoGridController.updateGrid(car);
+            _conferidoCarrinhoGridController.update();
+          }
+        },
+      ),
+    );
 
-    //   carrinhoPercursoEvent.addListener(
-    //     RepositoryEventListenerModel(
-    //       id: uuid.v4(),
-    //       event: Event.delete,
-    //       callback: (data) async {
-    //         for (var el in data.mutation) {
-    //           final car = ExpedicaoCarrinhoPercursoConsultaModel.fromJson(el);
-    //           _conferidoCarrinhoGridController.removeGrid(car);
-    //           _conferidoCarrinhoGridController.update();
-    //         }
-    //       },
-    //     ),
-    //   );
+    carrinhoPercursoEvent.addListener(
+      RepositoryEventListenerModel(
+        id: uuid.v4(),
+        event: Event.delete,
+        callback: (data) async {
+          for (var el in data.mutation) {
+            final car = ExpedicaoCarrinhoPercursoConsultaModel.fromJson(el);
+            _conferidoCarrinhoGridController.removeGrid(car);
+            _conferidoCarrinhoGridController.update();
+          }
+        },
+      ),
+    );
   }
 }

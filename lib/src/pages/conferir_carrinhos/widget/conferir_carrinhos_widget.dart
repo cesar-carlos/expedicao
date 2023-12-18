@@ -21,10 +21,10 @@ class ConferirCarrinhosWidget extends StatelessWidget {
             Container(
               width: size.width,
               color: Theme.of(context).primaryColor,
-              child: const Center(
+              child: Center(
                 child: Text(
-                  'CONFERIR CARRINHOS',
-                  style: TextStyle(
+                  'CONFERENCIA CARRINHOS ${controller.expedicaoSituacaoDisplay}',
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 17,
                     fontWeight: FontWeight.bold,

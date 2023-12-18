@@ -25,7 +25,7 @@ class ConferirSeparacaoAdicionarService {
         CodEmpresa = ${carrinhoPercurso.codEmpresa}
       AND CodSepararEstoque = ${carrinhoPercurso.codOrigem}
       AND CodCarrinhoPercurso = ${carrinhoPercurso.codCarrinhoPercurso}
-      AND Situacao = '${ExpedicaoSituacaoModel.separando}'
+      AND Situacao = '${ExpedicaoSituacaoModel.separado}'
    
     ''';
 
