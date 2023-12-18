@@ -11,6 +11,7 @@ import 'package:app_expedicao/src/model/expedicao_conferir_item_consulta_model.d
 import 'package:app_expedicao/src/model/expedicao_conferencia_item_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
 import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog.widget.dart';
+import 'package:app_expedicao/src/repository/expedicao_conferir_item/conferir_item_event_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_conferencia_item/conferencia_item_event_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_event_repository.dart';
 import 'package:app_expedicao/src/pages/conferencia/grid/conferencia_carrinho_grid_controller.dart';
@@ -452,9 +453,7 @@ class ConferenciaController extends GetxController {
     }
   }
 
-  Future<void> onSobraCarrinho() async {
-    print('onSobraCarrinho');
-  }
+  Future<void> onSobraCarrinho() async {}
 
   ExpedicaoConferirItemConsultaModel? _findItemConferirGrid(int codProduto) {
     final el = _conferirGridController.findCodProduto(codProduto);
@@ -465,24 +464,44 @@ class ConferenciaController extends GetxController {
     const uuid = Uuid();
     final carrinhoPercursoEvent = CarrinhoPercursoEventRepository.instancia;
     final conferenciaItemEvent = ConferenciaItemEventRepository.instancia;
+    final conferirItemEvent = ConferirItemEventRepository.instancia;
 
     final updateCarrinhoPercurso = RepositoryEventListenerModel(
       id: uuid.v4(),
       event: Event.update,
       callback: (data) async {
         for (var el in data.mutation) {
-          final car = ExpedicaoCarrinhoPercursoConsultaModel.fromJson(el);
-          if (car.codEmpresa == percursoEstagioConsulta.codEmpresa &&
-              car.codCarrinho == percursoEstagioConsulta.codCarrinho &&
-              car.situacao == ExpedicaoSituacaoModel.cancelada) {
+          final item = ExpedicaoCarrinhoPercursoConsultaModel.fromJson(el);
+          if (item.codEmpresa == percursoEstagioConsulta.codEmpresa &&
+              item.codCarrinho == percursoEstagioConsulta.codCarrinho &&
+              item.situacao == ExpedicaoSituacaoModel.cancelada) {
             _viewMode.value = true;
             update();
 
             await ConfirmationDialogMessageWidget.show(
               context: Get.context!,
               message: 'Carrinho cancelado!',
-              detail: 'Cancelado pelo usuario: ${car.nomeUsuarioCancelamento}!',
+              detail:
+                  'Cancelado pelo usuario: ${item.nomeUsuarioCancelamento}!',
             );
+          }
+        }
+      },
+    );
+
+    final updateConferirItem = RepositoryEventListenerModel(
+      id: uuid.v4(),
+      event: Event.update,
+      callback: (data) async {
+        for (var el in data.mutation) {
+          final item = ExpedicaoConferirItemConsultaModel.fromJson(el);
+          if (item.codEmpresa == percursoEstagioConsulta.codEmpresa &&
+              ExpedicaoOrigemModel.conferencia ==
+                  percursoEstagioConsulta.origem &&
+              item.codConferir == percursoEstagioConsulta.codOrigem &&
+              item.codCarrinho == percursoEstagioConsulta.codCarrinho) {
+            _conferirGridController.updateGrid(item);
+            _conferirGridController.update();
           }
         }
       },
@@ -493,13 +512,31 @@ class ConferenciaController extends GetxController {
       event: Event.insert,
       callback: (data) async {
         for (var el in data.mutation) {
-          final res = ExpedicaConferenciaItemConsultaModel.fromJson(el);
-          if (res.codEmpresa == percursoEstagioConsulta.codEmpresa &&
+          final item = ExpedicaConferenciaItemConsultaModel.fromJson(el);
+          if (item.codEmpresa == percursoEstagioConsulta.codEmpresa &&
               ExpedicaoOrigemModel.conferencia ==
                   percursoEstagioConsulta.origem &&
-              res.codConferir == percursoEstagioConsulta.codOrigem &&
-              res.codCarrinho == percursoEstagioConsulta.codCarrinho) {
-            _conferenciaGridController.addGrid(res);
+              item.codConferir == percursoEstagioConsulta.codOrigem &&
+              item.codCarrinho == percursoEstagioConsulta.codCarrinho) {
+            _conferenciaGridController.addGrid(item);
+            _conferenciaGridController.update();
+          }
+        }
+      },
+    );
+
+    final updateConferenciaItem = RepositoryEventListenerModel(
+      id: uuid.v4(),
+      event: Event.update,
+      callback: (data) async {
+        for (var el in data.mutation) {
+          final item = ExpedicaConferenciaItemConsultaModel.fromJson(el);
+          if (item.codEmpresa == percursoEstagioConsulta.codEmpresa &&
+              ExpedicaoOrigemModel.conferencia ==
+                  percursoEstagioConsulta.origem &&
+              item.codConferir == percursoEstagioConsulta.codOrigem &&
+              item.codCarrinho == percursoEstagioConsulta.codCarrinho) {
+            _conferenciaGridController.addGrid(item);
             _conferenciaGridController.update();
           }
         }
@@ -511,27 +548,34 @@ class ConferenciaController extends GetxController {
       event: Event.delete,
       callback: (data) async {
         for (var el in data.mutation) {
-          final sep = ExpedicaConferenciaItemConsultaModel.fromJson(el);
-          _conferenciaGridController.removeGrid(sep);
+          final item = ExpedicaConferenciaItemConsultaModel.fromJson(el);
+          _conferenciaGridController.removeGrid(item);
           _conferenciaGridController.update();
         }
       },
     );
 
+    conferirItemEvent.addListener(updateConferirItem);
+
     carrinhoPercursoEvent.addListener(updateCarrinhoPercurso);
     conferenciaItemEvent.addListener(insertConferenciaItem);
+    conferenciaItemEvent.addListener(updateConferenciaItem);
     conferenciaItemEvent.addListener(deleteConferenciaItem);
 
     _pageListerner.add(updateCarrinhoPercurso);
+    _pageListerner.add(updateConferenciaItem);
     _pageListerner.add(insertConferenciaItem);
     _pageListerner.add(deleteConferenciaItem);
+    _pageListerner.add(updateConferirItem);
   }
 
   void _removeliteners() {
     final carrinhoPercursoEvent = CarrinhoPercursoEventRepository.instancia;
     final conferenciaItemEvent = ConferenciaItemEventRepository.instancia;
+    final conferirItemEvent = ConferirItemEventRepository.instancia;
 
     carrinhoPercursoEvent.removeListeners(_pageListerner);
     conferenciaItemEvent.removeListeners(_pageListerner);
+    conferirItemEvent.removeListeners(_pageListerner);
   }
 }
