@@ -30,6 +30,7 @@ import 'package:app_expedicao/src/service/carrinho_services.dart';
 class ConferidoCarrinhosController extends GetxController {
   late ProcessoExecutavelModel _processoExecutavel;
 
+  // ignore: unused_field
   late ExpedicaoConferirConsultaModel _conferirConsulta;
   late ConferidoCarrinhoGridController _conferidoCarrinhoGridController;
 

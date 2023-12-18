@@ -1,4 +1,3 @@
-import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
@@ -19,6 +18,7 @@ class ConferirCarrinhosController extends GetxController {
   late ProcessoExecutavelModel _processoExecutavel;
   final List<RepositoryEventListenerModel> _pageListerner = [];
 
+  // ignore: unused_field
   late ConferirConsultaServices _conferirServices;
   late ConferirCarrinhoGridController _conferirCarrinhoGridController;
   late ExpedicaoConferirConsultaModel _conferirConsulta;
@@ -80,7 +80,6 @@ class ConferirCarrinhosController extends GetxController {
   _liteners() {
     const uuid = Uuid();
     final carrinhoEvent = CarrinhoEventRepository.instancia;
-    final carrinhoPercursoEvent = CarrinhoPercursoEventRepository.instancia;
     final conferirEventRepository = ConferirEventRepository.instancia;
 
     carrinhoEvent.addListener(RepositoryEventListenerModel(
@@ -99,52 +98,6 @@ class ConferirCarrinhosController extends GetxController {
         }
       },
     ));
-
-    carrinhoPercursoEvent.addListener(
-      RepositoryEventListenerModel(
-        id: uuid.v4(),
-        event: Event.insert,
-        callback: (data) async {
-          for (var el in data.mutation) {
-            final item = ExpedicaoCarrinhoPercursoConsultaModel.fromJson(el);
-            if (item.codEmpresa == _processoExecutavel.codEmpresa &&
-                item.origem == _processoExecutavel.origem &&
-                item.codOrigem == _processoExecutavel.codOrigem) {
-              // _conferirCarrinhoGridController.addGrid(item);
-              // _conferirCarrinhoGridController.update();
-            }
-          }
-        },
-      ),
-    );
-
-    carrinhoPercursoEvent.addListener(
-      RepositoryEventListenerModel(
-        id: uuid.v4(),
-        event: Event.update,
-        callback: (data) async {
-          for (var el in data.mutation) {
-            final item = ExpedicaoCarrinhoPercursoConsultaModel.fromJson(el);
-            //_conferirCarrinhoGridController.updateGrid(item);
-            //_conferirCarrinhoGridController.update();
-          }
-        },
-      ),
-    );
-
-    carrinhoPercursoEvent.addListener(
-      RepositoryEventListenerModel(
-        id: uuid.v4(),
-        event: Event.delete,
-        callback: (data) async {
-          for (var el in data.mutation) {
-            final item = ExpedicaoCarrinhoPercursoConsultaModel.fromJson(el);
-            //_conferirCarrinhoGridController.removeGrid(item);
-            // _conferirCarrinhoGridController.update();
-          }
-        },
-      ),
-    );
 
     conferirEventRepository.addListener(
       RepositoryEventListenerModel(

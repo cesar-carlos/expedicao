@@ -8,10 +8,8 @@ import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/pages/carrinho/carrinho_controller.dart';
 import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_consulta_model.dart';
-import 'package:app_expedicao/src/model/expedicao_conferir_item_consulta_model.dart';
 import 'package:app_expedicao/src/pages/conferir/widget/conferir_obs_dialog_widget.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_adicionar_service.dart';
-import 'package:app_expedicao/src/repository/expedicao_conferir_item/conferir_item_event_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_conferir/conferir_event_repository.dart';
 import 'package:app_expedicao/src/pages/conferido_carrinhos/conferido_carrinhos_controller.dart';
 import 'package:app_expedicao/src/pages/carrinho/widget/adicionar_carrinho_dialog_widget.dart';
@@ -134,11 +132,11 @@ class ConferirController extends GetxController {
     }
 
     final conferir = ExpedicaoConferirModel.fromConsulta(_conferirConsulta);
-    await ConferirServices(conferir).iniciar();
+    _expedicaoSituacao = conferir.situacao;
 
-    if (_expedicaoSituacao != ExpedicaoSituacaoModel.emAndamento) {
-      _expedicaoSituacao = ExpedicaoSituacaoModel.emAndamento;
+    if (_expedicaoSituacao != ExpedicaoSituacaoModel.conferido) {
       _conferirConsulta.situacao = ExpedicaoSituacaoModel.emAndamento;
+      await ConferirServices(conferir).iniciar();
       update();
     }
   }
@@ -268,7 +266,6 @@ class ConferirController extends GetxController {
   _liteners() {
     const uuid = Uuid();
     final conferirEvent = ConferirEventRepository.instancia;
-    final carrinhoPercursoEvent = ConferirItemEventRepository.instancia;
 
     _socketClient.isConnect.listen((event) {
       if (event) return;
@@ -277,43 +274,27 @@ class ConferirController extends GetxController {
       );
     });
 
-    final conferirItemConsulta = RepositoryEventListenerModel(
-      id: uuid.v4(),
-      event: Event.update,
-      callback: (data) async {
-        for (var el in data.mutation) {
-          final item = ExpedicaoConferirItemConsultaModel.fromJson(el);
-          // _conferirGridController.updateGrid(item);
-          // _conferirGridController.update();
-        }
-      },
-    );
-
     final conferir = RepositoryEventListenerModel(
       id: uuid.v4(),
       event: Event.update,
       callback: (data) async {
         for (var el in data.mutation) {
           final item = ExpedicaoConferirModel.fromJson(el);
-          // _expedicaoSituacao = item.situacao;
-          // _conferirConsulta.situacao = item.situacao;
-          // update();
+          _expedicaoSituacao = item.situacao;
+          _conferirConsulta.situacao = item.situacao;
+          update();
         }
       },
     );
 
     _pageListerner.add(conferir);
-    _pageListerner.add(conferirItemConsulta);
-    carrinhoPercursoEvent.addListener(conferirItemConsulta);
     conferirEvent.addListener(conferir);
   }
 
   void _removeAllliteners() {
     final conferirEvent = ConferirEventRepository.instancia;
-    final carrinhoPercursoEvent = ConferirItemEventRepository.instancia;
 
     conferirEvent.removeListeners(_pageListerner);
-    carrinhoPercursoEvent.removeListeners(_pageListerner);
     _pageListerner.clear();
   }
 }

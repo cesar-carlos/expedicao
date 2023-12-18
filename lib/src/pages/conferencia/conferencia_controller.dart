@@ -28,11 +28,13 @@ import 'package:app_expedicao/src/service/produto_service.dart';
 class ConferenciaController extends GetxController {
   final RxBool _viewMode = false.obs;
 
+  // ignore: unused_field
   ExpedicaoCarrinhoPercursoModel? _carrinhoPercurso;
   final ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta;
   final List<RepositoryEventListenerModel> _pageListerner = [];
 
   late ProdutoService _produtoService;
+  // ignore: unused_field
   late ProcessoExecutavelModel _processoExecutavel;
 
   late ConferirGridController _conferirGridController;
@@ -130,6 +132,7 @@ class ConferenciaController extends GetxController {
 
   Future<void> _fillGridConferirItens() async {
     final conferirItens = await _conferirConsultasServices.itensConferir();
+
     final conferirItensCarrinho = conferirItens
         .where((el) =>
             el.codCarrinhoPercurso ==
@@ -147,7 +150,7 @@ class ConferenciaController extends GetxController {
         .where((el) =>
             el.codCarrinhoPercurso ==
                 percursoEstagioConsulta.codCarrinhoPercurso &&
-            el.codCarrinho == percursoEstagioConsulta.codCarrinho)
+            el.itemCarrinhoPercurso == percursoEstagioConsulta.item)
         .toList();
 
     _conferenciaGridController.addAllGrid(conferidoItensCarrinho);
