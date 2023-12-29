@@ -150,8 +150,6 @@ class ConferirController extends GetxController {
   }
 
   Future<void> adicionarCarrinho() async {
-    await iniciarConferencia();
-
     if (_expedicaoSituacao == ExpedicaoSituacaoModel.conferido) {
       await ConfirmationDialogMessageWidget.show(
         context: Get.context!,
@@ -163,6 +161,17 @@ class ConferirController extends GetxController {
       return;
     }
 
+    if (_expedicaoSituacao == ExpedicaoSituacaoModel.embalando) {
+      await ConfirmationDialogMessageWidget.show(
+        context: Get.context!,
+        message: 'Conferencia já embalada!',
+        detail: 'Conferencia já embalada, não é possível finalizar novamente.',
+      );
+
+      return;
+    }
+
+    await iniciarConferencia();
     final carrinhoController = CarrinhoController();
     final dialog = AdicionarCarrinhoDialogWidget(carrinhoController);
     final carrinhoConsulta = await dialog.show();
@@ -220,6 +229,16 @@ class ConferirController extends GetxController {
         message: 'Conferencia já finalizada!',
         detail:
             'Conferencia já finalizada, não é possível finalizar novamente.',
+      );
+
+      return;
+    }
+
+    if (_expedicaoSituacao == ExpedicaoSituacaoModel.embalando) {
+      await ConfirmationDialogMessageWidget.show(
+        context: Get.context!,
+        message: 'Conferencia já embalada!',
+        detail: 'Conferencia já embalada, não é possível finalizar novamente.',
       );
 
       return;

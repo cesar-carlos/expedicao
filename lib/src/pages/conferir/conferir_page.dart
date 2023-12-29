@@ -30,9 +30,6 @@ class ConferirPage extends StatelessWidget {
                       title: controller.iniciada
                           ? 'Pausar Conferencia'
                           : 'Iniciar Conferencia',
-                      // onPressed: !controller.iniciada
-                      //     ? controller.iniciarConferencia
-                      //     : controller.pausarConferencia
                       icon: controller.iniciada
                           ? const Icon(
                               BootstrapIcons.pause_btn_fill,
@@ -65,7 +62,7 @@ class ConferirPage extends StatelessWidget {
                     ),
                     ButtonHeadForm(
                       title: 'Ajuste de carrinho',
-                      onPressed: () {}, //controller.onSobraCarrinho,
+                      onPressed: () {},
                       icon: const Icon(
                         BootstrapIcons.exclamation_circle_fill,
                         color: Colors.white,

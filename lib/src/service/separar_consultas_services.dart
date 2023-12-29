@@ -30,7 +30,7 @@ class SepararConsultaServices {
       return null;
     }
 
-    return response.first;
+    return response.last;
   }
 
   Future<List<ExpedicaoSepararItemConsultaModel>> itensSaparar() async {

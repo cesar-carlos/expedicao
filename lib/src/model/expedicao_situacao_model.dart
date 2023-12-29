@@ -7,10 +7,11 @@ abstract class ExpedicaoSituacaoModel {
   static const cancelada = 'CANCELADA';
   static const devolvida = 'DEVOLVIDA';
   static const separando = 'SEPARANDO';
-  static const separado = 'SEPARADO';
+  static const separado = 'SEPARADO'; 
   static const conferindo = 'CONFERINDO';
   static const conferido = 'CONFERIDO';
   static const entregue = 'ENTREGUE';
+  static const embalando = 'EMBALANDO';
   static const finalizada = 'FINALIZADA';
   static const naoLocalizada = 'NÃO LOCALIZADO';
 
@@ -27,6 +28,7 @@ abstract class ExpedicaoSituacaoModel {
     conferindo: 'Conferindo',
     conferido: 'Conferido',
     entregue: 'Entregue',
+    embalando: 'Embalando',
     naoLocalizada: 'Não Localizada',
     '': ''
   };
