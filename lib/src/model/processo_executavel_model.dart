@@ -10,9 +10,9 @@ class ProcessoExecutavelModel {
   DateTime dataAbertura;
   int codUsuario;
   String nomeUsuario;
-  String codContaFinanceira;
-  int codPeriodoCaixa;
-  String statusPeriodoCaixa;
+  String? codContaFinanceira;
+  int? codPeriodoCaixa;
+  String? statusPeriodoCaixa;
   String usuarioWindows;
   String nomeComputador;
   String bancoDados;
@@ -29,9 +29,9 @@ class ProcessoExecutavelModel {
     required this.dataAbertura,
     required this.codUsuario,
     required this.nomeUsuario,
-    required this.codContaFinanceira,
-    required this.codPeriodoCaixa,
-    required this.statusPeriodoCaixa,
+    this.codContaFinanceira,
+    this.codPeriodoCaixa,
+    this.statusPeriodoCaixa,
     required this.usuarioWindows,
     required this.nomeComputador,
     required this.bancoDados,
@@ -91,9 +91,9 @@ class ProcessoExecutavelModel {
       dataAbertura: DateTime.now(),
       codUsuario: 0,
       nomeUsuario: '',
-      codContaFinanceira: '',
-      codPeriodoCaixa: 0,
-      statusPeriodoCaixa: '',
+      codContaFinanceira: null,
+      codPeriodoCaixa: null,
+      statusPeriodoCaixa: null,
       usuarioWindows: '',
       nomeComputador: '',
       bancoDados: '',

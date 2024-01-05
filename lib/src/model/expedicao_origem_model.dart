@@ -16,6 +16,7 @@ abstract class ExpedicaoOrigemModel {
     'EX': 'Expedição',
     'CP': 'Carrinho Percurso',
     'CF': 'Conferencia',
+    'EM': 'Embalagem',
     '': ''
   };
 }
