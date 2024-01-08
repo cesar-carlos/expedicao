@@ -74,10 +74,9 @@ class SepararConsultaServices {
     final carrinhosPercurso = await this.carrinhosPercurso();
 
     final carrinhosEmAndamento = carrinhosPercurso.where((el) {
-      return el.situacao == ExpedicaoSituacaoModel.emAndamento;
+      return el.situacao == ExpedicaoSituacaoModel.separando;
     });
 
-    //print(carrinhosEmAndamento.map((e) => e.situacao).toList());
     if (carrinhosEmAndamento.isEmpty) return false;
     return true;
   }
