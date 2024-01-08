@@ -106,10 +106,10 @@ class SeparadoCarrinhoGridController extends GetxController {
     switch (item.situacao) {
       case ExpedicaoSituacaoModel.cancelada:
         color = Colors.grey;
-      case ExpedicaoSituacaoModel.separando:
-        color = Colors.lightBlue;
       case ExpedicaoSituacaoModel.separado:
         color = Colors.grey;
+      default:
+        color = Colors.red;
     }
 
     return Icon(

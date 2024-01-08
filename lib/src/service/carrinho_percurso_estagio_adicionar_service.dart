@@ -1,3 +1,4 @@
+import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
 import 'package:get/get.dart';
 
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
@@ -37,6 +38,21 @@ class CarrinhoPercursoEstagioAdicionarService {
 
   Future<ExpedicaoPercursoEstagioModel> _createPercursoEstagio() async {
     final percurso = await _findcodPercursoEstagio();
+    String origem = _processo.origem;
+    String situacao = '';
+
+    switch (origem) {
+      case ExpedicaoOrigemModel.separacao:
+        situacao = ExpedicaoSituacaoModel.separando;
+        break;
+      case ExpedicaoOrigemModel.conferencia:
+        situacao = ExpedicaoSituacaoModel.conferindo;
+        break;
+
+      default:
+        ExpedicaoSituacaoModel.conferindo;
+    }
+
     return ExpedicaoPercursoEstagioModel(
       codEmpresa: carrinhoPercurso.codEmpresa,
       codCarrinhoPercurso: carrinhoPercurso.codCarrinhoPercurso,
@@ -45,7 +61,7 @@ class CarrinhoPercursoEstagioAdicionarService {
       codOrigem: _processo.codOrigem,
       codPercursoEstagio: percurso?.codPercursoEstagio ?? 0,
       codCarrinho: carrinho.codCarrinho,
-      situacao: ExpedicaoSituacaoModel.conferindo,
+      situacao: situacao,
       dataInicio: DateTime.now(),
       horaInicio: DateTime.now().toString().substring(11, 19),
       codUsuarioInicio: _processo.codUsuario,
