@@ -57,6 +57,15 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  msix: ^3.16.7
+
+  #flutter pub run msix:create
+msix_config:
+  display_name: Data7 Expedicao
+  publisher_display_name: Cesar Carlos
+  identity_name: br.com.se7esistemassinop
+  msix_version: 1.0.0.0
+  logo_path: D:\Developer\Data7 Projetos\Expedicao\Logo\app_icon.ico.png
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
