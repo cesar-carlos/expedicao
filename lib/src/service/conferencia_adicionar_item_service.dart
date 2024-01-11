@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 
-import 'package:app_expedicao/src/app/app_socket.config.dart';
+import 'package:app_expedicao/src/app/app_socket_config.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_item_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferencia_item_model.dart';

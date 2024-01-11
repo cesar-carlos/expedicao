@@ -1,5 +1,9 @@
-import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:flutter/material.dart';
+
+import 'package:app_expedicao/src/routes/app_router.dart';
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 
 class SplashErrorWidget extends StatefulWidget {
   final String erroCode;
@@ -38,35 +42,42 @@ class _ComplitAnimationIconWidgetState extends State<SplashErrorWidget>
 
     return Container(
       color: Colors.blueGrey[50],
-      child: Column(children: [
-        const SizedBox(height: 100),
-        SizedBox(
-          width: size.width,
-          height: size.height * .5,
-          child: Lottie.asset(
-            alignment: Alignment.center,
-            'assets/icons/server_desconected_animation.json',
-            controller: _controller,
-            onLoaded: (composition) {
-              _controller
-                ..duration = composition.duration
-                ..forward()
-                ..repeat();
-            },
-          ),
-        ),
-        //const SizedBox(height: 20),
-        SizedBox(
-          width: size.width * .8,
-          child: Text(
-            getErrorDescription(widget.erroCode),
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
+      child: Column(
+        children: [
+          const SizedBox(height: 100),
+          SizedBox(
+            width: size.width,
+            height: size.height * .5,
+            child: Lottie.asset(
+              alignment: Alignment.center,
+              'assets/icons/server_desconected_animation.json',
+              controller: _controller,
+              onLoaded: (composition) {
+                _controller
+                  ..duration = composition.duration
+                  ..forward()
+                  ..repeat();
+              },
             ),
           ),
-        )
-      ]),
+          SizedBox(
+            width: size.width * .8,
+            child: Text(
+              getErrorDescription(widget.erroCode),
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          IconButton(
+            onPressed: () => Get.offAllNamed(AppRouter.login),
+            icon: const Icon(
+              BootstrapIcons.gear_fill,
+            ),
+          ),
+        ],
+      ),
     );
   }
 

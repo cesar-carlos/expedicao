@@ -5,8 +5,8 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:app_expedicao/src/app/app_helper.dart';
 import 'package:app_expedicao/src/model/expedicao_item_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separacao_item_consulta_model.dart';
-import 'package:app_expedicao/src/pages/separacao/grid/separacao_carrinho_grid_cells.dart';
-import 'package:app_expedicao/src/pages/separacao/grid/separacao_carrinho_grid_controller.dart';
+import 'package:app_expedicao/src/pages/separacao/grid_separacao/separacao_carrinho_grid_cells.dart';
+import 'package:app_expedicao/src/pages/separacao/grid_separacao/separacao_carrinho_grid_controller.dart';
 
 class SeparacaoCarrinhoGridSource extends DataGridSource {
   var controller = Get.find<SeparacaoCarrinhoGridController>();

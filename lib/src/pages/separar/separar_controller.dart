@@ -1,3 +1,4 @@
+import 'package:app_expedicao/src/routes/app_router.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,7 @@ import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';
 import 'package:app_expedicao/src/service/conferir_separacao_adicionar_service.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget.dart';
-import 'package:app_expedicao/src/pages/common/widget/loading_sever_dialog.widget.dart';
+import 'package:app_expedicao/src/pages/common/widget/loading_sever_dialog_widget.dart';
 import 'package:app_expedicao/src/pages/separarado_carrinhos/separarado_carrinhos_controller.dart';
 import 'package:app_expedicao/src/pages/carrinho/widget/adicionar_carrinho_dialog_widget.dart';
 import 'package:app_expedicao/src/repository/expedicao_separar_item/separar_item_event_repository.dart';
@@ -27,7 +28,7 @@ import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_model.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/service/separar_services.dart';
-import 'package:app_expedicao/src/app/app_socket.config.dart';
+import 'package:app_expedicao/src/app/app_socket_config.dart';
 
 class SepararController extends GetxController {
   bool _iniciada = false;
@@ -47,6 +48,8 @@ class SepararController extends GetxController {
   ExpedicaoCarrinhoPercursoModel? _carrinhoPercurso;
 
   ExpedicaoSepararConsultaModel get separarConsulta => _separarConsulta;
+  int? get codSetorEstoque => _processoExecutavel.codSetorEstoque;
+  String get expedicaoSituacaoModel => _expedicaoSituacao;
 
   bool get iniciada {
     if (_carrinhoPercurso == null) {
@@ -58,7 +61,6 @@ class SepararController extends GetxController {
     }
   }
 
-  String get expedicaoSituacaoModel => _expedicaoSituacao;
   String get expedicaoSituacaoDisplay {
     if (_expedicaoSituacao == ExpedicaoSituacaoModel.separado) {
       return ExpedicaoSituacaoModel.finalizada;
@@ -100,7 +102,6 @@ class SepararController extends GetxController {
   @override
   onReady() async {
     super.onReady();
-
     await _fillGridSepararItens();
     await _fillCarrinhoPercurso();
     _liteners();
@@ -168,6 +169,16 @@ class SepararController extends GetxController {
       return;
     }
 
+    if (_expedicaoSituacao == ExpedicaoSituacaoModel.cancelada) {
+      await ConfirmationDialogMessageWidget.show(
+        context: Get.context!,
+        message: 'Separação cancelada!',
+        detail: 'Separação cancelada, não é possível adicionar carrinho.',
+      );
+
+      return;
+    }
+
     final carrinhoController = CarrinhoController();
     final dialog = AdicionarCarrinhoDialogWidget(carrinhoController);
     final carrinhoConsulta = await dialog.show();
@@ -205,8 +216,17 @@ class SepararController extends GetxController {
   Future<void> adicionarObservacao() async {
     final currentSeparar = await _separarConsultaServices.separar();
 
-    historicoController.text = currentSeparar?.historico ?? '';
-    observacaoController.text = currentSeparar?.observacao ?? '';
+    historicoController.text = currentSeparar?.historico
+            ?.toLowerCase()
+            .replaceAll('null', '')
+            .trim() ??
+        '';
+
+    observacaoController.text = currentSeparar?.observacao
+            ?.toLowerCase()
+            .replaceAll('null', '')
+            .trim() ??
+        '';
 
     final result = await SepararOBsDialogWidget().show();
     if (result != null) {
@@ -276,6 +296,10 @@ class SepararController extends GetxController {
     }
   }
 
+  void configuracao() {
+    Get.toNamed(AppRouter.login);
+  }
+
   _liteners() {
     const uuid = Uuid();
     final separarEvent = SepararEventRepository.instancia;
@@ -283,9 +307,7 @@ class SepararController extends GetxController {
 
     _socketClient.isConnect.listen((event) {
       if (event) return;
-      LoadingSeverDialogWidget.show(
-        context: Get.context!,
-      );
+      LoadingSeverDialogWidget.show(context: Get.context!);
     });
 
     final separarItemConsulta = RepositoryEventListenerModel(
@@ -294,8 +316,11 @@ class SepararController extends GetxController {
       callback: (data) async {
         for (var el in data.mutation) {
           final item = ExpedicaoSepararItemConsultaModel.fromJson(el);
-          _separarGridController.updateGrid(item);
-          _separarGridController.update();
+          if (_separarConsulta.codEmpresa == item.codEmpresa &&
+              _separarConsulta.codSepararEstoque == item.codSepararEstoque) {
+            _separarGridController.updateGrid(item);
+            _separarGridController.update();
+          }
         }
       },
     );
@@ -306,9 +331,12 @@ class SepararController extends GetxController {
       callback: (data) async {
         for (var el in data.mutation) {
           final item = ExpedicaoSepararModel.fromJson(el);
-          _expedicaoSituacao = item.situacao;
-          _separarConsulta.situacao = item.situacao;
-          update();
+          if (_separarConsulta.codEmpresa == item.codEmpresa &&
+              _separarConsulta.codSepararEstoque == item.codSepararEstoque) {
+            _expedicaoSituacao = item.situacao;
+            _separarConsulta.situacao = item.situacao;
+            update();
+          }
         }
       },
     );

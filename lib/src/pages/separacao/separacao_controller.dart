@@ -11,10 +11,10 @@ import 'package:app_expedicao/src/service/separacao_remover_item_service.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dart';
 import 'package:app_expedicao/src/model/expedicao_separacao_item_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
-import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog.widget.dart';
+import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog_widget.dart';
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_event_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_event_repository.dart';
-import 'package:app_expedicao/src/pages/separacao/grid/separacao_carrinho_grid_controller.dart';
+import 'package:app_expedicao/src/pages/separacao/grid_separacao/separacao_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';
@@ -47,6 +47,10 @@ class SeparacaoController extends GetxController {
   late FocusNode displayFocusNode;
 
   SeparacaoController(this.percursoEstagioConsulta);
+
+  get title {
+    return _viewMode.value ? 'Separação - Visualização' : 'Separação - Edição';
+  }
 
   @override
   void onInit() {

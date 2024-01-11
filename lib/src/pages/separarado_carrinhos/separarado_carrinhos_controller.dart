@@ -1,3 +1,4 @@
+import 'package:app_expedicao/src/pages/separacao/separacao_binding.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
@@ -53,7 +54,6 @@ class SeparadoCarrinhosController extends GetxController {
   @override
   onReady() async {
     super.onReady();
-
     _evetsCarrinhoGrid();
     _liteners();
   }
@@ -71,6 +71,7 @@ class SeparadoCarrinhosController extends GetxController {
 
   _evetsCarrinhoGrid() {
     _separadoCarrinhoGridController.onPressedEdit = (item) async {
+      SeparacaoBinding(item).dependencies();
       final dialog = SeparacaoPage(item);
       dialog.show();
     };

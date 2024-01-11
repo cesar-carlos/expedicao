@@ -90,11 +90,11 @@ class ConferirConsultaServices {
   Future<bool> existsOpenCart() async {
     final carrinhosPercurso = await this.carrinhosPercurso();
 
-    final carrinhosEmAndamento = carrinhosPercurso.where((el) {
-      return el.situacao == ExpedicaoSituacaoModel.emAndamento;
+    final carrinhosConferindo = carrinhosPercurso.where((el) {
+      return el.situacao == ExpedicaoSituacaoModel.conferindo;
     });
 
-    if (carrinhosEmAndamento.isEmpty) return false;
+    if (carrinhosConferindo.isEmpty) return false;
     return true;
   }
 }

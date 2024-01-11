@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget.dart';
-import 'package:app_expedicao/src/pages/separacao/grid/separacao_carrinho_grid_source.dart';
+import 'package:app_expedicao/src/pages/separacao/grid_separacao/separacao_carrinho_grid_source.dart';
 import 'package:app_expedicao/src/model/expedicao_separacao_item_consulta_model.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 

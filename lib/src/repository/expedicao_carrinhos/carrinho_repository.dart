@@ -7,7 +7,7 @@ import 'package:uuid/uuid.dart';
 import 'package:app_expedicao/src/app/app_error.dart';
 import 'package:app_expedicao/src/app/app_error_code.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_model.dart';
-import 'package:app_expedicao/src/app/app_socket.config.dart';
+import 'package:app_expedicao/src/app/app_socket_config.dart';
 
 class CarrinhoRepository {
   final uuid = const Uuid();

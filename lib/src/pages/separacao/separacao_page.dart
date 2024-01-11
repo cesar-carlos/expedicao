@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 
 import 'package:app_expedicao/src/pages/separacao/separacao_controller.dart';
-import 'package:app_expedicao/src/pages/separacao/grid/separacao_carrinho_grid.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
 import 'package:app_expedicao/src/pages/common/form_element/button_head_form_element.dart';
+import 'package:app_expedicao/src/pages/separacao/grid_separacao/separacao_carrinho_grid.dart';
 import 'package:app_expedicao/src/pages/common/form_element/space_button_head_form_element.dart';
-import 'package:app_expedicao/src/pages/common/form_element/bar_head_form_element.dart';
+import 'package:app_expedicao/src/pages/separacao/grid_separar_setor/separar_setor_grid.dart';
 import 'package:app_expedicao/src/pages/separacao/widget/scan_separacao_item_widget.dart';
+import 'package:app_expedicao/src/pages/common/form_element/bar_head_form_element.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid.dart';
 
 class SeparacaoPage {
@@ -16,15 +17,12 @@ class SeparacaoPage {
   double height = 30;
   Size size = Get.size;
 
-  final SeparacaoController _controller;
+  late SeparacaoController _controller;
   final ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta;
 
-  SeparacaoPage(this.percursoEstagioConsulta)
-      : _controller = SeparacaoController(percursoEstagioConsulta) {
-    Get.lazyPut(() => _controller);
-    title = _controller.viewMode
-        ? 'Separação - Visualização'
-        : 'Separação - Edição';
+  SeparacaoPage(this.percursoEstagioConsulta) {
+    _controller = Get.find<SeparacaoController>();
+    title = _controller.title;
   }
 
   Future<void> show() async {
@@ -134,10 +132,13 @@ class SeparacaoPage {
                   child: TabBarView(children: [
                     Container(
                       color: Colors.white70,
-                      child: SeparacaoCarrinhoGrid(percursoEstagioConsulta),
+                      child: SeparacaoCarrinhoGrid(
+                        percursoEstagioConsulta,
+                      ),
                     ),
                     Container(
                       color: Colors.white70,
+                      //child: const SepararSetorGrid(),
                       child: const SepararGrid(),
                     ),
                   ]),

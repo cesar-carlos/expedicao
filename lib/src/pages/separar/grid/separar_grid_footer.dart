@@ -14,7 +14,7 @@ class SepararGridFooter extends StatelessWidget {
         color: Colors.grey[200],
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Text(
-            'Total de Itens: ${controller.itens.length}',
+            'Total de Itens: ${controller.itensSort.length}',
             style: const TextStyle(
               color: Colors.black,
               fontSize: 12,

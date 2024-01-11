@@ -2,16 +2,24 @@ import 'package:get/get.dart';
 
 // ignore: library_prefixes
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:app_expedicao/src/app/app_api_file_init.dart';
 
 class AppSocketConfig extends GetxController {
-  final _baseUrl = 'http://localhost:3001/';
+  late String _baseUrl;
   final Rx<bool> _isConnected = false.obs;
   late IO.Socket _socket;
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
+    await confg();
     initSocket();
     super.onInit();
+  }
+
+  Future<void> confg() async {
+    final apiServerModel = await AppApiFileInit.getConfg();
+    //_baseUrl = 'http://localhost:3001';
+    _baseUrl = 'http://${apiServerModel!.hostServer}:${apiServerModel.port}';
   }
 
   Rx<bool> get isConnect => _isConnected;

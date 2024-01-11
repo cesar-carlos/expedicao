@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 
-import 'package:app_expedicao/src/app/app_socket.config.dart';
+import 'package:app_expedicao/src/app/app_socket_config.dart';
 
 class FooterPageController extends GetxController {
   bool _isConnected = true;

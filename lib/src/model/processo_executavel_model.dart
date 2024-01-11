@@ -6,10 +6,11 @@ class ProcessoExecutavelModel {
   String contexto;
   String origem;
   int codOrigem;
-  String itemOrigem;
+  String? itemOrigem;
   DateTime dataAbertura;
   int codUsuario;
   String nomeUsuario;
+  int? codSetorEstoque;
   String? codContaFinanceira;
   int? codPeriodoCaixa;
   String? statusPeriodoCaixa;
@@ -25,10 +26,11 @@ class ProcessoExecutavelModel {
     required this.contexto,
     required this.origem,
     required this.codOrigem,
-    required this.itemOrigem,
+    this.itemOrigem,
     required this.dataAbertura,
     required this.codUsuario,
     required this.nomeUsuario,
+    this.codSetorEstoque,
     this.codContaFinanceira,
     this.codPeriodoCaixa,
     this.statusPeriodoCaixa,
@@ -49,6 +51,7 @@ class ProcessoExecutavelModel {
     DateTime? dataAbertura,
     int? codUsuario,
     String? nomeUsuario,
+    int? codSetorEstoque,
     String? codContaFinanceira,
     int? codPeriodoCaixa,
     String? statusPeriodoCaixa,
@@ -69,6 +72,7 @@ class ProcessoExecutavelModel {
       dataAbertura: dataAbertura ?? this.dataAbertura,
       codUsuario: codUsuario ?? this.codUsuario,
       nomeUsuario: nomeUsuario ?? this.nomeUsuario,
+      codSetorEstoque: codSetorEstoque ?? this.codSetorEstoque,
       codContaFinanceira: codContaFinanceira ?? this.codContaFinanceira,
       codPeriodoCaixa: codPeriodoCaixa ?? this.codPeriodoCaixa,
       statusPeriodoCaixa: statusPeriodoCaixa ?? this.statusPeriodoCaixa,
@@ -87,10 +91,11 @@ class ProcessoExecutavelModel {
       contexto: '',
       origem: '',
       codOrigem: 0,
-      itemOrigem: '',
+      itemOrigem: null,
       dataAbertura: DateTime.now(),
       codUsuario: 0,
       nomeUsuario: '',
+      codSetorEstoque: null,
       codContaFinanceira: null,
       codPeriodoCaixa: null,
       statusPeriodoCaixa: null,
@@ -112,6 +117,7 @@ class ProcessoExecutavelModel {
     dataAbertura = input.dataAbertura;
     codUsuario = input.codUsuario;
     nomeUsuario = input.nomeUsuario;
+    codSetorEstoque = input.codSetorEstoque;
     codContaFinanceira = input.codContaFinanceira;
     codPeriodoCaixa = input.codPeriodoCaixa;
     statusPeriodoCaixa = input.statusPeriodoCaixa;
@@ -133,6 +139,7 @@ class ProcessoExecutavelModel {
       dataAbertura: DateTime.parse(map['DataAbertura']),
       codUsuario: map['CodUsuario'],
       nomeUsuario: map['NomeUsuario'],
+      codSetorEstoque: map['CodSetorEstoque'],
       codContaFinanceira: map['CodContaFinanceira'],
       codPeriodoCaixa: map['CodPeriodoCaixa'],
       statusPeriodoCaixa: map['StatusPeriodoCaixa'],
@@ -155,6 +162,7 @@ class ProcessoExecutavelModel {
       'DataAbertura': dataAbertura.toIso8601String(),
       'CodUsuario': codUsuario,
       'NomeUsuario': nomeUsuario,
+      'CodSetorEstoque': codSetorEstoque,
       'CodContaFinanceira': codContaFinanceira,
       'CodPeriodoCaixa': codPeriodoCaixa,
       'StatusPeriodoCaixa': statusPeriodoCaixa,
@@ -166,6 +174,26 @@ class ProcessoExecutavelModel {
 
   @override
   String toString() {
-    return 'ProcessoExecutavelModel(codProcessoExecutavel: $codProcessoExecutavel, codEmpresa: $codEmpresa, codFilial: $codFilial, status: $status, contexto: $contexto, origem: $origem, codOrigem: $codOrigem, itemOrigem: $itemOrigem, dataAbertura: $dataAbertura, codUsuario: $codUsuario, nomeUsuario: $nomeUsuario, codContaFinanceira: $codContaFinanceira, codPeriodoCaixa: $codPeriodoCaixa, statusPeriodoCaixa: $statusPeriodoCaixa, usuarioWindows: $usuarioWindows, nomeComputador: $nomeComputador, bancoDados: $bancoDados)';
+    return '''
+      ProcessoExecutavelModel(
+        codProcessoExecutavel: $codProcessoExecutavel, 
+        codEmpresa: $codEmpresa, 
+        codFilial: $codFilial, 
+        status: $status, 
+        contexto: $contexto, 
+        origem: $origem, 
+        codOrigem: $codOrigem, 
+        itemOrigem: $itemOrigem, 
+        dataAbertura: $dataAbertura, 
+        codUsuario: $codUsuario, 
+        nomeUsuario: $nomeUsuario, 
+        codSetorEstoque: $codSetorEstoque,
+        codContaFinanceira: $codContaFinanceira, 
+        codPeriodoCaixa: $codPeriodoCaixa, 
+        statusPeriodoCaixa: $statusPeriodoCaixa, 
+        usuarioWindows: $usuarioWindows, 
+        nomeComputador: $nomeComputador, 
+        bancoDados: $bancoDados)
+      ''';
   }
 }

@@ -1,7 +1,8 @@
-import 'package:app_expedicao/src/app/app_socket.config.dart';
-import 'package:app_expedicao/src/pages/common/widget/desconected_animation_icon_widget.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+
+import 'package:app_expedicao/src/pages/common/widget/desconected_animation_icon_widget.dart';
+import 'package:app_expedicao/src/app/app_socket_config.dart';
 
 class LoadingSeverDialogWidget {
   static Future<void> show({

@@ -1,14 +1,21 @@
-import 'package:app_expedicao/src/app/app_error_code.dart';
 import 'package:dio/dio.dart';
 
 import 'package:app_expedicao/src/app/app_error.dart';
+import 'package:app_expedicao/src/app/app_api_file_init.dart';
+import 'package:app_expedicao/src/app/app_error_code.dart';
 
 class AppClientHttp {
   final client = Dio();
   AppError? appError;
 
   AppClientHttp() {
-    client.options.baseUrl = 'http://localhost:3001';
+    confg();
+  }
+
+  Future<void> confg() async {
+    final apiServerModel = await AppApiFileInit.getConfg();
+    client.options.baseUrl =
+        'http://${apiServerModel!.hostServer}:${apiServerModel.port}';
   }
 
   Future<Response<T>> get<T>(String endPoint) async {

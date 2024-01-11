@@ -13,6 +13,5 @@ class SepararBinding implements Bindings {
     Get.lazyPut(() => SepararGridController());
     Get.lazyPut(() => SeparadoCarrinhosController());
     Get.lazyPut(() => SeparadoCarrinhoGridController());
-    //Get.lazyPut(() => CarrinhoController());
   }
 }

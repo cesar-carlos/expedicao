@@ -36,7 +36,9 @@ class SepararItensWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              const Expanded(child: SepararGrid())
+              const Expanded(
+                child: SepararGrid(),
+              )
             ],
           ),
         );

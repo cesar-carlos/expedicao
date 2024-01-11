@@ -12,13 +12,13 @@ import 'package:app_expedicao/src/pages/separar/grid/separar_grid_source.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid_footer.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid_event.dart';
 
+// ignore: must_be_immutable
 class SepararGrid extends StatelessWidget {
   const SepararGrid({super.key});
 
   @override
   Widget build(BuildContext context) {
     return GetBuilder<SepararGridController>(
-      //tag: SepararGridController.gridName,
       builder: (controller) {
         return SfDataGridTheme(
           data: SepararGridTheme.theme,

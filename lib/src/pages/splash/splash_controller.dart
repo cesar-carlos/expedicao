@@ -1,14 +1,16 @@
 import 'package:get/get.dart';
 
-import 'package:app_expedicao/src/app/app_socket.config.dart';
+import 'package:app_expedicao/src/app/app_socket_config.dart';
 import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
 import 'package:app_expedicao/src/service/separar_consultas_services.dart';
 import 'package:app_expedicao/src/service/conferir_consultas_services.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_consulta_model.dart';
-import 'package:app_expedicao/src/pages/common/widget/loading_sever_dialog.widget.dart';
+import 'package:app_expedicao/src/pages/common/widget/loading_sever_dialog_widget.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
 import 'package:app_expedicao/src/service/processo_executavel_service.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
+import 'package:app_expedicao/src/app/app_server_file_init.dart';
+import 'package:app_expedicao/src/app/app_api_file_init.dart';
 import 'package:app_expedicao/src/routes/app_router.dart';
 
 class SplashController extends GetxController {
@@ -30,13 +32,20 @@ class SplashController extends GetxController {
     _litener();
   }
 
-  _loading() async {
-    _isLoad.value = true;
+  Future<void> _loading() async {
+    _isLoad.value = false;
     await Future.delayed(const Duration(seconds: 1));
     _processoExecutavel = await _processoExecutavelService.executar();
 
     if (_processoExecutavel == null) {
       Get.offNamed(AppRouter.splashError, arguments: '0001');
+      return;
+    }
+
+    //CONFIG SERVER
+    final existsfileConfApi = await _existsfileConfApi();
+    if (!existsfileConfApi) {
+      Get.offNamed(AppRouter.login);
       return;
     }
 
@@ -73,11 +82,10 @@ class SplashController extends GetxController {
     nextPage();
   }
 
-  _litener() {
+  void _litener() {
     _socketClient.isConnect.listen(
       (event) {
         if (event) _loading();
-
         LoadingSeverDialogWidget.show(
           context: Get.context!,
         );
@@ -85,8 +93,18 @@ class SplashController extends GetxController {
     );
   }
 
+  // ignore: unused_element
+  Future<bool> _existsfileConfDataBase() async {
+    final hasConfg = await AppServerFileInit.hasConfg();
+    return hasConfg;
+  }
+
+  Future<bool> _existsfileConfApi() async {
+    final hasConfg = await AppApiFileInit.hasConfg();
+    return hasConfg;
+  }
+
   void nextPage() async {
-    //INJECT PROCESSO EXECUTAVEL
     Get.put<ProcessoExecutavelModel>(_processoExecutavel!);
 
     //SEPARAR

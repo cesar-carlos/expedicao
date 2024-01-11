@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:app_expedicao/src/contract/event_contract.dart';
 import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
 import 'package:app_expedicao/src/model/basic_event_model.dart';
-import 'package:app_expedicao/src/app/app_socket.config.dart';
+import 'package:app_expedicao/src/app/app_socket_config.dart';
 
 class SepararEventRepository implements EventContract {
   static SepararEventRepository? _instancia;

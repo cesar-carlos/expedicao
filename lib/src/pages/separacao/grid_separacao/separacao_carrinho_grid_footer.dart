@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
-import 'package:app_expedicao/src/pages/separacao/grid/separacao_carrinho_grid_controller.dart';
+import 'package:app_expedicao/src/pages/separacao/grid_separacao/separacao_carrinho_grid_controller.dart';
 
 class SeparacaoCarrinhoGridFooter extends StatelessWidget {
   final int codCarrinho;

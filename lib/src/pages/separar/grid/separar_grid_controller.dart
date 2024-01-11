@@ -1,17 +1,19 @@
-import 'package:app_expedicao/src/pages/common/widget/alert_animation_icon_widget.dart';
-import 'package:app_expedicao/src/pages/common/widget/box_animation_icon_widget.dart';
-import 'package:app_expedicao/src/pages/common/widget/complit_animation_icon_widget.dart';
 import 'package:get/get.dart';
 
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';
+import 'package:app_expedicao/src/pages/common/widget/complit_animation_icon_widget.dart';
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_repository.dart';
+import 'package:app_expedicao/src/pages/common/widget/alert_animation_icon_widget.dart';
+import 'package:app_expedicao/src/pages/common/widget/box_animation_icon_widget.dart';
+import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class SepararGridController extends GetxController {
   static const gridName = 'separarGrid';
   final DataGridController dataGridController = DataGridController();
   late List<ExpedicaoSepararItemConsultaModel> _itensGrid;
+  final _processoExecutavel = Get.find<ProcessoExecutavelModel>();
 
   List<DataGridRow> get selectedoRows => dataGridController.selectedRows;
   List<ExpedicaoSepararItemConsultaModel> get itens => _itensGrid;
@@ -21,8 +23,22 @@ class SepararGridController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-
     _itensGrid = [];
+  }
+
+  getItensSort(int? codSetorEstoque) {
+    if (codSetorEstoque == null) return itensSort;
+
+    return itensSort.where((el) {
+      if (el.codSetorEstoque == 0) return true;
+      if (el.codSetorEstoque == codSetorEstoque) return true;
+
+      return false;
+    }).toList();
+  }
+
+  get itensSortSetor {
+    return getItensSort(_processoExecutavel.codSetorEstoque);
   }
 
   void addGrid(ExpedicaoSepararItemConsultaModel item) {

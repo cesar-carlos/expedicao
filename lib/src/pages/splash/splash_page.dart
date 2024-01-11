@@ -12,14 +12,23 @@ class SplashPage extends StatelessWidget {
     return GetBuilder<SplashController>(builder: (controller) {
       return SizedBox.expand(
         child: ListenableBuilder(
-            listenable: controller,
-            builder: (BuildContext context, Widget? child) {
-              if (controller.isLoad) {
-                return const CarregandoWidget();
-              }
+          listenable: controller,
+          builder: (BuildContext context, Widget? child) {
+            if (controller.isLoad) {
+              return const CarregandoWidget();
+            }
 
-              return const Center(child: Text('Carregado'));
-            }),
+            return const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    Colors.white,
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
       );
     });
   }

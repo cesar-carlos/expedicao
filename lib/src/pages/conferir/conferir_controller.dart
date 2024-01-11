@@ -15,7 +15,7 @@ import 'package:app_expedicao/src/pages/conferido_carrinhos/conferido_carrinhos_
 import 'package:app_expedicao/src/pages/carrinho/widget/adicionar_carrinho_dialog_widget.dart';
 import 'package:app_expedicao/src/pages/conferir_carrinhos/conferir_carrinhos_controller.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
-import 'package:app_expedicao/src/pages/common/widget/loading_sever_dialog.widget.dart';
+import 'package:app_expedicao/src/pages/common/widget/loading_sever_dialog_widget.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
@@ -24,7 +24,7 @@ import 'package:app_expedicao/src/service/conferir_consultas_services.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_model.dart';
-import 'package:app_expedicao/src/app/app_socket.config.dart';
+import 'package:app_expedicao/src/app/app_socket_config.dart';
 
 class ConferirController extends GetxController {
   bool _iniciada = false;
@@ -154,8 +154,7 @@ class ConferirController extends GetxController {
       await ConfirmationDialogMessageWidget.show(
         context: Get.context!,
         message: 'Conferencia já finalizada!',
-        detail:
-            'Conferencia já finalizada, não é possível finalizar novamente.',
+        detail: 'Conferencia já finalizada, não é possível finalizar.',
       );
 
       return;
@@ -165,7 +164,36 @@ class ConferirController extends GetxController {
       await ConfirmationDialogMessageWidget.show(
         context: Get.context!,
         message: 'Conferencia já embalada!',
-        detail: 'Conferencia já embalada, não é possível finalizar novamente.',
+        detail: 'Conferencia já embalada, não é possível finalizar.',
+      );
+
+      return;
+    }
+
+    if (_expedicaoSituacao == ExpedicaoSituacaoModel.cancelada) {
+      await ConfirmationDialogMessageWidget.show(
+        context: Get.context!,
+        message: 'Conferencia cancelada!',
+        detail: 'Conferencia cancelada, não é possível adicionar carrinhos.',
+      );
+
+      return;
+    }
+
+    if (_expedicaoSituacao == ExpedicaoSituacaoModel.entregue) {
+      await ConfirmationDialogMessageWidget.show(
+          context: Get.context!,
+          message: 'Conferencia entregue!',
+          detail: 'Conferencia entregue, não é possível adicionar carrinhos.');
+
+      return;
+    }
+
+    if (_expedicaoSituacao == ExpedicaoSituacaoModel.embalando) {
+      await ConfirmationDialogMessageWidget.show(
+        context: Get.context!,
+        message: 'Conferencia em andamento!',
+        detail: 'Conferencia embalada, não é possível adicionar carrinhos.',
       );
 
       return;
@@ -206,8 +234,17 @@ class ConferirController extends GetxController {
   Future<void> adicionarObservacao() async {
     final currentConferir = await _conferirConsultaServices.conferir();
 
-    historicoController.text = currentConferir?.historico ?? '';
-    observacaoController.text = currentConferir?.observacao ?? '';
+    historicoController.text = currentConferir?.historico
+            ?.toLowerCase()
+            .replaceAll('null', '')
+            .trim() ??
+        '';
+
+    observacaoController.text = currentConferir?.observacao
+            ?.toLowerCase()
+            .replaceAll('null', '')
+            .trim() ??
+        '';
 
     final result = await ConferirOBsDialogWidget().show();
     if (result != null) {
@@ -227,8 +264,7 @@ class ConferirController extends GetxController {
       await ConfirmationDialogMessageWidget.show(
         context: Get.context!,
         message: 'Conferencia já finalizada!',
-        detail:
-            'Conferencia já finalizada, não é possível finalizar novamente.',
+        detail: 'Conferencia já finalizada, não é possível finalizar.',
       );
 
       return;
@@ -288,9 +324,7 @@ class ConferirController extends GetxController {
 
     _socketClient.isConnect.listen((event) {
       if (event) return;
-      LoadingSeverDialogWidget.show(
-        context: Get.context!,
-      );
+      LoadingSeverDialogWidget.show(context: Get.context!);
     });
 
     final conferir = RepositoryEventListenerModel(
@@ -299,9 +333,12 @@ class ConferirController extends GetxController {
       callback: (data) async {
         for (var el in data.mutation) {
           final item = ExpedicaoConferirModel.fromJson(el);
-          _expedicaoSituacao = item.situacao;
-          _conferirConsulta.situacao = item.situacao;
-          update();
+          if (_conferirConsulta.codEmpresa == item.codEmpresa &&
+              _conferirConsulta.codConferir == item.codConferir) {
+            _expedicaoSituacao = item.situacao;
+            _conferirConsulta.situacao = item.situacao;
+            update();
+          }
         }
       },
     );

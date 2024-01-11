@@ -8,7 +8,7 @@ import 'package:app_expedicao/src/pages/splash/splash_binding.dart';
 import 'package:app_expedicao/src/pages/window.config/window_manager_config.dart';
 import 'package:app_expedicao/src/pages/splash/splash_page.dart';
 import 'package:app_expedicao/src/routes/app_page_router.dart';
-import 'package:app_expedicao/src/app/app_socket.config.dart';
+import 'package:app_expedicao/src/app/app_socket_config.dart';
 
 Future<void> main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -10,7 +10,7 @@ import 'package:app_expedicao/src/service/conferencia_remover_item_service.dart'
 import 'package:app_expedicao/src/model/expedicao_conferir_item_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferencia_item_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
-import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog.widget.dart';
+import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog_widget.dart';
 import 'package:app_expedicao/src/repository/expedicao_conferir_item/conferir_item_event_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_conferencia_item/conferencia_item_event_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_event_repository.dart';
