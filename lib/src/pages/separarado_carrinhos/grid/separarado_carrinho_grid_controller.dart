@@ -18,7 +18,6 @@ class SeparadoCarrinhoGridController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-
     _itensGrid = [];
   }
 

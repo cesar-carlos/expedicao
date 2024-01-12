@@ -141,6 +141,8 @@ class SeparacaoController extends GetxController {
           el.itemCarrinhoPercurso == percursoEstagioConsulta.item);
     }).toList();
 
+    print(separacaoItensFiltrados.length);
+
     _separacaoGridController.removeAllGrid();
     _separacaoGridController.addAllGrid(separacaoItensFiltrados);
     _separacaoGridController.update();
