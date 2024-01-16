@@ -22,85 +22,87 @@ class SepararPage extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return GetBuilder<SepararController>(
-      //init:
       builder: (controller) {
-        return Scaffold(
-          body: SizedBox.expand(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                //** HEADER BUTTON **//
-                SpaceButtonsHeadFormElement(width: double.infinity, children: [
-                  ButtonHeadForm(
-                    title: controller.iniciada
-                        ? 'Pausar Separação'
-                        : 'Iniciar Separação',
-                    // onPressed: !controller.iniciada
-                    //     ? controller.iniciarSeparacao
-                    //     : controller.pausarSeparacao,
-                    icon: controller.iniciada
-                        ? const Icon(
-                            BootstrapIcons.pause_btn_fill,
-                            color: Colors.white,
-                            size: 33,
-                          )
-                        : const Icon(
-                            BootstrapIcons.play_btn_fill,
+        return RawKeyboardListener(
+          focusNode: FocusNode(),
+          onKey: controller.handleKeyEvent,
+          child: Scaffold(
+            body: SizedBox.expand(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  //** HEADER BUTTON **//
+                  SpaceButtonsHeadFormElement(
+                      width: double.infinity,
+                      children: [
+                        ButtonHeadForm(
+                          title: controller.iniciada
+                              ? 'Pausar Separação'
+                              : 'Iniciar Separação',
+                          icon: controller.iniciada
+                              ? const Icon(
+                                  BootstrapIcons.pause_btn_fill,
+                                  color: Colors.white,
+                                  size: 33,
+                                )
+                              : const Icon(
+                                  BootstrapIcons.play_btn_fill,
+                                  color: Colors.white,
+                                  size: 33,
+                                ),
+                        ),
+                        ButtonHeadForm(
+                          title: 'Adicionar Carrinho',
+                          onPressed: controller.adicionarCarrinho,
+                          icon: const Icon(
+                            BootstrapIcons.cart4,
                             color: Colors.white,
                             size: 33,
                           ),
-                  ),
-                  ButtonHeadForm(
-                    title: 'Adicionar Carrinho',
-                    onPressed: controller.adicionarCarrinho,
-                    icon: const Icon(
-                      BootstrapIcons.cart4,
-                      color: Colors.white,
-                      size: 33,
-                    ),
-                  ),
-                  ButtonHeadForm(
-                    title: 'Histórico/Observação',
-                    onPressed: controller.adicionarObservacao,
-                    icon: const Icon(
-                      BootstrapIcons.file_text_fill,
-                      color: Colors.white,
-                      size: 33,
-                    ),
-                  ),
-                  ButtonHeadForm(
-                    title: 'Finalizar Separação',
-                    onPressed: controller.finalizarSeparacao,
-                    icon: const Icon(
-                      BootstrapIcons.grid_3x3_gap_fill,
-                      color: Colors.white,
-                      size: 33,
-                    ),
-                  ),
-                  ButtonHeadForm(
-                    title: 'Configuração',
-                    onPressed: controller.configuracao,
-                    icon: const Icon(
-                      BootstrapIcons.gear_fill,
-                      color: Colors.white,
-                      size: 33,
-                    ),
-                  ),
-                ]),
+                        ),
+                        ButtonHeadForm(
+                          title: 'Histórico/Observação',
+                          onPressed: controller.adicionarObservacao,
+                          icon: const Icon(
+                            BootstrapIcons.file_text_fill,
+                            color: Colors.white,
+                            size: 33,
+                          ),
+                        ),
+                        ButtonHeadForm(
+                          title: 'Finalizar Separação',
+                          onPressed: controller.finalizarSeparacao,
+                          icon: const Icon(
+                            BootstrapIcons.grid_3x3_gap_fill,
+                            color: Colors.white,
+                            size: 33,
+                          ),
+                        ),
+                        ButtonHeadForm(
+                          title: 'Configuração',
+                          onPressed: controller.configuracao,
+                          icon: const Icon(
+                            BootstrapIcons.gear_fill,
+                            color: Colors.white,
+                            size: 33,
+                          ),
+                        ),
+                      ]),
 
-                //** SEPARAR ITENS **//
-                SepararItensWidget(
-                  size: Size(size.width, ((size.height - 81) * .6)),
-                ),
+                  //** SEPARAR ITENS **//
+                  SepararItensWidget(
+                    size: Size(size.width, ((size.height - 81) * .6)),
+                  ),
 
-                //** SEPARAR CARRINHOS **//
-                SeparadoCarrinhoPage(
-                  size: Size(size.width, (size.height - 81) * .4),
-                ),
+                  //** SEPARAR CARRINHOS **//
+                  SeparadoCarrinhoPage(
+                    size: Size(size.width, (size.height - 81) * .4),
+                  ),
 
-                //** FOOTER **//
-                const FooterPage()
-              ],
+                  //** FOOTER **//
+                  const FooterPage()
+                ],
+              ),
             ),
           ),
         );

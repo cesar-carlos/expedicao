@@ -12,11 +12,11 @@ import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dar
 import 'package:app_expedicao/src/model/expedicao_separacao_item_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
 import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog_widget.dart';
+import 'package:app_expedicao/src/pages/Identificacao/wedgets/Identificacao_dialog_widget.dart';
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_event_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_event_repository.dart';
 import 'package:app_expedicao/src/pages/separacao/grid_separacao/separacao_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
-import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';
 import 'package:app_expedicao/src/service/separacao_adicionar_item_service.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
@@ -61,11 +61,9 @@ class SeparacaoController extends GetxController {
     scanController = TextEditingController();
     displayController = TextEditingController(text: '');
     quantidadeController = TextEditingController(text: '1,000');
-
     _separarGridController = Get.find<SepararGridController>();
     _separacaoGridController = Get.find<SeparacaoCarrinhoGridController>();
     _processoExecutavel = Get.find<ProcessoExecutavelModel>();
-
     scanFocusNode = FocusNode()..requestFocus();
     displayFocusNode = FocusNode();
     quantidadeFocusNode = FocusNode();
@@ -82,7 +80,6 @@ class SeparacaoController extends GetxController {
   @override
   void onReady() async {
     super.onReady();
-
     _onEditItemSeparacaoGrid();
     _onRemoveItemSeparacaoGrid();
     _listenFocusNode();
@@ -140,8 +137,6 @@ class SeparacaoController extends GetxController {
               percursoEstagioConsulta.codCarrinhoPercurso &&
           el.itemCarrinhoPercurso == percursoEstagioConsulta.item);
     }).toList();
-
-    print(separacaoItensFiltrados.length);
 
     _separacaoGridController.removeAllGrid();
     _separacaoGridController.addAllGrid(separacaoItensFiltrados);
@@ -368,13 +363,9 @@ class SeparacaoController extends GetxController {
       return;
     }
 
-    final bool? confirmation = await ConfirmationDialogWidget.show(
-      context: Get.context!,
-      message: 'Deseja realmente reconferir?',
-      detail: 'Ao reconferir, todos os itens serão removido do carrinho!',
-    );
+    final confirmation = await IdentificacaoDialogWidget().show();
 
-    if (confirmation != null && confirmation) {
+    if (confirmation != null) {
       SeparacaoRemoverItemService(
         percursoEstagioConsulta: percursoEstagioConsulta,
       ).removeAllItensCart();
@@ -420,13 +411,9 @@ class SeparacaoController extends GetxController {
       return;
     }
 
-    final bool? confirmation = await ConfirmationDialogWidget.show(
-      context: Get.context!,
-      message: 'Deseja separa tudo?',
-      detail: 'Itens com saldo para separação serão adicionados no carrinho!',
-    );
+    final confirmation = await IdentificacaoDialogWidget().show();
 
-    if (confirmation != null && confirmation) {
+    if (confirmation != null) {
       final carrinhoPercursoAdicionarItemService =
           SeparacaoAdicionarItemService(
         percursoEstagioConsulta: percursoEstagioConsulta,

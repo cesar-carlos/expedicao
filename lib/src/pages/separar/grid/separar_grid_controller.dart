@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:flutter/material.dart';
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';
@@ -116,6 +118,11 @@ class SepararGridController extends GetxController {
         .fold<double>(0.00, (acm, el) => acm + el.quantidadeSeparacao);
   }
 
+  ExpedicaoSepararItemConsultaModel findItem(String Item) {
+    final el = _itensGrid.where((el) => el.item == Item).toList();
+    return el.first;
+  }
+
   bool existsBarCode(String barCode) {
     final el = _itensGrid.where((el) => el.codigoBarras == barCode).toList();
     if (el.isEmpty) return false;
@@ -176,6 +183,14 @@ class SepararGridController extends GetxController {
     }
   }
 
+  Color colorRow(ExpedicaoSepararItemConsultaModel item) {
+    if (item.quantidade == item.quantidadeSeparacao) {
+      return Colors.green[100]!;
+    }
+
+    return Colors.white;
+  }
+
   iconIndicator(ExpedicaoSepararItemConsultaModel item) {
     if (item.quantidade == item.quantidadeSeparacao) {
       return const ComplitAnimationIconWidget();
@@ -183,6 +198,16 @@ class SepararGridController extends GetxController {
 
     if (item.quantidade < item.quantidadeSeparacao) {
       return const AlertAnimationIconWidget();
+    }
+
+    if (_processoExecutavel.codSetorEstoque != null) {
+      if (item.codSetorEstoque != _processoExecutavel.codSetorEstoque) {
+        return const Icon(
+          BootstrapIcons.ban,
+          color: Colors.red,
+          size: 17,
+        );
+      }
     }
 
     return const BoxAnimationIconWidget();

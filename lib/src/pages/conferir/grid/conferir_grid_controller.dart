@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
@@ -88,6 +89,11 @@ class ConferirGridController extends GetxController {
         .fold<double>(0.00, (acm, el) => acm + el.quantidadeConferida);
   }
 
+  ExpedicaoConferirItemConsultaModel findItem(String Item) {
+    final el = _itensGrid.where((el) => el.item == Item).toList();
+    return el.first;
+  }
+
   bool existsBarCode(String barCode) {
     final el = _itensGrid.where((el) => el.codigoBarras == barCode).toList();
     if (el.isEmpty) return false;
@@ -146,6 +152,14 @@ class ConferirGridController extends GetxController {
     for (var el in conferirItem) {
       updateGrid(el);
     }
+  }
+
+  Color colorRow(ExpedicaoConferirItemConsultaModel item) {
+    if (item.quantidade == item.quantidadeConferida) {
+      return Colors.green[100]!;
+    }
+
+    return Colors.white;
   }
 
   iconIndicator(ExpedicaoConferirItemConsultaModel item) {

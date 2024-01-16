@@ -1,8 +1,12 @@
-import 'package:app_expedicao/src/routes/app_router.dart';
+import 'dart:io' as io;
+
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
+import 'package:app_expedicao/src/routes/app_router.dart';
+import 'package:app_expedicao/src/app/app_socket_config.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_model.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
 import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
@@ -11,8 +15,9 @@ import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.da
 import 'package:app_expedicao/src/service/conferir_separacao_adicionar_service.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget.dart';
 import 'package:app_expedicao/src/pages/common/widget/loading_sever_dialog_widget.dart';
-import 'package:app_expedicao/src/pages/separarado_carrinhos/separarado_carrinhos_controller.dart';
 import 'package:app_expedicao/src/pages/carrinho/widget/adicionar_carrinho_dialog_widget.dart';
+import 'package:app_expedicao/src/pages/Identificacao/wedgets/identificacao_dialog_widget.dart';
+import 'package:app_expedicao/src/pages/separarado_carrinhos/separarado_carrinhos_controller.dart';
 import 'package:app_expedicao/src/repository/expedicao_separar_item/separar_item_event_repository.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
 import 'package:app_expedicao/src/repository/expedicao_separar/separar_event_repository.dart';
@@ -28,7 +33,6 @@ import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_model.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/service/separar_services.dart';
-import 'package:app_expedicao/src/app/app_socket_config.dart';
 
 class SepararController extends GetxController {
   bool _iniciada = false;
@@ -112,8 +116,24 @@ class SepararController extends GetxController {
     _removeAllliteners();
     historicoController.dispose();
     observacaoController.dispose();
-
     super.onClose();
+  }
+
+  KeyEventResult handleKeyEvent(RawKeyEvent event) {
+    if (event is RawKeyDownEvent &&
+        event.logicalKey == LogicalKeyboardKey.escape) {
+      ConfirmationDialogWidget.show(
+        context: Get.context!,
+        message: 'Deseja realmente sair?',
+        detail: 'A tela será fechada e a separação não será  cancelada.',
+      ).then((value) {
+        if (value != null && value) {
+          io.exit(0);
+        }
+      });
+    }
+
+    return KeyEventResult.ignored;
   }
 
   Future<void> _fillGridSepararItens() async {
@@ -296,8 +316,11 @@ class SepararController extends GetxController {
     }
   }
 
-  void configuracao() {
-    Get.toNamed(AppRouter.login);
+  Future<void> configuracao() async {
+    final confirmation = await IdentificacaoDialogWidget().show();
+    if (confirmation != null) {
+      Get.offNamed(AppRouter.apiConfig);
+    }
   }
 
   _liteners() {

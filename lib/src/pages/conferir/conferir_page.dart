@@ -18,81 +18,85 @@ class ConferirPage extends StatelessWidget {
 
     return GetBuilder<ConferirController>(
       builder: (controller) {
-        return Scaffold(
-          body: SizedBox.expand(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SpaceButtonsHeadFormElement(
-                  width: double.infinity,
-                  children: [
-                    ButtonHeadForm(
-                      title: controller.iniciada
-                          ? 'Pausar Conferencia'
-                          : 'Iniciar Conferencia',
-                      icon: controller.iniciada
-                          ? const Icon(
-                              BootstrapIcons.pause_btn_fill,
-                              color: Colors.white,
-                              size: 33,
-                            )
-                          : const Icon(
-                              BootstrapIcons.play_btn_fill,
-                              color: Colors.white,
-                              size: 33,
-                            ),
-                    ),
-                    ButtonHeadForm(
-                      title: 'Conferir Carrinho',
-                      onPressed: controller.adicionarCarrinho,
-                      icon: const Icon(
-                        BootstrapIcons.cart4,
-                        color: Colors.white,
-                        size: 33,
+        return RawKeyboardListener(
+          focusNode: FocusNode(),
+          onKey: controller.handleKeyEvent,
+          child: Scaffold(
+            body: SizedBox.expand(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SpaceButtonsHeadFormElement(
+                    width: double.infinity,
+                    children: [
+                      ButtonHeadForm(
+                        title: controller.iniciada
+                            ? 'Pausar Conferencia'
+                            : 'Iniciar Conferencia',
+                        icon: controller.iniciada
+                            ? const Icon(
+                                BootstrapIcons.pause_btn_fill,
+                                color: Colors.white,
+                                size: 33,
+                              )
+                            : const Icon(
+                                BootstrapIcons.play_btn_fill,
+                                color: Colors.white,
+                                size: 33,
+                              ),
                       ),
-                    ),
-                    ButtonHeadForm(
-                      title: 'Histórico/Observação',
-                      onPressed: controller.adicionarObservacao,
-                      icon: const Icon(
-                        BootstrapIcons.file_text_fill,
-                        color: Colors.white,
-                        size: 33,
+                      ButtonHeadForm(
+                        title: 'Conferir Carrinho',
+                        onPressed: controller.adicionarCarrinho,
+                        icon: const Icon(
+                          BootstrapIcons.cart4,
+                          color: Colors.white,
+                          size: 33,
+                        ),
                       ),
-                    ),
-                    ButtonHeadForm(
-                      title: 'Ajuste de carrinho',
-                      onPressed: () {},
-                      icon: const Icon(
-                        BootstrapIcons.exclamation_circle_fill,
-                        color: Colors.white,
-                        size: 33,
+                      ButtonHeadForm(
+                        title: 'Histórico/Observação',
+                        onPressed: controller.adicionarObservacao,
+                        icon: const Icon(
+                          BootstrapIcons.file_text_fill,
+                          color: Colors.white,
+                          size: 33,
+                        ),
                       ),
-                    ),
-                    ButtonHeadForm(
-                      title: 'Finalizar Conferencia',
-                      onPressed: controller.finalizarSeparacao,
-                      icon: const Icon(
-                        BootstrapIcons.grid_3x3_gap_fill,
-                        color: Colors.white,
-                        size: 33,
+                      ButtonHeadForm(
+                        title: 'Ajuste de carrinho',
+                        onPressed: () {},
+                        icon: const Icon(
+                          BootstrapIcons.exclamation_circle_fill,
+                          color: Colors.white,
+                          size: 33,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
+                      ButtonHeadForm(
+                        title: 'Finalizar Conferencia',
+                        onPressed: controller.finalizarSeparacao,
+                        icon: const Icon(
+                          BootstrapIcons.grid_3x3_gap_fill,
+                          color: Colors.white,
+                          size: 33,
+                        ),
+                      ),
+                    ],
+                  ),
 
-                //** CONFERIR CARRINHOS **//
-                ConferirCarrinhoPage(
-                  size: Size(size.width, (size.height - 81) * .43),
-                ),
+                  //** CONFERIR CARRINHOS **//
+                  ConferirCarrinhoPage(
+                    size: Size(size.width, (size.height - 81) * .43),
+                  ),
 
-                ConferidoCarrinhoPage(
-                  size: Size(size.width, ((size.height - 81) * .57)),
-                ),
+                  ConferidoCarrinhoPage(
+                    size: Size(size.width, ((size.height - 81) * .57)),
+                  ),
 
-                //** FOOTER **//
-                const FooterPage()
-              ],
+                  //** FOOTER **//
+                  const FooterPage()
+                ],
+              ),
             ),
           ),
         );

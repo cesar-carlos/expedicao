@@ -8,9 +8,9 @@ import 'package:app_expedicao/src/app/app_platform.dart';
 class WindowManagerConfig {
   final WindowOptions _windowOptions = const WindowOptions(
     center: true,
-    size: ui.Size(1300, 800),
+    size: ui.Size(1250, 720),
     title: 'Expedição de Estoque',
-    minimumSize: ui.Size(1300, 800),
+    minimumSize: ui.Size(1250, 720),
     backgroundColor: Colors.transparent,
     titleBarStyle: TitleBarStyle.normal,
   );

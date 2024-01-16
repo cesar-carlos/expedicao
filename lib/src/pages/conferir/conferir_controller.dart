@@ -1,6 +1,8 @@
+import 'dart:io' as io;
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:app_expedicao/src/service/conferir_services.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_model.dart';
@@ -101,6 +103,23 @@ class ConferirController extends GetxController {
     historicoController.dispose();
     observacaoController.dispose();
     super.onClose();
+  }
+
+  KeyEventResult handleKeyEvent(RawKeyEvent event) {
+    if (event is RawKeyDownEvent &&
+        event.logicalKey == LogicalKeyboardKey.escape) {
+      ConfirmationDialogWidget.show(
+        context: Get.context!,
+        message: 'Deseja realmente sair?',
+        detail: 'A tela será fechada e a separação não será  cancelada.',
+      ).then((value) {
+        if (value != null && value) {
+          io.exit(0);
+        }
+      });
+    }
+
+    return KeyEventResult.ignored;
   }
 
   Future<void> _fillCarrinhoConferir() async {

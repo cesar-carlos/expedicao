@@ -82,9 +82,7 @@ class ManagerController extends GetxController {
       return;
     }
 
-    if (formKey.currentState!.validate()) {
-      print(_file);
-    }
+    if (formKey.currentState!.validate()) {}
   }
 
   @override

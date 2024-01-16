@@ -28,14 +28,11 @@ class LoginController extends GetxController {
     try {
       if (formKey.currentState!.validate()) {
         if (userController.text == 'Administrador' &&
-            passwordController.text == '123') {
+            passwordController.text == 'sql@2012') {
           Get.offNamed(AppRouter.apiConfig);
         } else {
           Get.snackbar("Login", "usuario ou senha inválidos",
-              icon: const Icon(
-                Icons.login_outlined,
-                color: Colors.white,
-              ),
+              icon: const Icon(Icons.login_outlined, color: Colors.white),
               snackPosition: SnackPosition.BOTTOM,
               margin: const EdgeInsets.all(20),
               colorText: Colors.white,
@@ -45,10 +42,7 @@ class LoginController extends GetxController {
       }
     } catch (err) {
       Get.snackbar("Login", "usuario ou senha inválidos",
-          icon: const Icon(
-            Icons.login_outlined,
-            color: Colors.white,
-          ),
+          icon: const Icon(Icons.login_outlined, color: Colors.white),
           snackPosition: SnackPosition.BOTTOM,
           margin: const EdgeInsets.all(20),
           colorText: Colors.white,
