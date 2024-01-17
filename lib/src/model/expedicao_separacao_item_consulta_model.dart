@@ -21,7 +21,7 @@ class ExpedicaSeparacaoItemConsultaModel {
   final String? nomeMarca;
   final int? codSetorEstoque;
   final String? nomeSetorEstoque;
-  final String ncm;
+  final String? ncm;
   final String? codigoBarras;
   final String? codigoBarras2;
   final String? codigoReferencia;
@@ -29,6 +29,7 @@ class ExpedicaSeparacaoItemConsultaModel {
   final String? codigoFabricante;
   final String? codigoOriginal;
   final String? endereco;
+  final String? enderecoDescricao;
   final int codSeparador;
   final String nomeSeparador;
   final DateTime dataSeparacao;
@@ -56,7 +57,7 @@ class ExpedicaSeparacaoItemConsultaModel {
     this.nomeMarca,
     this.codSetorEstoque,
     this.nomeSetorEstoque,
-    required this.ncm,
+    this.ncm,
     this.codigoBarras,
     this.codigoBarras2,
     this.codigoReferencia,
@@ -64,6 +65,7 @@ class ExpedicaSeparacaoItemConsultaModel {
     this.codigoFabricante,
     this.codigoOriginal,
     this.endereco,
+    this.enderecoDescricao,
     required this.codSeparador,
     required this.nomeSeparador,
     required this.dataSeparacao,
@@ -102,6 +104,7 @@ class ExpedicaSeparacaoItemConsultaModel {
       codigoFabricante: map['CodigoFabricante'],
       codigoOriginal: map['CodigoOriginal'],
       endereco: map['Endereco'],
+      enderecoDescricao: map['EnderecoDescricao'],
       codSeparador: map['CodSeparador'],
       nomeSeparador: map['NomeSeparador'],
       dataSeparacao: AppHelper.tryStringToDate(map['DataSeparacao']),
@@ -140,6 +143,7 @@ class ExpedicaSeparacaoItemConsultaModel {
       'CodigoFabricante': codigoFabricante,
       'CodigoOriginal': codigoOriginal,
       'Endereco': endereco,
+      'EnderecoDescricao': enderecoDescricao,
       'CodSeparador': codSeparador,
       'NomeSeparador': nomeSeparador,
       'DataSeparacao': dataSeparacao.toIso8601String(),
@@ -150,6 +154,42 @@ class ExpedicaSeparacaoItemConsultaModel {
 
   @override
   String toString() {
-    return 'ExpedicaSeparacaoItemConsultaModel(codEmpresa: $codEmpresa, codSepararEstoque: $codSepararEstoque, item: $item, sessionId: $sessionId, situacao: $situacao, codCarrinho: $codCarrinho, nomeCarrinho: $nomeCarrinho, codigoBarrasCarrinho: $codigoBarrasCarrinho, codCarrinhoPercurso: $codCarrinhoPercurso, itemCarrinhoPercurso: $itemCarrinhoPercurso, codProduto: $codProduto, nomeProduto: $nomeProduto, codUnidadeMedida: $codUnidadeMedida, nomeUnidadeMedida: $nomeUnidadeMedida, codGrupoProduto: $codGrupoProduto, nomeGrupoProduto: $nomeGrupoProduto, codMarca: $codMarca, nomeMarca: $nomeMarca, codSetorEstoque: $codSetorEstoque, nomeSetorEstoque: $nomeSetorEstoque, ncm: $ncm, codigoBarras: $codigoBarras, codigoBarras2: $codigoBarras2, codigoReferencia: $codigoReferencia, codigoFornecedor: $codigoFornecedor, codigoFabricante: $codigoFabricante, codigoOriginal: $codigoOriginal, endereco: $endereco, codSeparador: $codSeparador, nomeSeparador: $nomeSeparador, dataSeparacao: $dataSeparacao, horaSeparacao: $horaSeparacao, quantidade: $quantidade)';
+    return '''
+      ExpedicaSeparacaoItemConsultaModel(
+        codEmpresa: $codEmpresa, 
+        codSepararEstoque: $codSepararEstoque, 
+        item: $item, 
+        sessionId: $sessionId, 
+        situacao: $situacao, 
+        codCarrinho: $codCarrinho, 
+        nomeCarrinho: $nomeCarrinho, 
+        codigoBarrasCarrinho: $codigoBarrasCarrinho, 
+        codCarrinhoPercurso: $codCarrinhoPercurso, 
+        itemCarrinhoPercurso: $itemCarrinhoPercurso, 
+        codProduto: $codProduto, 
+        nomeProduto: $nomeProduto, 
+        codUnidadeMedida: $codUnidadeMedida, 
+        nomeUnidadeMedida: $nomeUnidadeMedida, 
+        codGrupoProduto: $codGrupoProduto, 
+        nomeGrupoProduto: $nomeGrupoProduto, 
+        codMarca: $codMarca, 
+        nomeMarca: $nomeMarca, 
+        codSetorEstoque: $codSetorEstoque, 
+        nomeSetorEstoque: $nomeSetorEstoque, 
+        ncm: $ncm, 
+        codigoBarras: $codigoBarras, 
+        codigoBarras2: $codigoBarras2, 
+        codigoReferencia: $codigoReferencia, 
+        codigoFornecedor: $codigoFornecedor, 
+        codigoFabricante: $codigoFabricante, 
+        codigoOriginal: $codigoOriginal, 
+        endereco: $endereco, 
+        enderecoDescricao: $enderecoDescricao, 
+        codSeparador: $codSeparador, 
+        nomeSeparador: $nomeSeparador, 
+        dataSeparacao: $dataSeparacao, 
+        horaSeparacao: $horaSeparacao, 
+        quantidade: $quantidade)
+    ''';
   }
 }

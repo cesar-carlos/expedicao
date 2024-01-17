@@ -21,7 +21,6 @@ class ExpedicaoConferirItemConsultaModel {
   final String? nomeMarca;
   final int? codSetorEstoque;
   final String? nomeSetorEstoque;
-
   final String? ncm;
   final String? codigoBarras;
   final String? codigoBarras2;
@@ -30,6 +29,7 @@ class ExpedicaoConferirItemConsultaModel {
   final String? codigoFabricante;
   final String? codigoOriginal;
   final String? endereco;
+  final String? enderecoDescricao;
   final double quantidade;
   final double quantidadeConferida;
 
@@ -62,6 +62,7 @@ class ExpedicaoConferirItemConsultaModel {
     this.codigoFabricante,
     this.codigoOriginal,
     this.endereco,
+    this.enderecoDescricao,
     required this.quantidade,
     required this.quantidadeConferida,
   });
@@ -95,6 +96,7 @@ class ExpedicaoConferirItemConsultaModel {
     String? codigoFabricante,
     String? codigoOriginal,
     String? endereco,
+    String? enderecoDescricao,
     double? quantidade,
     double? quantidadeConferida,
   }) {
@@ -127,6 +129,7 @@ class ExpedicaoConferirItemConsultaModel {
       codigoFabricante: codigoFabricante ?? this.codigoFabricante,
       codigoOriginal: codigoOriginal ?? this.codigoOriginal,
       endereco: endereco ?? this.endereco,
+      enderecoDescricao: enderecoDescricao ?? this.enderecoDescricao,
       quantidade: quantidade ?? this.quantidade,
       quantidadeConferida: quantidadeConferida ?? this.quantidadeConferida,
     );
@@ -162,6 +165,7 @@ class ExpedicaoConferirItemConsultaModel {
       codigoFabricante: map['CodigoFabricante'],
       codigoOriginal: map['CodigoOriginal'],
       endereco: map['Endereco'],
+      enderecoDescricao: map['EnderecoDescricao'],
       quantidade: AppHelper.stringToDouble(map['Quantidade']),
       quantidadeConferida: AppHelper.stringToDouble(map['QuantidadeConferida']),
     );
@@ -197,6 +201,7 @@ class ExpedicaoConferirItemConsultaModel {
       'CodigoFabricante': codigoFabricante,
       'CodigoOriginal': codigoOriginal,
       'Endereco': endereco,
+      'EnderecoDescricao': enderecoDescricao,
       'Quantidade': quantidade.toStringAsFixed(4),
       'QuantidadeConferida': quantidadeConferida.toStringAsFixed(4),
     };
@@ -208,6 +213,39 @@ class ExpedicaoConferirItemConsultaModel {
 
   @override
   String toString() {
-    return 'ExpedicaoConferirItemConsultaModel(codEmpresa: $codEmpresa, codConferir: $codConferir, item: $item, origem: $origem, codOrigem: $codOrigem, codCarrinhoPercurso: $codCarrinhoPercurso, itemCarrinhoPercurso: $itemCarrinhoPercurso, codCarrinho: $codCarrinho, codProduto: $codProduto, nomeProduto: $nomeProduto, ativo: $ativo, codTipoProduto: $codTipoProduto, codUnidadeMedida: $codUnidadeMedida, nomeUnidadeMedida: $nomeUnidadeMedida, codGrupoProduto: $codGrupoProduto, nomeGrupoProduto: $nomeGrupoProduto, codMarca: $codMarca, nomeMarca: $nomeMarca, codSetorEstoque: $codSetorEstoque, nomeSetorEstoque: $nomeSetorEstoque, ncm: $ncm, codigoBarras: $codigoBarras, codigoBarras2: $codigoBarras2, codigoReferencia: $codigoReferencia, codigoFornecedor: $codigoFornecedor, codigoFabricante: $codigoFabricante, codigoOriginal: $codigoOriginal, endereco: $endereco, quantidade: $quantidade, quantidadeConferida: $quantidadeConferida)';
+    return '''
+      ExpedicaoConferirItemConsultaModel(
+        codEmpresa: $codEmpresa, 
+        codConferir: $codConferir, 
+        item: $item, 
+        origem: $origem, 
+        codOrigem: $codOrigem, 
+        codCarrinhoPercurso: $codCarrinhoPercurso, 
+        itemCarrinhoPercurso: $itemCarrinhoPercurso, 
+        codCarrinho: $codCarrinho, 
+        codProduto: $codProduto, 
+        nomeProduto: $nomeProduto, 
+        ativo: $ativo, 
+        codTipoProduto: $codTipoProduto, 
+        codUnidadeMedida: $codUnidadeMedida, 
+        nomeUnidadeMedida: $nomeUnidadeMedida, 
+        codGrupoProduto: $codGrupoProduto, 
+        nomeGrupoProduto: $nomeGrupoProduto, 
+        codMarca: $codMarca, 
+        nomeMarca: $nomeMarca, 
+        codSetorEstoque: $codSetorEstoque, 
+        nomeSetorEstoque: $nomeSetorEstoque, 
+        ncm: $ncm, 
+        codigoBarras: $codigoBarras, 
+        codigoBarras2: $codigoBarras2, 
+        codigoReferencia: $codigoReferencia, 
+        codigoFornecedor: $codigoFornecedor, 
+        codigoFabricante: $codigoFabricante, 
+        codigoOriginal: $codigoOriginal, 
+        endereco: $endereco, 
+        enderecoDescricao: $enderecoDescricao, 
+        quantidade: $quantidade, 
+        quantidadeConferida: $quantidadeConferida)
+    ''';
   }
 }

@@ -7,8 +7,9 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class SeparacaoCarrinhoGridController extends GetxController {
   static const gridName = 'separacaoCarrinhoGrid';
+
   final DataGridController dataGridController = DataGridController();
-  late List<ExpedicaSeparacaoItemConsultaModel> _itensGrid;
+  late List<ExpedicaSeparacaoItemConsultaModel> _itensGrid = [];
 
   List<ExpedicaSeparacaoItemConsultaModel> get itens => _itensGrid;
   List<ExpedicaSeparacaoItemConsultaModel> get itensSort =>
@@ -19,13 +20,6 @@ class SeparacaoCarrinhoGridController extends GetxController {
   //eventos
   void Function(ExpedicaSeparacaoItemConsultaModel item)? onPressedEditItem;
   void Function(ExpedicaSeparacaoItemConsultaModel item)? onPressedRemoveItem;
-
-  @override
-  void onInit() {
-    super.onInit();
-
-    _itensGrid = [];
-  }
 
   void addGrid(ExpedicaSeparacaoItemConsultaModel item) {
     _itensGrid.add(item);

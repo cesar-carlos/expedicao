@@ -126,6 +126,10 @@ class ConferirSource extends DataGridSource {
                   columnName: 'endereco',
                   value: i.endereco,
                 ),
+                DataGridCell<String>(
+                  columnName: 'enderecoDescricao',
+                  value: i.enderecoDescricao,
+                ),
                 DataGridCell<double>(
                   columnName: 'quantidade',
                   value: i.quantidade,

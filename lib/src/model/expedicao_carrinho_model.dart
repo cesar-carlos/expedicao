@@ -57,6 +57,14 @@ class ExpedicaoCarrinhoModel {
 
   @override
   String toString() {
-    return 'ExpedicaoCarrinhoModel(codEmpresa: $codEmpresa, codCarrinho: $codCarrinho, descricao: $descricao, ativo: $ativo, codigoBarras: $codigoBarras, situacao: $situacao)';
+    return '''
+      ExpedicaoCarrinhoModel(
+        codEmpresa: $codEmpresa, 
+        codCarrinho: $codCarrinho, 
+        descricao: $descricao, 
+        ativo: $ativo, 
+        codigoBarras: $codigoBarras, 
+        situacao: $situacao)
+    ''';
   }
 }

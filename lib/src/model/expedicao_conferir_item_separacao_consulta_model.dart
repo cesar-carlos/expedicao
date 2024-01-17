@@ -24,7 +24,7 @@ class ExpedicaoConferirItemSeparacaoConsultaModel {
   final String? nomeMarca;
   final int? codSetorEstoque;
   final String? nomeSetorEstoque;
-  final String ncm;
+  final String? ncm;
   final String? codigoBarras;
   final String? codigoBarras2;
   final String? codigoReferencia;
@@ -32,6 +32,7 @@ class ExpedicaoConferirItemSeparacaoConsultaModel {
   final String? codigoFabricante;
   final String? codigoOriginal;
   final String? endereco;
+  final String? enderecoDescricao;
   final double quantidadeSeparacao;
 
   ExpedicaoConferirItemSeparacaoConsultaModel({
@@ -58,7 +59,7 @@ class ExpedicaoConferirItemSeparacaoConsultaModel {
     this.nomeMarca,
     this.codSetorEstoque,
     this.nomeSetorEstoque,
-    required this.ncm,
+    this.ncm,
     this.codigoBarras,
     this.codigoBarras2,
     this.codigoReferencia,
@@ -66,6 +67,7 @@ class ExpedicaoConferirItemSeparacaoConsultaModel {
     this.codigoFabricante,
     this.codigoOriginal,
     this.endereco,
+    this.enderecoDescricao,
     required this.quantidadeSeparacao,
   });
 
@@ -101,6 +103,7 @@ class ExpedicaoConferirItemSeparacaoConsultaModel {
     String? codigoFabricante,
     String? codigoOriginal,
     String? endereco,
+    String? enderecoDescricao,
     double? quantidadeSeparacao,
   }) {
     return ExpedicaoConferirItemSeparacaoConsultaModel(
@@ -134,6 +137,7 @@ class ExpedicaoConferirItemSeparacaoConsultaModel {
       codigoFabricante: codigoFabricante ?? this.codigoFabricante,
       codigoOriginal: codigoOriginal ?? this.codigoOriginal,
       endereco: endereco ?? this.endereco,
+      enderecoDescricao: enderecoDescricao ?? this.enderecoDescricao,
       codSetorEstoque: codSetorEstoque ?? this.codSetorEstoque,
       quantidadeSeparacao: quantidadeSeparacao ?? this.quantidadeSeparacao,
     );
@@ -173,6 +177,7 @@ class ExpedicaoConferirItemSeparacaoConsultaModel {
       codigoFabricante: map['CodigoFabricante'],
       codigoOriginal: map['CodigoOriginal'],
       endereco: map['Endereco'],
+      enderecoDescricao: map['EnderecoDescricao'],
       quantidadeSeparacao: AppHelper.stringToDouble(map['QuantidadeSeparacao']),
     );
   }
@@ -210,7 +215,48 @@ class ExpedicaoConferirItemSeparacaoConsultaModel {
       'CodigoFabricante': codigoFabricante,
       'CodigoOriginal': codigoOriginal,
       'Endereco': endereco,
+      'EnderecoDescricao': enderecoDescricao,
       'QuantidadeSeparacao': quantidadeSeparacao.toStringAsFixed(4),
     };
+  }
+
+  @override
+  String toString() {
+    return '''
+      ExpedicaoConferirItemSeparacaoConsultaModel(
+        codEmpresa: $codEmpresa, 
+        codSepararEstoque: $codSepararEstoque, 
+        codCarrinhoPercurso: $codCarrinhoPercurso, 
+        itemCarrinhoPercurso: $itemCarrinhoPercurso, 
+        situacao: $situacao, 
+        origem: $origem, 
+        codOrigem: $codOrigem, 
+        codPrioridade: $codPrioridade, 
+        nomePrioridade: $nomePrioridade, 
+        codCarrinho: $codCarrinho, 
+        nomeCarrinho: $nomeCarrinho, 
+        codigoBarrasCarrinho: $codigoBarrasCarrinho, 
+        situacaoCarrinho: $situacaoCarrinho, 
+        codProduto: $codProduto, 
+        nomeProduto: $nomeProduto, 
+        codUnidadeMedida: $codUnidadeMedida, 
+        nomeUnidadeMedida: $nomeUnidadeMedida, 
+        codGrupoProduto: $codGrupoProduto, 
+        nomeGrupoProduto: $nomeGrupoProduto, 
+        codMarca: $codMarca, 
+        nomeMarca: $nomeMarca, 
+        codSetorEstoque: $codSetorEstoque, 
+        nomeSetorEstoque: $nomeSetorEstoque, 
+        ncm: $ncm, 
+        codigoBarras: $codigoBarras, 
+        codigoBarras2: $codigoBarras2, 
+        codigoReferencia: $codigoReferencia, 
+        codigoFornecedor: $codigoFornecedor, 
+        codigoFabricante: $codigoFabricante, 
+        codigoOriginal: $codigoOriginal, 
+        endereco: $endereco, 
+        enderecoDescricao: $enderecoDescricao, 
+        quantidadeSeparacao: $quantidadeSeparacao
+    )''';
   }
 }

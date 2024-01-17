@@ -136,6 +136,10 @@ class SepararSetorSource extends DataGridSource {
                   columnName: 'endereco',
                   value: i.endereco,
                 ),
+                DataGridCell<String>(
+                  columnName: 'EnderecoDescricao',
+                  value: i.enderecoDescricao,
+                ),
                 DataGridCell<double>(
                   columnName: 'quantidade',
                   value: i.quantidade,

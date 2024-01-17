@@ -108,6 +108,10 @@ class ConferenciaCarrinhoGridSource extends DataGridSource {
                 columnName: 'endereco',
                 value: i.endereco,
               ),
+              DataGridCell<String>(
+                columnName: 'enderecoDescricao',
+                value: i.enderecoDescricao,
+              ),
               DataGridCell<int>(
                 columnName: 'codConferente',
                 value: i.codConferente,

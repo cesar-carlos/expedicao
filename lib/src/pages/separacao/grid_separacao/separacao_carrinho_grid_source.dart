@@ -115,6 +115,10 @@ class SeparacaoCarrinhoGridSource extends DataGridSource {
                 columnName: 'endereco',
                 value: i.endereco,
               ),
+              DataGridCell<String>(
+                columnName: 'EnderecoDescricao',
+                value: i.enderecoDescricao,
+              ),
               DataGridCell<int>(
                 columnName: 'codSeparador',
                 value: i.codSeparador,

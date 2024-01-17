@@ -26,6 +26,7 @@ class ExpedicaConferenciaItemConsultaModel {
   final String? codigoFabricante;
   final String? codigoOriginal;
   final String? endereco;
+  final String? enderecoDescricao;
   final int codConferente;
   final String nomeConferente;
   final DateTime dataConferencia;
@@ -58,6 +59,7 @@ class ExpedicaConferenciaItemConsultaModel {
     this.codigoFabricante,
     this.codigoOriginal,
     this.endereco,
+    this.enderecoDescricao,
     required this.codConferente,
     required this.nomeConferente,
     required this.dataConferencia,
@@ -91,6 +93,7 @@ class ExpedicaConferenciaItemConsultaModel {
     String? codigoFabricante,
     String? codigoOriginal,
     String? endereco,
+    String? enderecoDescricao,
     int? codConferente,
     String? nomeConferente,
     DateTime? dataConferencia,
@@ -123,6 +126,7 @@ class ExpedicaConferenciaItemConsultaModel {
       codigoFabricante: codigoFabricante ?? this.codigoFabricante,
       codigoOriginal: codigoOriginal ?? this.codigoOriginal,
       endereco: endereco ?? this.endereco,
+      enderecoDescricao: enderecoDescricao ?? this.enderecoDescricao,
       codConferente: codConferente ?? this.codConferente,
       nomeConferente: nomeConferente ?? this.nomeConferente,
       dataConferencia: dataConferencia ?? this.dataConferencia,
@@ -158,6 +162,7 @@ class ExpedicaConferenciaItemConsultaModel {
       codigoFabricante: map['CodigoFabricante'],
       codigoOriginal: map['CodigoOriginal'],
       endereco: map['Endereco'],
+      enderecoDescricao: map['EnderecoDescricao'],
       codConferente: map['CodConferente'],
       nomeConferente: map['NomeConferente'],
       dataConferencia: AppHelper.tryStringToDate(map['DataConferencia']),
@@ -193,6 +198,7 @@ class ExpedicaConferenciaItemConsultaModel {
       'CodigoFabricante': codigoFabricante,
       'CodigoOriginal': codigoOriginal,
       'Endereco': endereco,
+      'EnderecoDescricao': enderecoDescricao,
       'CodConferente': codConferente,
       'NomeConferente': nomeConferente,
       'DataConferencia': dataConferencia,
@@ -203,6 +209,39 @@ class ExpedicaConferenciaItemConsultaModel {
 
   @override
   String toString() {
-    return 'ExpedicaConferenciaItemConsultaModel(codEmpresa: $codEmpresa, codConferir: $codConferir, item: $item, sessionId: $sessionId, situacao: $situacao, codCarrinho: $codCarrinho, nomeCarrinho: $nomeCarrinho, codigoBarrasCarrinho: $codigoBarrasCarrinho, codCarrinhoPercurso: $codCarrinhoPercurso, itemCarrinhoPercurso: $itemCarrinhoPercurso, codProduto: $codProduto, nomeProduto: $nomeProduto, codUnidadeMedida: $codUnidadeMedida, nomeUnidadeMedida: $nomeUnidadeMedida, codGrupoProduto: $codGrupoProduto, nomeGrupoProduto: $nomeGrupoProduto, codMarca: $codMarca, nomeMarca: $nomeMarca, codigoBarras: $codigoBarras, codigoBarras2: $codigoBarras2, codigoReferencia: $codigoReferencia, codigoFornecedor: $codigoFornecedor, codigoFabricante: $codigoFabricante, codigoOriginal: $codigoOriginal, endereco: $endereco, codConferente: $codConferente, nomeConferente: $nomeConferente, dataConferencia: $dataConferencia, horaConferencia: $horaConferencia, quantidade: $quantidade)';
+    return '''
+      ExpedicaConferenciaItemConsultaModel(
+        codEmpresa: $codEmpresa, 
+        codConferir: $codConferir, 
+        item: $item, 
+        sessionId: $sessionId, 
+        situacao: $situacao, 
+        codCarrinho: $codCarrinho, 
+        nomeCarrinho: $nomeCarrinho, 
+        codigoBarrasCarrinho: $codigoBarrasCarrinho, 
+        codCarrinhoPercurso: $codCarrinhoPercurso, 
+        itemCarrinhoPercurso: $itemCarrinhoPercurso, 
+        codProduto: $codProduto, 
+        nomeProduto: $nomeProduto, 
+        codUnidadeMedida: $codUnidadeMedida, 
+        nomeUnidadeMedida: $nomeUnidadeMedida, 
+        codGrupoProduto: $codGrupoProduto, 
+        nomeGrupoProduto: $nomeGrupoProduto, 
+        codMarca: $codMarca, 
+        nomeMarca: $nomeMarca, 
+        codigoBarras: $codigoBarras, 
+        codigoBarras2: $codigoBarras2, 
+        codigoReferencia: $codigoReferencia, 
+        codigoFornecedor: $codigoFornecedor, 
+        codigoFabricante: $codigoFabricante, 
+        codigoOriginal: $codigoOriginal, 
+        endereco: $endereco, 
+        enderecoDescricao: $enderecoDescricao, 
+        codConferente: $codConferente, 
+        nomeConferente: $nomeConferente, 
+        dataConferencia: $dataConferencia, 
+        horaConferencia: $horaConferencia, 
+        quantidade: $quantidade)
+    ''';
   }
 }

@@ -127,6 +127,35 @@ class ExpedicaoCarrinhoConferirConsultaModel {
 
   @override
   String toString() {
-    return 'ExpedicaoCarrinhoConferirConsultaModel(codEmpresa: $codEmpresa, codConferir: $codConferir, origem: $origem, codOrigem: $codOrigem, situacao: $situacao, codCarrinhoPercurso: $codCarrinhoPercurso, itemCarrinhoPercurso: $itemCarrinhoPercurso, codPrioridade: $codPrioridade, nomePrioridade: $nomePrioridade, codCarrinho: $codCarrinho, nomeCarrinho: $nomeCarrinho, codigoBarrasCarrinho: $codigoBarrasCarrinho, situacaoCarrinho: $situacaoCarrinho, dataInicioPercurso: $dataInicioPercurso, horaInicioPercurso: $horaInicioPercurso, codPercursoEstagio: $codPercursoEstagio, nomePercursoEstagio: $nomePercursoEstagio, codUsuarioInicioEstagio: $codUsuarioInicioEstagio, nomeUsuarioInicioEstagio: $nomeUsuarioInicioEstagio, dataInicioEstagio: $dataInicioEstagio, horaInicioEstagio: $horaInicioEstagio, codUsuarioFinalizacaoEstagio: $codUsuarioFinalizacaoEstagio, nomeUsuarioFinalizacaoEstagio: $nomeUsuarioFinalizacaoEstagio, dataFinalizacaoEstagio: $dataFinalizacaoEstagio, horaFinalizacaoEstagio: $horaFinalizacaoEstagio, totalItemConferir: $totalItemConferir, totalItemConferido: $totalItemConferido)';
+    return '''
+      ExpedicaoCarrinhoConferirConsultaModel(
+        codEmpresa: $codEmpresa, 
+        codConferir: $codConferir, 
+        origem: $origem, 
+        codOrigem: $codOrigem, 
+        situacao: $situacao, 
+        codCarrinhoPercurso: $codCarrinhoPercurso, 
+        itemCarrinhoPercurso: $itemCarrinhoPercurso, 
+        codPrioridade: $codPrioridade, 
+        nomePrioridade: $nomePrioridade, 
+        codCarrinho: $codCarrinho, 
+        nomeCarrinho: $nomeCarrinho, 
+        codigoBarrasCarrinho: $codigoBarrasCarrinho, 
+        situacaoCarrinho: $situacaoCarrinho, 
+        dataInicioPercurso: $dataInicioPercurso, 
+        horaInicioPercurso: $horaInicioPercurso, 
+        codPercursoEstagio: $codPercursoEstagio, 
+        nomePercursoEstagio: $nomePercursoEstagio, 
+        codUsuarioInicioEstagio: $codUsuarioInicioEstagio, 
+        nomeUsuarioInicioEstagio: $nomeUsuarioInicioEstagio, 
+        dataInicioEstagio: $dataInicioEstagio, 
+        horaInicioEstagio: $horaInicioEstagio, 
+        codUsuarioFinalizacaoEstagio: $codUsuarioFinalizacaoEstagio, 
+        nomeUsuarioFinalizacaoEstagio: $nomeUsuarioFinalizacaoEstagio, 
+        dataFinalizacaoEstagio: $dataFinalizacaoEstagio, 
+        horaFinalizacaoEstagio: $horaFinalizacaoEstagio, 
+        totalItemConferir: $totalItemConferir, 
+        totalItemConferido: $totalItemConferido)    
+    ''';
   }
 }

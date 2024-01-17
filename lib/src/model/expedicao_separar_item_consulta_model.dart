@@ -19,7 +19,7 @@ class ExpedicaoSepararItemConsultaModel {
   final String? nomeMarca;
   final int? codSetorEstoque;
   final String? nomeSetorEstoque;
-  final String ncm;
+  final String? ncm;
   final String? codigoBarras;
   final String? codigoBarras2;
   final String? codigoReferencia;
@@ -27,6 +27,7 @@ class ExpedicaoSepararItemConsultaModel {
   final String? codigoFabricante;
   final String? codigoOriginal;
   final String? endereco;
+  final String? enderecoDescricao;
   final int codLocaArmazenagem;
   final String nomeLocaArmazenagem;
   final double quantidade;
@@ -53,7 +54,7 @@ class ExpedicaoSepararItemConsultaModel {
     this.nomeMarca,
     this.codSetorEstoque,
     this.nomeSetorEstoque,
-    required this.ncm,
+    this.ncm,
     this.codigoBarras,
     this.codigoBarras2,
     this.codigoReferencia,
@@ -61,6 +62,7 @@ class ExpedicaoSepararItemConsultaModel {
     this.codigoFabricante,
     this.codigoOriginal,
     this.endereco,
+    this.enderecoDescricao,
     required this.codLocaArmazenagem,
     required this.nomeLocaArmazenagem,
     required this.quantidade,
@@ -96,6 +98,7 @@ class ExpedicaoSepararItemConsultaModel {
     String? codigoFabricante,
     String? codigoOriginal,
     String? endereco,
+    String? enderecoDescricao,
     int? codLocaArmazenagem,
     String? nomeLocaArmazenagem,
     double? quantidade,
@@ -130,6 +133,7 @@ class ExpedicaoSepararItemConsultaModel {
       codigoFabricante: codigoFabricante ?? this.codigoFabricante,
       codigoOriginal: codigoOriginal ?? this.codigoOriginal,
       endereco: endereco ?? this.endereco,
+      enderecoDescricao: enderecoDescricao ?? this.enderecoDescricao,
       codLocaArmazenagem: codLocaArmazenagem ?? this.codLocaArmazenagem,
       nomeLocaArmazenagem: nomeLocaArmazenagem ?? this.nomeLocaArmazenagem,
       quantidade: quantidade ?? this.quantidade,
@@ -167,6 +171,7 @@ class ExpedicaoSepararItemConsultaModel {
       codigoFabricante: map['CodigoFabricante'],
       codigoOriginal: map['CodigoOriginal'],
       endereco: map['Endereco'],
+      enderecoDescricao: map['EnderecoDescricao'],
       codLocaArmazenagem: map['CodLocaArmazenagem'],
       nomeLocaArmazenagem: map['NomeLocaArmazenagem'],
       quantidade: AppHelper.stringToDouble(map['Quantidade']),
@@ -204,6 +209,7 @@ class ExpedicaoSepararItemConsultaModel {
       'CodigoFabricante': codigoFabricante,
       'CodigoOriginal': codigoOriginal,
       'Endereco': endereco,
+      'EnderecoDescricao': enderecoDescricao,
       'CodLocaArmazenagem': codLocaArmazenagem,
       'NomeLocaArmazenagem': nomeLocaArmazenagem,
       'Quantidade': quantidade.toStringAsFixed(4),
@@ -215,6 +221,41 @@ class ExpedicaoSepararItemConsultaModel {
 
   @override
   String toString() {
-    return 'ExpedicaoSepararItemConsultaModel(codEmpresa: $codEmpresa, codSepararEstoque: $codSepararEstoque, item: $item, origem: $origem, codOrigem: $codOrigem, itemOrigem: $itemOrigem, codProduto: $codProduto, nomeProduto: $nomeProduto, ativo: $ativo, codTipoProduto: $codTipoProduto, codUnidadeMedida: $codUnidadeMedida, nomeUnidadeMedida: $nomeUnidadeMedida, codGrupoProduto: $codGrupoProduto, nomeGrupoProduto: $nomeGrupoProduto, codMarca: $codMarca, nomeMarca: $nomeMarca, codSetorEstoque: $codSetorEstoque, nomeSetorEstoque: $nomeSetorEstoque, ncm: $ncm, codigoBarras: $codigoBarras, codigoBarras2: $codigoBarras2, codigoReferencia: $codigoReferencia, codigoFornecedor: $codigoFornecedor, codigoFabricante: $codigoFabricante, codigoOriginal: $codigoOriginal, endereco: $endereco, codLocaArmazenagem: $codLocaArmazenagem, nomeLocaArmazenagem: $nomeLocaArmazenagem, quantidade: $quantidade, quantidadeInterna: $quantidadeInterna, quantidadeExterna: $quantidadeExterna, quantidadeSeparacao: $quantidadeSeparacao)';
+    return '''
+      ExpedicaoSepararItemConsultaModel(
+        codEmpresa: $codEmpresa, 
+        codSepararEstoque: $codSepararEstoque, 
+        item: $item, 
+        origem: $origem, 
+        codOrigem: $codOrigem, 
+        itemOrigem: $itemOrigem, 
+        codProduto: $codProduto, 
+        nomeProduto: $nomeProduto, 
+        ativo: $ativo, 
+        codTipoProduto: $codTipoProduto, 
+        codUnidadeMedida: $codUnidadeMedida, 
+        nomeUnidadeMedida: $nomeUnidadeMedida, 
+        codGrupoProduto: $codGrupoProduto, 
+        nomeGrupoProduto: $nomeGrupoProduto, 
+        codMarca: $codMarca, 
+        nomeMarca: $nomeMarca, 
+        codSetorEstoque: $codSetorEstoque, 
+        nomeSetorEstoque: $nomeSetorEstoque, 
+        ncm: $ncm, 
+        codigoBarras: $codigoBarras, 
+        codigoBarras2: $codigoBarras2, 
+        codigoReferencia: $codigoReferencia, 
+        codigoFornecedor: $codigoFornecedor, 
+        codigoFabricante: $codigoFabricante, 
+        codigoOriginal: $codigoOriginal, 
+        endereco: $endereco, 
+        enderecoDescricao: $enderecoDescricao, 
+        codLocaArmazenagem: $codLocaArmazenagem, 
+        nomeLocaArmazenagem: $nomeLocaArmazenagem, 
+        quantidade: $quantidade, 
+        quantidadeInterna: $quantidadeInterna, 
+        quantidadeExterna: $quantidadeExterna, 
+        quantidadeSeparacao: $quantidadeSeparacao)
+    ''';
   }
 }

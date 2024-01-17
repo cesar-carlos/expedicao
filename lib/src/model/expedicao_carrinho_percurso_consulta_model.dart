@@ -192,6 +192,35 @@ class ExpedicaoCarrinhoPercursoConsultaModel {
 
   @override
   String toString() {
-    return 'ExpedicaoCarrinhoPercursoConsultaModel(codEmpresa: $codEmpresa, codCarrinhoPercurso: $codCarrinhoPercurso, item: $item, codPercursoEstagio: $codPercursoEstagio, origem: $origem, codOrigem: $codOrigem, situacao: $situacao, codCarrinho: $codCarrinho, nomeCarrinho: $nomeCarrinho, codigoBarrasCarrinho: $codigoBarrasCarrinho, ativo: $ativo, dataInicio: $dataInicio, horaInicio: $horaInicio, dataFinalizacao: $dataFinalizacao, horaFinalizacao: $horaFinalizacao, codUsuario: $codUsuarioInicio, nomeUsuario: $nomeUsuarioInicio, codSetorEstoque: $codSetorEstoque, nomeSetorEstoque: $nomeSetorEstoque, codCancelamento: $codCancelamento, codMotivoCancelamento: $codMotivoCancelamento, descricaoMotivoCancelamento: $descricaoMotivoCancelamento, dataCancelamento: $dataCancelamento, horaCancelamento: $horaCancelamento, codUsuarioCancelamento: $codUsuarioCancelamento, nomeUsuarioCancelamento: $nomeUsuarioCancelamento, observacaoCancelamento: $observacaoCancelamento)';
+    return '''
+      ExpedicaoCarrinhoPercursoConsultaModel(
+        codEmpresa: $codEmpresa, 
+        codCarrinhoPercurso: $codCarrinhoPercurso, 
+        item: $item, 
+        codPercursoEstagio: $codPercursoEstagio, 
+        origem: $origem, 
+        codOrigem: $codOrigem, 
+        situacao: $situacao, 
+        codCarrinho: $codCarrinho, 
+        nomeCarrinho: $nomeCarrinho, 
+        codigoBarrasCarrinho: $codigoBarrasCarrinho, 
+        ativo: $ativo, 
+        dataInicio: $dataInicio, 
+        horaInicio: $horaInicio, 
+        codUsuarioInicio: $codUsuarioInicio, 
+        nomeUsuarioInicio: $nomeUsuarioInicio, 
+        dataFinalizacao: $dataFinalizacao, 
+        horaFinalizacao: $horaFinalizacao, 
+        codSetorEstoque: $codSetorEstoque, 
+        nomeSetorEstoque: $nomeSetorEstoque, 
+        codCancelamento: $codCancelamento, 
+        codMotivoCancelamento: $codMotivoCancelamento, 
+        descricaoMotivoCancelamento: $descricaoMotivoCancelamento, 
+        dataCancelamento: $dataCancelamento, 
+        horaCancelamento: $horaCancelamento, 
+        codUsuarioCancelamento: $codUsuarioCancelamento, 
+        nomeUsuarioCancelamento: $nomeUsuarioCancelamento, 
+        observacaoCancelamento: $observacaoCancelamento)
+    ''';
   }
 }

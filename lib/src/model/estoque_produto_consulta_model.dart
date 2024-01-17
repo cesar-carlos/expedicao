@@ -18,6 +18,7 @@ class EstoqueProdutoConsultaModel {
   final String? codigoFabricante;
   final String? codigoOriginal;
   final String? endereco;
+  final String? enderecoDescricao;
 
   EstoqueProdutoConsultaModel({
     required this.codProduto,
@@ -39,6 +40,7 @@ class EstoqueProdutoConsultaModel {
     this.codigoFabricante,
     this.codigoOriginal,
     this.endereco,
+    this.enderecoDescricao,
   });
 
   factory EstoqueProdutoConsultaModel.fromJson(Map map) {
@@ -62,6 +64,7 @@ class EstoqueProdutoConsultaModel {
       codigoFabricante: map['CodigoFabricante'],
       codigoOriginal: map['CodigoOriginal'],
       endereco: map['Endereco'],
+      enderecoDescricao: map['EnderecoDescricao'],
     );
   }
 
@@ -86,11 +89,34 @@ class EstoqueProdutoConsultaModel {
       'CodigoFabricante': codigoFabricante,
       'CodigoOriginal': codigoOriginal,
       'Endereco': endereco,
+      'EnderecoDescricao': enderecoDescricao,
     };
   }
 
   @override
   String toString() {
-    return 'EstoqueProdutoConsultaModel(codProduto: $codProduto, nomeProduto: $nomeProduto, ativo: $ativo, codTipoProduto: $codTipoProduto, codUnidadeMedida: $codUnidadeMedida, nomeUnidadeMedida: $nomeUnidadeMedida, codGrupoProduto: $codGrupoProduto, nomeGrupoProduto: $nomeGrupoProduto, codMarca: $codMarca, nomeMarca: $nomeMarca, codSetorEstoque: $codSetorEstoque, ncm: $ncm, codigoBarras: $codigoBarras, codigoBarras2: $codigoBarras2, codigoReferencia: $codigoReferencia, codigoFornecedor: $codigoFornecedor, codigoFabricante: $codigoFabricante, codigoOriginal: $codigoOriginal, endereco: $endereco)';
+    return '''
+      EstoqueProdutoConsultaModel(
+          codProduto: $codProduto, 
+          nomeProduto: $nomeProduto, 
+          ativo: $ativo, 
+          codTipoProduto: $codTipoProduto, 
+          codUnidadeMedida: $codUnidadeMedida, 
+          nomeUnidadeMedida: $nomeUnidadeMedida, 
+          codGrupoProduto: $codGrupoProduto, 
+          nomeGrupoProduto: $nomeGrupoProduto, 
+          codMarca: $codMarca, 
+          nomeMarca: $nomeMarca, 
+          codSetorEstoque: $codSetorEstoque, 
+          ncm: $ncm, 
+          codigoBarras: $codigoBarras, 
+          codigoBarras2: $codigoBarras2, 
+          codigoReferencia: $codigoReferencia, 
+          codigoFornecedor: $codigoFornecedor, 
+          codigoFabricante: $codigoFabricante, 
+          codigoOriginal: $codigoOriginal, 
+          endereco: $endereco, 
+          enderecoDescricao: $enderecoDescricao)
+    ''';
   }
 }

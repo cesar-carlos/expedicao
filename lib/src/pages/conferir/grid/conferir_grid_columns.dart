@@ -408,9 +408,24 @@ class ConferirGridColumns {
 
     _columns.add(
       GridColumn(
-        visible: true,
+        visible: false,
         maximumWidth: 110,
         columnName: 'endereco',
+        label: Container(
+          padding: padding,
+          alignment: Alignment.centerLeft,
+          child: const Text(
+            'Endereço',
+          ),
+        ),
+      ),
+    );
+
+    _columns.add(
+      GridColumn(
+        visible: true,
+        maximumWidth: 110,
+        columnName: 'enderecoDescricao',
         label: Container(
           padding: padding,
           alignment: Alignment.centerLeft,

@@ -57,6 +57,14 @@ class DataBaseServerModel {
 
   @override
   String toString() {
-    return 'DataBaseServerModel(userName: $userName, password: $password, serverName: $serverName, database: $database, databaseName: $databaseName, port: $port)';
+    return '''
+      DataBaseServerModel(
+        userName: $userName, 
+        password: $password, 
+        serverName: $serverName, 
+        database: $database, 
+        databaseName: $databaseName, 
+        port: $port)
+    ''';
   }
 }
