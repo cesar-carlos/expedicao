@@ -29,17 +29,14 @@ class SepararServices {
   }
 
   Future<void> pausa() async {
-    //not implemented
     throw UnimplementedError();
   }
 
   Future<void> retomar() async {
-    //not implemented
     throw UnimplementedError();
   }
 
   Future<void> finalizar() async {
-    //not implemented
     throw UnimplementedError();
   }
 

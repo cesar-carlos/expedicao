@@ -256,6 +256,7 @@ class ExpedicaoSepararItemConsultaModel {
         quantidadeInterna: $quantidadeInterna, 
         quantidadeExterna: $quantidadeExterna, 
         quantidadeSeparacao: $quantidadeSeparacao)
+        
     ''';
   }
 }

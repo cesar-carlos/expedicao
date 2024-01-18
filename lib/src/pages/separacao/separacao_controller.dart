@@ -203,33 +203,18 @@ class SeparacaoController extends GetxController {
       return;
     }
 
-    final isValidQuantitySeparate = validQuantitySeparate(
-      scanValue.trim(),
-      AppHelper.quantityDisplayToDouble(textQuantityValue),
-    );
+    final scanText = scanValue.trim();
+    final scanTextIsBarCode = AppHelper.isBarCode(scanText);
 
-    if (!isValidQuantitySeparate) {
+    final itemSepararConsulta = scanTextIsBarCode
+        ? _separarGridController.findBarCode(scanText)
+        : _separarGridController.findCodProduto(int.parse(scanText));
+
+    if (itemSepararConsulta == null) {
       await ConfirmationDialogMessageWidget.show(
         context: Get.context!,
-        message: 'Quantidade invalida!',
-        detail: 'A quantidade informada é maior que a quantidade a separar!',
-      );
-
-      quantidadeController.text = '1,000';
-      scanController.clear();
-      scanFocusNode.requestFocus();
-      return;
-    }
-
-    final resp = AppHelper.isBarCode(scanValue)
-        ? await _produtoService.consultaPorCodigoBarras(scanValue.trim())
-        : await _produtoService.consultaPorCodigo(int.parse(scanValue.trim()));
-
-    if (resp.left != null) {
-      await ConfirmationDialogMessageWidget.show(
-        context: Get.context!,
-        message: resp.left!.title,
-        detail: resp.left!.message,
+        message: 'Produto não encontrado!',
+        detail: 'Este produto não esta na lista de separação!',
       );
 
       displayController.text = '';
@@ -238,60 +223,94 @@ class SeparacaoController extends GetxController {
       return;
     }
 
-    if (resp.right != null) {
-      final carrinhoPercursoAdicionarItemService =
-          SeparacaoAdicionarItemService(
-        percursoEstagioConsulta: percursoEstagioConsulta,
-      );
+    final carrinhoPercursoAdicionarItemService = SeparacaoAdicionarItemService(
+      percursoEstagioConsulta: percursoEstagioConsulta,
+    );
 
-      final separacaoItemConsulta =
-          await carrinhoPercursoAdicionarItemService.add(
-        codProduto: resp.right!.codProduto,
-        codUnidadeMedida: resp.right!.codUnidadeMedida,
-        quantidade:
-            AppHelper.quantityDisplayToDouble(quantidadeController.text),
-      );
+    double qtdConfDigitada = AppHelper.qtdDisplayToDouble(
+      quantidadeController.text,
+    );
 
-      if (separacaoItemConsulta == null) {
-        await ConfirmationDialogMessageWidget.show(
-          context: Get.context!,
-          message: 'Erro ao adicionar item!',
-          detail: 'Não foi possivel adicionar o item ao carrinho!',
-        );
+    double qtdConferencia = qtdConfDigitada;
+    final unidadesProduto = _separarGridController
+        .findUnidadesProduto(itemSepararConsulta.codProduto);
 
-        displayController.text = '';
-        scanFocusNode.requestFocus();
-        scanController.clear();
-        return;
+    if (unidadesProduto != null) {
+      final unidadeMedida = unidadesProduto
+          .where((el) => el.codigoBarras?.trim() == scanValue.trim())
+          .toList()
+          .firstOrNull;
+
+      if (unidadeMedida != null) {
+        if (unidadeMedida.tipoFatorConversao != 'M') {
+          qtdConferencia = qtdConfDigitada / unidadeMedida.fatorConversao;
+        } else {
+          qtdConferencia = qtdConfDigitada * unidadeMedida.fatorConversao;
+        }
       }
-
-      //ADD ITEM NA GRID
-      displayController.text = resp.right!.nomeProduto;
-      _separacaoGridController.addGrid(separacaoItemConsulta);
-      final indexAdd = _separarGridController
-          .findIndexCodProduto(separacaoItemConsulta.codProduto);
-      _separarGridController.setSelectedRow(indexAdd);
-      _separacaoGridController.update();
-      _separarGridController.update();
-
-      final itemSeparar =
-          _findItemSepararGrid(separacaoItemConsulta.codProduto)!;
-
-      _separarGridController.updateGrid(itemSeparar.copyWith(
-        quantidadeSeparacao:
-            itemSeparar.quantidadeSeparacao + separacaoItemConsulta.quantidade,
-      ));
-
-      scanController.text = '';
-      quantidadeController.text = '1,000';
-      scanFocusNode.requestFocus();
     }
+
+    if ((qtdConferencia + itemSepararConsulta.quantidadeSeparacao) >
+        itemSepararConsulta.quantidade) {
+      await ConfirmationDialogMessageWidget.show(
+        context: Get.context!,
+        message: 'Quantidade invalida!',
+        detail:
+            '''A quantidade informada ${qtdConferencia.toStringAsFixed(3)}, é maior que a quantidade a separar!''',
+      );
+
+      quantidadeController.text = '1,000';
+      scanController.clear();
+      scanFocusNode.requestFocus();
+      return;
+    }
+
+    final separacaoItemConsulta =
+        await carrinhoPercursoAdicionarItemService.add(
+      codProduto: itemSepararConsulta.codProduto,
+      codUnidadeMedida: itemSepararConsulta.codUnidadeMedida,
+      quantidade: qtdConferencia,
+    );
+
+    if (separacaoItemConsulta == null) {
+      await ConfirmationDialogMessageWidget.show(
+        context: Get.context!,
+        message: 'Erro ao adicionar item!',
+        detail: 'Não foi possivel adicionar o item ao carrinho!',
+      );
+
+      displayController.text = '';
+      scanFocusNode.requestFocus();
+      scanController.clear();
+      return;
+    }
+
+    //ADD ITEM NA GRID
+    displayController.text = itemSepararConsulta.nomeProduto;
+    _separacaoGridController.addGrid(separacaoItemConsulta);
+
+    final indexAdd = _separarGridController
+        .findIndexCodProduto(separacaoItemConsulta.codProduto);
+    _separarGridController.setSelectedRow(indexAdd);
+    _separacaoGridController.update();
+    _separarGridController.update();
+
+    final itemSeparar = _findItemSepararGrid(separacaoItemConsulta.codProduto)!;
+
+    _separarGridController.updateGrid(itemSeparar.copyWith(
+      quantidadeSeparacao:
+          itemSeparar.quantidadeSeparacao + separacaoItemConsulta.quantidade,
+    ));
+
+    scanController.text = '';
+    quantidadeController.text = '1,000';
+    scanFocusNode.requestFocus();
   }
 
   bool validQuantitySeparate(String scanText, double value) {
     bool isBarCode = AppHelper.isBarCode(scanText);
     int? codProduto = isBarCode
-        ? _separarGridController.findcodProdutoFromBarCode(scanText.trim())
+        ? _separarGridController.findCodProdutoFromBarCode(scanText.trim())
         : int.parse(scanText.trim());
 
     if (codProduto == null) return false;

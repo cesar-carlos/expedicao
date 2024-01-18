@@ -9,47 +9,46 @@ class SeparacaoCarrinhoGridController extends GetxController {
   static const gridName = 'separacaoCarrinhoGrid';
 
   final DataGridController dataGridController = DataGridController();
-  late List<ExpedicaSeparacaoItemConsultaModel> _itensGrid = [];
+  final List<ExpedicaSeparacaoItemConsultaModel> _itens = [];
 
-  List<ExpedicaSeparacaoItemConsultaModel> get itens => _itensGrid;
+  List<ExpedicaSeparacaoItemConsultaModel> get itens => _itens;
   List<ExpedicaSeparacaoItemConsultaModel> get itensSort =>
-      _itensGrid.toList()..sort((a, b) => b.item.compareTo(a.item));
+      _itens.toList()..sort((a, b) => b.item.compareTo(a.item));
 
   List<DataGridRow> get selectedoRows => dataGridController.selectedRows;
 
-  //eventos
   void Function(ExpedicaSeparacaoItemConsultaModel item)? onPressedEditItem;
   void Function(ExpedicaSeparacaoItemConsultaModel item)? onPressedRemoveItem;
 
   void addGrid(ExpedicaSeparacaoItemConsultaModel item) {
-    _itensGrid.add(item);
+    _itens.add(item);
   }
 
   void addAllGrid(List<ExpedicaSeparacaoItemConsultaModel> itens) {
-    _itensGrid.addAll(itens);
+    _itens.addAll(itens);
   }
 
   void updateGrid(ExpedicaSeparacaoItemConsultaModel item) {
-    final index = _itensGrid.indexWhere((el) => el.item == item.item);
-    _itensGrid[index] = item;
+    final index = _itens.indexWhere((el) => el.item == item.item);
+    _itens[index] = item;
   }
 
   void updateAllGrid(List<ExpedicaSeparacaoItemConsultaModel> itens) {
     for (var el in itens) {
-      final index = _itensGrid.indexWhere((i) => i.item == el.item);
-      _itensGrid[index] = el;
+      final index = _itens.indexWhere((i) => i.item == el.item);
+      _itens[index] = el;
     }
   }
 
   void removeGrid(ExpedicaSeparacaoItemConsultaModel item) {
-    _itensGrid.removeWhere((el) =>
+    _itens.removeWhere((el) =>
         el.codEmpresa == item.codEmpresa &&
         el.codSepararEstoque == item.codSepararEstoque &&
         el.item == item.item);
   }
 
   void removeAllGrid() {
-    _itensGrid.clear();
+    _itens.clear();
   }
 
   void setSelectedRow(int index) {
@@ -64,11 +63,11 @@ class SeparacaoCarrinhoGridController extends GetxController {
   }
 
   double totalQuantity() {
-    return _itensGrid.fold<double>(0.00, (acm, el) => acm + el.quantidade);
+    return _itens.fold<double>(0.00, (acm, el) => acm + el.quantidade);
   }
 
   double totalQtdProduct(int codProduto) {
-    return _itensGrid
+    return _itens
         .where((el) => el.codProduto == codProduto)
         .fold<double>(0.00, (acm, el) => acm + el.quantidade);
   }

@@ -76,7 +76,6 @@ class SepararController extends GetxController {
   @override
   onInit() async {
     super.onInit();
-
     _socketClient = Get.find<AppSocketConfig>();
     _processoExecutavel = Get.find<ProcessoExecutavelModel>();
     _separarConsulta = Get.find<ExpedicaoSepararConsultaModel>();
@@ -138,7 +137,10 @@ class SepararController extends GetxController {
 
   Future<void> _fillGridSepararItens() async {
     final separarItens = await _separarConsultaServices.itensSaparar();
+    final separarUnid = await _separarConsultaServices.itensSapararUnidades();
+
     _separarGridController.addAllGrid(separarItens);
+    _separarGridController.addAllUnidade(separarUnid);
     _separarGridController.update();
   }
 
@@ -307,7 +309,6 @@ class SepararController extends GetxController {
       _expedicaoSituacao = ExpedicaoSituacaoModel.separado;
       _separarConsulta.situacao = ExpedicaoSituacaoModel.separado;
 
-      //ADD CARRINHO PERCURSO CONFERIR
       await ConferirSeparacaoAdicionarService(
         carrinhoPercurso: _carrinhoPercurso!,
       ).execute();

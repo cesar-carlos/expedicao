@@ -245,8 +245,7 @@ class ConferenciaController extends GetxController {
           await carrinhoPercursoAdicionarItemService.add(
         codProduto: resp.right!.codProduto,
         codUnidadeMedida: resp.right!.codUnidadeMedida,
-        quantidade:
-            AppHelper.quantityDisplayToDouble(quantidadeController.text),
+        quantidade: AppHelper.qtdDisplayToDouble(quantidadeController.text),
       );
 
       if (conferenciaItemConsulta == null) {

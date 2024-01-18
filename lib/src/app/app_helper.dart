@@ -75,7 +75,7 @@ class AppHelper {
     }
   }
 
-  static quantityDisplayToDouble(String value) {
+  static qtdDisplayToDouble(String value) {
     return double.parse(value.replaceAll('.', '').replaceAll(',', '.'));
   }
 
