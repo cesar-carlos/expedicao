@@ -22,7 +22,6 @@ import 'package:app_expedicao/src/service/separacao_adicionar_item_service.dart'
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
-import 'package:app_expedicao/src/service/produto_service.dart';
 
 class SeparacaoController extends GetxController {
   final RxBool _viewMode = false.obs;
@@ -32,7 +31,6 @@ class SeparacaoController extends GetxController {
   final ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta;
   final List<RepositoryEventListenerModel> _pageListerner = [];
 
-  late ProdutoService _produtoService;
   late ProcessoExecutavelModel _processoExecutavel;
   late SepararGridController _separarGridController;
   late SeparacaoCarrinhoGridController _separacaoGridController;
@@ -57,7 +55,6 @@ class SeparacaoController extends GetxController {
     super.onInit();
     Get.lazyPut(() => SeparacaoCarrinhoGridController());
 
-    _produtoService = ProdutoService();
     scanController = TextEditingController();
     displayController = TextEditingController(text: '');
     quantidadeController = TextEditingController(text: '1,000');
