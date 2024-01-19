@@ -26,6 +26,7 @@ class SepararPage extends StatelessWidget {
         return RawKeyboardListener(
           focusNode: FocusNode(),
           onKey: controller.handleKeyEvent,
+          autofocus: true,
           child: Scaffold(
             body: SizedBox.expand(
               child: Column(

@@ -1,3 +1,4 @@
+import 'package:app_expedicao/src/pages/common/widget/scan_widget.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
@@ -36,36 +37,11 @@ class ScanSeparacaoItemWidget extends StatelessWidget {
                     children: [
                       Expanded(
                         flex: 5,
-                        child: TextField(
-                          cursorHeight: 22,
-                          enabled: !controller.viewMode,
-                          controller: controller.scanController,
-                          focusNode: controller.scanFocusNode,
-                          onSubmitted: controller.onSubmittedScan,
-                          textAlign: TextAlign.start,
-                          decoration: InputDecoration(
-                            contentPadding:
-                                const EdgeInsets.only(left: 10, right: 10),
-                            prefixIcon: const Icon(
-                              size: 20,
-                              BootstrapIcons.upc,
-                              color: Colors.black87,
-                            ),
-                            suffix: Container(
-                              padding: const EdgeInsets.all(5),
-                              child: const Icon(
-                                size: 15,
-                                BootstrapIcons.search,
-                                color: Colors.black87,
-                              ),
-                            ),
-                            border: const OutlineInputBorder(),
-                            labelText: 'Leitor código de barras',
-                            labelStyle: const TextStyle(
-                              fontSize: 12,
-                              color: Colors.black87,
-                            ),
-                          ),
+                        child: ScanWidget(
+                          viewMode: !controller.viewMode,
+                          scanController: controller.scanController,
+                          scanFocusNode: controller.scanFocusNode,
+                          onSubmittedScan: controller.onSubmittedScan,
                         ),
                       ),
                       const SizedBox(width: 7),

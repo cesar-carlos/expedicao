@@ -49,6 +49,8 @@ class ConferirController extends GetxController {
 
   ExpedicaoConferirConsultaModel get conferirConsulta => _conferirConsulta;
 
+  final FocusNode keyressFocusNode = FocusNode();
+
   bool get iniciada {
     if (_carrinhoPercurso == null) {
       _iniciada = false;
@@ -77,8 +79,8 @@ class ConferirController extends GetxController {
     _conferirConsulta = Get.find<ExpedicaoConferirConsultaModel>();
     _conferirCarrinhosController = Get.find<ConferirCarrinhosController>();
     _conferidoCarrinhosController = Get.find<ConferidoCarrinhosController>();
-
     _expedicaoSituacao = _conferirConsulta.situacao;
+
     _conferirConsultaServices = ConferirConsultaServices(
       codEmpresa: _processoExecutavel.codEmpresa,
       codConferir: _processoExecutavel.codOrigem,
@@ -102,6 +104,7 @@ class ConferirController extends GetxController {
     _removeAllliteners();
     historicoController.dispose();
     observacaoController.dispose();
+    keyressFocusNode.dispose();
     super.onClose();
   }
 
@@ -123,9 +126,8 @@ class ConferirController extends GetxController {
   }
 
   Future<void> _fillCarrinhoConferir() async {
-    final carrinhosConferir =
-        await _conferirConsultaServices.carrinhosConferir();
-    _conferirCarrinhosController.addAllCarrinho(carrinhosConferir);
+    final conferirCarr = await _conferirConsultaServices.carrinhosConferir();
+    _conferirCarrinhosController.addAllCarrinho(conferirCarr);
     _conferirCarrinhosController.update();
   }
 

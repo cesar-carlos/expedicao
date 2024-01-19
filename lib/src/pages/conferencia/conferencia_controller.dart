@@ -11,6 +11,7 @@ import 'package:app_expedicao/src/model/expedicao_conferir_item_consulta_model.d
 import 'package:app_expedicao/src/model/expedicao_conferencia_item_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
 import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog_widget.dart';
+import 'package:app_expedicao/src/pages/Identificacao/wedgets/identificacao_dialog_widget.dart';
 import 'package:app_expedicao/src/repository/expedicao_conferir_item/conferir_item_event_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_conferencia_item/conferencia_item_event_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_event_repository.dart';
@@ -23,7 +24,6 @@ import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 import 'package:app_expedicao/src/service/conferir_consultas_services.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
-import 'package:app_expedicao/src/service/produto_service.dart';
 
 class ConferenciaController extends GetxController {
   final RxBool _viewMode = false.obs;
@@ -33,7 +33,7 @@ class ConferenciaController extends GetxController {
   final ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta;
   final List<RepositoryEventListenerModel> _pageListerner = [];
 
-  late ProdutoService _produtoService;
+  //late ProdutoService _produtoService;
   // ignore: unused_field
   late ProcessoExecutavelModel _processoExecutavel;
 
@@ -54,8 +54,6 @@ class ConferenciaController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-
-    _produtoService = ProdutoService();
     scanController = TextEditingController();
     displayController = TextEditingController(text: '');
     quantidadeController = TextEditingController(text: '1,000');
@@ -96,8 +94,12 @@ class ConferenciaController extends GetxController {
     displayController.dispose();
     scanFocusNode.dispose();
     _viewMode.close();
-
     _removeliteners();
+
+    Get.delete<ConferenciaController>();
+    Get.delete<ConferirGridController>();
+    Get.delete<ConferenciaCarrinhoGridController>();
+
     super.onClose();
   }
 
@@ -132,6 +134,8 @@ class ConferenciaController extends GetxController {
 
   Future<void> _fillGridConferirItens() async {
     final conferirItens = await _conferirConsultasServices.itensConferir();
+    final conferirItensInids =
+        await _conferirConsultasServices.itensConferirUnidades();
 
     final conferirItensCarrinho = conferirItens
         .where((el) =>
@@ -141,6 +145,7 @@ class ConferenciaController extends GetxController {
         .toList();
 
     _conferirGridController.addAllGrid(conferirItensCarrinho);
+    _conferirGridController.addAllUnidade(conferirItensInids);
     _conferirGridController.update();
   }
 
@@ -202,9 +207,14 @@ class ConferenciaController extends GetxController {
       return;
     }
 
-    if (!_conferirGridController.existsBarCode(scanValue.trim()) &&
-        !_conferirGridController.existsCodProduto(
-            AppHelper.tryStringToIntOrZero(scanValue.trim()))) {
+    final scanText = scanValue.trim();
+    final scanTextIsBarCode = AppHelper.isBarCode(scanText);
+
+    final itemConferirConsulta = scanTextIsBarCode
+        ? _conferirGridController.findBarCode(scanText)
+        : _conferirGridController.findCodProduto(int.parse(scanText));
+
+    if (itemConferirConsulta == null) {
       await ConfirmationDialogMessageWidget.show(
         context: Get.context!,
         message: 'Produto não encontrado!',
@@ -217,16 +227,46 @@ class ConferenciaController extends GetxController {
       return;
     }
 
-    final resp = AppHelper.isBarCode(scanValue)
-        ? await _produtoService.consultaPorCodigoBarras(scanValue.trim())
-        : await _produtoService.consultaPorCodigo(int.parse(scanValue.trim()));
+    final carrinhoPercursoAdicionarItemService =
+        ConferenciaAdicionarItemService(
+      percursoEstagioConsulta: percursoEstagioConsulta,
+    );
 
-    //DB RESPOSE ERROR
-    if (resp.left != null) {
+    double qtdConfDigitada = AppHelper.qtdDisplayToDouble(
+      quantidadeController.text,
+    );
+
+    double qtdConferencia = qtdConfDigitada;
+    final unidadesProduto = _conferirGridController
+        .findUnidadesProduto(itemConferirConsulta.codProduto);
+
+    if (unidadesProduto != null) {
+      final unidadeMedida = unidadesProduto
+          .where((el) => el.codigoBarras?.trim() == scanValue.trim())
+          .toList()
+          .firstOrNull;
+
+      if (unidadeMedida != null) {
+        if (unidadeMedida.tipoFatorConversao != 'M') {
+          qtdConferencia = qtdConfDigitada / unidadeMedida.fatorConversao;
+        } else {
+          qtdConferencia = qtdConfDigitada * unidadeMedida.fatorConversao;
+        }
+      }
+    }
+
+    final conferenciaItemConsulta =
+        await carrinhoPercursoAdicionarItemService.add(
+      codProduto: itemConferirConsulta.codProduto,
+      codUnidadeMedida: itemConferirConsulta.codUnidadeMedida,
+      quantidade: qtdConferencia,
+    );
+
+    if (conferenciaItemConsulta == null) {
       await ConfirmationDialogMessageWidget.show(
         context: Get.context!,
-        message: resp.left!.title,
-        detail: resp.left!.message,
+        message: 'Erro ao adicionar item!',
+        detail: 'Não foi possivel conferir o item do carrinho!',
       );
 
       displayController.text = '';
@@ -235,53 +275,25 @@ class ConferenciaController extends GetxController {
       return;
     }
 
-    if (resp.right != null) {
-      final carrinhoPercursoAdicionarItemService =
-          ConferenciaAdicionarItemService(
-        percursoEstagioConsulta: percursoEstagioConsulta,
-      );
+    displayController.text = itemConferirConsulta.nomeProduto;
+    _conferenciaGridController.addGrid(conferenciaItemConsulta);
+    final indexAdd = _conferirGridController
+        .findIndexCodProduto(conferenciaItemConsulta.codProduto);
+    _conferirGridController.setSelectedRow(indexAdd);
+    _conferenciaGridController.update();
+    _conferirGridController.update();
 
-      final conferenciaItemConsulta =
-          await carrinhoPercursoAdicionarItemService.add(
-        codProduto: resp.right!.codProduto,
-        codUnidadeMedida: resp.right!.codUnidadeMedida,
-        quantidade: AppHelper.qtdDisplayToDouble(quantidadeController.text),
-      );
+    final itemSeparar =
+        _findItemConferirGrid(conferenciaItemConsulta.codProduto)!;
 
-      if (conferenciaItemConsulta == null) {
-        await ConfirmationDialogMessageWidget.show(
-          context: Get.context!,
-          message: 'Erro ao adicionar item!',
-          detail: 'Não foi possivel conferir o item do carrinho!',
-        );
+    _conferirGridController.updateGrid(itemSeparar.copyWith(
+      quantidadeConferida:
+          itemSeparar.quantidadeConferida + conferenciaItemConsulta.quantidade,
+    ));
 
-        displayController.text = '';
-        scanFocusNode.requestFocus();
-        scanController.clear();
-        return;
-      }
-
-      //ADD ITEM NA GRID
-      displayController.text = resp.right!.nomeProduto;
-      _conferenciaGridController.addGrid(conferenciaItemConsulta);
-      final indexAdd = _conferirGridController
-          .findIndexCodProduto(conferenciaItemConsulta.codProduto);
-      _conferirGridController.setSelectedRow(indexAdd);
-      _conferenciaGridController.update();
-      _conferirGridController.update();
-
-      final itemSeparar =
-          _findItemConferirGrid(conferenciaItemConsulta.codProduto)!;
-
-      _conferirGridController.updateGrid(itemSeparar.copyWith(
-        quantidadeConferida: itemSeparar.quantidadeConferida +
-            conferenciaItemConsulta.quantidade,
-      ));
-
-      scanController.text = '';
-      quantidadeController.text = '1,000';
-      scanFocusNode.requestFocus();
-    }
+    scanController.text = '';
+    quantidadeController.text = '1,000';
+    scanFocusNode.requestFocus();
   }
 
   bool validQuantitySeparate(String scanText, double value) {
@@ -344,56 +356,6 @@ class ConferenciaController extends GetxController {
     };
   }
 
-  Future<void> onReconferirTudo() async {
-    if (viewMode) {
-      await ConfirmationDialogMessageWidget.show(
-        context: Get.context!,
-        message: 'Não é possivel reconferir!',
-        detail: 'O carrinho esta em modo de visualização..',
-      );
-
-      return;
-    }
-
-    if (_conferenciaGridController.totalQuantity() == 0) {
-      await ConfirmationDialogMessageWidget.show(
-        context: Get.context!,
-        message: 'Não existe itens no carrinho!',
-        detail: 'Não é possivel reconferir, pois não existe itens no carrinho!',
-      );
-
-      return;
-    }
-
-    final bool? confirmation = await ConfirmationDialogWidget.show(
-      context: Get.context!,
-      message: 'Deseja realmente reconferir?',
-      detail: 'Ao reconferir, todos os itens serão removido do carrinho!',
-    );
-
-    if (confirmation != null && confirmation) {
-      ConferenciaRemoverItemService(
-        percursoEstagioConsulta: percursoEstagioConsulta,
-      ).removeAllItensCart();
-
-      final conferenciaItemConsulta = _conferenciaGridController.itens;
-      final List<ExpedicaoConferirItemConsultaModel> itensGridConferir = [];
-      for (var el in conferenciaItemConsulta) {
-        final itemConferir = _findItemConferirGrid(el.codProduto)!;
-
-        itensGridConferir.add(itemConferir.copyWith(
-          quantidadeConferida: 0.00,
-        ));
-      }
-
-      _conferirGridController.updateAllGrid(itensGridConferir);
-      _conferenciaGridController.removeAllGrid();
-
-      _conferirGridController.update();
-      _conferenciaGridController.update();
-    }
-  }
-
   Future<void> onConferirTudo() async {
     final double totalSeparar = _conferirGridController.totalQuantity();
     final double totalSeparado =
@@ -419,13 +381,9 @@ class ConferenciaController extends GetxController {
       return;
     }
 
-    final bool? confirmation = await ConfirmationDialogWidget.show(
-      context: Get.context!,
-      message: 'Deseja separa tudo?',
-      detail: 'Itens com saldo para separação serão adicionados no carrinho!',
-    );
+    final confirmation = await IdentificacaoDialogWidget().show();
 
-    if (confirmation != null && confirmation) {
+    if (confirmation != null) {
       final carrinhoPercursoAdicionarItemService =
           ConferenciaAdicionarItemService(
         percursoEstagioConsulta: percursoEstagioConsulta,
@@ -452,6 +410,52 @@ class ConferenciaController extends GetxController {
           _conferirGridController.update();
         },
       );
+    }
+  }
+
+  Future<void> onReconferirTudo() async {
+    if (viewMode) {
+      await ConfirmationDialogMessageWidget.show(
+        context: Get.context!,
+        message: 'Não é possivel reconferir!',
+        detail: 'O carrinho esta em modo de visualização..',
+      );
+
+      return;
+    }
+
+    if (_conferenciaGridController.totalQuantity() == 0) {
+      await ConfirmationDialogMessageWidget.show(
+        context: Get.context!,
+        message: 'Não existe itens no carrinho!',
+        detail: 'Não é possivel reconferir, pois não existe itens no carrinho!',
+      );
+
+      return;
+    }
+
+    final confirmation = await IdentificacaoDialogWidget().show();
+
+    if (confirmation != null) {
+      ConferenciaRemoverItemService(
+        percursoEstagioConsulta: percursoEstagioConsulta,
+      ).removeAllItensCart();
+
+      final conferenciaItemConsulta = _conferenciaGridController.itens;
+      final List<ExpedicaoConferirItemConsultaModel> itensGridConferir = [];
+      for (var el in conferenciaItemConsulta) {
+        final itemConferir = _findItemConferirGrid(el.codProduto)!;
+
+        itensGridConferir.add(itemConferir.copyWith(
+          quantidadeConferida: 0.00,
+        ));
+      }
+
+      _conferirGridController.updateAllGrid(itensGridConferir);
+      _conferenciaGridController.removeAllGrid();
+
+      _conferirGridController.update();
+      _conferenciaGridController.update();
     }
   }
 

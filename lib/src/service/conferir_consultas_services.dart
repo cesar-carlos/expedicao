@@ -1,9 +1,11 @@
 import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_conferir_consulta_model.dart';
+import 'package:app_expedicao/src/model/expedicao_conferir_item_unidade_medida_consulta_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_conferir/conferir_carrinho_consulta_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_conferencia_item/conferencia_item_consulta_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_consulta_repository.dart';
+import 'package:app_expedicao/src/repository/expedicao_conferir_item/conferir_item_unidade_consulta_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_conferir_item/conferir_item_consulta_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_conferir/conferir_consulta_repository.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
@@ -54,8 +56,18 @@ class ConferirConsultaServices {
 
     ''';
 
-    final result = await ConferirItemConsultaRepository().select(params);
-    return result;
+    return await ConferirItemConsultaRepository().select(params);
+  }
+
+  Future<List<ExpedicaoConferirItemUnidadeMedidaConsultaModel>>
+      itensConferirUnidades() async {
+    final params = ''' 
+        CodEmpresa = $codEmpresa 
+      AND CodConferir = $codConferir
+
+    ''';
+
+    return await ConferirItemUnidadeMedidaConsultaRepository().select(params);
   }
 
   Future<List<ExpedicaConferenciaItemConsultaModel>> itensConferencia() async {

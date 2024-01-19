@@ -12,17 +12,13 @@ import 'package:app_expedicao/src/pages/common/form_element/bar_head_form_elemen
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid.dart';
 
 class SeparacaoPage {
-  late String title;
+  String title = 'Separar';
   double height = 30;
   Size size = Get.size;
 
-  late SeparacaoController _controller;
   final ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta;
 
-  SeparacaoPage(this.percursoEstagioConsulta) {
-    _controller = Get.find<SeparacaoController>();
-    title = _controller.title;
-  }
+  SeparacaoPage(this.percursoEstagioConsulta);
 
   Future<void> show() async {
     await showDialog(
@@ -42,111 +38,116 @@ class SeparacaoPage {
   }
 
   Widget dailog() {
-    return SizedBox(
-      width: size.width * 0.95,
-      height: size.height * 0.8 - height,
-      child: Column(children: [
-        //** HEADER BUTTON **//
-        SpaceButtonsHeadFormElement(
-          width: double.infinity,
-          children: [
-            ButtonHeadForm(
-              title: 'Separar tudo',
-              onPressed: _controller.onSepararTudo,
-              icon: const Icon(
-                BootstrapIcons.list_check,
-                color: Colors.white,
-                size: 33,
+    return GetBuilder(
+        init: SeparacaoController(percursoEstagioConsulta),
+        builder: (controller) {
+          return SizedBox(
+            width: size.width * 0.95,
+            height: size.height * 0.8 - height,
+            child: Column(children: [
+              //** HEADER BUTTON **//
+              SpaceButtonsHeadFormElement(
+                width: double.infinity,
+                children: [
+                  ButtonHeadForm(
+                    title: 'Separar tudo',
+                    onPressed: controller.onSepararTudo,
+                    icon: const Icon(
+                      BootstrapIcons.list_check,
+                      color: Colors.white,
+                      size: 33,
+                    ),
+                  ),
+                  ButtonHeadForm(
+                    title: 'Reconferir tudo',
+                    onPressed: controller.onReconferirTudo,
+                    icon: const Icon(
+                      BootstrapIcons.list_task,
+                      color: Colors.white,
+                      size: 33,
+                    ),
+                  ),
+                ],
               ),
-            ),
-            ButtonHeadForm(
-              title: 'Reconferir tudo',
-              onPressed: _controller.onReconferirTudo,
-              icon: const Icon(
-                BootstrapIcons.list_task,
-                color: Colors.white,
-                size: 33,
-              ),
-            ),
-          ],
-        ),
 
-        //LEITOR CODIGO DE BARRAS
-        ScanSeparacaoItemWidget(percursoEstagioConsulta, size: size),
+              //LEITOR CODIGO DE BARRAS
+              ScanSeparacaoItemWidget(percursoEstagioConsulta, size: size),
 
-        //tabs
-        Expanded(
-          child: ClipRRect(
-            borderRadius: const BorderRadius.only(
-              bottomLeft: Radius.circular(10),
-              bottomRight: Radius.circular(10),
-            ),
-            child: DefaultTabController(
-              initialIndex: _controller.viewMode ? 0 : 1,
-              length: 2,
-              animationDuration: const Duration(milliseconds: 500),
-              child: Column(children: [
-                Container(
-                  color: Colors.white,
-                  constraints: const BoxConstraints.expand(height: 40),
-                  padding: const EdgeInsets.symmetric(horizontal: 5),
-                  child: TabBar(
-                      indicatorColor: Colors.black45,
-                      overlayColor: MaterialStateProperty.all(Colors.black12),
-                      indicatorPadding: EdgeInsets.zero,
-                      tabs: const [
-                        Row(children: [
-                          Icon(
-                            size: 20,
-                            BootstrapIcons.list_task,
-                          ),
-                          Spacer(),
-                          Text(
-                            'Carrinho',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.black87,
-                            ),
-                          ),
-                          Spacer(),
-                        ]),
-                        Row(children: [
-                          Icon(
-                            size: 20,
-                            BootstrapIcons.list_check,
-                          ),
-                          Spacer(),
-                          Text(
-                            'Separação',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.black87,
-                            ),
-                          ),
-                          Spacer(),
-                        ]),
-                      ]),
-                ),
-                Expanded(
-                  child: TabBarView(children: [
-                    Container(
-                      color: Colors.white70,
-                      child: SeparacaoCarrinhoGrid(
-                        percursoEstagioConsulta,
+              //tabs
+              Expanded(
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(10),
+                    bottomRight: Radius.circular(10),
+                  ),
+                  child: DefaultTabController(
+                    initialIndex: controller.viewMode ? 0 : 1,
+                    length: 2,
+                    animationDuration: const Duration(milliseconds: 500),
+                    child: Column(children: [
+                      Container(
+                        color: Colors.white,
+                        constraints: const BoxConstraints.expand(height: 40),
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        child: TabBar(
+                            indicatorColor: Colors.black45,
+                            overlayColor:
+                                MaterialStateProperty.all(Colors.black12),
+                            indicatorPadding: EdgeInsets.zero,
+                            tabs: const [
+                              Row(children: [
+                                Icon(
+                                  size: 20,
+                                  BootstrapIcons.list_task,
+                                ),
+                                Spacer(),
+                                Text(
+                                  'Carrinho',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                Spacer(),
+                              ]),
+                              Row(children: [
+                                Icon(
+                                  size: 20,
+                                  BootstrapIcons.list_check,
+                                ),
+                                Spacer(),
+                                Text(
+                                  'Separação',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                Spacer(),
+                              ]),
+                            ]),
                       ),
-                    ),
-                    Container(
-                      color: Colors.white70,
-                      //child: const SepararSetorGrid(),
-                      child: const SepararGrid(),
-                    ),
-                  ]),
+                      Expanded(
+                        child: TabBarView(children: [
+                          Container(
+                            color: Colors.white70,
+                            child: SeparacaoCarrinhoGrid(
+                              percursoEstagioConsulta,
+                            ),
+                          ),
+                          Container(
+                            color: Colors.white70,
+                            //child: const SepararSetorGrid(),
+                            child: const SepararGrid(),
+                          ),
+                        ]),
+                      ),
+                    ]),
+                  ),
                 ),
-              ]),
-            ),
-          ),
-        )
-      ]),
-    );
+              )
+            ]),
+          );
+        });
   }
 }

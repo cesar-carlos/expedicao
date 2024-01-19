@@ -12,14 +12,8 @@ class SeparacaoBinding implements Bindings {
 
   @override
   void dependencies() {
-    Get.put(SeparacaoController(model));
-    Get.put(SeparacaoCarrinhoGridController());
-    Get.put(SepararSetorGridController());
-  }
-
-  void dispose() {
-    Get.delete<SeparacaoController>();
-    Get.delete<SeparacaoCarrinhoGridController>();
-    Get.delete<SepararSetorGridController>();
+    Get.lazyPut(() => SeparacaoController(model));
+    Get.lazyPut(() => SeparacaoCarrinhoGridController());
+    Get.lazyPut(() => SepararSetorGridController());
   }
 }

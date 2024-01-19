@@ -7,11 +7,11 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 class ConferenciaCarrinhoGridController extends GetxController {
   static const gridName = 'conferenciaCarrinhoGrid';
   final DataGridController dataGridController = DataGridController();
-  late List<ExpedicaConferenciaItemConsultaModel> _itensGrid;
+  late List<ExpedicaConferenciaItemConsultaModel> _itens = [];
 
-  List<ExpedicaConferenciaItemConsultaModel> get itens => _itensGrid;
+  List<ExpedicaConferenciaItemConsultaModel> get itens => _itens;
   List<ExpedicaConferenciaItemConsultaModel> get itensSort =>
-      _itensGrid.toList()..sort((a, b) => b.item.compareTo(a.item));
+      _itens.toList()..sort((a, b) => b.item.compareTo(a.item));
 
   List<DataGridRow> get selectedoRows => dataGridController.selectedRows;
 
@@ -22,39 +22,37 @@ class ConferenciaCarrinhoGridController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-
-    _itensGrid = [];
   }
 
   void addGrid(ExpedicaConferenciaItemConsultaModel item) {
-    _itensGrid.add(item);
+    _itens.add(item);
   }
 
   void addAllGrid(List<ExpedicaConferenciaItemConsultaModel> itens) {
-    _itensGrid.addAll(itens);
+    _itens.addAll(itens);
   }
 
   void updateGrid(ExpedicaConferenciaItemConsultaModel item) {
-    final index = _itensGrid.indexWhere((el) => el.item == item.item);
-    _itensGrid[index] = item;
+    final index = _itens.indexWhere((el) => el.item == item.item);
+    _itens[index] = item;
   }
 
   void updateAllGrid(List<ExpedicaConferenciaItemConsultaModel> itens) {
     for (var el in itens) {
-      final index = _itensGrid.indexWhere((i) => i.item == el.item);
-      _itensGrid[index] = el;
+      final index = _itens.indexWhere((i) => i.item == el.item);
+      _itens[index] = el;
     }
   }
 
   void removeGrid(ExpedicaConferenciaItemConsultaModel item) {
-    _itensGrid.removeWhere((el) =>
+    _itens.removeWhere((el) =>
         el.codEmpresa == item.codEmpresa &&
         el.codConferir == item.codConferir &&
         el.item == item.item);
   }
 
   void removeAllGrid() {
-    _itensGrid.clear();
+    _itens.clear();
   }
 
   void setSelectedRow(int index) {
@@ -69,11 +67,11 @@ class ConferenciaCarrinhoGridController extends GetxController {
   }
 
   double totalQuantity() {
-    return _itensGrid.fold<double>(0.00, (acm, el) => acm + el.quantidade);
+    return _itens.fold<double>(0.00, (acm, el) => acm + el.quantidade);
   }
 
   double totalQtdProduct(int codProduto) {
-    return _itensGrid
+    return _itens
         .where((el) => el.codProduto == codProduto)
         .fold<double>(0.00, (acm, el) => acm + el.quantidade);
   }

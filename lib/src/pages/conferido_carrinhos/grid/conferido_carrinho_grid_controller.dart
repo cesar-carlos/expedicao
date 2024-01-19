@@ -8,18 +8,17 @@ import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 
 class ConferidoCarrinhoGridController extends GetxController {
   static const gridName = 'conferidoCarrinhoGrid';
-  final DataGridController dataGridController = DataGridController();
-  late List<ExpedicaoCarrinhoPercursoConsultaModel> _itensGrid;
 
-  List<ExpedicaoCarrinhoPercursoConsultaModel> get itens => _itensGrid;
+  final DataGridController dataGridController = DataGridController();
+  late List<ExpedicaoCarrinhoPercursoConsultaModel> _itens = [];
+
+  List<ExpedicaoCarrinhoPercursoConsultaModel> get itens => _itens;
   List<ExpedicaoCarrinhoPercursoConsultaModel> get itensSort =>
-      _itensGrid.toList()..sort((a, b) => b.item.compareTo(a.item));
+      _itens.toList()..sort((a, b) => b.item.compareTo(a.item));
 
   @override
   void onInit() {
     super.onInit();
-
-    _itensGrid = [];
   }
 
   void Function(ExpedicaoCarrinhoPercursoConsultaModel item)? onPressedEdit;
@@ -27,42 +26,42 @@ class ConferidoCarrinhoGridController extends GetxController {
   void Function(ExpedicaoCarrinhoPercursoConsultaModel item)? onPressedSave;
 
   void addGrid(ExpedicaoCarrinhoPercursoConsultaModel item) {
-    _itensGrid.add(item);
+    _itens.add(item);
   }
 
   void addAllGrid(List<ExpedicaoCarrinhoPercursoConsultaModel> itens) {
-    _itensGrid.addAll(itens);
+    _itens.addAll(itens);
   }
 
   void updateGrid(ExpedicaoCarrinhoPercursoConsultaModel item) {
-    final index = _itensGrid.indexWhere((el) => el.item == item.item);
+    final index = _itens.indexWhere((el) => el.item == item.item);
     if (index == -1) return;
-    _itensGrid[index] = item;
+    _itens[index] = item;
   }
 
   void updateAllGrid(List<ExpedicaoCarrinhoPercursoConsultaModel> itens) {
     for (var el in itens) {
-      final index = _itensGrid.indexWhere((i) => i.item == el.item);
+      final index = _itens.indexWhere((i) => i.item == el.item);
       if (index == -1) return;
-      _itensGrid[index] = el;
+      _itens[index] = el;
     }
   }
 
   void updateGridSituationItem(String item, String situacao) {
-    final index = _itensGrid.indexWhere((el) => el.item == item);
+    final index = _itens.indexWhere((el) => el.item == item);
     if (index == -1) return;
-    _itensGrid[index] = _itensGrid[index].copyWith(situacao: situacao);
+    _itens[index] = _itens[index].copyWith(situacao: situacao);
   }
 
   void removeGrid(ExpedicaoCarrinhoPercursoConsultaModel item) {
-    _itensGrid.removeWhere((el) =>
+    _itens.removeWhere((el) =>
         el.codEmpresa == item.codEmpresa &&
         el.codCarrinho == item.codCarrinho &&
         el.item == item.item);
   }
 
   void removeAllGrid() {
-    _itensGrid.clear();
+    _itens.clear();
   }
 
   void editGrid(
@@ -86,6 +85,7 @@ class ConferidoCarrinhoGridController extends GetxController {
     onPressedSave?.call(item);
   }
 
+  //
   Icon iconEdit(ExpedicaoCarrinhoPercursoConsultaModel item) {
     Color color = Colors.blue;
 

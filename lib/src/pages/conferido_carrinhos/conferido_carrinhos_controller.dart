@@ -60,7 +60,6 @@ class ConferidoCarrinhosController extends GetxController {
   @override
   onReady() async {
     super.onReady();
-
     _evetsCarrinhoGrid();
     _liteners();
   }
@@ -81,10 +80,6 @@ class ConferidoCarrinhosController extends GetxController {
       ConferenciaBinding(item).dependencies();
       final dialog = ConferenciaPage(item);
       await dialog.show();
-
-      Get.delete<ConferenciaController>();
-      Get.delete<ConferenciaCarrinhoGridController>();
-      Get.delete<ConferirGridController>();
     };
 
     _conferidoCarrinhoGridController.onPressedSave = (item) async {

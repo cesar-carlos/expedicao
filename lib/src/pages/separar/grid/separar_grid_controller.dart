@@ -188,15 +188,15 @@ class SepararGridController extends GetxController {
     return el.first;
   }
 
+  ExpedicaoSepararItemConsultaModel? findCodProduto(int codProduto) {
+    final el = _itens.where((el) => el.codProduto == codProduto).toList();
+    return el.first;
+  }
+
   List<ExpedicaoSepararItemUnidadeMedidaConsultaModel>? findUnidadesProduto(
       int codProduto) {
     final el = _itemUnids.where((el) => el.codProduto == codProduto).toList();
     return el;
-  }
-
-  ExpedicaoSepararItemConsultaModel? findCodProduto(int codProduto) {
-    final el = _itens.where((el) => el.codProduto == codProduto).toList();
-    return el.first;
   }
 
   //
@@ -210,6 +210,7 @@ class SepararGridController extends GetxController {
         AND CodSepararEstoque = ${el.codSepararEstoque}
         AND CodProduto = ${el.codProduto}
         AND Situacao <> ${ExpedicaoSituacaoModel.cancelada}
+        
       ''');
 
       if (separacaoItens.isEmpty) {
@@ -228,7 +229,7 @@ class SepararGridController extends GetxController {
     }
   }
 
-  Color colorRow(ExpedicaoSepararItemConsultaModel item) {
+  Color rowColor(ExpedicaoSepararItemConsultaModel item) {
     if (item.quantidade == item.quantidadeSeparacao) {
       return Colors.green[100]!;
     }

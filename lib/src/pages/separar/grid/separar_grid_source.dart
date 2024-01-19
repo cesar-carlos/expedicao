@@ -170,7 +170,7 @@ class SepararSource extends DataGridSource {
     final item = controller.findItem(columnValueItem);
 
     var dataGridRowAdapter = DataGridRowAdapter(
-        color: controller.colorRow(item),
+        color: controller.rowColor(item),
         cells: row.getCells().map<Widget>((cell) {
           if (cell.value is double) {
             return SepararGridCell.defaultMoneyCell(cell.value);

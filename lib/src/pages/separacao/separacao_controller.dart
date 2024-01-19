@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:app_expedicao/src/app/app_helper.dart';
 import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
@@ -40,9 +41,9 @@ class SeparacaoController extends GetxController {
   late TextEditingController displayController;
   late TextEditingController scanController;
 
-  late FocusNode scanFocusNode;
   late FocusNode quantidadeFocusNode;
   late FocusNode displayFocusNode;
+  late FocusNode scanFocusNode;
 
   SeparacaoController(this.percursoEstagioConsulta);
 
@@ -55,15 +56,17 @@ class SeparacaoController extends GetxController {
     super.onInit();
     Get.lazyPut(() => SeparacaoCarrinhoGridController());
 
-    scanController = TextEditingController();
-    displayController = TextEditingController(text: '');
-    quantidadeController = TextEditingController(text: '1,000');
     _separarGridController = Get.find<SepararGridController>();
     _separacaoGridController = Get.find<SeparacaoCarrinhoGridController>();
     _processoExecutavel = Get.find<ProcessoExecutavelModel>();
+
+    scanController = TextEditingController();
+    displayController = TextEditingController(text: '');
+    quantidadeController = TextEditingController(text: '1,000');
+
     scanFocusNode = FocusNode()..requestFocus();
-    displayFocusNode = FocusNode();
     quantidadeFocusNode = FocusNode();
+    displayFocusNode = FocusNode();
 
     _separarConsultasServices = SepararConsultaServices(
       codEmpresa: _processoExecutavel.codEmpresa,
@@ -85,16 +88,26 @@ class SeparacaoController extends GetxController {
 
   @override
   void onClose() {
-    scanController.dispose();
-    quantidadeController.dispose();
-    quantidadeFocusNode.dispose();
-    displayController.dispose();
-    scanFocusNode.dispose();
     _viewMode.close();
 
+    scanController.dispose();
+    quantidadeController.dispose();
+    displayController.dispose();
+
+    quantidadeFocusNode.dispose();
+    displayFocusNode.dispose();
+    scanFocusNode.dispose();
     _removeliteners();
 
     super.onClose();
+  }
+
+  KeyEventResult handleKeyEvent(RawKeyEvent event) {
+    if (event.isKeyPressed(LogicalKeyboardKey.escape)) {
+      Get.back();
+      return KeyEventResult.handled;
+    }
+    return KeyEventResult.ignored;
   }
 
   ExpedicaoCarrinhoPercursoConsultaModel get percursoEstagio =>
@@ -114,11 +127,12 @@ class SeparacaoController extends GetxController {
   }
 
   Future<void> _fillCarrinhoPercurso() async {
-    final params = ''' CodEmpresa = ${percursoEstagioConsulta.codEmpresa} 
-          AND CodEmpresa = '${percursoEstagioConsulta.codEmpresa}' 
-          AND CodCarrinhoPercurso = ${percursoEstagioConsulta.codCarrinhoPercurso}
+    final params = ''' 
+        CodEmpresa = ${percursoEstagioConsulta.codEmpresa} 
+      AND CodEmpresa = '${percursoEstagioConsulta.codEmpresa}' 
+      AND CodCarrinhoPercurso = ${percursoEstagioConsulta.codCarrinhoPercurso}
         
-        ''';
+    ''';
 
     final carrinhosPercurso = await CarrinhoPercursoServices().select(params);
     if (carrinhosPercurso.isEmpty) return;
@@ -282,7 +296,6 @@ class SeparacaoController extends GetxController {
       return;
     }
 
-    //ADD ITEM NA GRID
     displayController.text = itemSepararConsulta.nomeProduto;
     _separacaoGridController.addGrid(separacaoItemConsulta);
 
@@ -358,50 +371,6 @@ class SeparacaoController extends GetxController {
     };
   }
 
-  Future<void> onReconferirTudo() async {
-    if (viewMode) {
-      await ConfirmationDialogMessageWidget.show(
-        context: Get.context!,
-        message: 'Não é possivel reconferir!',
-        detail: 'O carrinho esta em modo de visualização..',
-      );
-
-      return;
-    }
-
-    if (_separacaoGridController.totalQuantity() == 0) {
-      await ConfirmationDialogMessageWidget.show(
-        context: Get.context!,
-        message: 'Não existe itens no carrinho!',
-        detail: 'Não é possivel reconferir, pois não existe itens no carrinho!',
-      );
-
-      return;
-    }
-
-    final confirmation = await IdentificacaoDialogWidget().show();
-
-    if (confirmation != null) {
-      SeparacaoRemoverItemService(
-        percursoEstagioConsulta: percursoEstagioConsulta,
-      ).removeAllItensCart();
-
-      final separacaoItemConsulta = _separacaoGridController.itens;
-      final List<ExpedicaoSepararItemConsultaModel> itensGridSeparar = [];
-      for (var el in separacaoItemConsulta) {
-        final itemSeparar = _findItemSepararGrid(el.codProduto)!;
-        itensGridSeparar.add(itemSeparar.copyWith(
-          quantidadeSeparacao: 0.00,
-        ));
-      }
-
-      _separarGridController.updateAllGrid(itensGridSeparar);
-      _separacaoGridController.removeAllGrid();
-      _separacaoGridController.update();
-      _separarGridController.update();
-    }
-  }
-
   Future<void> onSepararTudo() async {
     final double totalSeparar = _separarGridController.totalQuantity();
     final double totalSeparado =
@@ -456,6 +425,50 @@ class SeparacaoController extends GetxController {
           _separarGridController.update();
         },
       );
+    }
+  }
+
+  Future<void> onReconferirTudo() async {
+    if (viewMode) {
+      await ConfirmationDialogMessageWidget.show(
+        context: Get.context!,
+        message: 'Não é possivel reconferir!',
+        detail: 'O carrinho esta em modo de visualização..',
+      );
+
+      return;
+    }
+
+    if (_separacaoGridController.totalQuantity() == 0) {
+      await ConfirmationDialogMessageWidget.show(
+        context: Get.context!,
+        message: 'Não existe itens no carrinho!',
+        detail: 'Não é possivel reconferir, pois não existe itens no carrinho!',
+      );
+
+      return;
+    }
+
+    final confirmation = await IdentificacaoDialogWidget().show();
+
+    if (confirmation != null) {
+      SeparacaoRemoverItemService(
+        percursoEstagioConsulta: percursoEstagioConsulta,
+      ).removeAllItensCart();
+
+      final separacaoItemConsulta = _separacaoGridController.itens;
+      final List<ExpedicaoSepararItemConsultaModel> itensGridSeparar = [];
+      for (var el in separacaoItemConsulta) {
+        final itemSeparar = _findItemSepararGrid(el.codProduto)!;
+        itensGridSeparar.add(itemSeparar.copyWith(
+          quantidadeSeparacao: 0.00,
+        ));
+      }
+
+      _separarGridController.updateAllGrid(itensGridSeparar);
+      _separacaoGridController.removeAllGrid();
+      _separacaoGridController.update();
+      _separarGridController.update();
     }
   }
 

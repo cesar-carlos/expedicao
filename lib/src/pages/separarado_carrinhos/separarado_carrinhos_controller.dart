@@ -1,5 +1,3 @@
-import 'package:app_expedicao/src/pages/separacao/separacao_binding.dart';
-import 'package:app_expedicao/src/pages/separacao/separacao_controller.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
@@ -72,13 +70,8 @@ class SeparadoCarrinhosController extends GetxController {
 
   _evetsCarrinhoGrid() {
     _separadoCarrinhoGridController.onPressedEdit = (item) async {
-      SeparacaoBinding(item).dependencies();
       final dialog = SeparacaoPage(item);
       await dialog.show();
-
-      Get.delete<SeparacaoPage>(force: true);
-      Get.delete<SeparacaoBinding>(force: true);
-      Get.delete<SeparacaoController>(force: true);
     };
 
     _separadoCarrinhoGridController.onPressedSave = (item) async {
@@ -230,7 +223,6 @@ class SeparadoCarrinhosController extends GetxController {
         final newSepararItens = await _separarServices.itensSaparar();
         _separadoCarrinhoGridController.updateGrid(carrinhoPercursoConsulta);
         _separarGridController.updateAllGrid(newSepararItens);
-
         _separadoCarrinhoGridController.update();
         _separarGridController.update();
       }

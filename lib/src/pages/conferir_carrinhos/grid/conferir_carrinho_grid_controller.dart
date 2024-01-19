@@ -13,47 +13,44 @@ import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 class ConferirCarrinhoGridController extends GetxController {
   static const gridName = 'conferirCarrinhoGrid';
   final DataGridController dataGridController = DataGridController();
-  late List<ExpedicaoCarrinhoConferirConsultaModel> _itensGrid;
+  late List<ExpedicaoCarrinhoConferirConsultaModel> _itens = [];
 
-  List<ExpedicaoCarrinhoConferirConsultaModel> get itens => _itensGrid;
-  List<ExpedicaoCarrinhoConferirConsultaModel> get itensSort => _itensGrid
-      .toList()
+  List<ExpedicaoCarrinhoConferirConsultaModel> get itens => _itens;
+  List<ExpedicaoCarrinhoConferirConsultaModel> get itensSort => _itens.toList()
     ..sort((a, b) => b.itemCarrinhoPercurso.compareTo(a.itemCarrinhoPercurso));
 
   @override
   void onInit() {
     super.onInit();
-
-    _itensGrid = [];
   }
 
   void Function(ExpedicaoCarrinhoConferirConsultaModel item)? onPressedRemove;
   void Function(ExpedicaoCarrinhoConferirConsultaModel item)? onPressedSave;
 
   void addGrid(ExpedicaoCarrinhoConferirConsultaModel item) {
-    _itensGrid.add(item);
+    _itens.add(item);
   }
 
   void addAllGrid(List<ExpedicaoCarrinhoConferirConsultaModel> itens) {
-    _itensGrid.addAll(itens);
+    _itens.addAll(itens);
   }
 
   void updateGrid(ExpedicaoCarrinhoConferirConsultaModel item) {
-    final index = _itensGrid.indexWhere(
+    final index = _itens.indexWhere(
         (el) => el.itemCarrinhoPercurso == item.itemCarrinhoPercurso);
-    _itensGrid[index] = item;
+    _itens[index] = item;
   }
 
   void updateAllGrid(List<ExpedicaoCarrinhoConferirConsultaModel> itens) {
     for (var el in itens) {
-      final index = _itensGrid
+      final index = _itens
           .indexWhere((i) => i.itemCarrinhoPercurso == el.itemCarrinhoPercurso);
-      _itensGrid[index] = el;
+      _itens[index] = el;
     }
   }
 
   void updateGridSituationCarrinho(int codCarrinho, String situacao) {
-    for (var el in _itensGrid) {
+    for (var el in _itens) {
       if (el.codCarrinho == codCarrinho) {
         el.situacaoCarrinho = situacao;
       }
@@ -61,22 +58,21 @@ class ConferirCarrinhoGridController extends GetxController {
   }
 
   void removeGrid(ExpedicaoCarrinhoConferirConsultaModel item) {
-    _itensGrid.removeWhere((el) =>
+    _itens.removeWhere((el) =>
         el.codEmpresa == item.codEmpresa &&
         el.codCarrinho == item.codCarrinho &&
         el.itemCarrinhoPercurso == item.itemCarrinhoPercurso);
   }
 
   void removeAllGrid() {
-    _itensGrid.clear();
+    _itens.clear();
   }
 
   void editGrid(
     ConferirCarrinhoGridSource carrinhoGrid,
     ExpedicaoCarrinhoConferirConsultaModel percursoEstagioConsulta,
   ) {
-    // final dialog = SeparacaoPage(percursoEstagioConsulta);
-    // dialog.show();
+    //TODO: implementar
   }
 
   Future<void> onRemoveItem(
