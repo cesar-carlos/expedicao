@@ -235,7 +235,7 @@ class SepararController extends GetxController {
     }
   }
 
-  Future<void> adicionarObservacao() async {
+  Future<void> btnAdicionarObservacao() async {
     final currentSeparar = await _separarConsultaServices.separar();
 
     historicoController.text = currentSeparar?.historico
@@ -260,7 +260,7 @@ class SepararController extends GetxController {
     }
   }
 
-  Future<void> finalizarSeparacao() async {
+  Future<void> btnFinalizarSeparacao() async {
     final isComplete = await _separarConsultaServices.isComplete();
     final existsOpenCart = await _separarConsultaServices.existsOpenCart();
 
@@ -301,20 +301,25 @@ class SepararController extends GetxController {
     );
 
     if (confirmation != null && confirmation) {
-      await SepararFinalizarService(
-        codEmpresa: _separarConsulta.codEmpresa,
-        codSepararEstoque: _separarConsulta.codSepararEstoque,
-      ).execute();
-
-      _expedicaoSituacao = ExpedicaoSituacaoModel.separado;
-      _separarConsulta.situacao = ExpedicaoSituacaoModel.separado;
-
-      await ConferirSeparacaoAdicionarService(
-        carrinhoPercurso: _carrinhoPercurso!,
-      ).execute();
-
+      await finalizarSeparacao();
       update();
     }
+  }
+
+  Future<void> finalizarSeparacao() async {
+    await SepararFinalizarService(
+      codEmpresa: _separarConsulta.codEmpresa,
+      codSepararEstoque: _separarConsulta.codSepararEstoque,
+    ).execute();
+
+    _expedicaoSituacao = ExpedicaoSituacaoModel.separado;
+    _separarConsulta.situacao = ExpedicaoSituacaoModel.separado;
+
+    await ConferirSeparacaoAdicionarService(
+      carrinhoPercurso: _carrinhoPercurso!,
+    ).execute();
+
+    update();
   }
 
   Future<void> configuracao() async {

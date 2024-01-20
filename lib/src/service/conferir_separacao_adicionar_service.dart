@@ -70,6 +70,7 @@ class ConferirSeparacaoAdicionarService {
     final separar = await SepararRepository().select('''
         CodEmpresa = ${item.codEmpresa}
       AND CodSepararEstoque = ${item.codSepararEstoque}
+      
     ''');
 
     return ExpedicaoConferirModel(

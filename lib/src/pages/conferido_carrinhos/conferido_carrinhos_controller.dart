@@ -7,22 +7,20 @@ import 'package:app_expedicao/src/service/conferir_consultas_services.dart';
 import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
 import 'package:app_expedicao/src/pages/conferencia/conferencia_binding.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_consulta_model.dart';
-import 'package:app_expedicao/src/pages/conferencia/conferencia_controller.dart';
 import 'package:app_expedicao/src/service/conferencia_cancelar_item_service.dart';
 import 'package:app_expedicao/src/service/conferencia_finalizar_item_service.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_finalizar_service.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
-import 'package:app_expedicao/src/pages/conferencia/grid/conferencia_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_event_repository.dart';
 import 'package:app_expedicao/src/pages/conferido_carrinhos/grid/conferido_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_cancelar_service.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
-import 'package:app_expedicao/src/pages/conferir/grid/conferir_grid_controller.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_services.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_percurso_estagio_model.dart';
 import 'package:app_expedicao/src/model/expedicao_item_situacao_model.dart';
+import 'package:app_expedicao/src/pages/conferir/conferir_controller.dart';
 import 'package:app_expedicao/src/pages/conferencia/conferencia_page.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_model.dart';
 import 'package:app_expedicao/src/service/carrinho_services.dart';
@@ -34,10 +32,9 @@ class ConferidoCarrinhosController extends GetxController {
   late ExpedicaoConferirConsultaModel _conferirConsulta;
   late ConferidoCarrinhoGridController _conferidoCarrinhoGridController;
 
-  late ConferirConsultaServices _conferirServices;
+  late ConferirConsultaServices _conferirConsultaServices;
 
   ProcessoExecutavelModel get processoExecutavel => _processoExecutavel;
-  //ExpedicaoSepararConsultaModel get separarConsulta => _separarConsulta;
 
   @override
   Future<void> onInit() async {
@@ -49,7 +46,7 @@ class ConferidoCarrinhosController extends GetxController {
     _conferidoCarrinhoGridController =
         Get.find<ConferidoCarrinhoGridController>();
 
-    _conferirServices = ConferirConsultaServices(
+    _conferirConsultaServices = ConferirConsultaServices(
       codEmpresa: _processoExecutavel.codEmpresa,
       codConferir: _processoExecutavel.codOrigem,
     );
@@ -65,7 +62,8 @@ class ConferidoCarrinhosController extends GetxController {
   }
 
   Future<void> _fillGridConferidoCarrinhos() async {
-    final conferidoCarrinhos = await _conferirServices.carrinhosPercurso();
+    final conferidoCarrinhos =
+        await _conferirConsultaServices.carrinhosPercurso();
     _conferidoCarrinhoGridController.addAllGrid(conferidoCarrinhos);
     _conferidoCarrinhoGridController.update();
   }
@@ -110,8 +108,9 @@ class ConferidoCarrinhosController extends GetxController {
       );
 
       if (confirmation != null && confirmation) {
-        final itensConferir = await _conferirServices.itensConferir();
-        final itensConferencia = await _conferirServices.itensConferencia();
+        final itensConferir = await _conferirConsultaServices.itensConferir();
+        final itensConferencia =
+            await _conferirConsultaServices.itensConferencia();
 
         final itensConferenciaCarrinho = itensConferencia
             .where((el) =>
@@ -185,6 +184,17 @@ class ConferidoCarrinhosController extends GetxController {
         }
 
         _conferidoCarrinhoGridController.update();
+
+        //Finalizar separação automaticamente
+        final isComplete = await _conferirConsultaServices.isComplete();
+        final existsOpenCart = await _conferirConsultaServices.existsOpenCart();
+
+        if (isComplete && !existsOpenCart) {
+          Future.delayed(Duration(seconds: 1), () async {
+            final separarController = Get.find<ConferirController>();
+            separarController.finalizarConferencia();
+          });
+        }
       }
     };
 

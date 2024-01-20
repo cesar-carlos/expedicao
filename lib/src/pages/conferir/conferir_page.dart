@@ -48,7 +48,7 @@ class ConferirPage extends StatelessWidget {
                       ),
                       ButtonHeadForm(
                         title: 'Conferir Carrinho',
-                        onPressed: controller.adicionarCarrinho,
+                        onPressed: controller.btnAdicionarCarrinho,
                         icon: const Icon(
                           BootstrapIcons.cart4,
                           color: Colors.white,
@@ -57,7 +57,7 @@ class ConferirPage extends StatelessWidget {
                       ),
                       ButtonHeadForm(
                         title: 'Histórico/Observação',
-                        onPressed: controller.adicionarObservacao,
+                        onPressed: controller.btnAdicionarObservacao,
                         icon: const Icon(
                           BootstrapIcons.file_text_fill,
                           color: Colors.white,
@@ -75,7 +75,7 @@ class ConferirPage extends StatelessWidget {
                       ),
                       ButtonHeadForm(
                         title: 'Finalizar Conferencia',
-                        onPressed: controller.finalizarSeparacao,
+                        onPressed: controller.btnFinalizarConferencia,
                         icon: const Icon(
                           BootstrapIcons.grid_3x3_gap_fill,
                           color: Colors.white,

@@ -63,7 +63,7 @@ class SepararPage extends StatelessWidget {
                         ),
                         ButtonHeadForm(
                           title: 'Histórico/Observação',
-                          onPressed: controller.adicionarObservacao,
+                          onPressed: controller.btnAdicionarObservacao,
                           icon: const Icon(
                             BootstrapIcons.file_text_fill,
                             color: Colors.white,
@@ -72,7 +72,7 @@ class SepararPage extends StatelessWidget {
                         ),
                         ButtonHeadForm(
                           title: 'Finalizar Separação',
-                          onPressed: controller.finalizarSeparacao,
+                          onPressed: controller.btnFinalizarSeparacao,
                           icon: const Icon(
                             BootstrapIcons.grid_3x3_gap_fill,
                             color: Colors.white,

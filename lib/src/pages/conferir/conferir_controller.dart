@@ -170,7 +170,7 @@ class ConferirController extends GetxController {
     );
   }
 
-  Future<void> adicionarCarrinho() async {
+  Future<void> btnAdicionarCarrinho() async {
     if (_expedicaoSituacao == ExpedicaoSituacaoModel.conferido) {
       await ConfirmationDialogMessageWidget.show(
         context: Get.context!,
@@ -252,7 +252,7 @@ class ConferirController extends GetxController {
     }
   }
 
-  Future<void> adicionarObservacao() async {
+  Future<void> btnAdicionarObservacao() async {
     final currentConferir = await _conferirConsultaServices.conferir();
 
     historicoController.text = currentConferir?.historico
@@ -277,7 +277,7 @@ class ConferirController extends GetxController {
     }
   }
 
-  Future<void> finalizarSeparacao() async {
+  Future<void> btnFinalizarConferencia() async {
     final isComplete = await _conferirConsultaServices.isComplete();
     final existsOpenCart = await _conferirConsultaServices.existsOpenCart();
 
@@ -328,15 +328,19 @@ class ConferirController extends GetxController {
     );
 
     if (confirmation != null && confirmation) {
-      await ConferirFinalizarService(
-        codEmpresa: _conferirConsulta.codEmpresa,
-        codConferir: _conferirConsulta.codConferir,
-      ).execute();
-
-      _expedicaoSituacao = ExpedicaoSituacaoModel.conferido;
-      _conferirConsulta.situacao = ExpedicaoSituacaoModel.conferido;
-      update();
+      await finalizarConferencia();
     }
+  }
+
+  Future<void> finalizarConferencia() async {
+    await ConferirFinalizarService(
+      codEmpresa: _conferirConsulta.codEmpresa,
+      codConferir: _conferirConsulta.codConferir,
+    ).execute();
+
+    _expedicaoSituacao = ExpedicaoSituacaoModel.conferido;
+    _conferirConsulta.situacao = ExpedicaoSituacaoModel.conferido;
+    update();
   }
 
   _liteners() {
