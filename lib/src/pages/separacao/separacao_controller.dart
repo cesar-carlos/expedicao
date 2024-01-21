@@ -1,3 +1,4 @@
+import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
@@ -234,6 +235,22 @@ class SeparacaoController extends GetxController {
       return;
     }
 
+    if (itemSepararConsulta.codSetorEstoque !=
+            _processoExecutavel.codSetorEstoque &&
+        itemSepararConsulta.codSetorEstoque != null &&
+        _processoExecutavel.codSetorEstoque != null) {
+      await ConfirmationDialogMessageWidget.show(
+        context: Get.context!,
+        message: 'Produto fora do setor estoque!',
+        detail: ' Este produto não esta no seu setor de setor estoque!',
+      );
+
+      displayController.text = '';
+      scanFocusNode.requestFocus();
+      scanController.clear();
+      return;
+    }
+
     final carrinhoPercursoAdicionarItemService = SeparacaoAdicionarItemService(
       percursoEstagioConsulta: percursoEstagioConsulta,
     );
@@ -344,6 +361,26 @@ class SeparacaoController extends GetxController {
 
   Future<void> _onRemoveItemSeparacaoGrid() async {
     _separacaoGridController.onPressedRemoveItem = (el) async {
+      if (el.codSetorEstoque != null &&
+          _processoExecutavel.codSetorEstoque != null &&
+          el.codSetorEstoque != _processoExecutavel.codSetorEstoque) {
+        await ConfirmationDialogMessageWidget.show(
+          context: Get.context!,
+          message: 'Não é possivel remover!',
+          detail: 'O produto não esta no seu setor estoque!',
+        );
+
+        return;
+      }
+
+      final bool? confirmation = await ConfirmationDialogWidget.show(
+        context: Get.context!,
+        message: 'Deseja realmente cancelar?',
+        detail: 'Ao cancelar, os itens serão removido do carrinho!',
+      );
+
+      if (confirmation == null || !confirmation) return;
+
       if (viewMode) {
         await ConfirmationDialogMessageWidget.show(
           context: Get.context!,

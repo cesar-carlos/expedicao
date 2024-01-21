@@ -1,15 +1,14 @@
 import 'package:get/get.dart';
-
-import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget.dart';
-import 'package:app_expedicao/src/pages/separacao/grid_separacao/separacao_carrinho_grid_source.dart';
-import 'package:app_expedicao/src/model/expedicao_separacao_item_consulta_model.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+
+import 'package:app_expedicao/src/model/expedicao_separacao_item_consulta_model.dart';
+import 'package:app_expedicao/src/pages/separacao/grid_separacao/separacao_carrinho_grid_source.dart';
 
 class SeparacaoCarrinhoGridController extends GetxController {
   static const gridName = 'separacaoCarrinhoGrid';
 
-  final DataGridController dataGridController = DataGridController();
   final List<ExpedicaSeparacaoItemConsultaModel> _itens = [];
+  final DataGridController dataGridController = DataGridController();
 
   List<ExpedicaSeparacaoItemConsultaModel> get itens => _itens;
   List<ExpedicaSeparacaoItemConsultaModel> get itensSort =>
@@ -83,14 +82,6 @@ class SeparacaoCarrinhoGridController extends GetxController {
     SeparacaoCarrinhoGridSource grid,
     ExpedicaSeparacaoItemConsultaModel item,
   ) async {
-    final bool? confirmation = await ConfirmationDialogWidget.show(
-      context: Get.context!,
-      message: 'Deseja realmente cancelar?',
-      detail: 'Ao cancelar, os itens serão removido do carrinho!',
-    );
-
-    if (confirmation != null && confirmation) {
-      onPressedRemoveItem?.call(item);
-    }
+    onPressedRemoveItem?.call(item);
   }
 }

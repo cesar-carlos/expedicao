@@ -190,7 +190,7 @@ class ConferidoCarrinhosController extends GetxController {
         final existsOpenCart = await _conferirConsultaServices.existsOpenCart();
 
         if (isComplete && !existsOpenCart) {
-          Future.delayed(Duration(seconds: 1), () async {
+          Future.delayed(Duration(microseconds: 500), () async {
             final separarController = Get.find<ConferirController>();
             separarController.finalizarConferencia();
           });
