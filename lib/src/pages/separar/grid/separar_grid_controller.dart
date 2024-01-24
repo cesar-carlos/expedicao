@@ -231,7 +231,7 @@ class SepararGridController extends GetxController {
 
   Color rowColor(ExpedicaoSepararItemConsultaModel item) {
     if (item.quantidade == item.quantidadeSeparacao) {
-      return Colors.green[100]!;
+      return Color(0xFFffff00);
     }
 
     return Colors.white;

@@ -202,7 +202,7 @@ class ConferirGridController extends GetxController {
 
   Color rowColor(ExpedicaoConferirItemConsultaModel item) {
     if (item.quantidade == item.quantidadeConferida) {
-      return Colors.green[100]!;
+      return Color(0xFFffff00);
     }
 
     return Colors.white;

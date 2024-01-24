@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class ProcessoExecutavelModel {
   int codProcessoExecutavel;
   int codEmpresa;
@@ -136,7 +138,8 @@ class ProcessoExecutavelModel {
       origem: map['Origem'],
       codOrigem: map['CodOrigem'],
       itemOrigem: map['ItemOrigem'],
-      dataAbertura: DateTime.parse(map['DataAbertura']),
+      dataAbertura:
+          DateTime.parse(map['DataAbertura'].toString().replaceAll('/', '')),
       codUsuario: map['CodUsuario'],
       nomeUsuario: map['NomeUsuario'],
       codSetorEstoque: map['CodSetorEstoque'],
@@ -147,6 +150,12 @@ class ProcessoExecutavelModel {
       nomeComputador: map['NomeComputador'],
       bancoDados: map['BancoDados'],
     );
+  }
+
+  factory ProcessoExecutavelModel.fromBase64(String texto) {
+    var bytes = base64.decode(texto);
+    final text = utf8.decode(bytes);
+    return ProcessoExecutavelModel.fromJson(jsonDecode(text));
   }
 
   Map<String, dynamic> toJson() {

@@ -5,12 +5,18 @@ import 'package:system_theme/system_theme.dart';
 import 'package:app_expedicao/src/app/app_theme.dart';
 import 'package:app_expedicao/src/app/app_client_http.dart';
 import 'package:app_expedicao/src/pages/splash/splash_binding.dart';
+import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/pages/window.config/window_manager_config.dart';
 import 'package:app_expedicao/src/pages/splash/splash_page.dart';
 import 'package:app_expedicao/src/routes/app_page_router.dart';
 import 'package:app_expedicao/src/app/app_socket_config.dart';
 
 Future<void> main(List<String> args) async {
+  if (args.isNotEmpty) {
+    final _executavel = ProcessoExecutavelModel.fromBase64(args.join(''));
+    Get.put(_executavel);
+  }
+
   WidgetsFlutterBinding.ensureInitialized();
   await WindowManagerConfig().config();
   await SystemTheme.accentColor.load();

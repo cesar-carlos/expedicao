@@ -247,6 +247,7 @@ class SeparadoCarrinhosController extends GetxController {
     final carrinhoPercursoEvent = CarrinhoPercursoEventRepository.instancia;
     const uuid = Uuid();
 
+    //insert carrinho
     carrinhoPercursoEvent.addListener(
       RepositoryEventListenerModel(
         id: uuid.v4(),
@@ -254,6 +255,7 @@ class SeparadoCarrinhosController extends GetxController {
         callback: (data) async {
           for (var el in data.mutation) {
             final car = ExpedicaoCarrinhoPercursoConsultaModel.fromJson(el);
+
             if (car.codEmpresa == _processoExecutavel.codEmpresa &&
                 car.origem == _processoExecutavel.origem &&
                 car.codOrigem == _processoExecutavel.codOrigem) {
@@ -265,6 +267,7 @@ class SeparadoCarrinhosController extends GetxController {
       ),
     );
 
+    //Update carrinho
     carrinhoPercursoEvent.addListener(
       RepositoryEventListenerModel(
         id: uuid.v4(),
@@ -272,13 +275,19 @@ class SeparadoCarrinhosController extends GetxController {
         callback: (data) async {
           for (var el in data.mutation) {
             final car = ExpedicaoCarrinhoPercursoConsultaModel.fromJson(el);
-            _separadoCarrinhoGridController.updateGrid(car);
-            _separadoCarrinhoGridController.update();
+
+            if (car.codEmpresa == _processoExecutavel.codEmpresa &&
+                car.origem == _processoExecutavel.origem &&
+                car.codOrigem == _processoExecutavel.codOrigem) {
+              _separadoCarrinhoGridController.updateGrid(car);
+              _separadoCarrinhoGridController.update();
+            }
           }
         },
       ),
     );
 
+    //Delete carrinho
     carrinhoPercursoEvent.addListener(
       RepositoryEventListenerModel(
         id: uuid.v4(),
@@ -286,8 +295,13 @@ class SeparadoCarrinhosController extends GetxController {
         callback: (data) async {
           for (var el in data.mutation) {
             final car = ExpedicaoCarrinhoPercursoConsultaModel.fromJson(el);
-            _separadoCarrinhoGridController.removeGrid(car);
-            _separadoCarrinhoGridController.update();
+
+            if (car.codEmpresa == _processoExecutavel.codEmpresa &&
+                car.origem == _processoExecutavel.origem &&
+                car.codOrigem == _processoExecutavel.codOrigem) {
+              _separadoCarrinhoGridController.removeGrid(car);
+              _separadoCarrinhoGridController.update();
+            }
           }
         },
       ),

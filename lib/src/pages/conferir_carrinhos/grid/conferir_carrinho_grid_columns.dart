@@ -136,12 +136,12 @@ class ConferirCarrinhoGridColumns {
       GridColumn(
         visible: true,
         columnName: 'codPrioridade',
-        maximumWidth: 60,
+        maximumWidth: 50,
         label: Container(
           padding: padding,
           alignment: Alignment.center,
           child: const Text(
-            'Priori...',
+            'Prio...',
           ),
         ),
       ),
@@ -164,7 +164,7 @@ class ConferirCarrinhoGridColumns {
 
     _columns.add(
       GridColumn(
-        visible: true,
+        visible: false,
         columnName: 'codCarrinho',
         maximumWidth: 70,
         label: Container(
@@ -190,13 +190,13 @@ class ConferirCarrinhoGridColumns {
 
     _columns.add(
       GridColumn(
-        visible: false,
+        visible: true,
         columnName: 'codigoBarrasCarrinho',
         maximumWidth: 130,
         label: Container(
           padding: padding,
           alignment: Alignment.centerLeft,
-          child: const Text('Código Carrinho'),
+          child: const Text('Código Barras'),
         ),
       ),
     );

@@ -329,6 +329,15 @@ class SepararController extends GetxController {
     }
   }
 
+  void _removeAllliteners() {
+    final separarEvent = SepararEventRepository.instancia;
+    final carrinhoPercursoEvent = SepararItemEventRepository.instancia;
+
+    separarEvent.removeListeners(_pageListerner);
+    carrinhoPercursoEvent.removeListeners(_pageListerner);
+    _pageListerner.clear();
+  }
+
   _liteners() {
     const uuid = Uuid();
     final separarEvent = SepararEventRepository.instancia;
@@ -345,6 +354,7 @@ class SepararController extends GetxController {
       callback: (data) async {
         for (var el in data.mutation) {
           final item = ExpedicaoSepararItemConsultaModel.fromJson(el);
+
           if (_separarConsulta.codEmpresa == item.codEmpresa &&
               _separarConsulta.codSepararEstoque == item.codSepararEstoque) {
             _separarGridController.updateGrid(item);
@@ -360,6 +370,7 @@ class SepararController extends GetxController {
       callback: (data) async {
         for (var el in data.mutation) {
           final item = ExpedicaoSepararModel.fromJson(el);
+
           if (_separarConsulta.codEmpresa == item.codEmpresa &&
               _separarConsulta.codSepararEstoque == item.codSepararEstoque) {
             _expedicaoSituacao = item.situacao;
@@ -372,16 +383,8 @@ class SepararController extends GetxController {
 
     _pageListerner.add(separar);
     _pageListerner.add(separarItemConsulta);
+
     carrinhoPercursoEvent.addListener(separarItemConsulta);
     separarEvent.addListener(separar);
-  }
-
-  void _removeAllliteners() {
-    final separarEvent = SepararEventRepository.instancia;
-    final carrinhoPercursoEvent = SepararItemEventRepository.instancia;
-
-    separarEvent.removeListeners(_pageListerner);
-    carrinhoPercursoEvent.removeListeners(_pageListerner);
-    _pageListerner.clear();
   }
 }

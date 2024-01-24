@@ -4,10 +4,10 @@ import 'package:app_expedicao/src/app/app_socket_config.dart';
 import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
 import 'package:app_expedicao/src/service/separar_consultas_services.dart';
 import 'package:app_expedicao/src/service/conferir_consultas_services.dart';
+import 'package:app_expedicao/src/service/processo_executavel_service.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_consulta_model.dart';
 import 'package:app_expedicao/src/pages/common/widget/loading_sever_dialog_widget.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
-import 'package:app_expedicao/src/service/processo_executavel_service.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/app/app_server_file_init.dart';
 import 'package:app_expedicao/src/app/app_api_file_init.dart';
@@ -15,7 +15,6 @@ import 'package:app_expedicao/src/routes/app_router.dart';
 
 class SplashController extends GetxController {
   final _isLoad = false.obs;
-  final _processoExecutavelService = ProcessoExecutavelService();
   final _socketClient = Get.find<AppSocketConfig>();
 
   late ProcessoExecutavelModel? _processoExecutavel;
@@ -35,11 +34,12 @@ class SplashController extends GetxController {
   Future<void> _loading() async {
     _isLoad.value = false;
     await Future.delayed(const Duration(seconds: 1));
-    _processoExecutavel = await _processoExecutavelService.executar();
-
-    if (_processoExecutavel == null) {
-      Get.offNamed(AppRouter.splashError, arguments: '0001');
-      return;
+    try {
+      _processoExecutavel = await Get.find<ProcessoExecutavelModel>();
+    } catch (_) {
+      /* PARA EXECUTAR EM DEBUG */
+      _processoExecutavel = await ProcessoExecutavelService().executar();
+      Get.put(_processoExecutavel!);
     }
 
     //CONFIG SERVER

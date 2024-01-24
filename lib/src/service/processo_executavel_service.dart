@@ -26,8 +26,6 @@ class ProcessoExecutavelService {
         status: 'Executado',
       );
 
-      //TODO: verificar se o processo foi executado com sucesso
-      //await repository.update(newProcessoExecutavel);
       return newProcessoExecutavel;
     } catch (e) {
       return null;

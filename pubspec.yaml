@@ -53,6 +53,7 @@ dependencies:
   shared_preferences: ^2.2.2
   file_picker: ^6.1.1
   http: ^1.1.2
+  args: ^2.4.2
 
 dev_dependencies:
   flutter_test:
@@ -86,6 +87,8 @@ msix_config:
   publisher_display_name: Cesar Carlos
   identity_name: br.com.se7esistemassinop
   msix_version: 1.0.0.0
+  certificate_password: MinhaSenha123
+  certificate_path: C:\path\myCertificate.pfx
   logo_path: D:\Developer\Data7 Projetos\Expedicao\Logo\app_icon.ico.png
 
   # The "flutter_lints" package below contains a set of recommended lints to

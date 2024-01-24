@@ -8,17 +8,17 @@ import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_mod
 
 class SeparadoCarrinhoGridController extends GetxController {
   static const gridName = 'separadoCarrinhoGrid';
-  final DataGridController dataGridController = DataGridController();
-  late List<ExpedicaoCarrinhoPercursoConsultaModel> _itensGrid;
 
-  List<ExpedicaoCarrinhoPercursoConsultaModel> get itens => _itensGrid;
+  final DataGridController dataGridController = DataGridController();
+  late List<ExpedicaoCarrinhoPercursoConsultaModel> _itens = [];
+
+  List<ExpedicaoCarrinhoPercursoConsultaModel> get itens => _itens;
   List<ExpedicaoCarrinhoPercursoConsultaModel> get itensSort =>
-      _itensGrid.toList()..sort((a, b) => b.item.compareTo(a.item));
+      _itens.toList()..sort((a, b) => b.item.compareTo(a.item));
 
   @override
   void onInit() {
     super.onInit();
-    _itensGrid = [];
   }
 
   void Function(ExpedicaoCarrinhoPercursoConsultaModel item)? onPressedEdit;
@@ -26,34 +26,34 @@ class SeparadoCarrinhoGridController extends GetxController {
   void Function(ExpedicaoCarrinhoPercursoConsultaModel item)? onPressedSave;
 
   void addGrid(ExpedicaoCarrinhoPercursoConsultaModel item) {
-    _itensGrid.add(item);
+    _itens.add(item);
   }
 
   void addAllGrid(List<ExpedicaoCarrinhoPercursoConsultaModel> itens) {
-    _itensGrid.addAll(itens);
+    _itens.addAll(itens);
   }
 
   void updateGrid(ExpedicaoCarrinhoPercursoConsultaModel item) {
-    final index = _itensGrid.indexWhere((el) => el.item == item.item);
-    _itensGrid[index] = item;
+    final index = _itens.indexWhere((el) => el.item == item.item);
+    _itens[index] = item;
   }
 
   void updateAllGrid(List<ExpedicaoCarrinhoPercursoConsultaModel> itens) {
     for (var el in itens) {
-      final index = _itensGrid.indexWhere((i) => i.item == el.item);
-      _itensGrid[index] = el;
+      final index = _itens.indexWhere((i) => i.item == el.item);
+      _itens[index] = el;
     }
   }
 
   void removeGrid(ExpedicaoCarrinhoPercursoConsultaModel item) {
-    _itensGrid.removeWhere((el) =>
+    _itens.removeWhere((el) =>
         el.codEmpresa == item.codEmpresa &&
         el.codCarrinho == item.codCarrinho &&
         el.item == item.item);
   }
 
   void removeAllGrid() {
-    _itensGrid.clear();
+    _itens.clear();
   }
 
   void editGrid(

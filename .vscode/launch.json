@@ -8,7 +8,8 @@
       "name": "Data7 Windows (debug mode)",
       "request": "launch",
       "type": "dart",
-      "deviceId": "windows"
+      "deviceId": "windows",
+      "args": ["one", "two"]
     },
     {
       "name": "Data7 Web (debug mode)",
@@ -39,12 +40,12 @@
       "type": "dart",
       "flutterMode": "release"
     }
-  ],
-
-  "compounds": [
-    {
-      "name": "DUAL APP (debug mode)",
-      "configurations": ["Data7 Windows (debug mode)", "Data7 Web (debug mode)"]
-    }
   ]
+
+  // "compounds": [
+  //   {
+  //     "name": "DUAL APP (debug mode)",
+  //     "configurations": ["Data7 Windows (debug mode)", "Data7 Web (debug mode)"]
+  //   }
+  // ]
 }
