@@ -9,7 +9,6 @@ import 'package:app_expedicao/src/pages/common/widget/complit_animation_icon_wid
 import 'package:app_expedicao/src/model/expedicao_separar_item_unidade_medida_consulta_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_repository.dart';
 import 'package:app_expedicao/src/pages/common/widget/alert_animation_icon_widget.dart';
-import 'package:app_expedicao/src/pages/common/widget/box_animation_icon_widget.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 
 class SepararGridController extends GetxController {
@@ -256,6 +255,10 @@ class SepararGridController extends GetxController {
       }
     }
 
-    return const BoxAnimationIconWidget();
+    return Icon(
+      BootstrapIcons.box,
+      color: Theme.of(Get.context!).primaryColor,
+      size: 17,
+    );
   }
 }

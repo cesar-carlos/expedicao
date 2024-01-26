@@ -16,7 +16,6 @@ class _ComplitAnimationIconWidgetState
   @override
   void initState() {
     super.initState();
-
     _controller = AnimationController(vsync: this);
   }
 

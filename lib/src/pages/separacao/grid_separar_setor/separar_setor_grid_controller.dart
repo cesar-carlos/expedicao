@@ -185,6 +185,6 @@ class SepararSetorGridController extends GetxController {
       return const AlertAnimationIconWidget();
     }
 
-    return const BoxAnimationIconWidget();
+    return BoxAnimationIconWidget();
   }
 }

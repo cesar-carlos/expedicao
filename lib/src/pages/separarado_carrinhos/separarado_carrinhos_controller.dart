@@ -122,71 +122,70 @@ class SeparadoCarrinhosController extends GetxController {
         detail: 'Ao salvar, o carrinho não podera ser mais alterado!',
       );
 
+      //SAVE CART
       if (confirmation != null && confirmation) {
-        final carrinho = await CarrinhoServices().select(
-          '''
-           CodEmpresa = ${item.codEmpresa} 
-            AND CodCarrinho = ${item.codCarrinho}
-           
-           ''',
-        );
+        await LoadingProcessDialogGenericWidget.show<bool>(
+          context: Get.context!,
+          process: () async {
+            try {
+              final carrinho = await CarrinhoServices().select(''' 
+                    CodEmpresa = ${item.codEmpresa} 
+                  AND CodCarrinho = ${item.codCarrinho} 
 
-        final carrinhoPercursoEstagio =
-            await CarrinhoPercursoEstagioServices().select('''
-                CodEmpresa = ${item.codEmpresa}
-              AND CodCarrinhoPercurso = ${item.codCarrinhoPercurso}
-              AND CodPercursoEstagio = ${item.codPercursoEstagio}
-              AND CodCarrinho = ${item.codCarrinho}
-              AND Item = ${item.item}
+                ''');
 
-            ''');
+              final carrinhoPercursoEstagio =
+                  await CarrinhoPercursoEstagioServices().select('''
+                    CodEmpresa = ${item.codEmpresa}
+                  AND CodCarrinhoPercurso = ${item.codCarrinhoPercurso}
+                  AND CodCarrinho = ${item.codCarrinho}
+                  AND Item = ${item.item}
 
-        if (carrinho.isEmpty || carrinhoPercursoEstagio.isEmpty) return;
-        final newCarrinho = carrinho.last
-            .copyWith(situacao: ExpedicaoCarrinhoSituacaoModel.separado);
+                  ''');
 
-        final newCarrinhoPercursoEstagio = carrinhoPercursoEstagio.last
-            .copyWith(situacao: ExpedicaoCarrinhoSituacaoModel.separado);
+              if (carrinho.isEmpty || carrinhoPercursoEstagio.isEmpty) {
+                throw Exception('Carrinho percurso não encontrado!');
+              }
 
-        await CarrinhoPercursoEstagioFinalizarService(
-          carrinho: newCarrinho,
-          carrinhoPercursoEstagio: newCarrinhoPercursoEstagio,
-        ).execute();
+              final newCarrinho = carrinho.last.copyWith(
+                situacao: ExpedicaoCarrinhoSituacaoModel.separado,
+              );
 
-        await SeparacaoFinalizarItemService().updateAll(itensSeparacaoCarrinho);
-        final newCarrinhoPercursoConsulta = item.copyWith(
-          situacao: ExpedicaoSituacaoModel.separado,
-        );
+              final newCarrinhoPercursoEstagio = carrinhoPercursoEstagio.last
+                  .copyWith(situacao: ExpedicaoCarrinhoSituacaoModel.separado);
 
-        _separadoCarrinhoGridController.updateGrid(newCarrinhoPercursoConsulta);
-        _separadoCarrinhoGridController.update();
+              await CarrinhoPercursoEstagioFinalizarService(
+                carrinho: newCarrinho,
+                carrinhoPercursoEstagio: newCarrinhoPercursoEstagio,
+              ).execute();
 
-        //FINALIZAR SEPARAÇÃO AUTOMATICAMENTE
-        final isComplete = await _separarConsultaServices.isComplete();
-        final existsOpenCart = await _separarConsultaServices.existsOpenCart();
+              await SeparacaoFinalizarItemService()
+                  .updateAll(itensSeparacaoCarrinho);
+              final newCarrinhoPercursoConsulta = item.copyWith(
+                situacao: ExpedicaoSituacaoModel.separado,
+              );
 
-        if (isComplete && !existsOpenCart) {
-          await LoadingProcessDialogGenericWidget.show<bool>(
-            context: Get.context!,
-            process: () async {
-              try {
+              _separadoCarrinhoGridController
+                  .updateGrid(newCarrinhoPercursoConsulta);
+              _separadoCarrinhoGridController.update();
+
+              final isComplete = await _separarConsultaServices.isComplete();
+              final existsOpenCart =
+                  await _separarConsultaServices.existsOpenCart();
+
+              //AUTO FINALIZAR
+              if (isComplete && !existsOpenCart) {
+                await Future.delayed(Duration(seconds: 1));
                 final separarController = Get.find<SepararController>();
                 await separarController.finalizarSeparacao();
-                return true;
-              } catch (err) {
-                return false;
               }
-            },
-          );
-        }
 
-        //OLD CODE
-        // if (isComplete && !existsOpenCart) {
-        //   Future.delayed(Duration(microseconds: 500), () async {
-        //     final separarController = Get.find<SepararController>();
-        //     separarController.finalizarSeparacao();
-        //   });
-        // }
+              return true;
+            } catch (err) {
+              return false;
+            }
+          },
+        );
       }
     };
 

@@ -16,6 +16,21 @@ class ConferidoCarrinhoGridColumns {
   void _buidColumns() {
     _columns.add(
       GridColumn(
+        visible: true,
+        maximumWidth: 30,
+        columnName: 'indicator',
+        label: Container(
+          padding: padding,
+          alignment: Alignment.center,
+          child: const Text(
+            '',
+          ),
+        ),
+      ),
+    );
+
+    _columns.add(
+      GridColumn(
         visible: false,
         columnName: 'codEmpresa',
         label: Container(

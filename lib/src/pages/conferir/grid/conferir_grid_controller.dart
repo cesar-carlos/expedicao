@@ -8,7 +8,7 @@ import 'package:app_expedicao/src/pages/common/widget/complit_animation_icon_wid
 import 'package:app_expedicao/src/model/expedicao_conferir_item_unidade_medida_consulta_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_repository.dart';
 import 'package:app_expedicao/src/pages/common/widget/alert_animation_icon_widget.dart';
-import 'package:app_expedicao/src/pages/common/widget/box_animation_icon_widget.dart';
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 
 class ConferirGridController extends GetxController {
   static const gridName = 'conferirGrid';
@@ -217,6 +217,10 @@ class ConferirGridController extends GetxController {
       return const AlertAnimationIconWidget();
     }
 
-    return const BoxAnimationIconWidget();
+    return const Icon(
+      BootstrapIcons.box,
+      color: Colors.blue,
+      size: 17,
+    );
   }
 }

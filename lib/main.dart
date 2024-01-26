@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:media_kit/media_kit.dart';
 import 'package:system_theme/system_theme.dart';
 
 import 'package:app_expedicao/src/app/app_theme.dart';
@@ -20,6 +21,7 @@ Future<void> main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
   await WindowManagerConfig().config();
   await SystemTheme.accentColor.load();
+  MediaKit.ensureInitialized();
 
   Get.put(AppClientHttp());
   Get.put(AppSocketConfig());

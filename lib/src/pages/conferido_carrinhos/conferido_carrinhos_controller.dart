@@ -102,116 +102,121 @@ class ConferidoCarrinhosController extends GetxController {
         return;
       }
 
+      final itensConferir = await _conferirConsultaServices.itensConferir();
+      final itensConferencia =
+          await _conferirConsultaServices.itensConferencia();
+
+      final itensConferenciaCarrinho = itensConferencia
+          .where((el) =>
+              el.situacao != ExpedicaoItemSituacaoModel.cancelado &&
+              el.codCarrinho == item.codCarrinho)
+          .toList();
+
+      final itensConferirCarrinho =
+          itensConferir.where((el) => el.codCarrinho == item.codCarrinho);
+
+      final isComplitCart =
+          itensConferirCarrinho.every((el) => el.isComplited());
+
+      if (itensConferenciaCarrinho.isEmpty) {
+        await ConfirmationDialogMessageWidget.show(
+          context: Get.context!,
+          message: 'Carrinho não conferido!',
+          detail: 'Não é possível salva um carrinho que não esteja conferido!',
+        );
+
+        return;
+      }
+
+      if (!isComplitCart) {
+        await ConfirmationDialogMessageWidget.show(
+          context: Get.context!,
+          message: 'Carrinho não conferido!',
+          detail:
+              'Existem itens com conferencia incorreta, não é possível salva!',
+        );
+
+        return;
+      }
+
       final bool? confirmation = await ConfirmationDialogWidget.show(
         context: Get.context!,
         message: 'Deseja Salva?',
         detail: 'Ao salvar, o carrinho não podera ser mais alterado!',
       );
 
+      ///CONFIRMAÇÃO DE SALVAR
       if (confirmation != null && confirmation) {
-        final itensConferir = await _conferirConsultaServices.itensConferir();
-        final itensConferencia =
-            await _conferirConsultaServices.itensConferencia();
+        await LoadingProcessDialogGenericWidget.show<bool>(
+          context: Get.context!,
+          process: () async {
+            try {
+              final newPercursoEstagio = ExpedicaoPercursoEstagioModel(
+                codEmpresa: item.codEmpresa,
+                codCarrinhoPercurso: item.codCarrinhoPercurso,
+                item: item.item,
+                origem: item.origem,
+                codOrigem: item.codOrigem,
+                codPercursoEstagio: item.codPercursoEstagio,
+                codCarrinho: item.codCarrinho,
+                situacao: ExpedicaoSituacaoModel.conferido,
+                dataInicio: item.dataInicio,
+                horaInicio: item.horaInicio,
+                codUsuarioInicio: item.codUsuarioInicio,
+                nomeUsuarioInicio: item.nomeUsuarioInicio,
+              );
 
-        final itensConferenciaCarrinho = itensConferencia
-            .where((el) =>
-                el.situacao != ExpedicaoItemSituacaoModel.cancelado &&
-                el.codCarrinho == item.codCarrinho)
-            .toList();
+              final newCarrinho = ExpedicaoCarrinhoModel(
+                codEmpresa: item.codEmpresa,
+                codCarrinho: item.codCarrinho,
+                descricao: item.nomeCarrinho,
+                ativo: item.ativo,
+                codigoBarras: item.codigoBarrasCarrinho,
+                situacao: ExpedicaoCarrinhoSituacaoModel.conferido,
+              );
 
-        final itensConferirCarrinho =
-            itensConferir.where((el) => el.codCarrinho == item.codCarrinho);
+              await CarrinhoPercursoEstagioFinalizarService(
+                carrinhoPercursoEstagio: newPercursoEstagio,
+                carrinho: newCarrinho,
+              ).execute();
 
-        final isComplitCart =
-            itensConferirCarrinho.every((el) => el.isComplited());
+              await ConferenciaFinalizarItemService()
+                  .updateAll(itensConferenciaCarrinho);
 
-        if (itensConferenciaCarrinho.isEmpty) {
-          await ConfirmationDialogMessageWidget.show(
-            context: Get.context!,
-            message: 'Carrinho não conferido!',
-            detail:
-                'Não é possível salva um carrinho que não esteja conferido!',
-          );
-
-          return;
-        }
-
-        if (!isComplitCart) {
-          await ConfirmationDialogMessageWidget.show(
-            context: Get.context!,
-            message: 'Carrinho não conferido!',
-            detail:
-                'Existem itens com conferencia incorreta, não é possível salva!',
-          );
-
-          return;
-        }
-
-        final newPercursoEstagio = ExpedicaoPercursoEstagioModel(
-          codEmpresa: item.codEmpresa,
-          codCarrinhoPercurso: item.codCarrinhoPercurso,
-          item: item.item,
-          origem: item.origem,
-          codOrigem: item.codOrigem,
-          codPercursoEstagio: item.codPercursoEstagio,
-          codCarrinho: item.codCarrinho,
-          situacao: ExpedicaoSituacaoModel.conferido,
-          dataInicio: item.dataInicio,
-          horaInicio: item.horaInicio,
-          codUsuarioInicio: item.codUsuarioInicio,
-          nomeUsuarioInicio: item.nomeUsuarioInicio,
-        );
-
-        final newCarrinho = ExpedicaoCarrinhoModel(
-          codEmpresa: item.codEmpresa,
-          codCarrinho: item.codCarrinho,
-          descricao: item.nomeCarrinho,
-          ativo: item.ativo,
-          codigoBarras: item.codigoBarrasCarrinho,
-          situacao: ExpedicaoCarrinhoSituacaoModel.conferido,
-        );
-
-        await CarrinhoPercursoEstagioFinalizarService(
-          carrinhoPercursoEstagio: newPercursoEstagio,
-          carrinho: newCarrinho,
-        ).execute();
-
-        await ConferenciaFinalizarItemService()
-            .updateAll(itensConferenciaCarrinho);
-
-        for (var el in itensConferenciaCarrinho) {
-          _conferidoCarrinhoGridController.updateGridSituationItem(
-              el.itemCarrinhoPercurso, ExpedicaoSituacaoModel.conferido);
-        }
-
-        _conferidoCarrinhoGridController.update();
-
-        //FINALIZAR CONFERENCIA AUTOMATICAMENTE
-        final isComplete = await _conferirConsultaServices.isComplete();
-        final existsOpenCart = await _conferirConsultaServices.existsOpenCart();
-
-        if (isComplete && !existsOpenCart) {
-          await LoadingProcessDialogGenericWidget.show<bool>(
-            context: Get.context!,
-            process: () async {
-              try {
-                final separarController = Get.find<ConferirController>();
-                await separarController.finalizarConferencia();
-                return true;
-              } catch (err) {
-                return false;
+              for (var el in itensConferenciaCarrinho) {
+                _conferidoCarrinhoGridController.updateGridSituationItem(
+                    el.itemCarrinhoPercurso, ExpedicaoSituacaoModel.conferido);
               }
-            },
-          );
-        }
 
-        //OLD CODE
-        // if (isComplete && !existsOpenCart) {
-        //   Future.delayed(Duration(microseconds: 500), () async {
-        //     final separarController = Get.find<ConferirController>();
-        //     separarController.finalizarConferencia();
-        //   });
-        // }
+              _conferidoCarrinhoGridController.update();
+
+              //FINALIZAR CONFERENCIA AUTOMATICAMENTE
+              final isComplete = await _conferirConsultaServices.isComplete();
+              final existsOpenCart =
+                  await _conferirConsultaServices.existsOpenCart();
+
+              if (isComplete && !existsOpenCart) {
+                await LoadingProcessDialogGenericWidget.show<bool>(
+                  context: Get.context!,
+                  process: () async {
+                    try {
+                      await Future.delayed(Duration(seconds: 1));
+                      final separarController = Get.find<ConferirController>();
+                      await separarController.finalizarConferencia();
+                      return true;
+                    } catch (err) {
+                      return false;
+                    }
+                  },
+                );
+              }
+
+              return true;
+            } catch (err) {
+              return false;
+            }
+          },
+        );
       }
     };
 

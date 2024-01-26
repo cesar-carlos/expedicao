@@ -16,7 +16,6 @@ class _AlertAnimationIconWidgetState extends State<AlertAnimationIconWidget>
   @override
   void initState() {
     super.initState();
-
     _controller = AnimationController(vsync: this);
   }
 

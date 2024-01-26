@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import 'package:app_expedicao/src/pages/conferido_carrinhos/grid/conferido_carrinho_grid_source.dart';
@@ -97,7 +98,7 @@ class ConferidoCarrinhoGridController extends GetxController {
     }
 
     return Icon(
-      size: 17,
+      size: 19,
       item.situacao != ExpedicaoSituacaoModel.cancelada &&
               item.situacao != ExpedicaoSituacaoModel.conferido
           ? Icons.edit
@@ -117,7 +118,7 @@ class ConferidoCarrinhoGridController extends GetxController {
     }
 
     return Icon(
-      size: 17,
+      size: 19,
       Icons.delete,
       color: color,
     );
@@ -134,10 +135,42 @@ class ConferidoCarrinhoGridController extends GetxController {
     }
 
     return Icon(
-      size: 17,
+      size: 19,
       Icons.save,
       color: color,
     );
+  }
+
+  Widget iconIndicator(ExpedicaoCarrinhoPercursoConsultaModel item) {
+    Color color = Theme.of(Get.context!).primaryColor;
+
+    switch (item.situacao) {
+      case ExpedicaoSituacaoModel.cancelada:
+        return Icon(
+          size: 19,
+          BootstrapIcons.cart_x_fill,
+          color: color,
+        );
+      case ExpedicaoSituacaoModel.conferido:
+        return Icon(
+          size: 19,
+          BootstrapIcons.cart_check_fill,
+          color: color,
+        );
+      case ExpedicaoSituacaoModel.conferindo:
+        return Icon(
+          size: 19,
+          BootstrapIcons.cart_plus_fill,
+          color: color,
+        );
+
+      default:
+        return Icon(
+          size: 19,
+          BootstrapIcons.cart_fill,
+          color: color,
+        );
+    }
   }
 
   void setSelectedRow(int index) {

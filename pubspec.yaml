@@ -39,6 +39,7 @@ dependencies:
   flutter_dotenv: ^5.1.0
   window_manager: ^0.3.7
   bootstrap_icons: ^1.11.1
+  font_awesome_flutter: ^10.6.0
   syncfusion_flutter_datagrid: ^23.1.41
   date_format: ^2.0.7
   fluent_ui: ^4.7.6
@@ -54,6 +55,8 @@ dependencies:
   file_picker: ^6.1.1
   http: ^1.1.2
   args: ^2.4.2
+  media_kit: ^1.1.10+1
+  media_kit_libs_audio: ^1.0.4
 
 dev_dependencies:
   flutter_test:
@@ -112,6 +115,7 @@ flutter:
     - .env
     - assets/images/
     - assets/icons/
+    - assets/sounds/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

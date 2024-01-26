@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/pages/separarado_carrinhos/grid/separarado_carrinho_grid_source.dart';
@@ -43,6 +45,15 @@ class SeparadoCarrinhoGridController extends GetxController {
       final index = _itens.indexWhere((i) => i.item == el.item);
       _itens[index] = el;
     }
+  }
+
+  //TODO:: ADD ICON DIVERSE QTD ITENS
+  iconIndicator(ExpedicaoCarrinhoPercursoConsultaModel item) {
+    return Icon(
+      FontAwesomeIcons.cartArrowDown,
+      color: Theme.of(Get.context!).primaryColor,
+      size: 16,
+    );
   }
 
   void removeGrid(ExpedicaoCarrinhoPercursoConsultaModel item) {

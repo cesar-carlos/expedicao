@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-import 'package:app_expedicao/src/pages/common/widget/box_animation_icon_widget.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
 import 'package:app_expedicao/src/pages/conferir_carrinhos/grid/conferir_carrinho_grid_source.dart';
 import 'package:app_expedicao/src/pages/common/widget/complit_animation_icon_widget.dart';
@@ -157,7 +157,7 @@ class ConferirCarrinhoGridController extends GetxController {
     }
 
     return Icon(
-      size: 17,
+      size: 19,
       item.situacao != ExpedicaoSituacaoModel.cancelada &&
               item.situacao != ExpedicaoSituacaoModel.separando
           ? Icons.edit
@@ -177,7 +177,7 @@ class ConferirCarrinhoGridController extends GetxController {
     }
 
     return Icon(
-      size: 17,
+      size: 19,
       Icons.delete,
       color: color,
     );
@@ -194,7 +194,7 @@ class ConferirCarrinhoGridController extends GetxController {
     }
 
     return Icon(
-      size: 17,
+      size: 19,
       Icons.save,
       color: color,
     );
@@ -216,6 +216,10 @@ class ConferirCarrinhoGridController extends GetxController {
       return const ComplitAnimationIconWidget();
     }
 
-    return const BoxAnimationIconWidget();
+    return Icon(
+      BootstrapIcons.cart_fill,
+      color: Theme.of(Get.context!).primaryColor,
+      size: 19,
+    );
   }
 }

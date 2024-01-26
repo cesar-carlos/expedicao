@@ -15,6 +15,10 @@ class SeparadoCarrinhoGridSource extends DataGridSource {
       {required List<ExpedicaoCarrinhoPercursoConsultaModel> itens}) {
     _itens = itens
         .map<DataGridRow>((i) => DataGridRow(cells: [
+              DataGridCell<Widget>(
+                columnName: 'indicator',
+                value: controller.iconIndicator(i),
+              ),
               DataGridCell<int>(
                 columnName: 'codEmpresa',
                 value: i.codEmpresa,
