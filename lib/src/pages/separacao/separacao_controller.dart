@@ -286,7 +286,6 @@ class SeparacaoController extends GetxController {
 
     if ((qtdConferencia + itemSepararConsulta.quantidadeSeparacao) >
         itemSepararConsulta.quantidade) {
-      AudioHelper().play('assets/sounds/error.wav');
       await ConfirmationDialogMessageWidget.show(
         context: Get.context!,
         message: 'Quantidade invalida!',
@@ -295,8 +294,10 @@ class SeparacaoController extends GetxController {
       );
 
       quantidadeController.text = '1,000';
+
       scanController.clear();
       scanFocusNode.requestFocus();
+      AudioHelper().play('assets/sounds/error.wav');
       return;
     }
 

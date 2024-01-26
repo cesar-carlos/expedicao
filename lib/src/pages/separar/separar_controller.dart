@@ -264,6 +264,16 @@ class SepararController extends GetxController {
     final isComplete = await _separarConsultaServices.isComplete();
     final existsOpenCart = await _separarConsultaServices.existsOpenCart();
 
+    if (_expedicaoSituacao == ExpedicaoSituacaoModel.cancelada) {
+      await ConfirmationDialogMessageWidget.show(
+        context: Get.context!,
+        message: 'Separação cancelada!',
+        detail: 'Separação cancelada, não é possível finalizar.',
+      );
+
+      return;
+    }
+
     if (_expedicaoSituacao == ExpedicaoSituacaoModel.separado) {
       await ConfirmationDialogMessageWidget.show(
         context: Get.context!,

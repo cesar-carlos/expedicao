@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -47,12 +46,12 @@ class SeparadoCarrinhoGridController extends GetxController {
     }
   }
 
-  //TODO:: ADD ICON DIVERSE QTD ITENS
+  //TODO:: ADD ICON
   iconIndicator(ExpedicaoCarrinhoPercursoConsultaModel item) {
     return Icon(
       FontAwesomeIcons.cartArrowDown,
       color: Theme.of(Get.context!).primaryColor,
-      size: 16,
+      size: 19,
     );
   }
 
@@ -101,7 +100,7 @@ class SeparadoCarrinhoGridController extends GetxController {
     }
 
     return Icon(
-      size: 17,
+      size: 19,
       item.situacao != ExpedicaoSituacaoModel.cancelada &&
               item.situacao != ExpedicaoSituacaoModel.separado
           ? Icons.edit
@@ -123,7 +122,7 @@ class SeparadoCarrinhoGridController extends GetxController {
     }
 
     return Icon(
-      size: 17,
+      size: 19,
       Icons.delete,
       color: color,
     );
@@ -144,7 +143,7 @@ class SeparadoCarrinhoGridController extends GetxController {
     }
 
     return Icon(
-      size: 17,
+      size: 19,
       Icons.save,
       color: color,
     );

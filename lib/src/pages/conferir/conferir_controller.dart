@@ -281,6 +281,36 @@ class ConferirController extends GetxController {
     final isComplete = await _conferirConsultaServices.isComplete();
     final existsOpenCart = await _conferirConsultaServices.existsOpenCart();
 
+    if (_expedicaoSituacao == ExpedicaoSituacaoModel.cancelada) {
+      await ConfirmationDialogMessageWidget.show(
+        context: Get.context!,
+        message: 'Conferencia cancelada!',
+        detail: 'Conferencia cancelada, não é possível finalizar.',
+      );
+
+      return;
+    }
+
+    if (_expedicaoSituacao == ExpedicaoSituacaoModel.embalando) {
+      await ConfirmationDialogMessageWidget.show(
+        context: Get.context!,
+        message: 'Conferencia embalada!',
+        detail: 'Conferencia embalada, não é possível finalizar.',
+      );
+
+      return;
+    }
+
+    if (_expedicaoSituacao == ExpedicaoSituacaoModel.entregue) {
+      await ConfirmationDialogMessageWidget.show(
+        context: Get.context!,
+        message: 'Conferencia entregue!',
+        detail: 'Conferencia entregue, não é possível finalizar.',
+      );
+
+      return;
+    }
+
     if (_expedicaoSituacao == ExpedicaoSituacaoModel.conferido) {
       await ConfirmationDialogMessageWidget.show(
         context: Get.context!,

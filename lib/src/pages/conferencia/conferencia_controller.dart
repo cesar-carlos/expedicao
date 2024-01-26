@@ -1,3 +1,4 @@
+import 'package:app_expedicao/src/core/audio_helper.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
@@ -184,6 +185,7 @@ class ConferenciaController extends GetxController {
     final textQuantityValue = quantidadeController.text;
 
     if (scanValue.isEmpty) {
+      AudioHelper().play('assets/sounds/error.wav');
       await ConfirmationDialogMessageWidget.show(
         context: Get.context!,
         message: 'Valor invalido!',
@@ -196,6 +198,7 @@ class ConferenciaController extends GetxController {
     }
 
     if (textQuantityValue.isEmpty) {
+      AudioHelper().play('assets/sounds/error.wav');
       await ConfirmationDialogMessageWidget.show(
         context: Get.context!,
         message: 'Valor invalido!',
@@ -215,6 +218,7 @@ class ConferenciaController extends GetxController {
         : _conferirGridController.findCodProduto(int.parse(scanText));
 
     if (itemConferirConsulta == null) {
+      AudioHelper().play('assets/sounds/error.wav');
       await ConfirmationDialogMessageWidget.show(
         context: Get.context!,
         message: 'Produto não encontrado!',
@@ -263,6 +267,7 @@ class ConferenciaController extends GetxController {
     );
 
     if (conferenciaItemConsulta == null) {
+      AudioHelper().play('assets/sounds/error.wav');
       await ConfirmationDialogMessageWidget.show(
         context: Get.context!,
         message: 'Erro ao adicionar item!',
@@ -294,6 +299,8 @@ class ConferenciaController extends GetxController {
     scanController.text = '';
     quantidadeController.text = '1,000';
     scanFocusNode.requestFocus();
+
+    AudioHelper().play('assets/sounds/success.wav');
   }
 
   bool validQuantitySeparate(String scanText, double value) {
