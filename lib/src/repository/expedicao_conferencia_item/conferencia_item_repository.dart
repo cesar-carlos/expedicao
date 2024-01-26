@@ -4,23 +4,14 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
-import 'package:app_expedicao/src/app/app_error_code.dart';
 import 'package:app_expedicao/src/app/app_socket_config.dart';
 import 'package:app_expedicao/src/model/expedicao_conferencia_item_model.dart';
-import 'package:app_expedicao/src/app/app_error.dart';
 
 class ConferenciaItemRepository {
   final uuid = const Uuid();
   var socket = Get.find<AppSocketConfig>().socket;
 
   Future<List<ExpedicaoConferenciaItemModel>> select([String params = '']) {
-    if (socket.connected == false) {
-      throw AppError(
-        AppErrorCode.socketDesconected,
-        'Socket não conectado',
-      );
-    }
-
     final event = '${socket.id} conferencia.item.select';
     final completer = Completer<List<ExpedicaoConferenciaItemModel>>();
     final resposeIn = uuid.v4();
@@ -54,13 +45,6 @@ class ConferenciaItemRepository {
 
   Future<List<ExpedicaoConferenciaItemModel>> insert(
       ExpedicaoConferenciaItemModel entity) {
-    if (socket.connected == false) {
-      throw AppError(
-        AppErrorCode.socketDesconected,
-        'Socket não conectado',
-      );
-    }
-
     final event = '${socket.id} conferencia.item.insert';
     final completer = Completer<List<ExpedicaoConferenciaItemModel>>();
     final resposeIn = uuid.v4();
@@ -89,13 +73,6 @@ class ConferenciaItemRepository {
 
   Future<List<ExpedicaoConferenciaItemModel>> insertAll(
       List<ExpedicaoConferenciaItemModel> entity) {
-    if (socket.connected == false) {
-      throw AppError(
-        AppErrorCode.socketDesconected,
-        'Socket não conectado',
-      );
-    }
-
     final event = '${socket.id} conferencia.item.insert';
     final completer = Completer<List<ExpedicaoConferenciaItemModel>>();
     final resposeIn = uuid.v4();
@@ -124,13 +101,6 @@ class ConferenciaItemRepository {
 
   Future<List<ExpedicaoConferenciaItemModel>> update(
       ExpedicaoConferenciaItemModel entity) {
-    if (socket.connected == false) {
-      throw AppError(
-        AppErrorCode.socketDesconected,
-        'Socket não conectado',
-      );
-    }
-
     final event = '${socket.id} conferencia.item.update';
     final completer = Completer<List<ExpedicaoConferenciaItemModel>>();
     final resposeIn = uuid.v4();
@@ -159,13 +129,6 @@ class ConferenciaItemRepository {
 
   Future<List<ExpedicaoConferenciaItemModel>> updateAll(
       List<ExpedicaoConferenciaItemModel> entity) {
-    if (socket.connected == false) {
-      throw AppError(
-        AppErrorCode.socketDesconected,
-        'Socket não conectado',
-      );
-    }
-
     final event = '${socket.id} conferencia.item.update';
     final completer = Completer<List<ExpedicaoConferenciaItemModel>>();
     final resposeIn = uuid.v4();
@@ -194,13 +157,6 @@ class ConferenciaItemRepository {
 
   Future<List<ExpedicaoConferenciaItemModel>> delete(
       ExpedicaoConferenciaItemModel entity) {
-    if (socket.connected == false) {
-      throw AppError(
-        AppErrorCode.socketDesconected,
-        'Socket não conectado',
-      );
-    }
-
     final event = '${socket.id} conferencia.item.delete';
     final completer = Completer<List<ExpedicaoConferenciaItemModel>>();
     final resposeIn = uuid.v4();
@@ -229,13 +185,6 @@ class ConferenciaItemRepository {
 
   Future<List<ExpedicaoConferenciaItemModel>> deleteAll(
       List<ExpedicaoConferenciaItemModel> entity) {
-    if (socket.connected == false) {
-      throw AppError(
-        AppErrorCode.socketDesconected,
-        'Socket não conectado',
-      );
-    }
-
     final event = '${socket.id} conferencia.item.delete';
     final completer = Completer<List<ExpedicaoConferenciaItemModel>>();
     final resposeIn = uuid.v4();

@@ -4,8 +4,6 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
-import 'package:app_expedicao/src/app/app_error.dart';
-import 'package:app_expedicao/src/app/app_error_code.dart';
 import 'package:app_expedicao/src/app/app_socket_config.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_model.dart';
 
@@ -14,13 +12,6 @@ class ConferirRepository {
   var socket = Get.find<AppSocketConfig>().socket;
 
   Future<List<ExpedicaoConferirModel>> select([String params = '']) {
-    if (socket.connected == false) {
-      throw AppError(
-        AppErrorCode.socketDesconected,
-        'Socket não conectado',
-      );
-    }
-
     final event = '${socket.id} conferir.select';
     final completer = Completer<List<ExpedicaoConferirModel>>();
     final resposeIn = uuid.v4();
@@ -53,13 +44,6 @@ class ConferirRepository {
   }
 
   Future<List<ExpedicaoConferirModel>> insert(ExpedicaoConferirModel entity) {
-    if (socket.connected == false) {
-      throw AppError(
-        AppErrorCode.socketDesconected,
-        'Socket não conectado',
-      );
-    }
-
     final event = '${socket.id} conferir.insert';
     final completer = Completer<List<ExpedicaoConferirModel>>();
     final resposeIn = uuid.v4();
@@ -87,13 +71,6 @@ class ConferirRepository {
   }
 
   Future<List<ExpedicaoConferirModel>> update(ExpedicaoConferirModel entity) {
-    if (socket.connected == false) {
-      throw AppError(
-        AppErrorCode.socketDesconected,
-        'Socket não conectado',
-      );
-    }
-
     final event = '${socket.id} conferir.update';
     final completer = Completer<List<ExpedicaoConferirModel>>();
     final resposeIn = uuid.v4();
@@ -121,13 +98,6 @@ class ConferirRepository {
   }
 
   Future<List<ExpedicaoConferirModel>> delete(ExpedicaoConferirModel entity) {
-    if (socket.connected == false) {
-      throw AppError(
-        AppErrorCode.socketDesconected,
-        'Socket não conectado',
-      );
-    }
-
     final event = '${socket.id} conferir.delete';
     final completer = Completer<List<ExpedicaoConferirModel>>();
     final resposeIn = uuid.v4();

@@ -10,6 +10,7 @@ import 'package:app_expedicao/src/service/carrinho_percurso_estagio_services.dar
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_finalizar_service.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
+import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog_generic_widget.dart';
 import 'package:app_expedicao/src/pages/separarado_carrinhos/grid/separarado_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_event_repository.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_cancelar_service.dart';
@@ -160,16 +161,32 @@ class SeparadoCarrinhosController extends GetxController {
         _separadoCarrinhoGridController.updateGrid(newCarrinhoPercursoConsulta);
         _separadoCarrinhoGridController.update();
 
-        //Finalizar separação automaticamente
+        //FINALIZAR SEPARAÇÃO AUTOMATICAMENTE
         final isComplete = await _separarConsultaServices.isComplete();
         final existsOpenCart = await _separarConsultaServices.existsOpenCart();
 
         if (isComplete && !existsOpenCart) {
-          Future.delayed(Duration(microseconds: 500), () async {
-            final separarController = Get.find<SepararController>();
-            separarController.finalizarSeparacao();
-          });
+          await LoadingProcessDialogGenericWidget.show<bool>(
+            context: Get.context!,
+            process: () async {
+              try {
+                final separarController = Get.find<SepararController>();
+                await separarController.finalizarSeparacao();
+                return true;
+              } catch (err) {
+                return false;
+              }
+            },
+          );
         }
+
+        //OLD CODE
+        // if (isComplete && !existsOpenCart) {
+        //   Future.delayed(Duration(microseconds: 500), () async {
+        //     final separarController = Get.find<SepararController>();
+        //     separarController.finalizarSeparacao();
+        //   });
+        // }
       }
     };
 

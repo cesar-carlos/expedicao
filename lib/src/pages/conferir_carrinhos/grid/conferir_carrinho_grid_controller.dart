@@ -1,4 +1,3 @@
-import 'package:app_expedicao/src/pages/common/widget/complit_animation_icon_widget.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -6,12 +5,14 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:app_expedicao/src/pages/common/widget/box_animation_icon_widget.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
 import 'package:app_expedicao/src/pages/conferir_carrinhos/grid/conferir_carrinho_grid_source.dart';
+import 'package:app_expedicao/src/pages/common/widget/complit_animation_icon_widget.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_conferir_consulta_model.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 
 class ConferirCarrinhoGridController extends GetxController {
   static const gridName = 'conferirCarrinhoGrid';
+
   final DataGridController dataGridController = DataGridController();
   late List<ExpedicaoCarrinhoConferirConsultaModel> _itens = [];
 

@@ -472,12 +472,14 @@ class ConferenciaController extends GetxController {
     final conferenciaItemEvent = ConferenciaItemEventRepository.instancia;
     final conferirItemEvent = ConferirItemEventRepository.instancia;
 
+    //Update carrinho
     final updateCarrinhoPercurso = RepositoryEventListenerModel(
       id: uuid.v4(),
       event: Event.update,
       callback: (data) async {
         for (var el in data.mutation) {
           final item = ExpedicaoCarrinhoPercursoConsultaModel.fromJson(el);
+
           if (item.codEmpresa == percursoEstagioConsulta.codEmpresa &&
               item.codCarrinho == percursoEstagioConsulta.codCarrinho &&
               item.situacao == ExpedicaoSituacaoModel.cancelada) {
@@ -501,6 +503,7 @@ class ConferenciaController extends GetxController {
       callback: (data) async {
         for (var el in data.mutation) {
           final item = ExpedicaoConferirItemConsultaModel.fromJson(el);
+
           if (item.codEmpresa == percursoEstagioConsulta.codEmpresa &&
               ExpedicaoOrigemModel.conferencia ==
                   percursoEstagioConsulta.origem &&
@@ -519,6 +522,7 @@ class ConferenciaController extends GetxController {
       callback: (data) async {
         for (var el in data.mutation) {
           final item = ExpedicaConferenciaItemConsultaModel.fromJson(el);
+
           if (item.codEmpresa == percursoEstagioConsulta.codEmpresa &&
               ExpedicaoOrigemModel.conferencia ==
                   percursoEstagioConsulta.origem &&
@@ -537,6 +541,7 @@ class ConferenciaController extends GetxController {
       callback: (data) async {
         for (var el in data.mutation) {
           final item = ExpedicaConferenciaItemConsultaModel.fromJson(el);
+
           if (item.codEmpresa == percursoEstagioConsulta.codEmpresa &&
               ExpedicaoOrigemModel.conferencia ==
                   percursoEstagioConsulta.origem &&
@@ -555,6 +560,7 @@ class ConferenciaController extends GetxController {
       callback: (data) async {
         for (var el in data.mutation) {
           final item = ExpedicaConferenciaItemConsultaModel.fromJson(el);
+
           _conferenciaGridController.removeGrid(item);
           _conferenciaGridController.update();
         }

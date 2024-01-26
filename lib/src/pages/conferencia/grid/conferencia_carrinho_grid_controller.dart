@@ -1,11 +1,12 @@
 import 'package:get/get.dart';
 
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:app_expedicao/src/pages/conferencia/grid/conferencia_carrinho_grid_source.dart';
 import 'package:app_expedicao/src/model/expedicao_conferencia_item_consulta_model.dart';
-import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class ConferenciaCarrinhoGridController extends GetxController {
   static const gridName = 'conferenciaCarrinhoGrid';
+
   final DataGridController dataGridController = DataGridController();
   late List<ExpedicaConferenciaItemConsultaModel> _itens = [];
 

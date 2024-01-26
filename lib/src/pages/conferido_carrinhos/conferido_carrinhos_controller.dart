@@ -1,3 +1,4 @@
+import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog_generic_widget.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
@@ -185,16 +186,32 @@ class ConferidoCarrinhosController extends GetxController {
 
         _conferidoCarrinhoGridController.update();
 
-        //Finalizar separação automaticamente
+        //FINALIZAR CONFERENCIA AUTOMATICAMENTE
         final isComplete = await _conferirConsultaServices.isComplete();
         final existsOpenCart = await _conferirConsultaServices.existsOpenCart();
 
         if (isComplete && !existsOpenCart) {
-          Future.delayed(Duration(microseconds: 500), () async {
-            final separarController = Get.find<ConferirController>();
-            separarController.finalizarConferencia();
-          });
+          await LoadingProcessDialogGenericWidget.show<bool>(
+            context: Get.context!,
+            process: () async {
+              try {
+                final separarController = Get.find<ConferirController>();
+                await separarController.finalizarConferencia();
+                return true;
+              } catch (err) {
+                return false;
+              }
+            },
+          );
         }
+
+        //OLD CODE
+        // if (isComplete && !existsOpenCart) {
+        //   Future.delayed(Duration(microseconds: 500), () async {
+        //     final separarController = Get.find<ConferirController>();
+        //     separarController.finalizarConferencia();
+        //   });
+        // }
       }
     };
 
@@ -270,6 +287,7 @@ class ConferidoCarrinhosController extends GetxController {
     final carrinhoPercursoEvent = CarrinhoPercursoEventRepository.instancia;
     const uuid = Uuid();
 
+    //Insert carrinho
     carrinhoPercursoEvent.addListener(
       RepositoryEventListenerModel(
         id: uuid.v4(),
@@ -277,6 +295,7 @@ class ConferidoCarrinhosController extends GetxController {
         callback: (data) async {
           for (var el in data.mutation) {
             final car = ExpedicaoCarrinhoPercursoConsultaModel.fromJson(el);
+
             if (car.codEmpresa == _processoExecutavel.codEmpresa &&
                 car.origem == _processoExecutavel.origem &&
                 car.codOrigem == _processoExecutavel.codOrigem) {
@@ -288,6 +307,7 @@ class ConferidoCarrinhosController extends GetxController {
       ),
     );
 
+    //Update carrinho
     carrinhoPercursoEvent.addListener(
       RepositoryEventListenerModel(
         id: uuid.v4(),
@@ -295,13 +315,19 @@ class ConferidoCarrinhosController extends GetxController {
         callback: (data) async {
           for (var el in data.mutation) {
             final car = ExpedicaoCarrinhoPercursoConsultaModel.fromJson(el);
-            _conferidoCarrinhoGridController.updateGrid(car);
-            _conferidoCarrinhoGridController.update();
+
+            if (car.codEmpresa == _processoExecutavel.codEmpresa &&
+                car.origem == _processoExecutavel.origem &&
+                car.codOrigem == _processoExecutavel.codOrigem) {
+              _conferidoCarrinhoGridController.updateGrid(car);
+              _conferidoCarrinhoGridController.update();
+            }
           }
         },
       ),
     );
 
+    //Delete carrinho
     carrinhoPercursoEvent.addListener(
       RepositoryEventListenerModel(
         id: uuid.v4(),
@@ -309,8 +335,13 @@ class ConferidoCarrinhosController extends GetxController {
         callback: (data) async {
           for (var el in data.mutation) {
             final car = ExpedicaoCarrinhoPercursoConsultaModel.fromJson(el);
-            _conferidoCarrinhoGridController.removeGrid(car);
-            _conferidoCarrinhoGridController.update();
+
+            if (car.codEmpresa == _processoExecutavel.codEmpresa &&
+                car.origem == _processoExecutavel.origem &&
+                car.codOrigem == _processoExecutavel.codOrigem) {
+              _conferidoCarrinhoGridController.removeGrid(car);
+              _conferidoCarrinhoGridController.update();
+            }
           }
         },
       ),

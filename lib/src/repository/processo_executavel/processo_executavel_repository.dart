@@ -4,23 +4,14 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
-import 'package:app_expedicao/src/app/app_error_code.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/app/app_socket_config.dart';
-import 'package:app_expedicao/src/app/app_error.dart';
 
 class ProcessoExecutavelRepository {
   final uuid = const Uuid();
   final socket = Get.find<AppSocketConfig>().socket;
 
   Future<List<ProcessoExecutavelModel>> select([String params = '']) {
-    if (socket.connected == false) {
-      throw AppError(
-        AppErrorCode.socketDesconected,
-        'Socket não conectado',
-      );
-    }
-
     final event = '${socket.id} processo.executavel.select';
     final completer = Completer<List<ProcessoExecutavelModel>>();
     final resposeIn = uuid.v4();
@@ -54,13 +45,6 @@ class ProcessoExecutavelRepository {
 
   Future<List<ProcessoExecutavelModel>> insert(
       ProcessoExecutavelModel cancelamento) {
-    if (socket.connected == false) {
-      throw AppError(
-        AppErrorCode.socketDesconected,
-        'Socket não conectado',
-      );
-    }
-
     final event = '${socket.id} processo.executavel.insert';
     final completer = Completer<List<ProcessoExecutavelModel>>();
     final resposeIn = uuid.v4();
@@ -89,13 +73,6 @@ class ProcessoExecutavelRepository {
 
   Future<List<ProcessoExecutavelModel>> update(
       ProcessoExecutavelModel cancelamento) {
-    if (socket.connected == false) {
-      throw AppError(
-        AppErrorCode.socketDesconected,
-        'Socket não conectado',
-      );
-    }
-
     final event = '${socket.id} processo.executavel.update';
     final completer = Completer<List<ProcessoExecutavelModel>>();
     final resposeIn = uuid.v4();
@@ -124,13 +101,6 @@ class ProcessoExecutavelRepository {
 
   Future<List<ProcessoExecutavelModel>> delete(
       ProcessoExecutavelModel cancelamento) {
-    if (socket.connected == false) {
-      throw AppError(
-        AppErrorCode.socketDesconected,
-        'Socket não conectado',
-      );
-    }
-
     final event = '${socket.id} processo.executavel.delete';
     final completer = Completer<List<ProcessoExecutavelModel>>();
     final resposeIn = uuid.v4();

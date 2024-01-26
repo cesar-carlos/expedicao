@@ -26,7 +26,6 @@ class SplashController extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
-
     await _loading();
     _litener();
   }
@@ -34,10 +33,10 @@ class SplashController extends GetxController {
   Future<void> _loading() async {
     _isLoad.value = false;
     await Future.delayed(const Duration(seconds: 1));
+
     try {
       _processoExecutavel = await Get.find<ProcessoExecutavelModel>();
     } catch (_) {
-      /* PARA EXECUTAR EM DEBUG */
       _processoExecutavel = await ProcessoExecutavelService().executar();
       Get.put(_processoExecutavel!);
     }
@@ -45,6 +44,13 @@ class SplashController extends GetxController {
     //CONFIG SERVER
     final existsfileConfApi = await _existsfileConfApi();
     if (!existsfileConfApi) {
+      Get.offNamed(AppRouter.login);
+      return;
+    }
+
+    //CONFIG DATABASE
+    final existsfileConfDataBase = await _existsfileConfDataBase();
+    if (!existsfileConfDataBase || _processoExecutavel == null) {
       Get.offNamed(AppRouter.login);
       return;
     }

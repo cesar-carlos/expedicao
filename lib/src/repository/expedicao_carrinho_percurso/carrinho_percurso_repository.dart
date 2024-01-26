@@ -4,23 +4,14 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
-import 'package:app_expedicao/src/app/app_error_code.dart';
 import 'package:app_expedicao/src/app/app_socket_config.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
-import 'package:app_expedicao/src/app/app_error.dart';
 
 class CarrinhoPercursoRepository {
   final uuid = const Uuid();
   var socket = Get.find<AppSocketConfig>().socket;
 
   Future<List<ExpedicaoCarrinhoPercursoModel>> select([String params = '']) {
-    if (socket.connected == false) {
-      throw AppError(
-        AppErrorCode.socketDesconected,
-        'Socket não conectado',
-      );
-    }
-
     final event = '${socket.id} carrinho.percurso.select';
     final completer = Completer<List<ExpedicaoCarrinhoPercursoModel>>();
     final resposeIn = uuid.v4();
@@ -54,13 +45,6 @@ class CarrinhoPercursoRepository {
 
   Future<List<ExpedicaoCarrinhoPercursoModel>> insert(
       ExpedicaoCarrinhoPercursoModel entity) {
-    if (socket.connected == false) {
-      throw AppError(
-        AppErrorCode.socketDesconected,
-        'Socket não conectado',
-      );
-    }
-
     final event = '${socket.id} carrinho.percurso.insert';
     final completer = Completer<List<ExpedicaoCarrinhoPercursoModel>>();
     final resposeIn = uuid.v4();
@@ -89,13 +73,6 @@ class CarrinhoPercursoRepository {
 
   Future<List<ExpedicaoCarrinhoPercursoModel>> update(
       ExpedicaoCarrinhoPercursoModel entity) {
-    if (socket.connected == false) {
-      throw AppError(
-        AppErrorCode.socketDesconected,
-        'Socket não conectado',
-      );
-    }
-
     final event = '${socket.id} carrinho.percurso.update';
     final completer = Completer<List<ExpedicaoCarrinhoPercursoModel>>();
     final resposeIn = uuid.v4();
@@ -124,13 +101,6 @@ class CarrinhoPercursoRepository {
 
   Future<List<ExpedicaoCarrinhoPercursoModel>> delete(
       ExpedicaoCarrinhoPercursoModel entity) {
-    if (socket.connected == false) {
-      throw AppError(
-        AppErrorCode.socketDesconected,
-        'Socket não conectado',
-      );
-    }
-
     final event = '${socket.id} carrinho.percurso.delete';
     final completer = Completer<List<ExpedicaoCarrinhoPercursoModel>>();
     final resposeIn = uuid.v4();

@@ -88,10 +88,11 @@ class ConferirCarrinhosController extends GetxController {
       event: Event.update,
       callback: (data) async {
         for (var el in data.mutation) {
-          final carrinho = ExpedicaoCarrinhoConsultaModel.fromJson(el);
+          final cat = ExpedicaoCarrinhoConsultaModel.fromJson(el);
+
           _conferirCarrinhoGridController.updateGridSituationCarrinho(
-            carrinho.codCarrinho,
-            carrinho.situacao,
+            cat.codCarrinho,
+            cat.situacao,
           );
 
           _conferirCarrinhoGridController.update();
@@ -107,6 +108,7 @@ class ConferirCarrinhosController extends GetxController {
         callback: (data) async {
           for (var el in data.mutation) {
             final item = ExpedicaoConferirConsultaModel.fromJson(el);
+
             _conferirConsulta = item;
             _expedicaoSituacao = item.situacao;
             update();
