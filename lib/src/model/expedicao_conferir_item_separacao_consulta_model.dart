@@ -34,6 +34,8 @@ class ExpedicaoConferirItemSeparacaoConsultaModel {
   final String? endereco;
   final String? enderecoDescricao;
   final double quantidadeSeparacao;
+  final String? historico;
+  final String? observacao;
 
   ExpedicaoConferirItemSeparacaoConsultaModel({
     required this.codEmpresa,
@@ -69,6 +71,8 @@ class ExpedicaoConferirItemSeparacaoConsultaModel {
     this.endereco,
     this.enderecoDescricao,
     required this.quantidadeSeparacao,
+    this.historico,
+    this.observacao,
   });
 
   ExpedicaoConferirItemSeparacaoConsultaModel copyWith({
@@ -105,6 +109,8 @@ class ExpedicaoConferirItemSeparacaoConsultaModel {
     String? endereco,
     String? enderecoDescricao,
     double? quantidadeSeparacao,
+    String? historico,
+    String? observacao,
   }) {
     return ExpedicaoConferirItemSeparacaoConsultaModel(
       codEmpresa: codEmpresa ?? this.codEmpresa,
@@ -140,6 +146,8 @@ class ExpedicaoConferirItemSeparacaoConsultaModel {
       enderecoDescricao: enderecoDescricao ?? this.enderecoDescricao,
       codSetorEstoque: codSetorEstoque ?? this.codSetorEstoque,
       quantidadeSeparacao: quantidadeSeparacao ?? this.quantidadeSeparacao,
+      historico: historico ?? this.historico,
+      observacao: observacao ?? this.observacao,
     );
   }
 
@@ -179,6 +187,8 @@ class ExpedicaoConferirItemSeparacaoConsultaModel {
       endereco: map['Endereco'],
       enderecoDescricao: map['EnderecoDescricao'],
       quantidadeSeparacao: AppHelper.stringToDouble(map['QuantidadeSeparacao']),
+      historico: map['Historico'],
+      observacao: map['EnderecoDescricao'],
     );
   }
 
@@ -217,6 +227,8 @@ class ExpedicaoConferirItemSeparacaoConsultaModel {
       'Endereco': endereco,
       'EnderecoDescricao': enderecoDescricao,
       'QuantidadeSeparacao': quantidadeSeparacao.toStringAsFixed(4),
+      'Historico': historico,
+      'Observacao': observacao,
     };
   }
 
@@ -257,6 +269,8 @@ class ExpedicaoConferirItemSeparacaoConsultaModel {
         endereco: $endereco, 
         enderecoDescricao: $enderecoDescricao, 
         quantidadeSeparacao: $quantidadeSeparacao
+        historico: $historico,
+        observacao: $observacao,
     )''';
   }
 }

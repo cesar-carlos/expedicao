@@ -1,5 +1,8 @@
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+
 import 'package:app_expedicao/src/pages/common/form_element/button_form_element.dart';
+import 'package:app_expedicao/src/app/app_event_state.dart';
 
 class ConfirmationDialogMessageWidget {
   static Future<bool?> show({
@@ -10,6 +13,8 @@ class ConfirmationDialogMessageWidget {
     return await showDialog<bool>(
       context: context,
       builder: (context) {
+        final _appEventState = Get.find<AppEventState>();
+        _appEventState.canCloseWindow = false;
         return Dialog(
           child: Container(
             width: 350,
@@ -38,7 +43,10 @@ class ConfirmationDialogMessageWidget {
                         ButtonFormElement(
                           name: 'Ok',
                           padding: const EdgeInsets.only(right: 5, bottom: 10),
-                          onPressed: () => Navigator.of(context).pop(true),
+                          onPressed: () {
+                            _appEventState.canCloseWindow = true;
+                            return Navigator.of(context).pop(true);
+                          },
                           focusNode: FocusNode()..requestFocus(),
                         ),
                       ],

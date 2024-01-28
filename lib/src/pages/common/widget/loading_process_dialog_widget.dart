@@ -1,3 +1,4 @@
+import 'package:app_expedicao/src/app/app_event_state.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
@@ -9,6 +10,9 @@ class LoadingProcessDialogWidget {
     return await showDialog<void>(
       context: context,
       builder: (_) {
+        final _appEventState = Get.find<AppEventState>();
+        _appEventState.canCloseWindow = false;
+
         return PopScope(
           canPop: false,
           child: StatefulBuilder(
@@ -30,13 +34,13 @@ class LoadingProcessDialogWidget {
                     snackPosition: SnackPosition.BOTTOM,
                     margin: const EdgeInsets.only(bottom: 40),
                     mainButton: TextButton(
-                      onPressed: () {
-                        Get.back();
-                      },
+                      onPressed: () => Get.back(),
                       child: const Text('OK',
                           style: TextStyle(color: Colors.white)),
                     ),
                   );
+                } finally {
+                  _appEventState.canCloseWindow = true;
                 }
               });
 

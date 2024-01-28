@@ -3,12 +3,16 @@ import 'dart:async';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
+import 'package:app_expedicao/src/app/app_event_state.dart';
+
 class LoadingProcessDialogGenericWidget {
   static Future<T> show<T>({
     required BuildContext context,
     required Future<T> Function() process,
   }) async {
+    final _appEventState = Get.find<AppEventState>();
     Completer<T> completer = Completer<T>();
+    _appEventState.canCloseWindow = false;
 
     await showDialog<void>(
       context: context,
@@ -19,10 +23,10 @@ class LoadingProcessDialogGenericWidget {
             WidgetsBinding.instance.addPostFrameCallback((_) async {
               try {
                 T result = await process();
-                Get.back();
                 completer.complete(result);
-              } catch (e) {
+
                 Get.back();
+              } catch (e) {
                 Get.snackbar(
                   'Processo erro',
                   e.toString(),
@@ -46,6 +50,10 @@ class LoadingProcessDialogGenericWidget {
                     ),
                   ),
                 );
+
+                Get.back();
+              } finally {
+                _appEventState.canCloseWindow = true;
               }
             });
 

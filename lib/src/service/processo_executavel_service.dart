@@ -22,6 +22,7 @@ class ProcessoExecutavelService {
       });
 
       final processoExecutavel = response.first;
+
       final newProcessoExecutavel = processoExecutavel.copyWith(
         status: 'Executado',
       );

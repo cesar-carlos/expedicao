@@ -178,6 +178,11 @@ class SepararGridController extends GetxController {
     return _itens.indexOf(el.first);
   }
 
+  int findIndexItem(String item) {
+    final el = _itens.where((el) => el.item == item).toList();
+    return _itens.indexOf(el.first);
+  }
+
   ExpedicaoSepararItemConsultaModel? findBarCode(String barCode) {
     final unidades =
         _itemUnids.where((el) => el.codigoBarras == barCode).toList();
@@ -228,8 +233,8 @@ class SepararGridController extends GetxController {
     }
   }
 
-  Color rowColor(ExpedicaoSepararItemConsultaModel item) {
-    if (item.quantidade == item.quantidadeSeparacao) {
+  Color rowColor(ExpedicaoSepararItemConsultaModel el) {
+    if (el.quantidade == el.quantidadeSeparacao) {
       return Color(0xFFffff00);
     }
 

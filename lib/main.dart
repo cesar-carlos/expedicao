@@ -1,3 +1,4 @@
+import 'package:app_expedicao/src/app/app_event_state.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
@@ -25,6 +26,7 @@ Future<void> main(List<String> args) async {
 
   Get.put(AppClientHttp());
   Get.put(AppSocketConfig());
+  Get.put(AppEventState());
   runApp(const MyApp());
 }
 

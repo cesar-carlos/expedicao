@@ -17,6 +17,7 @@ class ConferenciaPage {
   Size size = Get.size;
 
   final ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta;
+  final ConferenciaController controller = Get.find<ConferenciaController>();
 
   ConferenciaPage(this.percursoEstagioConsulta);
 
@@ -29,7 +30,11 @@ class ConferenciaPage {
           width: size.width * 0.95,
           height: size.height * 0.8,
           child: Column(children: [
-            BarHeadFormElement(widthBar: size.width, title: title),
+            BarHeadFormElement(
+              title: title,
+              widthBar: size.width,
+              onPressedCloseBar: controller.onPressedCloseBar,
+            ),
             dailog(),
           ]),
         ),
@@ -38,113 +43,116 @@ class ConferenciaPage {
   }
 
   Widget dailog() {
-    return GetBuilder<ConferenciaController>(builder: (controller) {
-      return SizedBox(
-        width: size.width * 0.95,
-        height: size.height * 0.8 - height,
-        child: Column(children: [
-          //** HEADER BUTTON **//
-          SpaceButtonsHeadFormElement(
-            width: double.infinity,
-            children: [
-              ButtonHeadForm(
-                title: 'Conferir tudo',
-                onPressed: controller.onConferirTudo,
-                icon: const Icon(
-                  BootstrapIcons.list_check,
-                  color: Colors.white,
-                  size: 33,
-                ),
-              ),
-              ButtonHeadForm(
-                title: 'Reconferir tudo',
-                onPressed: controller.onReconferirTudo,
-                icon: const Icon(
-                  BootstrapIcons.list_task,
-                  color: Colors.white,
-                  size: 33,
-                ),
-              ),
-              ButtonHeadForm(
-                title: 'Sobra de carrinho',
-                onPressed: controller.onSobraCarrinho,
-                icon: const Icon(
-                  BootstrapIcons.exclamation_circle_fill,
-                  color: Colors.white,
-                  size: 33,
-                ),
-              ),
-            ],
-          ),
-
-          //LEITOR CODIGO DE BARRAS
-          ScanConferenciaItemWidget(percursoEstagioConsulta, size: size),
-
-          //tabs
-          Expanded(
-            child: ClipRRect(
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(10),
-                bottomRight: Radius.circular(10),
-              ),
-              child: DefaultTabController(
-                initialIndex: controller.viewMode ? 0 : 1,
-                length: 2,
-                animationDuration: const Duration(milliseconds: 500),
-                child: Column(children: [
-                  Container(
-                    color: Colors.white,
-                    constraints: const BoxConstraints.expand(height: 40),
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                    child: TabBar(
-                        indicatorColor: Colors.black45,
-                        overlayColor: MaterialStateProperty.all(Colors.black12),
-                        indicatorPadding: EdgeInsets.zero,
-                        tabs: const [
-                          Row(children: [
-                            Icon(
-                              size: 20,
-                              BootstrapIcons.list_task,
-                            ),
-                            Spacer(),
-                            Text(
-                              'Conferencia',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.black87,
-                              ),
-                            ),
-                            Spacer(),
-                          ]),
-                          Row(children: [
-                            Icon(
-                              size: 20,
-                              BootstrapIcons.list_check,
-                            ),
-                            Spacer(),
-                            Text(
-                              'Carrinho',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.black87,
-                              ),
-                            ),
-                            Spacer(),
-                          ]),
-                        ]),
+    return GetBuilder(
+        init: controller,
+        builder: (controller) {
+          return SizedBox(
+            width: size.width * 0.95,
+            height: size.height * 0.8 - height,
+            child: Column(children: [
+              //** HEADER BUTTON **//
+              SpaceButtonsHeadFormElement(
+                width: double.infinity,
+                children: [
+                  ButtonHeadForm(
+                    title: 'Conferir tudo',
+                    onPressed: controller.onConferirTudo,
+                    icon: const Icon(
+                      BootstrapIcons.list_check,
+                      color: Colors.white,
+                      size: 33,
+                    ),
                   ),
-                  Expanded(
-                    child: TabBarView(children: [
-                      ConferenciaCarrinhoGrid(percursoEstagioConsulta),
-                      const ConferirGrid()
+                  ButtonHeadForm(
+                    title: 'Reconferir tudo',
+                    onPressed: controller.onReconferirTudo,
+                    icon: const Icon(
+                      BootstrapIcons.list_task,
+                      color: Colors.white,
+                      size: 33,
+                    ),
+                  ),
+                  ButtonHeadForm(
+                    title: 'Sobra de carrinho',
+                    onPressed: controller.onSobraCarrinho,
+                    icon: const Icon(
+                      BootstrapIcons.exclamation_circle_fill,
+                      color: Colors.white,
+                      size: 33,
+                    ),
+                  ),
+                ],
+              ),
+
+              //LEITOR CODIGO DE BARRAS
+              ScanConferenciaItemWidget(percursoEstagioConsulta, size: size),
+
+              //tabs
+              Expanded(
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(10),
+                    bottomRight: Radius.circular(10),
+                  ),
+                  child: DefaultTabController(
+                    initialIndex: controller.viewMode ? 0 : 1,
+                    length: 2,
+                    animationDuration: const Duration(milliseconds: 500),
+                    child: Column(children: [
+                      Container(
+                        color: Colors.white,
+                        constraints: const BoxConstraints.expand(height: 40),
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        child: TabBar(
+                            indicatorColor: Colors.black45,
+                            overlayColor:
+                                MaterialStateProperty.all(Colors.black12),
+                            indicatorPadding: EdgeInsets.zero,
+                            tabs: const [
+                              Row(children: [
+                                Icon(
+                                  size: 20,
+                                  BootstrapIcons.list_task,
+                                ),
+                                Spacer(),
+                                Text(
+                                  'Conferencia',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                Spacer(),
+                              ]),
+                              Row(children: [
+                                Icon(
+                                  size: 20,
+                                  BootstrapIcons.list_check,
+                                ),
+                                Spacer(),
+                                Text(
+                                  'Carrinho',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                Spacer(),
+                              ]),
+                            ]),
+                      ),
+                      Expanded(
+                        child: TabBarView(children: [
+                          ConferenciaCarrinhoGrid(percursoEstagioConsulta),
+                          const ConferirGrid()
+                        ]),
+                      ),
                     ]),
                   ),
-                ]),
-              ),
-            ),
-          )
-        ]),
-      );
-    });
+                ),
+              )
+            ]),
+          );
+        });
   }
 }

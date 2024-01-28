@@ -1,9 +1,9 @@
-import 'package:app_expedicao/src/core/audio_helper.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_expedicao/src/app/app_helper.dart';
+import 'package:app_expedicao/src/core/audio_helper.dart';
 import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
@@ -27,6 +27,7 @@ import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 
 class ConferenciaController extends GetxController {
+  bool canClose = true;
   final RxBool _viewMode = false.obs;
 
   // ignore: unused_field
@@ -53,7 +54,7 @@ class ConferenciaController extends GetxController {
   ConferenciaController(this.percursoEstagioConsulta);
 
   @override
-  void onInit() {
+  onInit() {
     super.onInit();
     scanController = TextEditingController();
     displayController = TextEditingController(text: '');
@@ -106,6 +107,10 @@ class ConferenciaController extends GetxController {
 
   ExpedicaoCarrinhoPercursoConsultaModel get percursoEstagio =>
       percursoEstagioConsulta;
+
+  void onPressedCloseBar() {
+    if (canClose) Get.back();
+  }
 
   _listenFocusNode() {
     quantidadeFocusNode.addListener(() {
@@ -185,7 +190,7 @@ class ConferenciaController extends GetxController {
     final textQuantityValue = quantidadeController.text;
 
     if (scanValue.isEmpty) {
-      AudioHelper().play('assets/sounds/error.wav');
+      AudioHelper().play('/error.wav');
       await ConfirmationDialogMessageWidget.show(
         context: Get.context!,
         message: 'Valor invalido!',
@@ -198,7 +203,7 @@ class ConferenciaController extends GetxController {
     }
 
     if (textQuantityValue.isEmpty) {
-      AudioHelper().play('assets/sounds/error.wav');
+      AudioHelper().play('/error.wav');
       await ConfirmationDialogMessageWidget.show(
         context: Get.context!,
         message: 'Valor invalido!',
@@ -218,7 +223,7 @@ class ConferenciaController extends GetxController {
         : _conferirGridController.findCodProduto(int.parse(scanText));
 
     if (itemConferirConsulta == null) {
-      AudioHelper().play('assets/sounds/error.wav');
+      AudioHelper().play('/error.wav');
       await ConfirmationDialogMessageWidget.show(
         context: Get.context!,
         message: 'Produto não encontrado!',
@@ -267,7 +272,7 @@ class ConferenciaController extends GetxController {
     );
 
     if (conferenciaItemConsulta == null) {
-      AudioHelper().play('assets/sounds/error.wav');
+      AudioHelper().play('/error.wav');
       await ConfirmationDialogMessageWidget.show(
         context: Get.context!,
         message: 'Erro ao adicionar item!',
@@ -300,7 +305,7 @@ class ConferenciaController extends GetxController {
     quantidadeController.text = '1,000';
     scanFocusNode.requestFocus();
 
-    AudioHelper().play('assets/sounds/success.wav');
+    AudioHelper().play('/success.wav');
   }
 
   bool validQuantitySeparate(String scanText, double value) {

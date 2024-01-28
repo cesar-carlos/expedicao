@@ -26,9 +26,9 @@ class IdentificacaoDialogWidget {
           child: Column(children: [
             //** HEADER BAR **//
             BarHeadFormElement(
-              widthBar: size.width,
               title: 'Identificação',
-              onPressedCloseBar: () {}, //ADD CLIER OBSERVACAO CLOSE X
+              widthBar: size.width - 654,
+              onPressedCloseBar: () => Get.back(),
             ),
 
             //** BODY **//

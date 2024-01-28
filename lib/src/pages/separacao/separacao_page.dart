@@ -17,8 +17,11 @@ class SeparacaoPage {
   Size size = Get.size;
 
   final ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta;
+  late SeparacaoController controller;
 
-  SeparacaoPage(this.percursoEstagioConsulta);
+  SeparacaoPage(this.percursoEstagioConsulta) {
+    controller = Get.put(SeparacaoController(percursoEstagioConsulta));
+  }
 
   Future<void> show() async {
     await showDialog(
@@ -29,7 +32,11 @@ class SeparacaoPage {
           width: size.width * 0.95,
           height: size.height * 0.8,
           child: Column(children: [
-            BarHeadFormElement(widthBar: size.width, title: title),
+            BarHeadFormElement(
+              title: title,
+              widthBar: size.width,
+              onPressedCloseBar: controller.onPressedCloseBar,
+            ),
             dailog(),
           ]),
         ),
@@ -39,7 +46,7 @@ class SeparacaoPage {
 
   Widget dailog() {
     return GetBuilder(
-        init: SeparacaoController(percursoEstagioConsulta),
+        init: controller,
         builder: (controller) {
           return SizedBox(
             width: size.width * 0.95,

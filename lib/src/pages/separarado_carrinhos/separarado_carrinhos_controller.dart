@@ -3,6 +3,7 @@ import 'package:uuid/uuid.dart';
 
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_item_situacao_model.dart';
+import 'package:app_expedicao/src/pages/separacao/separacao_controller.dart';
 import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
 import 'package:app_expedicao/src/service/separacao_finalizar_item_service.dart';
@@ -76,6 +77,7 @@ class SeparadoCarrinhosController extends GetxController {
     _separadoCarrinhoGridController.onPressedEdit = (item) async {
       final dialog = SeparacaoPage(item);
       await dialog.show();
+      await Get.delete<SeparacaoController>();
     };
 
     _separadoCarrinhoGridController.onPressedSave = (item) async {
@@ -173,11 +175,11 @@ class SeparadoCarrinhosController extends GetxController {
               final existsOpenCart =
                   await _separarConsultaServices.existsOpenCart();
 
-              //AUTO FINALIZAR
+              //FINALIZAR CONFERENCIA AUTOMATICAMENTE
               if (isComplete && !existsOpenCart) {
-                await Future.delayed(Duration(seconds: 1));
                 final separarController = Get.find<SepararController>();
                 await separarController.finalizarSeparacao();
+                await Future.delayed(Duration(seconds: 1));
               }
 
               return true;

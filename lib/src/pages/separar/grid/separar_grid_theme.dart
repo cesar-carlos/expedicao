@@ -10,6 +10,7 @@ class SepararGridTheme {
       brightness: Brightness.light,
       rowHoverColor: Theme.of(Get.context!).primaryColor.withOpacity(0.1),
       selectionColor: Theme.of(Get.context!).primaryColor.withOpacity(0.1),
+      headerHoverColor: Theme.of(Get.context!).primaryColor.withOpacity(0.1),
     );
   }
 }

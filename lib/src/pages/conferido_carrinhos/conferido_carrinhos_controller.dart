@@ -1,4 +1,3 @@
-import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog_generic_widget.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
@@ -7,12 +6,12 @@ import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/service/conferir_consultas_services.dart';
 import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
 import 'package:app_expedicao/src/pages/conferencia/conferencia_binding.dart';
-import 'package:app_expedicao/src/model/expedicao_conferir_consulta_model.dart';
 import 'package:app_expedicao/src/service/conferencia_cancelar_item_service.dart';
 import 'package:app_expedicao/src/service/conferencia_finalizar_item_service.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_finalizar_service.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
+import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog_generic_widget.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_event_repository.dart';
 import 'package:app_expedicao/src/pages/conferido_carrinhos/grid/conferido_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_cancelar_service.dart';
@@ -29,8 +28,7 @@ import 'package:app_expedicao/src/service/carrinho_services.dart';
 class ConferidoCarrinhosController extends GetxController {
   late ProcessoExecutavelModel _processoExecutavel;
 
-  // ignore: unused_field
-  late ExpedicaoConferirConsultaModel _conferirConsulta;
+  //late ExpedicaoConferirConsultaModel _conferirConsulta;
   late ConferidoCarrinhoGridController _conferidoCarrinhoGridController;
 
   late ConferirConsultaServices _conferirConsultaServices;
@@ -42,7 +40,7 @@ class ConferidoCarrinhosController extends GetxController {
     super.onInit();
 
     _processoExecutavel = Get.find<ProcessoExecutavelModel>();
-    _conferirConsulta = Get.find<ExpedicaoConferirConsultaModel>();
+    //_conferirConsulta = Get.find<ExpedicaoConferirConsultaModel>();
 
     _conferidoCarrinhoGridController =
         Get.find<ConferidoCarrinhoGridController>();
@@ -200,9 +198,9 @@ class ConferidoCarrinhosController extends GetxController {
                   context: Get.context!,
                   process: () async {
                     try {
-                      await Future.delayed(Duration(seconds: 1));
                       final separarController = Get.find<ConferirController>();
                       await separarController.finalizarConferencia();
+                      await Future.delayed(Duration(seconds: 1));
                       return true;
                     } catch (err) {
                       return false;

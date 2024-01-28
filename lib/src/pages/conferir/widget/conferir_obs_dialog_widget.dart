@@ -25,9 +25,9 @@ class ConferirOBsDialogWidget {
             children: [
               //** HEADER BAR **//
               BarHeadFormElement(
-                widthBar: size.width,
+                widthBar: size.width - 554,
                 title: 'Adicionar Observação',
-                onPressedCloseBar: () {}, //ADD CLIER OBSERVACAO CLOSE X
+                onPressedCloseBar: () => Get.back(),
               ),
 
               //** BODY **//

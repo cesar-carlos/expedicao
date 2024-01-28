@@ -13,6 +13,7 @@ class ProcessoExecutavelModel {
   int codUsuario;
   String nomeUsuario;
   int? codSetorEstoque;
+  int? codSetorConferencia;
   String? codContaFinanceira;
   int? codPeriodoCaixa;
   String? statusPeriodoCaixa;
@@ -33,6 +34,7 @@ class ProcessoExecutavelModel {
     required this.codUsuario,
     required this.nomeUsuario,
     this.codSetorEstoque,
+    this.codSetorConferencia,
     this.codContaFinanceira,
     this.codPeriodoCaixa,
     this.statusPeriodoCaixa,
@@ -54,6 +56,7 @@ class ProcessoExecutavelModel {
     int? codUsuario,
     String? nomeUsuario,
     int? codSetorEstoque,
+    int? codSetorConferencia,
     String? codContaFinanceira,
     int? codPeriodoCaixa,
     String? statusPeriodoCaixa,
@@ -75,6 +78,7 @@ class ProcessoExecutavelModel {
       codUsuario: codUsuario ?? this.codUsuario,
       nomeUsuario: nomeUsuario ?? this.nomeUsuario,
       codSetorEstoque: codSetorEstoque ?? this.codSetorEstoque,
+      codSetorConferencia: codSetorConferencia ?? this.codSetorConferencia,
       codContaFinanceira: codContaFinanceira ?? this.codContaFinanceira,
       codPeriodoCaixa: codPeriodoCaixa ?? this.codPeriodoCaixa,
       statusPeriodoCaixa: statusPeriodoCaixa ?? this.statusPeriodoCaixa,
@@ -98,6 +102,7 @@ class ProcessoExecutavelModel {
       codUsuario: 0,
       nomeUsuario: '',
       codSetorEstoque: null,
+      codSetorConferencia: null,
       codContaFinanceira: null,
       codPeriodoCaixa: null,
       statusPeriodoCaixa: null,
@@ -120,6 +125,7 @@ class ProcessoExecutavelModel {
     codUsuario = input.codUsuario;
     nomeUsuario = input.nomeUsuario;
     codSetorEstoque = input.codSetorEstoque;
+    codSetorConferencia = input.codSetorConferencia;
     codContaFinanceira = input.codContaFinanceira;
     codPeriodoCaixa = input.codPeriodoCaixa;
     statusPeriodoCaixa = input.statusPeriodoCaixa;
@@ -143,6 +149,7 @@ class ProcessoExecutavelModel {
       codUsuario: map['CodUsuario'],
       nomeUsuario: map['NomeUsuario'],
       codSetorEstoque: map['CodSetorEstoque'],
+      codSetorConferencia: map['CodSetorConferencia'],
       codContaFinanceira: map['CodContaFinanceira'],
       codPeriodoCaixa: map['CodPeriodoCaixa'],
       statusPeriodoCaixa: map['StatusPeriodoCaixa'],
@@ -172,6 +179,7 @@ class ProcessoExecutavelModel {
       'CodUsuario': codUsuario,
       'NomeUsuario': nomeUsuario,
       'CodSetorEstoque': codSetorEstoque,
+      'CodSetorConferencia': codSetorConferencia,
       'CodContaFinanceira': codContaFinanceira,
       'CodPeriodoCaixa': codPeriodoCaixa,
       'StatusPeriodoCaixa': statusPeriodoCaixa,
@@ -197,6 +205,7 @@ class ProcessoExecutavelModel {
         codUsuario: $codUsuario, 
         nomeUsuario: $nomeUsuario, 
         codSetorEstoque: $codSetorEstoque,
+        codSetorConferencia: $codSetorConferencia,
         codContaFinanceira: $codContaFinanceira, 
         codPeriodoCaixa: $codPeriodoCaixa, 
         statusPeriodoCaixa: $statusPeriodoCaixa, 

@@ -23,6 +23,7 @@ class WindowManagerConfig {
       });
 
       windowManager.addListener(WindowEvent());
+      await windowManager.setPreventClose(true);
       await windowManager.ensureInitialized();
     }
   }

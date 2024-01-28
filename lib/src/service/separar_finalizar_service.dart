@@ -28,7 +28,6 @@ class SepararFinalizarService {
         CodEmpresa = $codEmpresa
       AND Origem = '${ExpedicaoOrigemModel.separacao}'
       AND CodOrigem = $codSepararEstoque
-      AND Situacao = '${ExpedicaoSituacaoModel.emAndamento}'
 
     ''';
 

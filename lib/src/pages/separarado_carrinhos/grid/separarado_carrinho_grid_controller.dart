@@ -51,7 +51,7 @@ class SeparadoCarrinhoGridController extends GetxController {
     return Icon(
       FontAwesomeIcons.cartArrowDown,
       color: Theme.of(Get.context!).primaryColor,
-      size: 19,
+      size: 17,
     );
   }
 

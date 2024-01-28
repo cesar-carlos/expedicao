@@ -24,6 +24,12 @@ class AudioHelper {
     return this;
   }
 
+  // static Future<String> pathAssets() async {
+  //   String audioPath = 'assets/sounds';
+  //   String audioUrl = (await rootBundle.load(audioPath)).toString();
+  //   return audioUrl;
+  // }
+
   playPause(String path, {bool stopAll = true, double volume = 1}) {
     if (isPlaying && path == currentFile) return pause();
     return play(path, volume: volume, stopAll: stopAll);
@@ -32,8 +38,14 @@ class AudioHelper {
   play(String path, {bool stopAll = true, double volume = 1}) async {
     await _initialize();
     if (stopAll && isPlaying) await audioPlayer.stop();
-    currentFile = path;
-    await audioPlayer.open(Media(path));
+
+    // String audioPath = 'assets/sounds' + path;
+    // String audioUrl = (await rootBundle.load(audioPath)).toString();
+    // print(audioUrl);
+    // path = audioUrl;
+    // currentFile = Media('asset:///assets/videos/sample.mp4');
+
+    await audioPlayer.open(Media('asset:///assets/sounds' + path));
     await audioPlayer.play();
     isPlaying = true;
     isPaused = false;
