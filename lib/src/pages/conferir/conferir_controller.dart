@@ -252,8 +252,9 @@ class ConferirController extends GetxController {
 
       if (percursoEstagio != null) {
         final percursoEstagioConsulta =
-            await _conferirConsultaServices.carrinhosPercurso()
-              ..where((el) => el.item == percursoEstagio.item).toList();
+            (await _conferirConsultaServices.carrinhosPercurso())
+                .where((el) => el.item == percursoEstagio.item)
+                .toList();
 
         _conferidoCarrinhosController.addCarrinho(percursoEstagioConsulta.last);
         _conferidoCarrinhosController.update();

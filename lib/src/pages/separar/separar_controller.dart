@@ -205,7 +205,6 @@ class SepararController extends GetxController {
     }
 
     final dialog = AdicionarCarrinhoDialogWidget(canCloseWindow: false);
-
     final carrinhoConsulta = await dialog.show();
 
     if (carrinhoConsulta != null) {
@@ -228,8 +227,9 @@ class SepararController extends GetxController {
 
       if (percursoEstagio != null) {
         final percursoEstagioConsulta =
-            await _separarConsultaServices.carrinhosPercurso()
-              ..where((el) => el.item == percursoEstagio.item).toList();
+            (await _separarConsultaServices.carrinhosPercurso())
+                .where((el) => el.item == percursoEstagio.item)
+                .toList();
 
         _separarCarrinhosController.addCarrinho(percursoEstagioConsulta.last);
         _separarCarrinhosController.update();
