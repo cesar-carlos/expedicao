@@ -7,7 +7,7 @@ class ExpedicaoSepararItemModel {
   final int? codSetorEstoque;
   final String origem;
   final int codOrigem;
-  final String itemOrigem;
+  final String? itemOrigem;
   final int codLocaArmazenagem;
   final int codProduto;
   final String codUnidadeMedida;
@@ -23,7 +23,7 @@ class ExpedicaoSepararItemModel {
     this.codSetorEstoque,
     required this.origem,
     required this.codOrigem,
-    required this.itemOrigem,
+    this.itemOrigem,
     required this.codLocaArmazenagem,
     required this.codProduto,
     required this.codUnidadeMedida,

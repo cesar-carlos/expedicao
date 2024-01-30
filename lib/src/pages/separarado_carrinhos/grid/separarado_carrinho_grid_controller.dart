@@ -1,7 +1,7 @@
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/pages/separarado_carrinhos/grid/separarado_carrinho_grid_source.dart';
@@ -10,6 +10,7 @@ import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_mod
 class SeparadoCarrinhoGridController extends GetxController {
   static const gridName = 'separadoCarrinhoGrid';
 
+  final iconSize = 19.0;
   final DataGridController dataGridController = DataGridController();
   late List<ExpedicaoCarrinhoPercursoConsultaModel> _itens = [];
 
@@ -46,15 +47,6 @@ class SeparadoCarrinhoGridController extends GetxController {
     }
   }
 
-  //TODO:: ADD ICON
-  iconIndicator(ExpedicaoCarrinhoPercursoConsultaModel item) {
-    return Icon(
-      FontAwesomeIcons.cartArrowDown,
-      color: Theme.of(Get.context!).primaryColor,
-      size: 17,
-    );
-  }
-
   void removeGrid(ExpedicaoCarrinhoPercursoConsultaModel item) {
     _itens.removeWhere((el) =>
         el.codEmpresa == item.codEmpresa &&
@@ -66,18 +58,18 @@ class SeparadoCarrinhoGridController extends GetxController {
     _itens.clear();
   }
 
-  void editGrid(
-    SeparadoCarrinhoGridSource grid,
-    ExpedicaoCarrinhoPercursoConsultaModel item,
-  ) {
-    onPressedEdit?.call(item);
-  }
-
   Future<void> onRemoveItem(
     SeparadoCarrinhoGridSource grid,
     ExpedicaoCarrinhoPercursoConsultaModel item,
   ) async {
     onPressedRemove?.call(item);
+  }
+
+  void editGrid(
+    SeparadoCarrinhoGridSource grid,
+    ExpedicaoCarrinhoPercursoConsultaModel item,
+  ) {
+    onPressedEdit?.call(item);
   }
 
   Future<void> onSavetem(
@@ -87,25 +79,11 @@ class SeparadoCarrinhoGridController extends GetxController {
     onPressedSave?.call(item);
   }
 
-  Icon iconEdit(ExpedicaoCarrinhoPercursoConsultaModel item) {
-    Color color = Colors.blue;
-
-    switch (item.situacao) {
-      case ExpedicaoSituacaoModel.cancelada:
-        color = Colors.red;
-      case ExpedicaoSituacaoModel.separando:
-        color = Colors.lightBlue;
-      case ExpedicaoSituacaoModel.separado:
-        color = Colors.green;
-    }
-
+  iconIndicator(ExpedicaoCarrinhoPercursoConsultaModel item) {
     return Icon(
-      size: 19,
-      item.situacao != ExpedicaoSituacaoModel.cancelada &&
-              item.situacao != ExpedicaoSituacaoModel.separado
-          ? Icons.edit
-          : Icons.visibility,
-      color: color,
+      BootstrapIcons.file_earmark_arrow_down_fill,
+      color: Theme.of(Get.context!).primaryColor,
+      size: iconSize,
     );
   }
 
@@ -122,8 +100,30 @@ class SeparadoCarrinhoGridController extends GetxController {
     }
 
     return Icon(
-      size: 19,
+      size: iconSize,
       Icons.delete,
+      color: color,
+    );
+  }
+
+  Icon iconEdit(ExpedicaoCarrinhoPercursoConsultaModel item) {
+    Color color = Colors.blue;
+
+    switch (item.situacao) {
+      case ExpedicaoSituacaoModel.cancelada:
+        color = Colors.red;
+      case ExpedicaoSituacaoModel.separando:
+        color = Colors.lightBlue;
+      case ExpedicaoSituacaoModel.separado:
+        color = Colors.green;
+    }
+
+    return Icon(
+      size: iconSize,
+      item.situacao != ExpedicaoSituacaoModel.cancelada &&
+              item.situacao != ExpedicaoSituacaoModel.separado
+          ? Icons.edit
+          : Icons.visibility,
       color: color,
     );
   }
@@ -143,7 +143,7 @@ class SeparadoCarrinhoGridController extends GetxController {
     }
 
     return Icon(
-      size: 19,
+      size: iconSize,
       Icons.save,
       color: color,
     );

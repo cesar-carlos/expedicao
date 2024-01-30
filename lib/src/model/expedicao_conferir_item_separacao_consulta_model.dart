@@ -188,7 +188,7 @@ class ExpedicaoConferirItemSeparacaoConsultaModel {
       enderecoDescricao: map['EnderecoDescricao'],
       quantidadeSeparacao: AppHelper.stringToDouble(map['QuantidadeSeparacao']),
       historico: map['Historico'],
-      observacao: map['EnderecoDescricao'],
+      observacao: map['Observacao'],
     );
   }
 

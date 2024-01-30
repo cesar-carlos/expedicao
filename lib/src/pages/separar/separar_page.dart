@@ -12,11 +12,7 @@ import 'package:app_expedicao/src/pages/footer/footer_page.dart';
 
 class SepararPage extends StatelessWidget {
   final ExpedicaoSepararConsultaModel separarConsulta;
-
-  const SepararPage({
-    super.key,
-    required this.separarConsulta,
-  });
+  const SepararPage({super.key, required this.separarConsulta});
 
   @override
   Widget build(BuildContext context) {

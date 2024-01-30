@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:app_expedicao/src/app/app_Api_file_init.dart';
-import 'package:app_expedicao/src/pages/common/widget/message_dialog.widget.dart';
+import 'package:app_expedicao/src/pages/common/widget/message_dialog_widget.dart';
 import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog_generic_widget.dart';
 import 'package:app_expedicao/src/model/api_server_model.dart';
 import 'package:app_expedicao/src/routes/app_router.dart';
@@ -53,8 +53,9 @@ class ApiConfigController extends GetxController {
 
     if (host.isEmpty || port.isEmpty) {
       customDialog(
-        Get.context!,
         title: 'Erro',
+        canCloseWindow: false,
+        Get.context!,
         message: 'Preencha todos os campos',
       );
 
@@ -62,6 +63,7 @@ class ApiConfigController extends GetxController {
     }
 
     return await LoadingProcessDialogGenericWidget.show<bool>(
+      canCloseWindow: false,
       context: Get.context!,
       process: () async {
         try {

@@ -1,9 +1,9 @@
-import 'package:app_expedicao/src/pages/common/widget/scan_widget.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 
-import 'package:number_text_input_formatter/number_text_input_formatter.dart';
+import 'package:app_expedicao/src/pages/common/widget/scan_widget.dart';
+import 'package:app_expedicao/src/pages/common/widget/quantity_widget.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
 import 'package:app_expedicao/src/pages/conferencia/conferencia_controller.dart';
 
@@ -36,7 +36,7 @@ class ScanConferenciaItemWidget extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                        flex: 5,
+                        flex: 12,
                         child: ScanWidget(
                           viewMode: !controller.viewMode,
                           scanController: controller.scanController,
@@ -46,41 +46,52 @@ class ScanConferenciaItemWidget extends StatelessWidget {
                       ),
                       const SizedBox(width: 7),
 
-                      //** quantidade **//
+                      //** QUANTIDADE **//
                       Expanded(
-                        child: TextField(
-                          enabled: !controller.viewMode,
-                          cursorHeight: 22,
-                          controller: controller.quantidadeController,
-                          focusNode: controller.quantidadeFocusNode,
-                          onSubmitted: controller.onSubmittedQuantity,
-                          keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            NumberTextInputFormatter(
-                              integerDigits: 10,
-                              decimalDigits: 3,
-                              decimalSeparator: ',',
-                              groupDigits: 3,
-                              groupSeparator: '.',
-                              allowNegative: false,
-                              overrideDecimalPoint: true,
-                              insertDecimalPoint: false,
-                              insertDecimalDigits: true,
-                            ),
-                          ],
-                          textAlign: TextAlign.right,
-                          decoration: const InputDecoration(
-                            contentPadding:
-                                EdgeInsets.only(left: 10, right: 10),
-                            border: OutlineInputBorder(),
-                            labelText: 'Quantidade',
-                            labelStyle: TextStyle(
-                              fontSize: 12,
-                              color: Colors.black87,
-                            ),
-                          ),
+                        flex: 2,
+                        child: QuantityWidget(
+                          viewMode: !controller.viewMode,
+                          qtdController: controller.quantidadeController,
+                          qtdFocusNode: controller.quantidadeFocusNode,
+                          onSubmittedQtd: controller.onSubmittedQuantity,
                         ),
                       ),
+
+                      // OLD
+                      // Expanded(
+                      //   child: TextField(
+                      //     enabled: !controller.viewMode,
+                      //     cursorHeight: 22,
+                      //     controller: controller.quantidadeController,
+                      //     focusNode: controller.quantidadeFocusNode,
+                      //     onSubmitted: controller.onSubmittedQuantity,
+                      //     keyboardType: TextInputType.number,
+                      //     inputFormatters: [
+                      //       NumberTextInputFormatter(
+                      //         integerDigits: 10,
+                      //         decimalDigits: 3,
+                      //         decimalSeparator: ',',
+                      //         groupDigits: 3,
+                      //         groupSeparator: '.',
+                      //         allowNegative: false,
+                      //         overrideDecimalPoint: true,
+                      //         insertDecimalPoint: false,
+                      //         insertDecimalDigits: true,
+                      //       ),
+                      //     ],
+                      //     textAlign: TextAlign.right,
+                      //     decoration: const InputDecoration(
+                      //       contentPadding:
+                      //           EdgeInsets.only(left: 10, right: 10),
+                      //       border: OutlineInputBorder(),
+                      //       labelText: 'Quantidade',
+                      //       labelStyle: TextStyle(
+                      //         fontSize: 12,
+                      //         color: Colors.black87,
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   ),
                   const Spacer(),

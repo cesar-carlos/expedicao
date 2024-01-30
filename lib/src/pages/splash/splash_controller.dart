@@ -93,6 +93,7 @@ class SplashController extends GetxController {
       (event) {
         if (event) _loading();
         LoadingSeverDialogWidget.show(
+          canCloseWindow: false,
           context: Get.context!,
         );
       },

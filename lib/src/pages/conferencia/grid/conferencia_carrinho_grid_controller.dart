@@ -7,7 +7,7 @@ import 'package:app_expedicao/src/model/expedicao_conferencia_item_consulta_mode
 class ConferenciaCarrinhoGridController extends GetxController {
   static const gridName = 'conferenciaCarrinhoGrid';
 
-  final DataGridController dataGridController = DataGridController();
+  final dataGridController = DataGridController();
   late List<ExpedicaConferenciaItemConsultaModel> _itens = [];
 
   List<ExpedicaConferenciaItemConsultaModel> get itens => _itens;
@@ -23,6 +23,12 @@ class ConferenciaCarrinhoGridController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+  }
+
+  @override
+  void onClose() {
+    super.onClose();
+    dataGridController.dispose();
   }
 
   void addGrid(ExpedicaConferenciaItemConsultaModel item) {

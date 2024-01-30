@@ -9,6 +9,7 @@ import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 
 class ConferidoCarrinhoGridController extends GetxController {
   static const gridName = 'conferidoCarrinhoGrid';
+  final iconSize = 19.0;
 
   final DataGridController dataGridController = DataGridController();
   late List<ExpedicaoCarrinhoPercursoConsultaModel> _itens = [];
@@ -98,7 +99,7 @@ class ConferidoCarrinhoGridController extends GetxController {
     }
 
     return Icon(
-      size: 19,
+      size: iconSize,
       item.situacao != ExpedicaoSituacaoModel.cancelada &&
               item.situacao != ExpedicaoSituacaoModel.conferido
           ? Icons.edit
@@ -118,7 +119,7 @@ class ConferidoCarrinhoGridController extends GetxController {
     }
 
     return Icon(
-      size: 19,
+      size: iconSize,
       Icons.delete,
       color: color,
     );
@@ -135,7 +136,7 @@ class ConferidoCarrinhoGridController extends GetxController {
     }
 
     return Icon(
-      size: 19,
+      size: iconSize,
       Icons.save,
       color: color,
     );
@@ -147,26 +148,26 @@ class ConferidoCarrinhoGridController extends GetxController {
     switch (item.situacao) {
       case ExpedicaoSituacaoModel.cancelada:
         return Icon(
-          size: 19,
+          size: iconSize,
           BootstrapIcons.cart_x_fill,
           color: color,
         );
       case ExpedicaoSituacaoModel.conferido:
         return Icon(
-          size: 19,
+          size: iconSize,
           BootstrapIcons.cart_check_fill,
           color: color,
         );
       case ExpedicaoSituacaoModel.conferindo:
         return Icon(
-          size: 19,
+          size: iconSize,
           BootstrapIcons.cart_plus_fill,
           color: color,
         );
 
       default:
         return Icon(
-          size: 19,
+          size: iconSize,
           BootstrapIcons.cart_fill,
           color: color,
         );

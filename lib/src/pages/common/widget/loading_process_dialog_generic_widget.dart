@@ -7,14 +7,16 @@ import 'package:app_expedicao/src/app/app_event_state.dart';
 
 class LoadingProcessDialogGenericWidget {
   static Future<T> show<T>({
+    required bool canCloseWindow,
     required BuildContext context,
     required Future<T> Function() process,
   }) async {
-    final _appEventState = Get.find<AppEventState>();
     Completer<T> completer = Completer<T>();
-    _appEventState.canCloseWindow = false;
+    final _appEventState = Get.find<AppEventState>();
+    _appEventState.canCloseWindow = canCloseWindow;
 
     await showDialog<void>(
+      barrierDismissible: false,
       context: context,
       builder: (_) {
         return PopScope(

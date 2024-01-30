@@ -5,14 +5,13 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';
-import 'package:app_expedicao/src/pages/common/widget/complit_animation_icon_widget.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_item_unidade_medida_consulta_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_repository.dart';
-import 'package:app_expedicao/src/pages/common/widget/alert_animation_icon_widget.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 
 class SepararGridController extends GetxController {
   static const gridName = 'separarGrid';
+  final iconSize = 19.0;
 
   final List<ExpedicaoSepararItemConsultaModel> _itens = [];
   final List<ExpedicaoSepararItemUnidadeMedidaConsultaModel> _itemUnids = [];
@@ -243,19 +242,27 @@ class SepararGridController extends GetxController {
 
   iconIndicator(ExpedicaoSepararItemConsultaModel item) {
     if (item.quantidade == item.quantidadeSeparacao) {
-      return const ComplitAnimationIconWidget();
+      return Icon(
+        BootstrapIcons.check_circle_fill,
+        color: Colors.green,
+        size: iconSize,
+      );
     }
 
     if (item.quantidade < item.quantidadeSeparacao) {
-      return const AlertAnimationIconWidget();
+      return Icon(
+        BootstrapIcons.exclamation_circle_fill,
+        color: Colors.red,
+        size: iconSize,
+      );
     }
 
     if (_processoExecutavel.codSetorEstoque != null) {
       if (item.codSetorEstoque != _processoExecutavel.codSetorEstoque) {
-        return const Icon(
+        return Icon(
           BootstrapIcons.ban,
           color: Colors.red,
-          size: 17,
+          size: iconSize,
         );
       }
     }
@@ -263,7 +270,7 @@ class SepararGridController extends GetxController {
     return Icon(
       BootstrapIcons.box,
       color: Theme.of(Get.context!).primaryColor,
-      size: 17,
+      size: iconSize,
     );
   }
 }

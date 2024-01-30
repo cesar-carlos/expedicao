@@ -21,6 +21,7 @@ class ButtonFormElement extends StatelessWidget {
     return Container(
       padding: padding,
       child: OutlinedButton(
+        onPressed: onPressed,
         focusNode: focusNode,
         clipBehavior: Clip.antiAliasWithSaveLayer,
         style: ButtonStyle(
@@ -33,7 +34,6 @@ class ButtonFormElement extends StatelessWidget {
             ),
           ),
         ),
-        onPressed: onPressed,
         child: Text(
           name,
           style: const TextStyle(

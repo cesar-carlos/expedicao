@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:app_expedicao/src/app/app_helper.dart';
 import 'package:app_expedicao/src/core/audio_helper.dart';
+import 'package:app_expedicao/src/app/app_event_state.dart';
 import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
@@ -60,6 +61,9 @@ class ConferenciaController extends GetxController {
     displayController = TextEditingController(text: '');
     quantidadeController = TextEditingController(text: '1,000');
 
+    Get.lazyPut(() => ConferirGridController());
+    Get.lazyPut(() => ConferenciaCarrinhoGridController());
+
     _conferirGridController = Get.find<ConferirGridController>();
     _conferenciaGridController = Get.find<ConferenciaCarrinhoGridController>();
     _processoExecutavel = Get.find<ProcessoExecutavelModel>();
@@ -101,7 +105,7 @@ class ConferenciaController extends GetxController {
     Get.delete<ConferenciaController>();
     Get.delete<ConferirGridController>();
     Get.delete<ConferenciaCarrinhoGridController>();
-
+    Get.find<AppEventState>()..canCloseWindow = true;
     super.onClose();
   }
 
@@ -192,6 +196,7 @@ class ConferenciaController extends GetxController {
     if (scanValue.isEmpty) {
       AudioHelper().play('/error.wav');
       await ConfirmationDialogMessageWidget.show(
+        canCloseWindow: false,
         context: Get.context!,
         message: 'Valor invalido!',
         detail: 'Digite o codigo de barras do produto para fazer a pesquisa!',
@@ -205,6 +210,7 @@ class ConferenciaController extends GetxController {
     if (textQuantityValue.isEmpty) {
       AudioHelper().play('/error.wav');
       await ConfirmationDialogMessageWidget.show(
+        canCloseWindow: false,
         context: Get.context!,
         message: 'Valor invalido!',
         detail: 'Digite a quantidade do produto para fazer a separação!',
@@ -225,6 +231,7 @@ class ConferenciaController extends GetxController {
     if (itemConferirConsulta == null) {
       AudioHelper().play('/error.wav');
       await ConfirmationDialogMessageWidget.show(
+        canCloseWindow: false,
         context: Get.context!,
         message: 'Produto não encontrado!',
         detail: 'Este produto não esta na lista de conferencia deste carrinho!',
@@ -274,6 +281,7 @@ class ConferenciaController extends GetxController {
     if (conferenciaItemConsulta == null) {
       AudioHelper().play('/error.wav');
       await ConfirmationDialogMessageWidget.show(
+        canCloseWindow: false,
         context: Get.context!,
         message: 'Erro ao adicionar item!',
         detail: 'Não foi possivel conferir o item do carrinho!',
@@ -324,6 +332,7 @@ class ConferenciaController extends GetxController {
   Future<void> _onEditItemConferenciaGrid() async {
     _conferenciaGridController.onPressedEditItem = (el) async {
       await ConfirmationDialogMessageWidget.show(
+        canCloseWindow: false,
         context: Get.context!,
         message: 'Não implementado!',
         detail: 'Não é possível editar, funcionalidade não foi implementada.',
@@ -335,6 +344,7 @@ class ConferenciaController extends GetxController {
     _conferenciaGridController.onPressedRemoveItem = (el) async {
       if (viewMode) {
         await ConfirmationDialogMessageWidget.show(
+          canCloseWindow: false,
           context: Get.context!,
           message: 'Não é possivel remover!',
           detail: 'O carrinho esta em modo de visualização..',
@@ -344,6 +354,7 @@ class ConferenciaController extends GetxController {
       }
 
       final bool? confirmation = await ConfirmationDialogWidget.show(
+        canCloseWindow: false,
         context: Get.context!,
         message: 'Deseja realmente cancelar?',
         detail: 'Ao cancelar, os itens serão removido do carrinho!',
@@ -375,6 +386,7 @@ class ConferenciaController extends GetxController {
 
     if (viewMode) {
       await ConfirmationDialogMessageWidget.show(
+        canCloseWindow: false,
         context: Get.context!,
         message: 'Não é possivel conferir tudo!',
         detail: 'O carrinho esta em modo de visualização..',
@@ -385,6 +397,7 @@ class ConferenciaController extends GetxController {
 
     if (totalSeparado >= totalSeparar) {
       await ConfirmationDialogMessageWidget.show(
+        canCloseWindow: false,
         context: Get.context!,
         message: 'Não existe itens para conferir!',
         detail: 'Todos os itens ja foram separados!',
@@ -393,7 +406,11 @@ class ConferenciaController extends GetxController {
       return;
     }
 
-    final confirmation = await IdentificacaoDialogWidget().show();
+    final confirmation = await IdentificacaoDialogWidget.show(
+      size: Get.size,
+      context: Get.context!,
+      canCloseWindow: false,
+    );
 
     if (confirmation != null) {
       final carrinhoPercursoAdicionarItemService =
@@ -402,6 +419,7 @@ class ConferenciaController extends GetxController {
       );
 
       LoadingProcessDialogWidget.show(
+        canCloseWindow: false,
         context: Get.context!,
         process: () async {
           final response = await carrinhoPercursoAdicionarItemService.addAll();
@@ -428,6 +446,7 @@ class ConferenciaController extends GetxController {
   Future<void> onReconferirTudo() async {
     if (viewMode) {
       await ConfirmationDialogMessageWidget.show(
+        canCloseWindow: false,
         context: Get.context!,
         message: 'Não é possivel reconferir!',
         detail: 'O carrinho esta em modo de visualização..',
@@ -438,6 +457,7 @@ class ConferenciaController extends GetxController {
 
     if (_conferenciaGridController.totalQuantity() == 0) {
       await ConfirmationDialogMessageWidget.show(
+        canCloseWindow: false,
         context: Get.context!,
         message: 'Não existe itens no carrinho!',
         detail: 'Não é possivel reconferir, pois não existe itens no carrinho!',
@@ -446,7 +466,11 @@ class ConferenciaController extends GetxController {
       return;
     }
 
-    final confirmation = await IdentificacaoDialogWidget().show();
+    final confirmation = await IdentificacaoDialogWidget.show(
+      size: Get.size,
+      context: Get.context!,
+      canCloseWindow: false,
+    );
 
     if (confirmation != null) {
       ConferenciaRemoverItemService(
@@ -499,6 +523,7 @@ class ConferenciaController extends GetxController {
             update();
 
             await ConfirmationDialogMessageWidget.show(
+              canCloseWindow: false,
               context: Get.context!,
               message: 'Carrinho cancelado!',
               detail:

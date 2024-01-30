@@ -1,17 +1,20 @@
-import 'package:app_expedicao/src/app/app_event_state.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
+import 'package:app_expedicao/src/app/app_event_state.dart';
+
 class LoadingProcessDialogWidget {
   static Future<void> show({
+    required bool canCloseWindow,
     required BuildContext context,
     required Future<void> Function() process,
   }) async {
     return await showDialog<void>(
+      barrierDismissible: false,
       context: context,
       builder: (_) {
         final _appEventState = Get.find<AppEventState>();
-        _appEventState.canCloseWindow = false;
+        _appEventState.canCloseWindow = canCloseWindow;
 
         return PopScope(
           canPop: false,

@@ -18,7 +18,7 @@ packages:
     source: hosted
     version: "3.4.9"
   args:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: args
       sha256: eef6c46b622e0494a36c5a12d10d77fb4e855501a91c1b9ef9339326e58f0596
@@ -193,27 +193,11 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.1"
-  fluent_ui:
-    dependency: "direct main"
-    description:
-      name: fluent_ui
-      sha256: "43e95034b12a8285a78703b5995bb4d2e02a28750a1a363044c150533bc7f027"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.7.6"
   flutter:
     dependency: "direct main"
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_dotenv:
-    dependency: "direct main"
-    description:
-      name: flutter_dotenv
-      sha256: "9357883bdd153ab78cbf9ffa07656e336b8bbb2b5a3ca596b0b27e119f7c7d77"
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.1.0"
   flutter_launcher_icons:
     dependency: "direct dev"
     description:
@@ -222,11 +206,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.13.1"
-  flutter_localizations:
-    dependency: transitive
-    description: flutter
-    source: sdk
-    version: "0.0.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -245,14 +224,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  font_awesome_flutter:
-    dependency: "direct main"
-    description:
-      name: font_awesome_flutter
-      sha256: "52671aea66da73b58d42ec6d0912b727a42248dd9a7c76d6c20f275783c48c08"
-      url: "https://pub.dev"
-    source: hosted
-    version: "10.6.0"
   get:
     dependency: "direct main"
     description:
@@ -349,14 +320,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.5.0"
-  math_expressions:
-    dependency: transitive
-    description:
-      name: math_expressions
-      sha256: "3576593617c3870d75728a751f6ec6e606706d44e363f088ac394b5a28a98064"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.4.0"
   media_kit:
     dependency: "direct main"
     description:
@@ -525,14 +488,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
-  recase:
-    dependency: transitive
-    description:
-      name: recase
-      sha256: e4eb4ec2dcdee52dcf99cb4ceabaffc631d7424ee55e56f280bc039737f89213
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.1.0"
   safe_local_storage:
     dependency: transitive
     description:
@@ -549,14 +504,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.9"
-  scroll_pos:
-    dependency: transitive
-    description:
-      name: scroll_pos
-      sha256: "4246bff3afc779d87cdf650a67d42d67ae71b23ff020d14592e6b89e28a7f9cc"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.4.0"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -698,22 +645,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.0+1"
-  system_theme:
-    dependency: "direct main"
-    description:
-      name: system_theme
-      sha256: "1f208db140a3d1e1eac2034b54920d95699c1534df576ced44b3312c5de3975f"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.3.1"
-  system_theme_web:
-    dependency: transitive
-    description:
-      name: system_theme_web
-      sha256: "7566f5a928f6d28d7a60c97bea8a851d1c6bc9b86a4df2366230a97458489219"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.2"
   term_glyph:
     dependency: transitive
     description:

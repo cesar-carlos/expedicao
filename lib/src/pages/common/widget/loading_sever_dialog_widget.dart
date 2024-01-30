@@ -1,16 +1,21 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
+import 'package:app_expedicao/src/app/app_event_state.dart';
 import 'package:app_expedicao/src/pages/common/widget/desconected_animation_icon_widget.dart';
 import 'package:app_expedicao/src/app/app_socket_config.dart';
 
 class LoadingSeverDialogWidget {
   static Future<void> show({
+    required bool canCloseWindow,
     required BuildContext context,
   }) async {
     final socket = Get.find<AppSocketConfig>();
+    final _appEventState = Get.find<AppEventState>();
+    _appEventState.canCloseWindow = canCloseWindow;
 
     return await showDialog<void>(
+      barrierDismissible: false,
       barrierColor: Colors.white.withOpacity(0.7),
       context: context,
       builder: (_) {
@@ -22,6 +27,7 @@ class LoadingSeverDialogWidget {
                 socket.isConnect.listen((event) {
                   if (event == true) {
                     Future.delayed(const Duration(seconds: 1), () {
+                      _appEventState.canCloseWindow = true;
                       Get.back();
                     });
                   }

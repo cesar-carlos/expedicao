@@ -4,18 +4,17 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_item_consulta_model.dart';
-import 'package:app_expedicao/src/pages/common/widget/complit_animation_icon_widget.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_item_unidade_medida_consulta_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_repository.dart';
-import 'package:app_expedicao/src/pages/common/widget/alert_animation_icon_widget.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 
 class ConferirGridController extends GetxController {
   static const gridName = 'conferirGrid';
+  final iconSize = 19.0;
 
   final List<ExpedicaoConferirItemConsultaModel> _itens = [];
   final List<ExpedicaoConferirItemUnidadeMedidaConsultaModel> _itemUnids = [];
-  final DataGridController dataGridController = DataGridController();
+  final dataGridController = DataGridController();
 
   List<DataGridRow> get selectedoRows => dataGridController.selectedRows;
   List<ExpedicaoConferirItemConsultaModel> get itens => _itens;
@@ -27,7 +26,12 @@ class ConferirGridController extends GetxController {
     super.onInit();
   }
 
-  //ITENS
+  @override
+  void onClose() {
+    super.onClose();
+    dataGridController.dispose();
+  }
+
   void addGrid(ExpedicaoConferirItemConsultaModel item) {
     _itens.add(item);
   }
@@ -59,7 +63,6 @@ class ConferirGridController extends GetxController {
     _itens.clear();
   }
 
-//UNIDADES
   void addUnidade(ExpedicaoConferirItemUnidadeMedidaConsultaModel item) {
     _itemUnids.add(item);
   }
@@ -210,17 +213,25 @@ class ConferirGridController extends GetxController {
 
   iconIndicator(ExpedicaoConferirItemConsultaModel item) {
     if (item.quantidade == item.quantidadeConferida) {
-      return const ComplitAnimationIconWidget();
+      return Icon(
+        BootstrapIcons.check_circle_fill,
+        color: Colors.green,
+        size: iconSize,
+      );
     }
 
     if (item.quantidade < item.quantidadeConferida) {
-      return const AlertAnimationIconWidget();
+      return Icon(
+        BootstrapIcons.exclamation_circle_fill,
+        color: Colors.red,
+        size: iconSize,
+      );
     }
 
-    return const Icon(
+    return Icon(
       BootstrapIcons.box,
       color: Colors.blue,
-      size: 17,
+      size: iconSize,
     );
   }
 }

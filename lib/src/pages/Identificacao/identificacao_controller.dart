@@ -1,12 +1,13 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
+import 'package:app_expedicao/src/app/app_event_state.dart';
 import 'package:app_expedicao/src/pages/Identificacao/model/identificacao_model.dart';
 
 class IdentificacaoController extends GetxController {
   final formKey = GlobalKey<FormState>();
   final userController = TextEditingController(text: 'Administrador');
-  final passwordController = TextEditingController(text: '');
+  final passwordController = TextEditingController();
   final passwordFocusNode = FocusNode()..requestFocus();
   final loginFocusNode = FocusNode();
   final userFocusNode = FocusNode();
@@ -23,6 +24,7 @@ class IdentificacaoController extends GetxController {
     passwordController.dispose();
     passwordFocusNode.dispose();
     userFocusNode.dispose();
+    Get.find<AppEventState>()..canCloseWindow = true;
     super.onClose();
   }
 

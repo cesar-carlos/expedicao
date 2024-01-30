@@ -2,13 +2,19 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_expedicao/src/pages/common/form_element/button_form_element.dart';
+import 'package:app_expedicao/src/app/app_event_state.dart';
 
 Future<void> customDialog(
   BuildContext context, {
   required String title,
   required String message,
+  required bool canCloseWindow,
 }) async {
+  final _appEventState = Get.find<AppEventState>();
+  _appEventState.canCloseWindow = canCloseWindow;
+
   return await showDialog<void>(
+    barrierDismissible: false,
     context: context,
     builder: (context) => Dialog(
       child: Container(
@@ -51,7 +57,10 @@ Future<void> customDialog(
                 ButtonFormElement(
                   name: 'OK',
                   focusNode: FocusNode()..requestFocus(),
-                  onPressed: Get.back,
+                  onPressed: () {
+                    _appEventState.canCloseWindow = true;
+                    Get.back();
+                  },
                 ),
               ],
             )

@@ -45,6 +45,7 @@ class ConferirSeparacaoAdicionarService {
         CodEmpresa = ${carrinhoPercurso.codEmpresa}
       AND Origem = '${carrinhoPercurso.origem}'
       AND CodSepararEstoque = ${carrinhoPercurso.codOrigem}
+      AND Situacao = '${ExpedicaoSituacaoModel.separado}'
 
     ''';
 
@@ -90,7 +91,7 @@ class ConferirSeparacaoAdicionarService {
       final item = sequence.toString().padLeft(5, '0');
 
       final newItem = ExpedicaoConferirItemModel(
-        codEmpresa: el.codEmpresa,
+        codEmpresa: conferir.codEmpresa,
         codConferir: conferir.codConferir,
         item: item,
         codCarrinhoPercurso: el.codCarrinhoPercurso,

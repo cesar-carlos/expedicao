@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
@@ -7,12 +8,13 @@ import 'package:flutter/material.dart';
 import 'package:app_expedicao/src/app/app_dialog.dart';
 import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
-import 'package:app_expedicao/src/pages/common/widget/message_dialog.widget.dart';
+import 'package:app_expedicao/src/pages/common/widget/message_dialog_widget.dart';
 import 'package:app_expedicao/src/service/conferencia_situacao_carrinho_service.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinhos/carrinho_consulta_repository.dart';
 import 'package:app_expedicao/src/pages/carrinho/view_model/carrinho_view_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_consulta_model.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
+import 'package:app_expedicao/src/app/app_event_state.dart';
 
 class CarrinhoController extends GetxController {
   late ProcessoExecutavelModel _processoExecutavel;
@@ -30,6 +32,20 @@ class CarrinhoController extends GetxController {
     textControllerCodigoCarrinho = TextEditingController();
     focusNodeBtnAdicionarCarrinho = FocusNode();
     focusNodeCodigoCarrinho = FocusNode();
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+  }
+
+  @override
+  void onClose() {
+    focusNodeCodigoCarrinho.dispose();
+    textControllerCodigoCarrinho.dispose();
+    focusNodeBtnAdicionarCarrinho.dispose();
+    Get.find<AppEventState>()..canCloseWindow = true;
+    super.onClose();
   }
 
   CarrinhoViewModel get carrinho => _carrinho;
@@ -66,13 +82,14 @@ class CarrinhoController extends GetxController {
     return (carrinhoConsulta: carrinhos.first, dialog: null);
   }
 
-  addCarrinho() async {
+  Future<void> addCarrinho() async {
     final codigoBarras = textControllerCodigoCarrinho.text;
     final output = await getCarrinho(codigoBarras);
 
     if (output?.dialog != null) {
       await customDialog(
         Get.context!,
+        canCloseWindow: false,
         title: 'Carrinho',
         message: 'Carrinho não encontrado!',
       );
@@ -97,6 +114,7 @@ class CarrinhoController extends GetxController {
     if (validMsg != null) {
       await customDialog(
         Get.context!,
+        canCloseWindow: false,
         title: 'Carrinho',
         message: validMsg,
       );

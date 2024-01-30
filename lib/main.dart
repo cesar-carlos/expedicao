@@ -1,8 +1,6 @@
-import 'package:app_expedicao/src/app/app_event_state.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
-import 'package:system_theme/system_theme.dart';
 
 import 'package:app_expedicao/src/app/app_theme.dart';
 import 'package:app_expedicao/src/app/app_client_http.dart';
@@ -12,6 +10,7 @@ import 'package:app_expedicao/src/pages/window.config/window_manager_config.dart
 import 'package:app_expedicao/src/pages/splash/splash_page.dart';
 import 'package:app_expedicao/src/routes/app_page_router.dart';
 import 'package:app_expedicao/src/app/app_socket_config.dart';
+import 'package:app_expedicao/src/app/app_event_state.dart';
 
 Future<void> main(List<String> args) async {
   if (args.isNotEmpty) {
@@ -21,7 +20,6 @@ Future<void> main(List<String> args) async {
 
   WidgetsFlutterBinding.ensureInitialized();
   await WindowManagerConfig().config();
-  await SystemTheme.accentColor.load();
   MediaKit.ensureInitialized();
 
   Get.put(AppClientHttp());

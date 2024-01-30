@@ -27,7 +27,6 @@ import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dar
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
 import 'package:app_expedicao/src/service/separar_consultas_services.dart';
-import 'package:app_expedicao/src/pages/carrinho/carrinho_controller.dart';
 import 'package:app_expedicao/src/service/separar_finalizar_service.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_model.dart';
@@ -122,6 +121,7 @@ class SepararController extends GetxController {
     if (event is RawKeyDownEvent &&
         event.logicalKey == LogicalKeyboardKey.escape) {
       ConfirmationDialogWidget.show(
+        canCloseWindow: false,
         context: Get.context!,
         message: 'Deseja realmente sair?',
         detail: 'A tela será fechada e a separação não será  cancelada.',
@@ -174,6 +174,7 @@ class SepararController extends GetxController {
 
   Future<void> pausarSeparacao() async {
     await ConfirmationDialogMessageWidget.show(
+      canCloseWindow: false,
       context: Get.context!,
       message: 'Não implementado!',
       detail: 'Não é possível pausar, funcionalidade não foi implementada.',
@@ -183,6 +184,7 @@ class SepararController extends GetxController {
   Future<void> adicionarCarrinho() async {
     if (_expedicaoSituacao == ExpedicaoSituacaoModel.separado) {
       await ConfirmationDialogMessageWidget.show(
+        canCloseWindow: false,
         context: Get.context!,
         message: 'Separação já finalizada!',
         detail: 'Separação já finalizada, não é possível finalizar novamente.',
@@ -193,6 +195,7 @@ class SepararController extends GetxController {
 
     if (_expedicaoSituacao == ExpedicaoSituacaoModel.cancelada) {
       await ConfirmationDialogMessageWidget.show(
+        canCloseWindow: false,
         context: Get.context!,
         message: 'Separação cancelada!',
         detail: 'Separação cancelada, não é possível adicionar carrinho.',
@@ -201,8 +204,8 @@ class SepararController extends GetxController {
       return;
     }
 
-    final carrinhoController = CarrinhoController();
-    final dialog = AdicionarCarrinhoDialogWidget(carrinhoController);
+    final dialog = AdicionarCarrinhoDialogWidget(canCloseWindow: false);
+
     final carrinhoConsulta = await dialog.show();
 
     if (carrinhoConsulta != null) {
@@ -250,7 +253,7 @@ class SepararController extends GetxController {
             .trim() ??
         '';
 
-    final result = await SepararOBsDialogWidget().show();
+    final result = await SepararOBsDialogWidget(canCloseWindow: false).show();
     if (result != null) {
       _separarConsulta.historico = historicoController.text;
       _separarConsulta.observacao = observacaoController.text;
@@ -266,6 +269,7 @@ class SepararController extends GetxController {
 
     if (_expedicaoSituacao == ExpedicaoSituacaoModel.cancelada) {
       await ConfirmationDialogMessageWidget.show(
+        canCloseWindow: false,
         context: Get.context!,
         message: 'Separação cancelada!',
         detail: 'Separação cancelada, não é possível finalizar.',
@@ -276,6 +280,7 @@ class SepararController extends GetxController {
 
     if (_expedicaoSituacao == ExpedicaoSituacaoModel.separado) {
       await ConfirmationDialogMessageWidget.show(
+        canCloseWindow: false,
         context: Get.context!,
         message: 'Separação já finalizada!',
         detail: 'Separação já finalizada, não é possível finalizar novamente.',
@@ -286,6 +291,7 @@ class SepararController extends GetxController {
 
     if (!isComplete) {
       await ConfirmationDialogMessageWidget.show(
+        canCloseWindow: false,
         context: Get.context!,
         message: 'Separação não finalizada!',
         detail: 'Separação não finalizada, existem itens não separados.',
@@ -296,6 +302,7 @@ class SepararController extends GetxController {
 
     if (existsOpenCart) {
       await ConfirmationDialogMessageWidget.show(
+        canCloseWindow: false,
         context: Get.context!,
         message: 'Separação não finalizada!',
         detail: 'Separação não finalizada, existem carrinhos em aberto.',
@@ -305,6 +312,7 @@ class SepararController extends GetxController {
     }
 
     final bool? confirmation = await ConfirmationDialogWidget.show(
+      canCloseWindow: false,
       context: Get.context!,
       message: 'Deseja realmente finalizar?',
       detail: 'Não será possível adicionar ou alterar mais os carrinhos.',
@@ -333,7 +341,12 @@ class SepararController extends GetxController {
   }
 
   Future<void> configuracao() async {
-    final confirmation = await IdentificacaoDialogWidget().show();
+    final confirmation = await IdentificacaoDialogWidget.show(
+      size: Get.size,
+      context: Get.context!,
+      canCloseWindow: false,
+    );
+
     if (confirmation != null) {
       Get.offNamed(AppRouter.apiConfig);
     }
@@ -355,7 +368,10 @@ class SepararController extends GetxController {
 
     _socketClient.isConnect.listen((event) {
       if (event) return;
-      LoadingSeverDialogWidget.show(context: Get.context!);
+      LoadingSeverDialogWidget.show(
+        canCloseWindow: false,
+        context: Get.context!,
+      );
     });
 
     final separarItemConsulta = RepositoryEventListenerModel(
