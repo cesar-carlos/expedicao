@@ -12,4 +12,7 @@ class AppErrorCode {
   static const int erroCriarExpedicaoConferir = 8;
 
   static const int confeirNaoEncontrado = 9;
+
+  static const int separacao = 10;
+  static const int conferencia = 11;
 }

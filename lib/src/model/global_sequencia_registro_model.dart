@@ -15,10 +15,7 @@ class GlobalSequenciaRegistroModel {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'Nome': nome,
-      'Valor': valor,
-    };
+    return {'Nome': nome, 'Valor': valor};
   }
 
   @override

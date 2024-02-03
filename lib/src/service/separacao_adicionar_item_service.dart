@@ -25,38 +25,41 @@ class SeparacaoAdicionarItemService {
     required String codUnidadeMedida,
     required double quantidade,
   }) async {
-    final itemSeparacao = ExpedicaoSeparacaoItemModel(
-      codEmpresa: percursoEstagioConsulta.codEmpresa,
-      codSepararEstoque: percursoEstagioConsulta.codOrigem,
-      item: '',
-      sessionId: _socket.id ?? '',
-      situacao: ExpedicaoItemSituacaoModel.separado,
-      codCarrinhoPercurso: percursoEstagioConsulta.codCarrinhoPercurso,
-      itemCarrinhoPercurso: percursoEstagioConsulta.item,
-      codSeparador: _processo.codUsuario,
-      nomeSeparador: _processo.nomeUsuario,
-      dataSeparacao: DateTime.now(),
-      horaSeparacao: DateTime.now().toIso8601String().substring(11, 19),
-      codProduto: codProduto,
-      codUnidadeMedida: codUnidadeMedida,
-      quantidade: quantidade,
-    );
+    try {
+      final itemSeparacao = ExpedicaoSeparacaoItemModel(
+        codEmpresa: percursoEstagioConsulta.codEmpresa,
+        codSepararEstoque: percursoEstagioConsulta.codOrigem,
+        item: '',
+        sessionId: _socket.id ?? '',
+        situacao: ExpedicaoItemSituacaoModel.separado,
+        codCarrinhoPercurso: percursoEstagioConsulta.codCarrinhoPercurso,
+        itemCarrinhoPercurso: percursoEstagioConsulta.item,
+        codSeparador: _processo.codUsuario,
+        nomeSeparador: _processo.nomeUsuario,
+        dataSeparacao: DateTime.now(),
+        horaSeparacao: DateTime.now().toIso8601String().substring(11, 19),
+        codProduto: codProduto,
+        codUnidadeMedida: codUnidadeMedida,
+        quantidade: quantidade,
+      );
 
-    final newSeparacaoItem =
-        await SeparacaoItemRepository().insert(itemSeparacao);
+      final newSeparacaoItem =
+          await SeparacaoItemRepository().insert(itemSeparacao);
 
-    if (newSeparacaoItem.isEmpty) return null;
+      if (newSeparacaoItem.isEmpty) return null;
+      if (newSeparacaoItem.length == 0) return null;
 
-    final params = '''
+      final params = '''
         CodEmpresa = ${newSeparacaoItem.first.codEmpresa} 
-      AND CodSepararEstoque = ${newSeparacaoItem.first.codSepararEstoque}
-      AND Item = '${newSeparacaoItem.first.item}'
+          AND CodSepararEstoque = ${newSeparacaoItem.first.codSepararEstoque}
+          AND Item = '${newSeparacaoItem.first.item}' ''';
 
-    ''';
-
-    final list = await SeparacaoItemConsultaRepository().select(params);
-    if (list.isEmpty) return null;
-    return list.first;
+      final list = await SeparacaoItemConsultaRepository().select(params);
+      if (list.isEmpty) return null;
+      return list.first;
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<List<ExpedicaSeparacaoItemConsultaModel>> addAll() async {

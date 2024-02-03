@@ -313,50 +313,62 @@ class SeparacaoController extends GetxController {
     }
 
     //ADD ITEM DATABASE
-    final separacaoItemConsulta =
-        await carrinhoPercursoAdicionarItemService.add(
-      codProduto: itemSepararConsulta.codProduto,
-      codUnidadeMedida: itemSepararConsulta.codUnidadeMedida,
-      quantidade: qtdConferencia,
-    );
+    try {
+      final separacaoItemConsulta =
+          await carrinhoPercursoAdicionarItemService.add(
+        codProduto: itemSepararConsulta.codProduto,
+        codUnidadeMedida: itemSepararConsulta.codUnidadeMedida,
+        quantidade: qtdConferencia,
+      );
 
-    if (separacaoItemConsulta == null) {
-      AudioHelper().play('/error.wav');
+      if (separacaoItemConsulta == null) {
+        AudioHelper().play('/error.wav');
+        await ConfirmationDialogMessageWidget.show(
+          canCloseWindow: false,
+          context: Get.context!,
+          message: 'Erro ao adicionar item!',
+          detail: 'Não foi possivel adicionar o item ao carrinho!',
+        );
+
+        displayController.text = '';
+        scanFocusNode.requestFocus();
+        scanController.clear();
+        return;
+      }
+
+      displayController.text = itemSepararConsulta.nomeProduto;
+      _separacaoGridController.addGrid(separacaoItemConsulta);
+
+      final indexAdd = _separarGridController
+          .findIndexCodProduto(separacaoItemConsulta.codProduto);
+
+      _separarGridController.setSelectedRow(indexAdd);
+      _separacaoGridController.update();
+      _separarGridController.update();
+
+      final itemSeparar =
+          _findItemSepararGrid(separacaoItemConsulta.codProduto)!;
+
+      _separarGridController.updateGrid(itemSeparar.copyWith(
+        quantidadeSeparacao:
+            itemSeparar.quantidadeSeparacao + separacaoItemConsulta.quantidade,
+      ));
+
+      scanController.text = '';
+      quantidadeController.text = '1,000';
+      scanFocusNode.requestFocus();
+
+      AudioHelper().play('/success.wav');
+    } catch (e) {
+      //ERROR ADD ITEM
+      AudioHelper().play('/success.wav');
       await ConfirmationDialogMessageWidget.show(
         canCloseWindow: false,
         context: Get.context!,
         message: 'Erro ao adicionar item!',
-        detail: 'Não foi possivel adicionar o item ao carrinho!',
+        detail: e.toString(),
       );
-
-      displayController.text = '';
-      scanFocusNode.requestFocus();
-      scanController.clear();
-      return;
     }
-
-    displayController.text = itemSepararConsulta.nomeProduto;
-    _separacaoGridController.addGrid(separacaoItemConsulta);
-
-    final indexAdd = _separarGridController
-        .findIndexCodProduto(separacaoItemConsulta.codProduto);
-
-    _separarGridController.setSelectedRow(indexAdd);
-    _separacaoGridController.update();
-    _separarGridController.update();
-
-    final itemSeparar = _findItemSepararGrid(separacaoItemConsulta.codProduto)!;
-
-    _separarGridController.updateGrid(itemSeparar.copyWith(
-      quantidadeSeparacao:
-          itemSeparar.quantidadeSeparacao + separacaoItemConsulta.quantidade,
-    ));
-
-    scanController.text = '';
-    quantidadeController.text = '1,000';
-    scanFocusNode.requestFocus();
-
-    AudioHelper().play('/success.wav');
   }
 
   bool validQuantitySeparate(String scanText, double value) {

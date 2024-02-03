@@ -63,6 +63,7 @@ class SplashController extends GetxController {
       );
 
       _separarConsulta = await separarConsultaServices.separar();
+
       if (_separarConsulta == null) {
         Get.offNamed(AppRouter.splashError, arguments: '0002');
 

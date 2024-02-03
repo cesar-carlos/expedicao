@@ -128,6 +128,22 @@ class ExpedicaoConferenciaItemModel {
 
   @override
   String toString() {
-    return 'ExpedicaoConferenciaItemModel(codEmpresa: $codEmpresa, codConferir: $codConferir, item: $item, sessionId: $sessionId, situacao: $situacao, codCarrinhoPercurso: $codCarrinhoPercurso, itemCarrinhoPercurso: $itemCarrinhoPercurso, codConferente: $codConferente, nomeConferente: $nomeConferente, dataConferencia: $dataConferencia, horaConferencia: $horaConferencia, codProduto: $codProduto, codUnidadeMedida: $codUnidadeMedida, quantidade: $quantidade)';
+    return '''
+      ExpedicaoConferenciaItemModel(
+        codEmpresa: $codEmpresa, 
+        codConferir: $codConferir, 
+        item: $item, 
+        sessionId: $sessionId, 
+        situacao: $situacao, 
+        codCarrinhoPercurso: $codCarrinhoPercurso, 
+        itemCarrinhoPercurso: $itemCarrinhoPercurso, 
+        codConferente: $codConferente, 
+        nomeConferente: $nomeConferente, 
+        dataConferencia: $dataConferencia, 
+        horaConferencia: $horaConferencia, 
+        codProduto: $codProduto, 
+        codUnidadeMedida: $codUnidadeMedida, 
+        quantidade: $quantidade)
+      ''';
   }
 }

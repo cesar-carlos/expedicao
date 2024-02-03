@@ -107,6 +107,22 @@ class ExpedicaoSepararConsultaModel {
 
   @override
   String toString() {
-    return 'ExpedicaoSepararConsultaModel(codEmpresa: $codEmpresa, codSepararEstoque: $codSepararEstoque, codTipoOperacao: $codTipoOperacao, nomeTipoOperacao: $nomeTipoOperacao, situacao: $situacao, tipoEntidade: $tipoEntidade, dataEmissao: $dataEmissao, horaEmissao: $horaEmissao, codEntidade: $codEntidade, nomeEntidade: $nomeEntidade, codPrioridade: $codPrioridade, nomePrioridade: $nomePrioridade, historico: $historico, observacao: $observacao)';
+    return '''
+      ExpedicaoSepararConsultaModel(
+        codEmpresa: $codEmpresa, 
+        codSepararEstoque: $codSepararEstoque, 
+        codTipoOperacao: $codTipoOperacao, 
+        nomeTipoOperacao: $nomeTipoOperacao, 
+        situacao: $situacao, 
+        tipoEntidade: $tipoEntidade, 
+        dataEmissao: $dataEmissao, 
+        horaEmissao: $horaEmissao, 
+        codEntidade: $codEntidade, 
+        nomeEntidade: $nomeEntidade, 
+        codPrioridade: $codPrioridade, 
+        nomePrioridade: $nomePrioridade, 
+        historico: $historico, 
+        observacao: $observacao)
+      ''';
   }
 }
