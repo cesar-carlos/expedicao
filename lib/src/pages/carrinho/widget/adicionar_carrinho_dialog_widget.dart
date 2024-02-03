@@ -48,7 +48,7 @@ class AdicionarCarrinhoDialogWidget {
                     children: [
                       //** HEADER BAR **//
                       BarHeadFormElement(
-                        widthBar: size.width - 554,
+                        widthBar: widthForm + 80,
                         title: 'Adicionar Carrinho',
                         onPressedCloseBar: () => Get.back(),
                       ),

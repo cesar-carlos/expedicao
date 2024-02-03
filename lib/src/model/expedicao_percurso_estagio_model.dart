@@ -121,6 +121,24 @@ class ExpedicaoPercursoEstagioModel {
 
   @override
   String toString() {
-    return 'ExpedicaoPercursoEstagioModel(codEmpresa: $codEmpresa, codCarrinhoPercurso: $codCarrinhoPercurso, item: $item, origem: $origem, codOrigem: $codOrigem, codPercursoEstagio: $codPercursoEstagio, codCarrinho: $codCarrinho, situacao: $situacao, dataInicio: $dataInicio, horaInicio: $horaInicio, codUsuarioInicio: $codUsuarioInicio, nomeUsuarioInicio: $nomeUsuarioInicio, dataFinalizacao: $dataFinalizacao, horaFinalizacao: $horaFinalizacao, codUsuarioFinalizacao: $codUsuarioFinalizacao, nomeUsuarioFinalizacao: $nomeUsuarioFinalizacao)';
+    return '''
+      ExpedicaoPercursoEstagioModel(
+        codEmpresa: $codEmpresa, 
+        odCarrinhoPercurso: $codCarrinhoPercurso, 
+        item: $item, 
+        origem: $origem, 
+        codOrigem: $codOrigem, 
+        codPercursoEstagio: $codPercursoEstagio, 
+        codCarrinho: $codCarrinho, 
+        situacao: $situacao, 
+        dataInicio: $dataInicio, 
+        horaInicio: $horaInicio, 
+        codUsuarioInicio: $codUsuarioInicio, 
+        nomeUsuarioInicio: $nomeUsuarioInicio, 
+        dataFinalizacao: $dataFinalizacao, 
+        horaFinalizacao: $horaFinalizacao, 
+        codUsuarioFinalizacao: $codUsuarioFinalizacao, 
+        nomeUsuarioFinalizacao: $nomeUsuarioFinalizacao)
+    ''';
   }
 }

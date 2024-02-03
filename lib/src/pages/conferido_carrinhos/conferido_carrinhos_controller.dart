@@ -69,6 +69,43 @@ class ConferidoCarrinhosController extends GetxController {
 
   _evetsCarrinhoGrid() {
     _conferidoCarrinhoGridController.onPressedEdit = (item) async {
+      final carrinho = await CarrinhoServices().select(''' 
+            CodEmpresa = ${item.codEmpresa} 
+          AND CodCarrinho = ${item.codCarrinho} ''');
+
+      final carrinhosPercursoEstagio =
+          await CarrinhoPercursoEstagioServices().select('''
+              CodEmpresa = ${item.codEmpresa}
+            AND CodCarrinhoPercurso = ${item.codCarrinhoPercurso}
+            AND CodCarrinho = ${item.codCarrinho}
+            AND Item = ${item.item} ''');
+
+      if (carrinho.isEmpty || carrinhosPercursoEstagio.isEmpty) {
+        await ConfirmationDialogMessageWidget.show(
+          canCloseWindow: false,
+          context: Get.context!,
+          message: 'Carrinho não encontrado!',
+          detail: 'Carrinho não encontrado na tabela percurso estagio!',
+        );
+
+        return;
+      }
+
+      //TOOD:: ADD SOLICITACAO DE SENHA
+      final carrinhoPercursoEstagio = carrinhosPercursoEstagio.last;
+      if (carrinhoPercursoEstagio.codUsuarioInicio !=
+          _processoExecutavel.codUsuario) {
+        await ConfirmationDialogMessageWidget.show(
+          canCloseWindow: false,
+          context: Get.context!,
+          message: 'Carrinho não pertence a você!',
+          detail:
+              '''Carrinho não pode ser editado. Solicite para o usuario ${carrinhoPercursoEstagio.nomeUsuarioInicio} editar! ''',
+        );
+
+        return;
+      }
+
       await ConferenciaPage.show(
         size: Get.size,
         canCloseWindow: false,
@@ -122,6 +159,43 @@ class ConferidoCarrinhosController extends GetxController {
           context: Get.context!,
           message: 'Carrinho não conferido!',
           detail: 'Não é possível salva um carrinho que não esteja conferido!',
+        );
+
+        return;
+      }
+
+      final carrinho = await CarrinhoServices().select(''' 
+            CodEmpresa = ${item.codEmpresa} 
+          AND CodCarrinho = ${item.codCarrinho} ''');
+
+      final carrinhosPercursoEstagio =
+          await CarrinhoPercursoEstagioServices().select('''
+              CodEmpresa = ${item.codEmpresa}
+            AND CodCarrinhoPercurso = ${item.codCarrinhoPercurso}
+            AND CodCarrinho = ${item.codCarrinho}
+            AND Item = ${item.item} ''');
+
+      if (carrinho.isEmpty || carrinhosPercursoEstagio.isEmpty) {
+        await ConfirmationDialogMessageWidget.show(
+          canCloseWindow: false,
+          context: Get.context!,
+          message: 'Carrinho não encontrado!',
+          detail: 'Carrinho não encontrado na tabela percurso estagio!',
+        );
+
+        return;
+      }
+
+      //TOOD:: ADD SOLICITACAO DE SENHA
+      final carrinhoPercursoEstagio = carrinhosPercursoEstagio.last;
+      if (carrinhoPercursoEstagio.codUsuarioInicio !=
+          _processoExecutavel.codUsuario) {
+        await ConfirmationDialogMessageWidget.show(
+          canCloseWindow: false,
+          context: Get.context!,
+          message: 'Carrinho não pertence a você!',
+          detail:
+              '''Carrinho não pode ser editado. Solicite para o usuario ${carrinhoPercursoEstagio.nomeUsuarioInicio} salvar! ''',
         );
 
         return;
@@ -265,16 +339,39 @@ class ConferidoCarrinhosController extends GetxController {
                   AND CodCarrinho = ${item.codCarrinho} ''',
               );
 
-              final carrinhoPercursoEstagio =
+              final carrinhosPercursoEstagio =
                   await CarrinhoPercursoEstagioServices().select('''
-                CodEmpresa = ${item.codEmpresa}
-                  AND CodCarrinhoPercurso = ${item.codCarrinhoPercurso}
-                  AND CodPercursoEstagio = ${item.codPercursoEstagio}
-                  AND CodCarrinho = ${item.codCarrinho}
-                  AND Item = ${item.item} ''');
+                    CodEmpresa = ${item.codEmpresa}
+                      AND CodCarrinhoPercurso = ${item.codCarrinhoPercurso}
+                      AND CodPercursoEstagio = ${item.codPercursoEstagio}
+                      AND CodCarrinho = ${item.codCarrinho}
+                      AND Item = ${item.item} ''');
 
-              if (carrinho.isEmpty || carrinhoPercursoEstagio.isEmpty)
+              if (carrinho.isEmpty || carrinhosPercursoEstagio.isEmpty) {
+                await ConfirmationDialogMessageWidget.show(
+                  canCloseWindow: false,
+                  context: Get.context!,
+                  message: 'Carrinho não encontrado!',
+                  detail: 'Carrinho não encontrado na tabela percurso estagio!',
+                );
+
                 return false;
+              }
+
+              //TOOD:: ADD SOLICITACAO DE SENHA
+              final carrinhoPercursoEstagio = carrinhosPercursoEstagio.last;
+              if (carrinhoPercursoEstagio.codUsuarioInicio !=
+                  _processoExecutavel.codUsuario) {
+                await ConfirmationDialogMessageWidget.show(
+                  canCloseWindow: false,
+                  context: Get.context!,
+                  message: 'Carrinho não pertence a você!',
+                  detail:
+                      '''Carrinho não pode ser cancelado. Solicite para o usuario ${carrinhoPercursoEstagio.nomeUsuarioInicio} fazer o cancelamento! ''',
+                );
+
+                return false;
+              }
 
               final newCarrinho = carrinho.last.copyWith(
                 situacao: ExpedicaoCarrinhoSituacaoModel.emConferencia,
@@ -282,7 +379,7 @@ class ConferidoCarrinhosController extends GetxController {
 
               await CarrinhoPercursoEstagioCancelarService(
                 carrinho: newCarrinho,
-                percursoEstagio: carrinhoPercursoEstagio.last,
+                percursoEstagio: carrinhosPercursoEstagio.last,
               ).execute();
 
               final carrinhoPercurso = item.copyWith(

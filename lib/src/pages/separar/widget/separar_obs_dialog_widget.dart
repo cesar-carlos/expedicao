@@ -8,8 +8,11 @@ import 'package:app_expedicao/src/app/app_event_state.dart';
 
 class SepararOBsDialogWidget {
   final bool canCloseWindow;
-  final Size size = Get.size;
+  final double widthForm = 600;
+  final double heightForm = 400;
+  final double spaceBarHeadForm = 30.5;
   final BuildContext context = Get.context!;
+
   final controller = Get.find<SepararController>();
   final spaceBarHeadFormElement = 30.5;
 
@@ -26,12 +29,12 @@ class SepararOBsDialogWidget {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           child: SizedBox(
-            width: 600,
-            height: 400,
+            width: widthForm,
+            height: heightForm,
             child: Column(children: [
               //** HEADER BAR **//
               BarHeadFormElement(
-                widthBar: size.width - 554,
+                widthBar: widthForm + 80,
                 title: 'Adicionar Observação',
                 onPressedCloseBar: () {
                   Get.find<AppEventState>()..canCloseWindow = true;
@@ -41,8 +44,8 @@ class SepararOBsDialogWidget {
 
               //** BODY **//
               Container(
-                width: 600,
-                height: 400 - spaceBarHeadFormElement,
+                width: widthForm,
+                height: heightForm - spaceBarHeadFormElement,
                 decoration: BoxDecoration(
                   borderRadius:
                       const BorderRadius.vertical(bottom: Radius.circular(10)),

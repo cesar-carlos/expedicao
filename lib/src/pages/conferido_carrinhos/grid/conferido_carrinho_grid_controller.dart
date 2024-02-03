@@ -66,18 +66,18 @@ class ConferidoCarrinhoGridController extends GetxController {
     _itens.clear();
   }
 
-  void editGrid(
-    ConferidoCarrinhoGridSource grid,
-    ExpedicaoCarrinhoPercursoConsultaModel item,
-  ) {
-    onPressedEdit?.call(item);
-  }
-
   Future<void> onRemoveItem(
     ConferidoCarrinhoGridSource grid,
     ExpedicaoCarrinhoPercursoConsultaModel item,
   ) async {
     onPressedRemove?.call(item);
+  }
+
+  void onEditItem(
+    ConferidoCarrinhoGridSource grid,
+    ExpedicaoCarrinhoPercursoConsultaModel item,
+  ) {
+    onPressedEdit?.call(item);
   }
 
   Future<void> onSavetem(

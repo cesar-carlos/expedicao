@@ -91,7 +91,7 @@ class ConferidoCarrinhoGridSource extends DataGridSource {
                   IconButton(
                     icon: controller.iconEdit(i),
                     onPressed: () {
-                      controller.editGrid(this, i);
+                      controller.onEditItem(this, i);
                     },
                   ),
                   const SizedBox(

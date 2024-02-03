@@ -100,7 +100,7 @@ class SeparadoCarrinhoGridColumns {
     _columns.add(
       GridColumn(
         visible: true,
-        maximumWidth: 70,
+        maximumWidth: 80,
         columnName: 'codCarrinho',
         label: Container(
           padding: padding,
@@ -127,6 +127,7 @@ class SeparadoCarrinhoGridColumns {
     _columns.add(
       GridColumn(
         visible: true,
+        maximumWidth: 200,
         columnName: 'codigoBarrasCarrinho',
         label: Container(
           padding: padding,
@@ -140,6 +141,7 @@ class SeparadoCarrinhoGridColumns {
     _columns.add(
       GridColumn(
         visible: true,
+        maximumWidth: 150,
         columnName: 'situacao',
         label: Container(
           padding: padding,
@@ -154,6 +156,7 @@ class SeparadoCarrinhoGridColumns {
       GridColumn(
         visible: true,
         columnName: 'dataInicio',
+        maximumWidth: 110,
         label: Container(
           padding: padding,
           alignment: Alignment.centerLeft,
@@ -167,6 +170,7 @@ class SeparadoCarrinhoGridColumns {
       GridColumn(
         visible: true,
         columnName: 'horaInicio',
+        maximumWidth: 110,
         label: Container(
           padding: padding,
           alignment: Alignment.centerLeft,
@@ -192,6 +196,7 @@ class SeparadoCarrinhoGridColumns {
     _columns.add(
       GridColumn(
         visible: true,
+        maximumWidth: 160,
         columnName: 'nomeUsuario',
         label: Container(
           padding: padding,

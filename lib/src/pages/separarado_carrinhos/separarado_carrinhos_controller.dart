@@ -1,4 +1,3 @@
-import 'package:app_expedicao/src/pages/separacao/separacao_page.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
@@ -22,6 +21,7 @@ import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
 import 'package:app_expedicao/src/service/separar_consultas_services.dart';
 import 'package:app_expedicao/src/pages/separar/separar_controller.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
+import 'package:app_expedicao/src/pages/separacao/separacao_page.dart';
 import 'package:app_expedicao/src/service/carrinho_services.dart';
 
 class SeparadoCarrinhosController extends GetxController {
@@ -74,6 +74,43 @@ class SeparadoCarrinhosController extends GetxController {
 
   _evetsCarrinhoGrid() {
     _separadoCarrinhoGridController.onPressedEdit = (item) async {
+      final carrinho = await CarrinhoServices().select(''' 
+            CodEmpresa = ${item.codEmpresa} 
+          AND CodCarrinho = ${item.codCarrinho} ''');
+
+      final carrinhosPercursoEstagio =
+          await CarrinhoPercursoEstagioServices().select('''
+              CodEmpresa = ${item.codEmpresa}
+            AND CodCarrinhoPercurso = ${item.codCarrinhoPercurso}
+            AND CodCarrinho = ${item.codCarrinho}
+            AND Item = ${item.item} ''');
+
+      if (carrinho.isEmpty || carrinhosPercursoEstagio.isEmpty) {
+        await ConfirmationDialogMessageWidget.show(
+          canCloseWindow: false,
+          context: Get.context!,
+          message: 'Carrinho não encontrado!',
+          detail: 'Carrinho não encontrado na tabela percurso estagio!',
+        );
+
+        return;
+      }
+
+      //TOOD:: ADD SOLICITACAO DE SENHA
+      final carrinhoPercursoEstagio = carrinhosPercursoEstagio.last;
+      if (carrinhoPercursoEstagio.codUsuarioInicio !=
+          _processoExecutavel.codUsuario) {
+        await ConfirmationDialogMessageWidget.show(
+          canCloseWindow: false,
+          context: Get.context!,
+          message: 'Carrinho não pertence a você!',
+          detail:
+              '''Carrinho não pode ser editado. Solicite para o usuario ${carrinhoPercursoEstagio.nomeUsuarioInicio} editar! ''',
+        );
+
+        return;
+      }
+
       await SeparacaoPage.show(
         size: Get.size,
         canCloseWindow: false,
@@ -143,7 +180,7 @@ class SeparadoCarrinhosController extends GetxController {
 
                 ''');
 
-              final carrinhoPercursoEstagio =
+              final carrinhosPercursoEstagio =
                   await CarrinhoPercursoEstagioServices().select('''
                     CodEmpresa = ${item.codEmpresa}
                   AND CodCarrinhoPercurso = ${item.codCarrinhoPercurso}
@@ -152,20 +189,42 @@ class SeparadoCarrinhosController extends GetxController {
 
                   ''');
 
-              if (carrinho.isEmpty || carrinhoPercursoEstagio.isEmpty) {
-                throw Exception('Carrinho percurso não encontrado!');
+              if (carrinho.isEmpty || carrinhosPercursoEstagio.isEmpty) {
+                await ConfirmationDialogMessageWidget.show(
+                  canCloseWindow: false,
+                  context: Get.context!,
+                  message: 'Carrinho não encontrado!',
+                  detail: 'Carrinho não encontrado na tabela percurso estagio!',
+                );
+
+                return false;
+              }
+
+              //TOOD:: ADD SOLICITACAO DE SENHA
+              final carrinhoPercursoEstagio = carrinhosPercursoEstagio.last;
+              if (carrinhoPercursoEstagio.codUsuarioInicio !=
+                  _processoExecutavel.codUsuario) {
+                await ConfirmationDialogMessageWidget.show(
+                  canCloseWindow: false,
+                  context: Get.context!,
+                  message: 'Carrinho não pertence a você!',
+                  detail:
+                      '''Carrinho não pode ser salvo. Solicite para o usuario ${carrinhoPercursoEstagio.nomeUsuarioInicio} salvar! ''',
+                );
+
+                return false;
               }
 
               final newCarrinho = carrinho.last.copyWith(
                 situacao: ExpedicaoCarrinhoSituacaoModel.separado,
               );
 
-              final newCarrinhoPercursoEstagio = carrinhoPercursoEstagio.last
-                  .copyWith(situacao: ExpedicaoCarrinhoSituacaoModel.separado);
+              carrinhoPercursoEstagio.copyWith(
+                  situacao: ExpedicaoCarrinhoSituacaoModel.separado);
 
               await CarrinhoPercursoEstagioFinalizarService(
                 carrinho: newCarrinho,
-                carrinhoPercursoEstagio: newCarrinhoPercursoEstagio,
+                carrinhoPercursoEstagio: carrinhoPercursoEstagio,
               ).execute();
 
               await SeparacaoFinalizarItemService()
@@ -240,7 +299,7 @@ class SeparadoCarrinhosController extends GetxController {
                   AND CodCarrinho = ${item.codCarrinho} ''',
               );
 
-              final carrinhoPercursoEstagio =
+              final carrinhosPercursoEstagio =
                   await CarrinhoPercursoEstagioServices().select('''
                 CodEmpresa = ${item.codEmpresa}
               AND CodCarrinhoPercurso = ${item.codCarrinhoPercurso}
@@ -248,8 +307,31 @@ class SeparadoCarrinhosController extends GetxController {
               AND CodCarrinho = ${item.codCarrinho}
               AND Item = ${item.item} ''');
 
-              if (carrinho.isEmpty || carrinhoPercursoEstagio.isEmpty)
+              if (carrinho.isEmpty || carrinhosPercursoEstagio.isEmpty) {
+                await ConfirmationDialogMessageWidget.show(
+                  canCloseWindow: false,
+                  context: Get.context!,
+                  message: 'Carrinho não encontrado!',
+                  detail: 'Carrinho não encontrado na tabela percurso estagio!',
+                );
+
                 return false;
+              }
+
+              //TOOD:: ADD SOLICITACAO DE SENHA
+              final carrinhoPercursoEstagio = carrinhosPercursoEstagio.last;
+              if (carrinhoPercursoEstagio.codUsuarioInicio !=
+                  _processoExecutavel.codUsuario) {
+                await ConfirmationDialogMessageWidget.show(
+                  canCloseWindow: false,
+                  context: Get.context!,
+                  message: 'Carrinho não pertence a você!',
+                  detail:
+                      '''Carrinho não pode ser cancelado. Solicite para o usuario ${carrinhoPercursoEstagio.nomeUsuarioInicio} fazer o cancelamento! ''',
+                );
+
+                return false;
+              }
 
               final newCarrinho = carrinho.last.copyWith(
                 situacao: ExpedicaoCarrinhoSituacaoModel.liberado,
@@ -257,7 +339,7 @@ class SeparadoCarrinhosController extends GetxController {
 
               await CarrinhoPercursoEstagioCancelarService(
                 carrinho: newCarrinho,
-                percursoEstagio: carrinhoPercursoEstagio.last,
+                percursoEstagio: carrinhoPercursoEstagio,
               ).execute();
 
               final carrinhoPercursoConsulta = item.copyWith(

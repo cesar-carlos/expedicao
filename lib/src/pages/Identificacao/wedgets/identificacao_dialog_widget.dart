@@ -49,7 +49,7 @@ class IdentificacaoDialogWidget {
                     //** HEADER BAR **//
                     BarHeadFormElement(
                       title: 'Identificação',
-                      widthBar: size.width - 654,
+                      widthBar: _widthForm + 80,
                       onPressedCloseBar: () => Get.back(),
                     ),
 

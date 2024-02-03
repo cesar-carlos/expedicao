@@ -65,7 +65,7 @@ class SeparadoCarrinhoGridController extends GetxController {
     onPressedRemove?.call(item);
   }
 
-  void editGrid(
+  void onEditItem(
     SeparadoCarrinhoGridSource grid,
     ExpedicaoCarrinhoPercursoConsultaModel item,
   ) {
