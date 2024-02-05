@@ -3,6 +3,14 @@ import 'package:date_format/date_format.dart';
 import 'package:number_text_input_formatter/number_text_input_formatter.dart';
 
 class AppHelper {
+  static String capitalize(String text) {
+    if (text.isEmpty) {
+      return text;
+    }
+
+    return text[0].toUpperCase() + text.substring(1);
+  }
+
   static String formatarData(DateTime? value) {
     if (value == null) return '';
     return formatDate(value, [dd, '/', mm, '/', yyyy]);

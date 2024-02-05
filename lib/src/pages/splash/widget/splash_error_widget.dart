@@ -6,12 +6,12 @@ import 'package:app_expedicao/src/routes/app_router.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 
 class SplashErrorWidget extends StatefulWidget {
-  final String erroCode;
+  final String detail;
   final String? message;
 
   const SplashErrorWidget({
     super.key,
-    required this.erroCode,
+    required this.detail,
     this.message = '',
   });
 
@@ -63,7 +63,7 @@ class _ComplitAnimationIconWidgetState extends State<SplashErrorWidget>
           SizedBox(
             width: size.width * .8,
             child: Text(
-              getErrorDescription(widget.erroCode),
+              widget.detail,
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -80,47 +80,4 @@ class _ComplitAnimationIconWidgetState extends State<SplashErrorWidget>
       ),
     );
   }
-
-  getErrorDescription(String code) {
-    final error =
-        _errorMessage.firstWhere((element) => element['code'] == code);
-
-    return error['message'];
-  }
-
-  final List<Map<String, dynamic>> _errorMessage = [
-    {
-      'code': '0001',
-      'title': 'Servidor não encontrado',
-      'message': '''
-        Não foi possível localizar o servidor.
-        
-        1) Verifique se o servidor está online.
-        2) Verifique se o banco de dados está online.
-        3) Verifique se o banco de dados está configurado corretamente.
-      ''',
-    },
-    {
-      'code': '0002',
-      'title': 'Não foi possível executar o processo',
-      'message': '''
-        Não foi possível executar o processo.
-        
-        1) Verifique se o servidor está online.
-        2) Verifique se o banco de dados está online.
-        3) Verifique se o banco de dados está configurado corretamente.
-      ''',
-    },
-    {
-      'code': '0003',
-      'title': 'Não foi possível localizar itens da separação',
-      'message': '''
-        Não foi possível localizar itens da separação.
-        
-        1) Verifique se o servidor está online.
-        2) Verifique se o banco de dados está online.
-        3) Verifique se o banco de dados está configurado corretamente.
-      ''',
-    },
-  ];
 }

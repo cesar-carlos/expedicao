@@ -5,8 +5,11 @@ class FooterPageFormElement extends StatelessWidget {
   final ProcessoExecutavelModel processoExecutavel;
   final String? message;
 
-  const FooterPageFormElement(
-      {super.key, required this.processoExecutavel, this.message});
+  const FooterPageFormElement({
+    super.key,
+    required this.processoExecutavel,
+    this.message,
+  });
 
   @override
   Widget build(BuildContext context) {

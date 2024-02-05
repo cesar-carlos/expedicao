@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
+import 'package:app_expedicao/src/model/usuario_consulta.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_item_situacao_model.dart';
 import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
@@ -31,6 +32,7 @@ class SeparadoCarrinhosController extends GetxController {
   late SeparadoCarrinhoGridController _separadoCarrinhoGridController;
   late SepararConsultaServices _separarConsultaServices;
   late ExpedicaoSepararConsultaModel _separarConsulta;
+  late UsuarioConsultaMoldel _usuarioLogado;
 
   ProcessoExecutavelModel get processoExecutavel => _processoExecutavel;
   ExpedicaoSepararConsultaModel get separarConsulta => _separarConsulta;
@@ -38,7 +40,7 @@ class SeparadoCarrinhosController extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
-
+    _usuarioLogado = Get.find<UsuarioConsultaMoldel>();
     _separarConsulta = Get.find<ExpedicaoSepararConsultaModel>();
     _separarGridController = Get.find<SepararGridController>();
     _separadoCarrinhoGridController =
@@ -73,7 +75,121 @@ class SeparadoCarrinhosController extends GetxController {
   }
 
   _evetsCarrinhoGrid() {
+    _separadoCarrinhoGridController.onPressedRemove = (item) async {
+      if (item.situacao == ExpedicaoSituacaoModel.cancelada) {
+        await ConfirmationDialogMessageWidget.show(
+          canCloseWindow: false,
+          context: Get.context!,
+          message: 'Carrinho já cancelado!',
+          detail: 'Não é possível cancelar um carrinho já cancelado!',
+        );
+
+        return;
+      }
+
+      if (item.situacao == ExpedicaoSituacaoModel.separado) {
+        await ConfirmationDialogMessageWidget.show(
+          canCloseWindow: false,
+          context: Get.context!,
+          message: 'Carrinho já finalizado!',
+          detail: 'Não é possível cancelar um carrinho já finalizado!',
+        );
+
+        return;
+      }
+
+      final bool? confirmation = await ConfirmationDialogWidget.show(
+        canCloseWindow: false,
+        context: Get.context!,
+        message: 'Deseja realmente cancelar?',
+        detail: 'Ao cancelar, os itens serão removido do carrinho!',
+      );
+
+      if (confirmation != null && confirmation) {
+        await LoadingProcessDialogGenericWidget.show<bool>(
+          canCloseWindow: false,
+          context: Get.context!,
+          process: () async {
+            try {
+              final carrinho = await CarrinhoServices().select(
+                '''CodEmpresa = ${item.codEmpresa} 
+                  AND CodCarrinho = ${item.codCarrinho} ''',
+              );
+
+              final carrinhosPercursoEstagio =
+                  await CarrinhoPercursoEstagioServices().select('''
+                  CodEmpresa = ${item.codEmpresa}
+                AND CodCarrinhoPercurso = ${item.codCarrinhoPercurso}
+                AND CodPercursoEstagio = ${item.codPercursoEstagio}
+                AND CodCarrinho = ${item.codCarrinho}
+                AND Item = ${item.item} ''');
+
+              if (carrinho.isEmpty || carrinhosPercursoEstagio.isEmpty) {
+                await ConfirmationDialogMessageWidget.show(
+                  canCloseWindow: false,
+                  context: Get.context!,
+                  message: 'Carrinho não encontrado!',
+                  detail: 'Carrinho não encontrado na tabela percurso estagio!',
+                );
+
+                return false;
+              }
+
+              //TOOD:: ADD SOLICITACAO DE SENHA
+              final carrinhoPercursoEstagio = carrinhosPercursoEstagio.last;
+              if (carrinhoPercursoEstagio.codUsuarioInicio !=
+                      _processoExecutavel.codUsuario &&
+                  _usuarioLogado.excluiCarrinhoOutroUsuario != 'S') {
+                await ConfirmationDialogMessageWidget.show(
+                  canCloseWindow: false,
+                  context: Get.context!,
+                  message: 'Carrinho não pertence a você!',
+                  detail:
+                      '''Carrinho não pode ser cancelado. Solicite para o usuario ${carrinhoPercursoEstagio.nomeUsuarioInicio} fazer o cancelamento! ''',
+                );
+
+                return false;
+              }
+
+              final newCarrinho = carrinho.last.copyWith(
+                situacao: ExpedicaoCarrinhoSituacaoModel.liberado,
+              );
+
+              await CarrinhoPercursoEstagioCancelarService(
+                carrinho: newCarrinho,
+                percursoEstagio: carrinhoPercursoEstagio,
+              ).execute();
+
+              final carrinhoPercursoConsulta = item.copyWith(
+                situacao: ExpedicaoSituacaoModel.cancelada,
+              );
+
+              await SeparacaoCancelarItemService(
+                percursoEstagioConsulta: carrinhoPercursoConsulta,
+              ).cancelarAllItensCart();
+
+              final newSepararItens =
+                  await _separarConsultaServices.itensSaparar();
+              _separadoCarrinhoGridController
+                  .updateGrid(carrinhoPercursoConsulta);
+              _separarGridController.updateAllGrid(newSepararItens);
+              _separadoCarrinhoGridController.update();
+              _separarGridController.update();
+              return true;
+            } catch (err) {
+              return false;
+            }
+          },
+        );
+      }
+    };
+
     _separadoCarrinhoGridController.onPressedEdit = (item) async {
+      bool _viewMode = [
+        ExpedicaoSituacaoModel.cancelada,
+        ExpedicaoSituacaoModel.separado,
+      ].contains(item.situacao);
+
       final carrinho = await CarrinhoServices().select(''' 
             CodEmpresa = ${item.codEmpresa} 
           AND CodCarrinho = ${item.codCarrinho} ''');
@@ -98,8 +214,14 @@ class SeparadoCarrinhosController extends GetxController {
 
       //TOOD:: ADD SOLICITACAO DE SENHA
       final carrinhoPercursoEstagio = carrinhosPercursoEstagio.last;
-      if (carrinhoPercursoEstagio.codUsuarioInicio !=
-          _processoExecutavel.codUsuario) {
+
+      final _editViewMode =
+          (_usuarioLogado.editaCarrinhoOutroUsuario == 'S' || _viewMode);
+
+      final _editUsuario = (carrinhoPercursoEstagio.codUsuarioInicio !=
+          _processoExecutavel.codUsuario);
+
+      if (_editUsuario && !_editViewMode) {
         await ConfirmationDialogMessageWidget.show(
           canCloseWindow: false,
           context: Get.context!,
@@ -177,7 +299,6 @@ class SeparadoCarrinhosController extends GetxController {
               final carrinho = await CarrinhoServices().select(''' 
                     CodEmpresa = ${item.codEmpresa} 
                   AND CodCarrinho = ${item.codCarrinho} 
-
                 ''');
 
               final carrinhosPercursoEstagio =
@@ -203,7 +324,8 @@ class SeparadoCarrinhosController extends GetxController {
               //TOOD:: ADD SOLICITACAO DE SENHA
               final carrinhoPercursoEstagio = carrinhosPercursoEstagio.last;
               if (carrinhoPercursoEstagio.codUsuarioInicio !=
-                  _processoExecutavel.codUsuario) {
+                      _processoExecutavel.codUsuario &&
+                  _usuarioLogado.salvaCarrinhoOutroUsuario != 'S') {
                 await ConfirmationDialogMessageWidget.show(
                   canCloseWindow: false,
                   context: Get.context!,
@@ -219,16 +341,19 @@ class SeparadoCarrinhosController extends GetxController {
                 situacao: ExpedicaoCarrinhoSituacaoModel.separado,
               );
 
-              carrinhoPercursoEstagio.copyWith(
-                  situacao: ExpedicaoCarrinhoSituacaoModel.separado);
+              final newCarrinhoPercursoEstagio =
+                  carrinhoPercursoEstagio.copyWith(
+                situacao: ExpedicaoCarrinhoSituacaoModel.separado,
+              );
 
               await CarrinhoPercursoEstagioFinalizarService(
                 carrinho: newCarrinho,
-                carrinhoPercursoEstagio: carrinhoPercursoEstagio,
+                carrinhoPercursoEstagio: newCarrinhoPercursoEstagio,
               ).execute();
 
               await SeparacaoFinalizarItemService()
                   .updateAll(itensSeparacaoCarrinho);
+
               final newCarrinhoPercursoConsulta = item.copyWith(
                 situacao: ExpedicaoSituacaoModel.separado,
               );
@@ -248,115 +373,6 @@ class SeparadoCarrinhosController extends GetxController {
                 await Future.delayed(Duration(seconds: 1));
               }
 
-              return true;
-            } catch (err) {
-              return false;
-            }
-          },
-        );
-      }
-    };
-
-    /// Cancelar carrinho
-    _separadoCarrinhoGridController.onPressedRemove = (item) async {
-      if (item.situacao == ExpedicaoSituacaoModel.cancelada) {
-        await ConfirmationDialogMessageWidget.show(
-          canCloseWindow: false,
-          context: Get.context!,
-          message: 'Carrinho já cancelado!',
-          detail: 'Não é possível cancelar um carrinho já cancelado!',
-        );
-
-        return;
-      }
-
-      if (item.situacao == ExpedicaoSituacaoModel.separado) {
-        await ConfirmationDialogMessageWidget.show(
-          canCloseWindow: false,
-          context: Get.context!,
-          message: 'Carrinho já finalizado!',
-          detail: 'Não é possível cancelar um carrinho já finalizado!',
-        );
-
-        return;
-      }
-
-      final bool? confirmation = await ConfirmationDialogWidget.show(
-        canCloseWindow: false,
-        context: Get.context!,
-        message: 'Deseja realmente cancelar?',
-        detail: 'Ao cancelar, os itens serão removido do carrinho!',
-      );
-
-      if (confirmation != null && confirmation) {
-        await LoadingProcessDialogGenericWidget.show<bool>(
-          canCloseWindow: false,
-          context: Get.context!,
-          process: () async {
-            try {
-              final carrinho = await CarrinhoServices().select(
-                '''CodEmpresa = ${item.codEmpresa} 
-                  AND CodCarrinho = ${item.codCarrinho} ''',
-              );
-
-              final carrinhosPercursoEstagio =
-                  await CarrinhoPercursoEstagioServices().select('''
-                CodEmpresa = ${item.codEmpresa}
-              AND CodCarrinhoPercurso = ${item.codCarrinhoPercurso}
-              AND CodPercursoEstagio = ${item.codPercursoEstagio}
-              AND CodCarrinho = ${item.codCarrinho}
-              AND Item = ${item.item} ''');
-
-              if (carrinho.isEmpty || carrinhosPercursoEstagio.isEmpty) {
-                await ConfirmationDialogMessageWidget.show(
-                  canCloseWindow: false,
-                  context: Get.context!,
-                  message: 'Carrinho não encontrado!',
-                  detail: 'Carrinho não encontrado na tabela percurso estagio!',
-                );
-
-                return false;
-              }
-
-              //TOOD:: ADD SOLICITACAO DE SENHA
-              final carrinhoPercursoEstagio = carrinhosPercursoEstagio.last;
-              if (carrinhoPercursoEstagio.codUsuarioInicio !=
-                  _processoExecutavel.codUsuario) {
-                await ConfirmationDialogMessageWidget.show(
-                  canCloseWindow: false,
-                  context: Get.context!,
-                  message: 'Carrinho não pertence a você!',
-                  detail:
-                      '''Carrinho não pode ser cancelado. Solicite para o usuario ${carrinhoPercursoEstagio.nomeUsuarioInicio} fazer o cancelamento! ''',
-                );
-
-                return false;
-              }
-
-              final newCarrinho = carrinho.last.copyWith(
-                situacao: ExpedicaoCarrinhoSituacaoModel.liberado,
-              );
-
-              await CarrinhoPercursoEstagioCancelarService(
-                carrinho: newCarrinho,
-                percursoEstagio: carrinhoPercursoEstagio,
-              ).execute();
-
-              final carrinhoPercursoConsulta = item.copyWith(
-                situacao: ExpedicaoSituacaoModel.cancelada,
-              );
-
-              await SeparacaoCancelarItemService(
-                percursoEstagioConsulta: carrinhoPercursoConsulta,
-              ).cancelarAllItensCart();
-
-              final newSepararItens =
-                  await _separarConsultaServices.itensSaparar();
-              _separadoCarrinhoGridController
-                  .updateGrid(carrinhoPercursoConsulta);
-              _separarGridController.updateAllGrid(newSepararItens);
-              _separadoCarrinhoGridController.update();
-              _separarGridController.update();
               return true;
             } catch (err) {
               return false;

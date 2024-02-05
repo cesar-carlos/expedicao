@@ -31,6 +31,10 @@ class AppPageRouter {
       page: () => const SplashPage(),
     ),
     GetPage(
+        name: AppRouter.splashError,
+        transition: Transition.fadeIn,
+        page: () => SplashErrorPage(detail: Get.arguments)),
+    GetPage(
       name: AppRouter.login,
       binding: LoginBinding(),
       transition: Transition.fadeIn,
@@ -53,14 +57,6 @@ class AppPageRouter {
       binding: ManagerBinding(),
       transition: Transition.fadeIn,
       page: () => const ManagerPage(),
-    ),
-    GetPage(
-      name: AppRouter.splashError,
-      transition: Transition.fadeIn,
-      page: () {
-        String erroCode = Get.arguments;
-        return SplashErrorPage(erroCode: erroCode);
-      },
     ),
     GetPage(
       name: AppRouter.separar,

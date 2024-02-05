@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
 
+import 'package:app_expedicao/src/routes/app_router.dart';
 import 'package:app_expedicao/src/app/app_socket_config.dart';
+import 'package:app_expedicao/src/service/usuario_service.dart';
 import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
 import 'package:app_expedicao/src/service/separar_consultas_services.dart';
 import 'package:app_expedicao/src/service/conferir_consultas_services.dart';
@@ -10,8 +12,8 @@ import 'package:app_expedicao/src/pages/common/widget/loading_sever_dialog_widge
 import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/app/app_server_file_init.dart';
+import 'package:app_expedicao/src/model/usuario_consulta.dart';
 import 'package:app_expedicao/src/app/app_api_file_init.dart';
-import 'package:app_expedicao/src/routes/app_router.dart';
 
 class SplashController extends GetxController {
   final _isLoad = false.obs;
@@ -20,6 +22,7 @@ class SplashController extends GetxController {
   late ProcessoExecutavelModel? _processoExecutavel;
   late ExpedicaoSepararConsultaModel? _separarConsulta;
   late ExpedicaoConferirConsultaModel? _conferirConsulta;
+  late UsuarioConsultaMoldel? _usuarioLogado;
 
   bool get isLoad => _isLoad.value;
 
@@ -34,13 +37,6 @@ class SplashController extends GetxController {
     _isLoad.value = false;
     await Future.delayed(const Duration(seconds: 1));
 
-    try {
-      _processoExecutavel = await Get.find<ProcessoExecutavelModel>();
-    } catch (_) {
-      _processoExecutavel = await ProcessoExecutavelService().executar();
-      Get.put(_processoExecutavel!);
-    }
-
     //CONFIG SERVER
     final existsfileConfApi = await _existsfileConfApi();
     if (!existsfileConfApi) {
@@ -48,12 +44,46 @@ class SplashController extends GetxController {
       return;
     }
 
+    try {
+      _processoExecutavel = await Get.find<ProcessoExecutavelModel>();
+    } catch (_) {
+      _processoExecutavel = await ProcessoExecutavelService().executar();
+
+      if (_processoExecutavel == null) {
+        Get.offNamed(
+          AppRouter.splashError,
+          arguments: '''
+            Processo Executavel não encontrado
+             - verifique a conexão com o servidor
+             
+             ''',
+        );
+        return;
+      }
+
+      Get.put(_processoExecutavel!);
+    }
+
+    _usuarioLogado =
+        await UsuarioService.selectConsulta(_processoExecutavel!.codUsuario);
+
     //CONFIG DATABASE
     final existsfileConfDataBase = await _existsfileConfDataBase();
     if (!existsfileConfDataBase || _processoExecutavel == null) {
       Get.offNamed(AppRouter.login);
       return;
     }
+
+    if (_usuarioLogado == null) {
+      Get.offNamed(
+        AppRouter.splashError,
+        arguments: 'Usuario Logado não encontrado',
+      );
+
+      return;
+    }
+
+    Get.put<UsuarioConsultaMoldel>(_usuarioLogado!);
 
     //SEPARAR
     if (_processoExecutavel!.origem == ExpedicaoOrigemModel.separacao) {
@@ -65,7 +95,14 @@ class SplashController extends GetxController {
       _separarConsulta = await separarConsultaServices.separar();
 
       if (_separarConsulta == null) {
-        Get.offNamed(AppRouter.splashError, arguments: '0002');
+        Get.offNamed(
+          AppRouter.splashError,
+          arguments: '''
+            Separar estoque não encontrado, 
+              origem: ${_processoExecutavel!.origem}
+              codigo: ${_processoExecutavel!.codOrigem}
+          ''',
+        );
 
         return;
       }
@@ -80,7 +117,12 @@ class SplashController extends GetxController {
 
       _conferirConsulta = await conferirConsultaServices.conferir();
       if (_conferirConsulta == null) {
-        Get.offNamed(AppRouter.splashError, arguments: '0002');
+        Get.offNamed(AppRouter.splashError, arguments: '''
+            Conferir estoque não encontrado, 
+              origem: ${_processoExecutavel!.origem}
+              codigo: ${_processoExecutavel!.codOrigem}
+          ''');
+
         return;
       }
     }
