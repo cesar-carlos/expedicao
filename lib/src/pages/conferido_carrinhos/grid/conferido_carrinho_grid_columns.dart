@@ -156,7 +156,7 @@ class ConferidoCarrinhoGridColumns {
     _columns.add(
       GridColumn(
         visible: true,
-        maximumWidth: 120,
+        maximumWidth: 100,
         columnName: 'dataInicio',
         label: Container(
           padding: padding,
@@ -212,7 +212,7 @@ class ConferidoCarrinhoGridColumns {
     _columns.add(
       GridColumn(
         visible: true,
-        maximumWidth: 140,
+        maximumWidth: 200,
         columnName: 'actions',
         label: Container(
           padding: padding,

@@ -242,13 +242,6 @@ class SeparadoCarrinhosController extends GetxController {
     };
 
     _separadoCarrinhoGridController.onPressedSave = (item) async {
-      final itensSeparacao = await _separarConsultaServices.itensSeparacao();
-      final itensSeparacaoCarrinho = itensSeparacao
-          .where((el) =>
-              el.situacao != ExpedicaoItemSituacaoModel.cancelado &&
-              el.codCarrinho == item.codCarrinho)
-          .toList();
-
       if (item.situacao == ExpedicaoSituacaoModel.separado) {
         await ConfirmationDialogMessageWidget.show(
           canCloseWindow: false,
@@ -270,6 +263,13 @@ class SeparadoCarrinhosController extends GetxController {
 
         return;
       }
+
+      final itensSeparacao = await _separarConsultaServices.itensSeparacao();
+      final itensSeparacaoCarrinho = itensSeparacao
+          .where((el) =>
+              el.situacao != ExpedicaoItemSituacaoModel.cancelado &&
+              el.codCarrinho == item.codCarrinho)
+          .toList();
 
       if (itensSeparacaoCarrinho.isEmpty) {
         await ConfirmationDialogMessageWidget.show(
@@ -296,19 +296,36 @@ class SeparadoCarrinhosController extends GetxController {
           context: Get.context!,
           process: () async {
             try {
+              final cartIsValid =
+                  await _separarConsultaServices.cartIsValid(item.codCarrinho);
+
+              if (!cartIsValid) {
+                //FOÇA A ATUALIZAÇÃO DOS ITENS
+                final itens = await _separarConsultaServices.itensSaparar();
+                _separarGridController.updateAllGrid(itens);
+                _separarGridController.update();
+
+                await ConfirmationDialogMessageWidget.show(
+                  canCloseWindow: false,
+                  context: Get.context!,
+                  message: 'Carrinho não pode ser salvo!',
+                  detail:
+                      'Quantidade separada maior que a quantidade a separar!',
+                );
+
+                return false;
+              }
+
               final carrinho = await CarrinhoServices().select(''' 
                     CodEmpresa = ${item.codEmpresa} 
-                  AND CodCarrinho = ${item.codCarrinho} 
-                ''');
+                  AND CodCarrinho = ${item.codCarrinho} ''');
 
               final carrinhosPercursoEstagio =
                   await CarrinhoPercursoEstagioServices().select('''
                     CodEmpresa = ${item.codEmpresa}
                   AND CodCarrinhoPercurso = ${item.codCarrinhoPercurso}
                   AND CodCarrinho = ${item.codCarrinho}
-                  AND Item = ${item.item}
-
-                  ''');
+                  AND Item = ${item.item} ''');
 
               if (carrinho.isEmpty || carrinhosPercursoEstagio.isEmpty) {
                 await ConfirmationDialogMessageWidget.show(

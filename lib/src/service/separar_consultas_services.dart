@@ -9,6 +9,7 @@ import 'package:app_expedicao/src/repository/expedicao_separar_item/separar_item
 import 'package:app_expedicao/src/repository/expedicao_separar/separar_consulta_repository.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';
+import 'package:app_expedicao/src/model/expedicao_item_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 
 class SepararConsultaServices {
@@ -23,9 +24,7 @@ class SepararConsultaServices {
   Future<ExpedicaoSepararConsultaModel?> separar() async {
     final params = ''' 
         CodEmpresa = $codEmpresa 
-      AND CodSepararEstoque = $codSepararEstoque
-
-    ''';
+      AND CodSepararEstoque = $codSepararEstoque ''';
 
     final response = await SepararConsultaRepository().select(params);
     if (response.isEmpty) {
@@ -38,9 +37,7 @@ class SepararConsultaServices {
   Future<List<ExpedicaoSepararItemConsultaModel>> itensSaparar() async {
     final params = ''' 
         CodEmpresa = $codEmpresa 
-      AND CodSepararEstoque = $codSepararEstoque
-
-    ''';
+      AND CodSepararEstoque = $codSepararEstoque ''';
 
     return await SepararItemConsultaRepository().select(params);
   }
@@ -49,9 +46,7 @@ class SepararConsultaServices {
       itensSapararUnidades() async {
     final params = ''' 
         CodEmpresa = $codEmpresa 
-      AND CodSepararEstoque = $codSepararEstoque
-
-    ''';
+      AND CodSepararEstoque = $codSepararEstoque ''';
 
     return await SepararItemUnidadeMedidaConsultaRepository().select(params);
   }
@@ -59,21 +54,26 @@ class SepararConsultaServices {
   Future<List<ExpedicaSeparacaoItemConsultaModel>> itensSeparacao() async {
     final params = ''' 
         CodEmpresa = $codEmpresa 
-      AND CodSepararEstoque = $codSepararEstoque
-
-    ''';
+      AND CodSepararEstoque = $codSepararEstoque ''';
 
     return await SeparacaoItemConsultaRepository().select(params);
+  }
+
+  Future<List<ExpedicaSeparacaoItemConsultaModel>> itensCarrinho(
+      int codCarrinho) async {
+    final itensSeparacao = await this.itensSeparacao();
+
+    return itensSeparacao.where((el) {
+      return el.codCarrinho == codCarrinho;
+    }).toList();
   }
 
   Future<List<ExpedicaoCarrinhoPercursoConsultaModel>>
       carrinhosPercurso() async {
     final params = ''' 
-        CodEmpresa = $codEmpresa 
-          AND Origem = '${ExpedicaoOrigemModel.separacao}' 
-          AND CodOrigem = $codSepararEstoque 
-      
-      ''';
+      CodEmpresa = $codEmpresa 
+        AND Origem = '${ExpedicaoOrigemModel.separacao}' 
+        AND CodOrigem = $codSepararEstoque  ''';
 
     return await CarrinhoPercursoConsultaRepository().select(params);
   }
@@ -81,6 +81,54 @@ class SepararConsultaServices {
   Future<bool> isComplete() async {
     final itensSaparar = await this.itensSaparar();
     return itensSaparar.every((el) => el.quantidade == el.quantidadeSeparacao);
+  }
+
+  Future<bool> cartIsValid(int codCarrinho) async {
+    final itensSaparar = await this.itensSaparar();
+    final itensSeparacao = await this.itensSeparacao();
+
+    //ITENS SEPARADOS
+    final itensSeparados = itensSeparacao.where((el) {
+      return el.situacao != ExpedicaoItemSituacaoModel.cancelado;
+    }).toList();
+
+    final itensSeparadosGroup = itensSeparados.map((el) {
+      return (codProduto: el.codProduto, total: 0.00);
+    }).toSet();
+
+    final itensSeparadoGroupTotais = itensSeparadosGroup.map((element) {
+      final soma = itensSeparados.where((el) {
+        return el.codProduto == element.codProduto;
+      }).fold(0.00, (prev, el) => prev + el.quantidade);
+
+      return (codProduto: element.codProduto, total: soma);
+    }).toList();
+
+    //ITENS SEPARAR
+    final itensSapararGroup = itensSaparar.map((el) {
+      return (codProduto: el.codProduto, total: 0.00);
+    }).toSet();
+
+    final itensSapararGroupTotais = itensSapararGroup.map((element) {
+      final soma = itensSaparar.where((el) {
+        return el.codProduto == element.codProduto;
+      }).fold(0.00, (prev, el) => prev + el.quantidade);
+
+      return (codProduto: element.codProduto, total: soma);
+    }).toList();
+
+    for (var el in itensSapararGroupTotais) {
+      final totalSeparado = itensSeparadoGroupTotais
+          .firstWhere((element) => element.codProduto == el.codProduto,
+              orElse: () => (codProduto: el.codProduto, total: 0.00))
+          .total;
+
+      if (totalSeparado > el.total) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   Future<bool> existsOpenCart() async {

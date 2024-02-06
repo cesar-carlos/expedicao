@@ -89,6 +89,8 @@ class AppHelper {
 
   static isBarCode(String value) {
     if (value.trim().length > 7) return true;
+    if (!AppHelper.isNumeric(value.trim())) return true;
+
     return false;
   }
 
@@ -123,5 +125,10 @@ class AppHelper {
     } catch (err) {
       return '0,00';
     }
+  }
+
+  static bool isNumeric(String value) {
+    final numericRegex = RegExp(r'^[0-9]+$');
+    return numericRegex.hasMatch(value);
   }
 }

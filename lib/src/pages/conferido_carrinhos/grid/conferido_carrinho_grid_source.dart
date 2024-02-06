@@ -77,9 +77,7 @@ class ConferidoCarrinhoGridSource extends DataGridSource {
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   IconButton(
                     icon: controller.iconRemove(i),
-                    onPressed: () {
-                      controller.onRemoveItem(this, i);
-                    },
+                    onPressed: () => controller.onRemoveItem(this, i),
                   ),
                   const SizedBox(
                     width: 10,
@@ -90,9 +88,18 @@ class ConferidoCarrinhoGridSource extends DataGridSource {
                   ),
                   IconButton(
                     icon: controller.iconEdit(i),
-                    onPressed: () {
-                      controller.onEditItem(this, i);
-                    },
+                    onPressed: () => controller.onEditItem(this, i),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                    child: VerticalDivider(
+                      color: Colors.grey,
+                      thickness: 0.5,
+                    ),
+                  ),
+                  IconButton(
+                    icon: controller.iconGrop(i),
+                    onPressed: () => controller.onGrouptem(this, i),
                   ),
                   const SizedBox(
                     width: 10,
@@ -103,9 +110,7 @@ class ConferidoCarrinhoGridSource extends DataGridSource {
                   ),
                   IconButton(
                     icon: controller.iconSave(i),
-                    onPressed: () {
-                      controller.onSavetem(this, i);
-                    },
+                    onPressed: () => controller.onSavetem(this, i),
                   ),
                 ]),
               ),

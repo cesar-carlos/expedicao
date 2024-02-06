@@ -25,6 +25,7 @@ class ConferidoCarrinhoGridController extends GetxController {
 
   void Function(ExpedicaoCarrinhoPercursoConsultaModel item)? onPressedEdit;
   void Function(ExpedicaoCarrinhoPercursoConsultaModel item)? onPressedRemove;
+  void Function(ExpedicaoCarrinhoPercursoConsultaModel item)? onPressedGroup;
   void Function(ExpedicaoCarrinhoPercursoConsultaModel item)? onPressedSave;
 
   void addGrid(ExpedicaoCarrinhoPercursoConsultaModel item) {
@@ -80,6 +81,13 @@ class ConferidoCarrinhoGridController extends GetxController {
     onPressedEdit?.call(item);
   }
 
+  Future<void> onGrouptem(
+    ConferidoCarrinhoGridSource grid,
+    ExpedicaoCarrinhoPercursoConsultaModel item,
+  ) async {
+    onPressedGroup?.call(item);
+  }
+
   Future<void> onSavetem(
     ConferidoCarrinhoGridSource grid,
     ExpedicaoCarrinhoPercursoConsultaModel item,
@@ -87,7 +95,23 @@ class ConferidoCarrinhoGridController extends GetxController {
     onPressedSave?.call(item);
   }
 
-  //
+  Icon iconRemove(ExpedicaoCarrinhoPercursoConsultaModel item) {
+    Color color = Colors.red;
+
+    switch (item.situacao) {
+      case ExpedicaoSituacaoModel.cancelada:
+        color = Colors.grey;
+      case ExpedicaoSituacaoModel.conferido:
+        color = Colors.grey;
+    }
+
+    return Icon(
+      size: iconSize,
+      Icons.delete,
+      color: color,
+    );
+  }
+
   Icon iconEdit(ExpedicaoCarrinhoPercursoConsultaModel item) {
     Color color = Colors.blue;
 
@@ -108,8 +132,8 @@ class ConferidoCarrinhoGridController extends GetxController {
     );
   }
 
-  Icon iconRemove(ExpedicaoCarrinhoPercursoConsultaModel item) {
-    Color color = Colors.red;
+  Icon iconGrop(ExpedicaoCarrinhoPercursoConsultaModel item) {
+    Color color = Colors.blue;
 
     switch (item.situacao) {
       case ExpedicaoSituacaoModel.cancelada:
@@ -120,7 +144,7 @@ class ConferidoCarrinhoGridController extends GetxController {
 
     return Icon(
       size: iconSize,
-      Icons.delete,
+      BootstrapIcons.save2_fill,
       color: color,
     );
   }

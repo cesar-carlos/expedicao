@@ -410,6 +410,7 @@ class ConferirController extends GetxController {
       callback: (data) async {
         for (var el in data.mutation) {
           final item = ExpedicaoConferirModel.fromJson(el);
+
           if (_conferirConsulta.codEmpresa == item.codEmpresa &&
               _conferirConsulta.codConferir == item.codConferir) {
             _expedicaoSituacao = item.situacao;
