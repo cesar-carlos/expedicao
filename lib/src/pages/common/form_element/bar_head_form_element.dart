@@ -24,64 +24,67 @@ class BarHeadFormElement extends StatefulWidget {
 class _BarHeadFormElementState extends State<BarHeadFormElement> {
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        GestureDetector(
-          onPanDown: (_) => windowManager.startDragging(),
-          child: ClipRRect(
-            borderRadius: const BorderRadius.only(topLeft: Radius.circular(10)),
-            child: Container(
-              width: widget.widthBar - 123,
-              height: widget.heightBar,
-              padding: const EdgeInsets.only(left: 5),
-              decoration: BoxDecoration(
-                color: Theme.of(context).tabBarTheme.indicatorColor,
-              ),
-              child: Row(
-                children: [
-                  const Image(
-                    width: 20,
-                    image: AssetImage('assets/images/log_black_icon.png'),
+    return SizedBox(
+      width: widget.widthBar,
+      child: Row(
+        children: [
+          Expanded(
+            child: GestureDetector(
+              onPanDown: (_) => windowManager.startDragging(),
+              child: ClipRRect(
+                borderRadius:
+                    const BorderRadius.only(topLeft: Radius.circular(10)),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 5),
+                  child: Row(
+                    children: [
+                      const Image(
+                        width: 18,
+                        image: AssetImage('assets/icons/app_icon.png'),
+                      ),
+                      const SizedBox(width: 5),
+                      Text(widget.title),
+                      const Spacer(),
+                    ],
                   ),
-                  const SizedBox(width: 5),
-                  Text(widget.title),
-                  const Spacer(),
-                ],
-              ),
-            ),
-          ),
-        ),
-        ClipRRect(
-          borderRadius: const BorderRadius.only(topRight: Radius.circular(10)),
-          child: Container(
-            width: 43,
-            height: widget.heightBar,
-            color: Theme.of(context).tabBarTheme.indicatorColor,
-            child: Material(
-              color: widget.colorCloseBar,
-              child: InkWell(
-                onTap: widget.onPressedCloseBar,
-                onHover: (value) {
-                  return setState(
-                    () {
-                      if (value) {
-                        widget.colorCloseBar = widget.colorCloseBarHover;
-                      } else {
-                        widget.colorCloseBar = Colors.transparent;
-                      }
-                    },
-                  );
-                },
-                child: Icon(
-                  Icons.close,
-                  color: Theme.of(context).tabBarTheme.indicatorColor,
-                  size: 20,
                 ),
               ),
             ),
           ),
-        )
-      ],
+          ClipRRect(
+            borderRadius:
+                const BorderRadius.only(topRight: Radius.circular(10)),
+            child: Container(
+              width: 43,
+              height: widget.heightBar,
+              color: Theme.of(context).tabBarTheme.indicatorColor,
+              child: Material(
+                type: MaterialType.button,
+                color: widget.colorCloseBar,
+                child: InkWell(
+                  onTap: widget.onPressedCloseBar,
+                  onHover: (value) {
+                    return setState(
+                      () {
+                        if (value) {
+                          widget.colorCloseBar = widget.colorCloseBarHover;
+                        } else {
+                          widget.colorCloseBar = Colors.transparent;
+                        }
+                      },
+                    );
+                  },
+                  child: Icon(
+                    Icons.close,
+                    color: Theme.of(context).tabBarTheme.indicatorColor,
+                    size: 20,
+                  ),
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 }

@@ -6,7 +6,7 @@ import 'package:app_expedicao/src/pages/conferencia/grid/conferencia_carrinho_gr
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
 
 class ConferenciaBinding implements Bindings {
-  final ExpedicaoCarrinhoPercursoConsultaModel model;
+  final ExpedicaoCarrinhoPercursoEstagioConsultaModel model;
 
   ConferenciaBinding(this.model);
 

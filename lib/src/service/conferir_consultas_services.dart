@@ -4,7 +4,7 @@ import 'package:app_expedicao/src/model/expedicao_carrinho_conferir_consulta_mod
 import 'package:app_expedicao/src/model/expedicao_conferir_item_unidade_medida_consulta_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_conferir/conferir_carrinho_consulta_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_conferencia_item/conferencia_item_consulta_repository.dart';
-import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_consulta_repository.dart';
+import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_estagio_consulta_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_conferir_item/conferir_item_unidade_consulta_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_conferir_item/conferir_item_consulta_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_conferir/conferir_consulta_repository.dart';
@@ -25,9 +25,7 @@ class ConferirConsultaServices {
   Future<ExpedicaoConferirConsultaModel?> conferir() async {
     final params = ''' 
         CodEmpresa = $codEmpresa 
-      AND CodConferir = $codConferir
-
-    ''';
+      AND CodConferir = $codConferir ''';
 
     final response = await ConferirConsultaRepository().select(params);
     if (response.isEmpty) {
@@ -41,9 +39,7 @@ class ConferirConsultaServices {
       carrinhosConferir() async {
     final params = ''' 
         CodEmpresa = $codEmpresa 
-      AND CodConferir = $codConferir
-
-    ''';
+      AND CodConferir = $codConferir ''';
 
     final response = await ConferirCarrinhoConsultaRepository().select(params);
     return response;
@@ -52,9 +48,7 @@ class ConferirConsultaServices {
   Future<List<ExpedicaoConferirItemConsultaModel>> itensConferir() async {
     final params = ''' 
         CodEmpresa = $codEmpresa 
-      AND CodConferir = $codConferir
-
-    ''';
+      AND CodConferir = $codConferir ''';
 
     return await ConferirItemConsultaRepository().select(params);
   }
@@ -63,9 +57,7 @@ class ConferirConsultaServices {
       itensConferirUnidades() async {
     final params = ''' 
         CodEmpresa = $codEmpresa 
-      AND CodConferir = $codConferir
-
-    ''';
+      AND CodConferir = $codConferir ''';
 
     return await ConferirItemUnidadeMedidaConsultaRepository().select(params);
   }
@@ -73,25 +65,31 @@ class ConferirConsultaServices {
   Future<List<ExpedicaConferenciaItemConsultaModel>> itensConferencia() async {
     final params = ''' 
         CodEmpresa = $codEmpresa 
-      AND CodConferir = $codConferir
-
-    ''';
+      AND CodConferir = $codConferir ''';
 
     final result = await ConferenciaItemConsultaRepository().select(params);
     return result;
   }
 
-  Future<List<ExpedicaoCarrinhoPercursoConsultaModel>>
+  Future<List<ExpedicaoCarrinhoPercursoEstagioConsultaModel>>
       carrinhosPercurso() async {
     final params = ''' 
         CodEmpresa = $codEmpresa 
           AND Origem = '${ExpedicaoOrigemModel.conferencia}' 
-          AND CodOrigem = $codConferir 
-      
-      ''';
+          AND CodOrigem = $codConferir  ''';
 
-    final result = await CarrinhoPercursoConsultaRepository().select(params);
+    final result =
+        await CarrinhoPercursoEstagioConsultaRepository().select(params);
     return result;
+  }
+
+  Future<List<ExpedicaConferenciaItemConsultaModel>> itensCarrinho(
+      int codCarrinho) async {
+    final itensConferencia = await this.itensConferencia();
+
+    return itensConferencia.where((el) {
+      return el.codCarrinho == codCarrinho;
+    }).toList();
   }
 
   Future<bool> isComplete() async {

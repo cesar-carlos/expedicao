@@ -5,7 +5,7 @@ import 'package:app_expedicao/src/pages/separacao/grid_separacao/separacao_carri
 import 'package:app_expedicao/src/pages/separacao/separacao_controller.dart';
 
 class SeparacaoBinding implements Bindings {
-  final ExpedicaoCarrinhoPercursoConsultaModel model;
+  final ExpedicaoCarrinhoPercursoEstagioConsultaModel model;
 
   SeparacaoBinding(this.model);
 

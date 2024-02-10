@@ -49,9 +49,7 @@ class ConferirServices {
         CodEmpresa = ${conferir.codEmpresa} 
       AND Origem = '${conferir.origem}' 
       AND CodOrigem = ${conferir.codOrigem} 
-      AND Situacao <> '${ExpedicaoSituacaoModel.cancelada}' 
-      
-      ''';
+      AND Situacao <> '${ExpedicaoSituacaoModel.cancelada}' ''';
 
     final List<ExpedicaoCarrinhoPercursoModel> carrinhoPercurso =
         await CarrinhoPercursoRepository().select(params);

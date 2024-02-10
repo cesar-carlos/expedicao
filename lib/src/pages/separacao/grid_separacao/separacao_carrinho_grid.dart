@@ -14,7 +14,7 @@ import 'package:app_expedicao/src/pages/separacao/grid_separacao/separacao_carri
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
 
 class SeparacaoCarrinhoGrid extends StatelessWidget {
-  final ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta;
+  final ExpedicaoCarrinhoPercursoEstagioConsultaModel percursoEstagioConsulta;
   const SeparacaoCarrinhoGrid(this.percursoEstagioConsulta, {super.key});
 
   @override

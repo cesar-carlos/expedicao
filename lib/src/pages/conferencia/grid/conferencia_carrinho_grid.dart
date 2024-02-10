@@ -14,7 +14,7 @@ import 'package:app_expedicao/src/pages/conferencia/grid/conferencia_carrinho_gr
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
 
 class ConferenciaCarrinhoGrid extends StatelessWidget {
-  final ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta;
+  final ExpedicaoCarrinhoPercursoEstagioConsultaModel percursoEstagioConsulta;
   const ConferenciaCarrinhoGrid(this.percursoEstagioConsulta, {super.key});
 
   @override

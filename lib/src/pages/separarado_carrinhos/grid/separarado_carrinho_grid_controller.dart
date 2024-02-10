@@ -13,10 +13,10 @@ class SeparadoCarrinhoGridController extends GetxController {
 
   final iconSize = 19.0;
   final DataGridController dataGridController = DataGridController();
-  late List<ExpedicaoCarrinhoPercursoConsultaModel> _itens = [];
+  late List<ExpedicaoCarrinhoPercursoEstagioConsultaModel> _itens = [];
 
-  List<ExpedicaoCarrinhoPercursoConsultaModel> get itens => _itens;
-  List<ExpedicaoCarrinhoPercursoConsultaModel> get itensSort =>
+  List<ExpedicaoCarrinhoPercursoEstagioConsultaModel> get itens => _itens;
+  List<ExpedicaoCarrinhoPercursoEstagioConsultaModel> get itensSort =>
       _itens.toList()..sort((a, b) => b.item.compareTo(a.item));
 
   @override
@@ -24,31 +24,35 @@ class SeparadoCarrinhoGridController extends GetxController {
     super.onInit();
   }
 
-  void Function(ExpedicaoCarrinhoPercursoConsultaModel item)? onPressedEdit;
-  void Function(ExpedicaoCarrinhoPercursoConsultaModel item)? onPressedRemove;
-  void Function(ExpedicaoCarrinhoPercursoConsultaModel item)? onPressedSave;
+  void Function(ExpedicaoCarrinhoPercursoEstagioConsultaModel item)?
+      onPressedEdit;
+  void Function(ExpedicaoCarrinhoPercursoEstagioConsultaModel item)?
+      onPressedRemove;
+  void Function(ExpedicaoCarrinhoPercursoEstagioConsultaModel item)?
+      onPressedSave;
 
-  void addGrid(ExpedicaoCarrinhoPercursoConsultaModel item) {
+  void addGrid(ExpedicaoCarrinhoPercursoEstagioConsultaModel item) {
     _itens.add(item);
   }
 
-  void addAllGrid(List<ExpedicaoCarrinhoPercursoConsultaModel> itens) {
+  void addAllGrid(List<ExpedicaoCarrinhoPercursoEstagioConsultaModel> itens) {
     _itens.addAll(itens);
   }
 
-  void updateGrid(ExpedicaoCarrinhoPercursoConsultaModel item) {
+  void updateGrid(ExpedicaoCarrinhoPercursoEstagioConsultaModel item) {
     final index = _itens.indexWhere((el) => el.item == item.item);
     _itens[index] = item;
   }
 
-  void updateAllGrid(List<ExpedicaoCarrinhoPercursoConsultaModel> itens) {
+  void updateAllGrid(
+      List<ExpedicaoCarrinhoPercursoEstagioConsultaModel> itens) {
     for (var el in itens) {
       final index = _itens.indexWhere((i) => i.item == el.item);
       _itens[index] = el;
     }
   }
 
-  void removeGrid(ExpedicaoCarrinhoPercursoConsultaModel item) {
+  void removeGrid(ExpedicaoCarrinhoPercursoEstagioConsultaModel item) {
     _itens.removeWhere((el) =>
         el.codEmpresa == item.codEmpresa &&
         el.codCarrinho == item.codCarrinho &&
@@ -61,26 +65,26 @@ class SeparadoCarrinhoGridController extends GetxController {
 
   Future<void> onRemoveItem(
     SeparadoCarrinhoGridSource grid,
-    ExpedicaoCarrinhoPercursoConsultaModel item,
+    ExpedicaoCarrinhoPercursoEstagioConsultaModel item,
   ) async {
     onPressedRemove?.call(item);
   }
 
   void onEditItem(
     SeparadoCarrinhoGridSource grid,
-    ExpedicaoCarrinhoPercursoConsultaModel item,
+    ExpedicaoCarrinhoPercursoEstagioConsultaModel item,
   ) {
     onPressedEdit?.call(item);
   }
 
   Future<void> onSavetem(
     SeparadoCarrinhoGridSource grid,
-    ExpedicaoCarrinhoPercursoConsultaModel item,
+    ExpedicaoCarrinhoPercursoEstagioConsultaModel item,
   ) async {
     onPressedSave?.call(item);
   }
 
-  iconIndicator(ExpedicaoCarrinhoPercursoConsultaModel item) {
+  iconIndicator(ExpedicaoCarrinhoPercursoEstagioConsultaModel item) {
     return Icon(
       BootstrapIcons.file_earmark_arrow_down_fill,
       color: Theme.of(Get.context!).primaryColor,
@@ -88,7 +92,7 @@ class SeparadoCarrinhoGridController extends GetxController {
     );
   }
 
-  Icon iconRemove(ExpedicaoCarrinhoPercursoConsultaModel item) {
+  Icon iconRemove(ExpedicaoCarrinhoPercursoEstagioConsultaModel item) {
     Color color = Colors.red;
 
     switch (item.situacao) {
@@ -107,7 +111,7 @@ class SeparadoCarrinhoGridController extends GetxController {
     );
   }
 
-  Icon iconEdit(ExpedicaoCarrinhoPercursoConsultaModel item) {
+  Icon iconEdit(ExpedicaoCarrinhoPercursoEstagioConsultaModel item) {
     Color color = Colors.blue;
 
     switch (item.situacao) {
@@ -129,7 +133,7 @@ class SeparadoCarrinhoGridController extends GetxController {
     );
   }
 
-  Icon iconSave(ExpedicaoCarrinhoPercursoConsultaModel item) {
+  Icon iconSave(ExpedicaoCarrinhoPercursoEstagioConsultaModel item) {
     Color color = Colors.blue;
 
     switch (item.situacao) {

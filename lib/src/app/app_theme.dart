@@ -1,16 +1,18 @@
-import 'package:flutter/material.dart' as classic;
+import 'package:flutter/material.dart';
 
 class AppTheme {
-  static classic.ThemeData get classicTheme => classic.ThemeData(
+  static Brightness brightness(BuildContext context) =>
+      MediaQuery.platformBrightnessOf(context);
+
+  static ThemeData get classicTheme => ThemeData(
         useMaterial3: true,
-        brightness: classic.Brightness.light,
-        primaryColor: classic.Colors.blueGrey,
-        visualDensity: classic.VisualDensity.standard,
-        colorScheme: classic.ColorScheme.fromSwatch(
-            primarySwatch: classic.Colors.blueGrey),
-        appBarTheme: classic.AppBarTheme(
-          backgroundColor: classic.Colors.blueGrey[300],
-          foregroundColor: classic.Colors.white,
+        brightness: Brightness.light,
+        primaryColor: Colors.blueGrey,
+        visualDensity: VisualDensity.standard,
+        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blueGrey),
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.blueGrey[300],
+          foregroundColor: Colors.white,
         ),
       );
 }

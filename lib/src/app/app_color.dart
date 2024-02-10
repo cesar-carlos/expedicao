@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 class AppColor {
   static const primaryColor = Color.fromARGB(255, 40, 100, 130);
@@ -7,4 +7,5 @@ class AppColor {
   static const quaternaryColor = Color.fromARGB(255, 255, 255, 255);
   static const backGroundBar = Color.fromARGB(255, 40, 100, 130);
   static const backGroundButton = Color.fromARGB(255, 40, 100, 130);
+  static const backgroundColor = Color.fromARGB(255, 153, 175, 185);
 }

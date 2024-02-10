@@ -14,7 +14,7 @@ class SeparacaoAdicionarItemService {
   final _socket = Get.find<AppSocketConfig>().socket;
   final _processo = Get.find<ProcessoExecutavelModel>();
 
-  final ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta;
+  final ExpedicaoCarrinhoPercursoEstagioConsultaModel percursoEstagioConsulta;
 
   SeparacaoAdicionarItemService({
     required this.percursoEstagioConsulta,

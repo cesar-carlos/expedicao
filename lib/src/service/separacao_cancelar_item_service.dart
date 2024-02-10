@@ -6,7 +6,7 @@ import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_mod
 import 'package:app_expedicao/src/model/expedicao_item_situacao_model.dart';
 
 class SeparacaoCancelarItemService {
-  final ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta;
+  final ExpedicaoCarrinhoPercursoEstagioConsultaModel percursoEstagioConsulta;
 
   SeparacaoCancelarItemService({
     required this.percursoEstagioConsulta,

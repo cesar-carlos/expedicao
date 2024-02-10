@@ -4,7 +4,7 @@ import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
 
 class SeparacaoRemoverItemService {
-  final ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta;
+  final ExpedicaoCarrinhoPercursoEstagioConsultaModel percursoEstagioConsulta;
 
   SeparacaoRemoverItemService({
     required this.percursoEstagioConsulta,

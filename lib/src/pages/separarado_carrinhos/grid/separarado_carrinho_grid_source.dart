@@ -12,7 +12,7 @@ class SeparadoCarrinhoGridSource extends DataGridSource {
   List<DataGridRow> _itens = [];
 
   SeparadoCarrinhoGridSource(
-      {required List<ExpedicaoCarrinhoPercursoConsultaModel> itens}) {
+      {required List<ExpedicaoCarrinhoPercursoEstagioConsultaModel> itens}) {
     _itens = itens
         .map<DataGridRow>((i) => DataGridRow(cells: [
               DataGridCell<Widget>(

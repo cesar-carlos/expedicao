@@ -50,7 +50,7 @@ class ExpedicaoCarrinhoPercursoModel {
   }
 
   factory ExpedicaoCarrinhoPercursoModel.fromConsulta(
-      ExpedicaoCarrinhoPercursoConsultaModel item) {
+      ExpedicaoCarrinhoPercursoEstagioConsultaModel item) {
     return ExpedicaoCarrinhoPercursoModel(
       codEmpresa: item.codEmpresa,
       codCarrinhoPercurso: item.codCarrinhoPercurso,
@@ -94,6 +94,17 @@ class ExpedicaoCarrinhoPercursoModel {
 
   @override
   String toString() {
-    return 'ExpedicaoCarrinhoPercursoModel(codEmpresa: $codEmpresa, codCarrinhoPercurso: $codCarrinhoPercurso, origem: $origem, codOrigem: $codOrigem, situacao: $situacao, dataInicio: $dataInicio, horaInicio: $horaInicio, dataFinalizacao: $dataFinalizacao, horaFinalizacao: $horaFinalizacao)';
+    return '''
+      ExpedicaoCarrinhoPercursoModel(
+        codEmpresa: $codEmpresa, 
+        codCarrinhoPercurso: $codCarrinhoPercurso, 
+        rigem: $origem, 
+        codOrigem: $codOrigem, 
+        situacao: $situacao, 
+        dataInicio: $dataInicio, 
+        horaInicio: $horaInicio, 
+        dataFinalizacao: $dataFinalizacao, 
+        horaFinalizacao: $horaFinalizacao)
+      ''';
   }
 }

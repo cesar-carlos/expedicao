@@ -10,14 +10,15 @@ import 'package:app_expedicao/src/model/send_query_socket_model%20copy.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
 import 'package:app_expedicao/src/app/app_socket_config.dart';
 
-class CarrinhoPercursoConsultaRepository {
+class CarrinhoPercursoEstagioConsultaRepository {
   final uuid = const Uuid();
   var socket = Get.find<AppSocketConfig>().socket;
 
-  Future<List<ExpedicaoCarrinhoPercursoConsultaModel>> select(
+  Future<List<ExpedicaoCarrinhoPercursoEstagioConsultaModel>> select(
       [String params = '']) {
     final event = '${socket.id} carrinho.percurso.consulta';
-    final completer = Completer<List<ExpedicaoCarrinhoPercursoConsultaModel>>();
+    final completer =
+        Completer<List<ExpedicaoCarrinhoPercursoEstagioConsultaModel>>();
     final resposeIn = uuid.v4();
 
     final send = SendQuerySocketModel(
@@ -43,8 +44,9 @@ class CarrinhoPercursoConsultaRepository {
           return;
         }
 
-        final list = data.map<ExpedicaoCarrinhoPercursoConsultaModel>((json) {
-          return ExpedicaoCarrinhoPercursoConsultaModel.fromJson(json);
+        final list =
+            data.map<ExpedicaoCarrinhoPercursoEstagioConsultaModel>((json) {
+          return ExpedicaoCarrinhoPercursoEstagioConsultaModel.fromJson(json);
         }).toList();
 
         completer.complete(list);

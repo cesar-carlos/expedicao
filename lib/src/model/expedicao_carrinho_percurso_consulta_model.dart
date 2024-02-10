@@ -1,6 +1,6 @@
 import 'package:app_expedicao/src/app/app_helper.dart';
 
-class ExpedicaoCarrinhoPercursoConsultaModel {
+class ExpedicaoCarrinhoPercursoEstagioConsultaModel {
   final int codEmpresa;
   final int codCarrinhoPercurso;
   final String item;
@@ -12,24 +12,18 @@ class ExpedicaoCarrinhoPercursoConsultaModel {
   final String nomeCarrinho;
   final String codigoBarrasCarrinho;
   final String ativo;
-  final DateTime dataInicio;
-  final String horaInicio;
   final int codUsuarioInicio;
   final String nomeUsuarioInicio;
+  final DateTime dataInicio;
+  final String horaInicio;
+  final int? codUsuarioFinalizacao;
+  final String? nomeUsuarioFinalizacao;
   final DateTime? dataFinalizacao;
   final String? horaFinalizacao;
   final int? codSetorEstoque;
   final String? nomeSetorEstoque;
-  final int? codCancelamento;
-  final int? codMotivoCancelamento;
-  final String? descricaoMotivoCancelamento;
-  final DateTime? dataCancelamento;
-  final String? horaCancelamento;
-  final int? codUsuarioCancelamento;
-  final String? nomeUsuarioCancelamento;
-  final String? observacaoCancelamento;
 
-  ExpedicaoCarrinhoPercursoConsultaModel({
+  ExpedicaoCarrinhoPercursoEstagioConsultaModel({
     required this.codEmpresa,
     required this.codCarrinhoPercurso,
     required this.item,
@@ -41,25 +35,19 @@ class ExpedicaoCarrinhoPercursoConsultaModel {
     required this.nomeCarrinho,
     required this.codigoBarrasCarrinho,
     required this.ativo,
-    required this.dataInicio,
-    required this.horaInicio,
     required this.codUsuarioInicio,
     required this.nomeUsuarioInicio,
+    required this.dataInicio,
+    required this.horaInicio,
+    this.codUsuarioFinalizacao,
+    this.nomeUsuarioFinalizacao,
     this.dataFinalizacao,
     this.horaFinalizacao,
     this.codSetorEstoque,
     this.nomeSetorEstoque,
-    this.codCancelamento,
-    this.codMotivoCancelamento,
-    this.descricaoMotivoCancelamento,
-    this.dataCancelamento,
-    this.horaCancelamento,
-    this.codUsuarioCancelamento,
-    this.nomeUsuarioCancelamento,
-    this.observacaoCancelamento,
   });
 
-  ExpedicaoCarrinhoPercursoConsultaModel copyWith({
+  ExpedicaoCarrinhoPercursoEstagioConsultaModel copyWith({
     int? codEmpresa,
     int? codCarrinhoPercurso,
     String? item,
@@ -71,24 +59,18 @@ class ExpedicaoCarrinhoPercursoConsultaModel {
     String? nomeCarrinho,
     String? codigoBarrasCarrinho,
     String? ativo,
-    DateTime? dataInicio,
-    String? horaInicio,
     int? codUsuarioInicio,
     String? nomeUsuarioInicio,
+    DateTime? dataInicio,
+    String? horaInicio,
+    int? codUsuarioFinalizacao,
+    String? nomeUsuarioFinalizacao,
     DateTime? dataFinalizacao,
     String? horaFinalizacao,
     int? codSetorEstoque,
     String? nomeSetorEstoque,
-    int? codCancelamento,
-    int? codMotivoCancelamento,
-    String? descricaoMotivoCancelamento,
-    DateTime? dataCancelamento,
-    String? horaCancelamento,
-    int? codUsuarioCancelamento,
-    String? nomeUsuarioCancelamento,
-    String? observacaoCancelamento,
   }) {
-    return ExpedicaoCarrinhoPercursoConsultaModel(
+    return ExpedicaoCarrinhoPercursoEstagioConsultaModel(
       codEmpresa: codEmpresa ?? this.codEmpresa,
       codCarrinhoPercurso: codCarrinhoPercurso ?? this.codCarrinhoPercurso,
       item: item ?? this.item,
@@ -100,33 +82,24 @@ class ExpedicaoCarrinhoPercursoConsultaModel {
       nomeCarrinho: nomeCarrinho ?? this.nomeCarrinho,
       codigoBarrasCarrinho: codigoBarrasCarrinho ?? this.codigoBarrasCarrinho,
       ativo: ativo ?? this.ativo,
-      dataInicio: dataInicio ?? this.dataInicio,
-      horaInicio: horaInicio ?? this.horaInicio,
       codUsuarioInicio: codUsuarioInicio ?? this.codUsuarioInicio,
       nomeUsuarioInicio: nomeUsuarioInicio ?? this.nomeUsuarioInicio,
+      dataInicio: dataInicio ?? this.dataInicio,
+      horaInicio: horaInicio ?? this.horaInicio,
+      codUsuarioFinalizacao:
+          codUsuarioFinalizacao ?? this.codUsuarioFinalizacao,
+      nomeUsuarioFinalizacao:
+          nomeUsuarioFinalizacao ?? this.nomeUsuarioFinalizacao,
       dataFinalizacao: dataFinalizacao ?? this.dataFinalizacao,
       horaFinalizacao: horaFinalizacao ?? this.horaFinalizacao,
       codSetorEstoque: codSetorEstoque ?? this.codSetorEstoque,
       nomeSetorEstoque: nomeSetorEstoque ?? this.nomeSetorEstoque,
-      codCancelamento: codCancelamento ?? this.codCancelamento,
-      codMotivoCancelamento:
-          codMotivoCancelamento ?? this.codMotivoCancelamento,
-      descricaoMotivoCancelamento:
-          descricaoMotivoCancelamento ?? this.descricaoMotivoCancelamento,
-      dataCancelamento: dataCancelamento ?? this.dataCancelamento,
-      horaCancelamento: horaCancelamento ?? this.horaCancelamento,
-      codUsuarioCancelamento:
-          codUsuarioCancelamento ?? this.codUsuarioCancelamento,
-      nomeUsuarioCancelamento:
-          nomeUsuarioCancelamento ?? this.nomeUsuarioCancelamento,
-      observacaoCancelamento:
-          observacaoCancelamento ?? this.observacaoCancelamento,
     );
   }
 
-  factory ExpedicaoCarrinhoPercursoConsultaModel.fromJson(
+  factory ExpedicaoCarrinhoPercursoEstagioConsultaModel.fromJson(
       Map<String, dynamic> map) {
-    return ExpedicaoCarrinhoPercursoConsultaModel(
+    return ExpedicaoCarrinhoPercursoEstagioConsultaModel(
       codEmpresa: map['CodEmpresa'],
       codCarrinhoPercurso: map['CodCarrinhoPercurso'],
       item: map['Item'],
@@ -138,23 +111,16 @@ class ExpedicaoCarrinhoPercursoConsultaModel {
       nomeCarrinho: map['NomeCarrinho'],
       codigoBarrasCarrinho: map['CodigoBarrasCarrinho'],
       ativo: map['Ativo'],
-      dataInicio: AppHelper.tryStringToDate(map['DataInicio']),
-      horaInicio: map['HoraInicio'] ?? '00:00:00',
       codUsuarioInicio: map['CodUsuarioInicio'],
       nomeUsuarioInicio: map['NomeUsuarioInicio'],
+      dataInicio: AppHelper.tryStringToDate(map['DataInicio']),
+      horaInicio: map['HoraInicio'] ?? '00:00:00',
+      codUsuarioFinalizacao: map['CodUsuarioFinalizacao'],
+      nomeUsuarioFinalizacao: map['NomeUsuarioFinalizacao'],
       dataFinalizacao: AppHelper.tryStringToDateOrNull(map['DataFinalizacao']),
       horaFinalizacao: map['HoraFinalizacao'],
       codSetorEstoque: map['CodSetorEstoque'],
       nomeSetorEstoque: map['NomeSetorEstoque'],
-      codCancelamento: map['CodCancelamento'],
-      codMotivoCancelamento: map['CodMotivoCancelamento'],
-      descricaoMotivoCancelamento: map['DescricaoMotivoCancelamento'],
-      dataCancelamento:
-          AppHelper.tryStringToDateOrNull(map['DataCancelamento']),
-      horaCancelamento: map['HoraCancelamento'],
-      codUsuarioCancelamento: map['CodUsuarioCancelamento'],
-      nomeUsuarioCancelamento: map['NomeUsuarioCancelamento'],
-      observacaoCancelamento: map['ObservacaoCancelamento'],
     );
   }
 
@@ -171,22 +137,16 @@ class ExpedicaoCarrinhoPercursoConsultaModel {
       'NomeCarrinho': nomeCarrinho,
       'CodigoBarrasCarrinho': codigoBarrasCarrinho,
       'Ativo': ativo,
-      'DataInicio': dataInicio.toIso8601String(),
-      'HoraInicio': horaInicio,
       'CodUsuarioInicio': codUsuarioInicio,
       'NomeUsuarioInicio': nomeUsuarioInicio,
+      'DataInicio': dataInicio.toIso8601String(),
+      'HoraInicio': horaInicio,
+      'CodUsuarioFinalizacao': codUsuarioFinalizacao,
+      'NomeUsuarioFinalizacao': nomeUsuarioFinalizacao,
       'DataFinalizacao': dataFinalizacao?.toIso8601String(),
       'HoraFinalizacao': horaFinalizacao,
       'CodSetorEstoque': codSetorEstoque,
       'NomeSetorEstoque': nomeSetorEstoque,
-      'CodCancelamento': codCancelamento,
-      'CodMotivoCancelamento': codMotivoCancelamento,
-      'DescricaoMotivoCancelamento': descricaoMotivoCancelamento,
-      'DataCancelamento': dataCancelamento?.toIso8601String(),
-      'HoraCancelamento': horaCancelamento,
-      'CodUsuarioCancelamento': codUsuarioCancelamento,
-      'NomeUsuarioCancelamento': nomeUsuarioCancelamento,
-      'ObservacaoCancelamento': observacaoCancelamento,
     };
   }
 
@@ -205,22 +165,16 @@ class ExpedicaoCarrinhoPercursoConsultaModel {
         nomeCarrinho: $nomeCarrinho, 
         codigoBarrasCarrinho: $codigoBarrasCarrinho, 
         ativo: $ativo, 
-        dataInicio: $dataInicio, 
-        horaInicio: $horaInicio, 
         codUsuarioInicio: $codUsuarioInicio, 
         nomeUsuarioInicio: $nomeUsuarioInicio, 
+        dataInicio: $dataInicio, 
+        horaInicio: $horaInicio, 
+        codUsuarioFinalizacao: $codUsuarioFinalizacao,
+        nomeUsuarioFinalizacao: $nomeUsuarioFinalizacao,
         dataFinalizacao: $dataFinalizacao, 
         horaFinalizacao: $horaFinalizacao, 
         codSetorEstoque: $codSetorEstoque, 
-        nomeSetorEstoque: $nomeSetorEstoque, 
-        codCancelamento: $codCancelamento, 
-        codMotivoCancelamento: $codMotivoCancelamento, 
-        descricaoMotivoCancelamento: $descricaoMotivoCancelamento, 
-        dataCancelamento: $dataCancelamento, 
-        horaCancelamento: $horaCancelamento, 
-        codUsuarioCancelamento: $codUsuarioCancelamento, 
-        nomeUsuarioCancelamento: $nomeUsuarioCancelamento, 
-        observacaoCancelamento: $observacaoCancelamento)
+        nomeSetorEstoque: $nomeSetorEstoque
     ''';
   }
 }

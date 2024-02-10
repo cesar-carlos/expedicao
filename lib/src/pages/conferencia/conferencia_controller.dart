@@ -1,3 +1,4 @@
+import 'package:app_expedicao/src/service/cancelamento_service.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +34,7 @@ class ConferenciaController extends GetxController {
 
   // ignore: unused_field
   ExpedicaoCarrinhoPercursoModel? _carrinhoPercurso;
-  final ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta;
+  final ExpedicaoCarrinhoPercursoEstagioConsultaModel percursoEstagioConsulta;
   final List<RepositoryEventListenerModel> _pageListerner = [];
 
   //late ProdutoService _produtoService;
@@ -109,7 +110,7 @@ class ConferenciaController extends GetxController {
     super.onClose();
   }
 
-  ExpedicaoCarrinhoPercursoConsultaModel get percursoEstagio =>
+  ExpedicaoCarrinhoPercursoEstagioConsultaModel get percursoEstagio =>
       percursoEstagioConsulta;
 
   void onPressedCloseBar() {
@@ -508,27 +509,45 @@ class ConferenciaController extends GetxController {
     final conferenciaItemEvent = ConferenciaItemEventRepository.instancia;
     final conferirItemEvent = ConferirItemEventRepository.instancia;
 
-    //Update carrinho
     final updateCarrinhoPercurso = RepositoryEventListenerModel(
       id: uuid.v4(),
       event: Event.update,
       callback: (data) async {
         for (var el in data.mutation) {
-          final item = ExpedicaoCarrinhoPercursoConsultaModel.fromJson(el);
+          final itemConsulta =
+              ExpedicaoCarrinhoPercursoEstagioConsultaModel.fromJson(el);
 
-          if (item.codEmpresa == percursoEstagioConsulta.codEmpresa &&
-              item.codCarrinho == percursoEstagioConsulta.codCarrinho &&
-              item.situacao == ExpedicaoSituacaoModel.cancelada) {
+          if (itemConsulta.codEmpresa == percursoEstagioConsulta.codEmpresa &&
+              itemConsulta.codCarrinho == percursoEstagioConsulta.codCarrinho &&
+              itemConsulta.situacao == ExpedicaoSituacaoModel.cancelada) {
             _viewMode.value = true;
             update();
 
-            await ConfirmationDialogMessageWidget.show(
-              canCloseWindow: false,
-              context: Get.context!,
-              message: 'Carrinho cancelado!',
-              detail:
-                  'Cancelado pelo usuario: ${item.nomeUsuarioCancelamento}!',
+            final cancelamentos =
+                await CancelamentoService().selectOrigemWithItem(
+              codEmpresa: itemConsulta.codEmpresa,
+              origem: ExpedicaoOrigemModel.carrinhoPercurso,
+              codOrigem: itemConsulta.codCarrinhoPercurso,
+              itemOrigem: itemConsulta.item,
             );
+
+            if (cancelamentos != null) {
+              await ConfirmationDialogMessageWidget.show(
+                canCloseWindow: false,
+                context: Get.context!,
+                message: 'Carrinho cancelado!',
+                detail:
+                    'Cancelado pelo usuario: ${cancelamentos.nomeUsuarioCancelamento}!',
+              );
+            } else {
+              await ConfirmationDialogMessageWidget.show(
+                canCloseWindow: false,
+                context: Get.context!,
+                message: 'Carrinho cancelado!',
+                detail:
+                    'O carrinho foi cancelado. Não possivel identificar usuario cancelamento!',
+              );
+            }
           }
         }
       },

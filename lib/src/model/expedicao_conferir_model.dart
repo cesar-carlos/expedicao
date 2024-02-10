@@ -128,8 +128,8 @@ class ExpedicaoConferirModel {
       "Situacao": situacao,
       "Data": data.toIso8601String(),
       "Hora": hora,
-      "Historico": historico,
-      "Observacao": observacao,
+      if (historico != null) "Historico": historico,
+      if (observacao != null) "Observacao": observacao,
       "CodMotivoCancelamento": codMotivoCancelamento,
       "DataCancelamento": dataCancelamento?.toIso8601String(),
       "HoraCancelamento": horaCancelamento,
@@ -141,6 +141,24 @@ class ExpedicaoConferirModel {
 
   @override
   String toString() {
-    return 'ExpedicaoConferirModel(codEmpresa: $codEmpresa, codConferir: $codConferir, origem: $origem, codOrigem: $codOrigem, codPrioridade: $codPrioridade, situacao: $situacao, data: $data, hora: $hora, historico: $historico, observacao: $observacao, codMotivoCancelamento: $codMotivoCancelamento, dataCancelamento: $dataCancelamento, horaCancelamento: $horaCancelamento, codUsuarioCancelamento: $codUsuarioCancelamento, nomeUsuarioCancelamento: $nomeUsuarioCancelamento, observacaoCancelamento: $observacaoCancelamento)';
+    return '''
+      ExpedicaoConferirModel(
+        codEmpresa: $codEmpresa, 
+        codConferir: $codConferir, 
+        origem: $origem, 
+        codOrigem: $codOrigem, 
+        codPrioridade: $codPrioridade, 
+        situacao: $situacao, 
+        data: $data, 
+        hora: $hora, 
+        historico: $historico, 
+        observacao: $observacao, 
+        codMotivoCancelamento: $codMotivoCancelamento, 
+        dataCancelamento: $dataCancelamento, 
+        horaCancelamento: $horaCancelamento, 
+        codUsuarioCancelamento: $codUsuarioCancelamento, 
+        nomeUsuarioCancelamento: $nomeUsuarioCancelamento, 
+        observacaoCancelamento: $observacaoCancelamento)
+      ''';
   }
 }

@@ -23,7 +23,8 @@ class SeparacaoPage {
     required Size size,
     required bool canCloseWindow,
     required BuildContext context,
-    required ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta,
+    required ExpedicaoCarrinhoPercursoEstagioConsultaModel
+        percursoEstagioConsulta,
   }) async {
     Get.find<AppEventState>()..canCloseWindow = canCloseWindow;
 
@@ -49,7 +50,7 @@ class SeparacaoPage {
                     borderRadius: BorderRadius.circular(10)),
                 child: SizedBox(
                   width: size.width * 0.95,
-                  height: size.height * 0.8,
+                  height: size.height * 0.80,
                   child: Column(children: [
                     BarHeadFormElement(
                       title: title,
@@ -70,7 +71,7 @@ class SeparacaoPage {
   static Widget _dailog(
     Size size,
     SeparacaoController controller,
-    ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta,
+    ExpedicaoCarrinhoPercursoEstagioConsultaModel percursoEstagioConsulta,
   ) {
     return GetBuilder<SeparacaoController>(
       builder: (controller) {

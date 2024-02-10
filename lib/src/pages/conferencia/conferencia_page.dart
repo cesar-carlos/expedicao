@@ -23,7 +23,8 @@ class ConferenciaPage {
     required Size size,
     required bool canCloseWindow,
     required BuildContext context,
-    required ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta,
+    required ExpedicaoCarrinhoPercursoEstagioConsultaModel
+        percursoEstagioConsulta,
   }) async {
     Get.find<AppEventState>()..canCloseWindow = canCloseWindow;
 
@@ -70,7 +71,7 @@ class ConferenciaPage {
   static Widget _dailog(
     Size size,
     ConferenciaController controller,
-    ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta,
+    ExpedicaoCarrinhoPercursoEstagioConsultaModel percursoEstagioConsulta,
   ) {
     return GetBuilder(
       init: controller,

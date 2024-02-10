@@ -11,7 +11,7 @@ import 'package:app_expedicao/src/pages/common/widget/scan_widget.dart';
 
 class ScanSeparacaoItemWidget extends StatelessWidget {
   final Size size;
-  final ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta;
+  final ExpedicaoCarrinhoPercursoEstagioConsultaModel percursoEstagioConsulta;
 
   const ScanSeparacaoItemWidget(
     this.percursoEstagioConsulta, {

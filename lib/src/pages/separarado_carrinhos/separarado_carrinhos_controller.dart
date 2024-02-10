@@ -69,7 +69,7 @@ class SeparadoCarrinhosController extends GetxController {
     _separadoCarrinhoGridController.update();
   }
 
-  void addCarrinho(ExpedicaoCarrinhoPercursoConsultaModel model) {
+  void addCarrinho(ExpedicaoCarrinhoPercursoEstagioConsultaModel model) {
     _separadoCarrinhoGridController.addGrid(model);
     _separadoCarrinhoGridController.update();
   }
@@ -411,7 +411,8 @@ class SeparadoCarrinhosController extends GetxController {
         event: Event.insert,
         callback: (data) async {
           for (var el in data.mutation) {
-            final car = ExpedicaoCarrinhoPercursoConsultaModel.fromJson(el);
+            final car =
+                ExpedicaoCarrinhoPercursoEstagioConsultaModel.fromJson(el);
 
             if (car.codEmpresa == _processoExecutavel.codEmpresa &&
                 car.origem == _processoExecutavel.origem &&
@@ -431,7 +432,8 @@ class SeparadoCarrinhosController extends GetxController {
         event: Event.update,
         callback: (data) async {
           for (var el in data.mutation) {
-            final car = ExpedicaoCarrinhoPercursoConsultaModel.fromJson(el);
+            final car =
+                ExpedicaoCarrinhoPercursoEstagioConsultaModel.fromJson(el);
 
             if (car.codEmpresa == _processoExecutavel.codEmpresa &&
                 car.origem == _processoExecutavel.origem &&
@@ -451,7 +453,8 @@ class SeparadoCarrinhosController extends GetxController {
         event: Event.delete,
         callback: (data) async {
           for (var el in data.mutation) {
-            final car = ExpedicaoCarrinhoPercursoConsultaModel.fromJson(el);
+            final car =
+                ExpedicaoCarrinhoPercursoEstagioConsultaModel.fromJson(el);
 
             if (car.codEmpresa == _processoExecutavel.codEmpresa &&
                 car.origem == _processoExecutavel.origem &&

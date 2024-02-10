@@ -1,3 +1,4 @@
+import 'package:app_expedicao/src/service/cancelamento_service.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +33,7 @@ class SeparacaoController extends GetxController {
 
   // ignore: unused_field
   ExpedicaoCarrinhoPercursoModel? _carrinhoPercurso;
-  final ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta;
+  final ExpedicaoCarrinhoPercursoEstagioConsultaModel percursoEstagioConsulta;
   final List<RepositoryEventListenerModel> _pageListerner = [];
 
   late ProcessoExecutavelModel _processoExecutavel;
@@ -116,7 +117,7 @@ class SeparacaoController extends GetxController {
     return KeyEventResult.ignored;
   }
 
-  ExpedicaoCarrinhoPercursoConsultaModel get percursoEstagio =>
+  ExpedicaoCarrinhoPercursoEstagioConsultaModel get percursoEstagio =>
       percursoEstagioConsulta;
 
   _listenFocusNode() {
@@ -584,32 +585,54 @@ class SeparacaoController extends GetxController {
       event: Event.update,
       callback: (data) async {
         for (var el in data.mutation) {
-          final car = ExpedicaoCarrinhoPercursoConsultaModel.fromJson(el);
-          if (car.codEmpresa == percursoEstagioConsulta.codEmpresa &&
-              car.codCarrinho == percursoEstagioConsulta.codCarrinho &&
-              car.situacao == ExpedicaoSituacaoModel.cancelada) {
+          final itemConsulta =
+              ExpedicaoCarrinhoPercursoEstagioConsultaModel.fromJson(el);
+
+          if (itemConsulta.codEmpresa == percursoEstagioConsulta.codEmpresa &&
+              itemConsulta.codCarrinho == percursoEstagioConsulta.codCarrinho &&
+              itemConsulta.situacao == ExpedicaoSituacaoModel.cancelada) {
             _viewMode.value = true;
             update();
 
-            await ConfirmationDialogMessageWidget.show(
-              canCloseWindow: false,
-              context: Get.context!,
-              message: 'Carrinho cancelado!',
-              detail: 'Cancelado pelo usuario: ${car.nomeUsuarioCancelamento}!',
+            final cancelamentos =
+                await CancelamentoService().selectOrigemWithItem(
+              codEmpresa: itemConsulta.codEmpresa,
+              origem: ExpedicaoOrigemModel.carrinhoPercurso,
+              codOrigem: itemConsulta.codCarrinhoPercurso,
+              itemOrigem: itemConsulta.item,
             );
+
+            if (cancelamentos != null) {
+              await ConfirmationDialogMessageWidget.show(
+                canCloseWindow: false,
+                context: Get.context!,
+                message: 'Carrinho cancelado!',
+                detail:
+                    'Cancelado pelo usuario: ${cancelamentos.nomeUsuarioCancelamento}!',
+              );
+            } else {
+              await ConfirmationDialogMessageWidget.show(
+                canCloseWindow: false,
+                context: Get.context!,
+                message: 'Carrinho cancelado!',
+                detail:
+                    'O carrinho foi cancelado. Não possivel identificar usuario cancelamento!',
+              );
+            }
           }
 
-          if (car.codEmpresa == percursoEstagioConsulta.codEmpresa &&
-              car.codCarrinho == percursoEstagioConsulta.codCarrinho &&
-              car.situacao == ExpedicaoSituacaoModel.separando) {
+          if (itemConsulta.codEmpresa == percursoEstagioConsulta.codEmpresa &&
+              itemConsulta.codCarrinho == percursoEstagioConsulta.codCarrinho &&
+              itemConsulta.situacao == ExpedicaoSituacaoModel.separando) {
             _viewMode.value = true;
             update();
 
             await ConfirmationDialogMessageWidget.show(
               canCloseWindow: false,
               context: Get.context!,
-              message: 'Carrinho cancelado!',
-              detail: 'Cancelado pelo usuario: ${car.nomeUsuarioCancelamento}!',
+              message: 'Carrinho finalizado!',
+              detail:
+                  'O carrinho foi finalizado. pelo usuario ${itemConsulta.nomeUsuarioFinalizacao}!',
             );
           }
         }

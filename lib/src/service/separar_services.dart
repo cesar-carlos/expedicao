@@ -49,9 +49,7 @@ class SepararServices {
         CodEmpresa = ${separar.codEmpresa} 
       AND Origem = '$origem' 
       AND CodOrigem = ${separar.codSepararEstoque} 
-      AND Situacao <> '${ExpedicaoSituacaoModel.cancelada}' 
-      
-      ''';
+      AND Situacao <> '${ExpedicaoSituacaoModel.cancelada}' ''';
 
     final List<ExpedicaoCarrinhoPercursoModel> carrinhoPercurso =
         await CarrinhoPercursoRepository().select(params);

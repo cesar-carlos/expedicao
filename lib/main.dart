@@ -13,23 +13,36 @@ import 'package:app_expedicao/src/app/app_socket_config.dart';
 import 'package:app_expedicao/src/app/app_event_state.dart';
 
 Future<void> main(List<String> args) async {
-  if (args.isNotEmpty) {
-    final _executavel = ProcessoExecutavelModel.fromBase64(args.join(''));
-    Get.put(_executavel);
-  }
-
   WidgetsFlutterBinding.ensureInitialized();
   await WindowManagerConfig().config();
-  MediaKit.ensureInitialized();
-
-  Get.put(AppClientHttp());
-  Get.put(AppSocketConfig());
-  Get.put(AppEventState());
-  runApp(const MyApp());
+  runApp(MyApp(args: args));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyApp extends StatefulWidget {
+  final List<String> args;
+  const MyApp({super.key, required this.args});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    if (widget.args.isNotEmpty) {
+      final _executavel =
+          ProcessoExecutavelModel.fromBase64(widget.args.join(''));
+
+      Get.put(_executavel);
+    }
+
+    MediaKit.ensureInitialized();
+
+    Get.put(AppClientHttp());
+    Get.put(AppSocketConfig());
+    Get.put(AppEventState());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

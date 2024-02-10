@@ -4,7 +4,7 @@ import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_mod
 import 'package:app_expedicao/src/model/expedicao_conferencia_item_model.dart';
 
 class ConferenciaCancelarItemService {
-  final ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta;
+  final ExpedicaoCarrinhoPercursoEstagioConsultaModel percursoEstagioConsulta;
 
   ConferenciaCancelarItemService({
     required this.percursoEstagioConsulta,

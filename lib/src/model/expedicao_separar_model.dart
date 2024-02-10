@@ -102,8 +102,8 @@ class ExpedicaoSepararModel {
       data: model.dataEmissao,
       hora: model.horaEmissao,
       codPrioridade: model.codPrioridade,
-      historico: model.historico.toString(),
-      observacao: model.observacao.toString(),
+      historico: model.historico,
+      observacao: model.observacao,
     );
   }
 
@@ -144,7 +144,8 @@ class ExpedicaoSepararModel {
       "Hora": hora,
       "CodPrioridade": codPrioridade,
       "Historico": historico,
-      "Observacao": observacao,
+      if (historico != null) "Historico": historico,
+      if (observacao != null) "Observacao": observacao,
       "CodMotivoCancelamento": codMotivoCancelamento,
       "DataCancelamento": dataCancelamento?.toIso8601String(),
       "HoraCancelamento": horaCancelamento,
@@ -156,6 +157,26 @@ class ExpedicaoSepararModel {
 
   @override
   String toString() {
-    return 'ExpedicaoSepararModel(codEmpresa: $codEmpresa, codSepararEstoque: $codSepararEstoque, codTipoOperacaoExpedicao: $codTipoOperacaoExpedicao, tipoEntidade: $tipoEntidade, codEntidade: $codEntidade, nomeEntidade: $nomeEntidade, situacao: $situacao, data: $data, hora: $hora, codPrioridade: $codPrioridade, historico: $historico, observacao: $observacao, codMotivoCancelamento: $codMotivoCancelamento, dataCancelamento: $dataCancelamento, horaCancelamento: $horaCancelamento, codUsuarioCancelamento: $codUsuarioCancelamento, nomeUsuarioCancelamento: $nomeUsuarioCancelamento, observacaoCancelamento: $observacaoCancelamento)';
+    return '''
+      ExpedicaoSepararModel(
+        codEmpresa: $codEmpresa, 
+        codSepararEstoque: $codSepararEstoque, 
+        codTipoOperacaoExpedicao: $codTipoOperacaoExpedicao, 
+        tipoEntidade: $tipoEntidade, 
+        codEntidade: $codEntidade, 
+        nomeEntidade: $nomeEntidade, 
+        situacao: $situacao, 
+        data: $data, 
+        hora: $hora, 
+        codPrioridade: $codPrioridade, 
+        historico: $historico, 
+        observacao: $observacao, 
+        codMotivoCancelamento: $codMotivoCancelamento, 
+        dataCancelamento: $dataCancelamento, 
+        horaCancelamento: $horaCancelamento, 
+        codUsuarioCancelamento: $codUsuarioCancelamento, 
+        nomeUsuarioCancelamento: $nomeUsuarioCancelamento, 
+        observacaoCancelamento: $observacaoCancelamento)
+      ''';
   }
 }

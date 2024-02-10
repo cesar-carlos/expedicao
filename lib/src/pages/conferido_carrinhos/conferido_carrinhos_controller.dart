@@ -8,6 +8,7 @@ import 'package:app_expedicao/src/service/conferir_consultas_services.dart';
 import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
 import 'package:app_expedicao/src/service/conferencia_cancelar_item_service.dart';
 import 'package:app_expedicao/src/service/conferencia_finalizar_item_service.dart';
+import 'package:app_expedicao/src/pages/carrinho_agrupar/carrinhos_agrupar_page.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_finalizar_service.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
@@ -64,7 +65,7 @@ class ConferidoCarrinhosController extends GetxController {
     _conferidoCarrinhoGridController.update();
   }
 
-  void addCarrinho(ExpedicaoCarrinhoPercursoConsultaModel model) {
+  void addCarrinho(ExpedicaoCarrinhoPercursoEstagioConsultaModel model) {
     _conferidoCarrinhoGridController.addGrid(model);
     _conferidoCarrinhoGridController.update();
   }
@@ -210,8 +211,6 @@ class ConferidoCarrinhosController extends GetxController {
       final _editUsuario = (carrinhoPercursoEstagio.codUsuarioInicio !=
           _processoExecutavel.codUsuario);
 
-      print(_editViewMode);
-
       //TOOD:: ADD SOLICITACAO DE SENHA
       if (_editUsuario && !_editViewMode) {
         await ConfirmationDialogMessageWidget.show(
@@ -226,6 +225,36 @@ class ConferidoCarrinhosController extends GetxController {
       }
 
       await ConferenciaPage.show(
+        size: Get.size,
+        canCloseWindow: false,
+        context: Get.context!,
+        percursoEstagioConsulta: item,
+      );
+    };
+
+    _conferidoCarrinhoGridController.onPressedGroup = (item) async {
+      bool _viewMode = [
+        ExpedicaoSituacaoModel.cancelada,
+        ExpedicaoSituacaoModel.conferido,
+      ].contains(item.situacao);
+
+      bool _isValidGroup = [
+        ExpedicaoSituacaoModel.conferido,
+      ].contains(item.situacao);
+
+      if (!_isValidGroup) {
+        await ConfirmationDialogMessageWidget.show(
+          canCloseWindow: false,
+          context: Get.context!,
+          message: 'Carrinho não conferido!',
+          detail:
+              'Não é possível agrupar um carrinho que não esteja conferido!',
+        );
+
+        return;
+      }
+
+      await CarrinhosAgruparPage.show(
         size: Get.size,
         canCloseWindow: false,
         context: Get.context!,
@@ -428,7 +457,8 @@ class ConferidoCarrinhosController extends GetxController {
         event: Event.insert,
         callback: (data) async {
           for (var el in data.mutation) {
-            final car = ExpedicaoCarrinhoPercursoConsultaModel.fromJson(el);
+            final car =
+                ExpedicaoCarrinhoPercursoEstagioConsultaModel.fromJson(el);
 
             if (car.codEmpresa == _processoExecutavel.codEmpresa &&
                 car.origem == _processoExecutavel.origem &&
@@ -448,7 +478,8 @@ class ConferidoCarrinhosController extends GetxController {
         event: Event.update,
         callback: (data) async {
           for (var el in data.mutation) {
-            final car = ExpedicaoCarrinhoPercursoConsultaModel.fromJson(el);
+            final car =
+                ExpedicaoCarrinhoPercursoEstagioConsultaModel.fromJson(el);
 
             if (car.codEmpresa == _processoExecutavel.codEmpresa &&
                 car.origem == _processoExecutavel.origem &&
@@ -468,7 +499,8 @@ class ConferidoCarrinhosController extends GetxController {
         event: Event.delete,
         callback: (data) async {
           for (var el in data.mutation) {
-            final car = ExpedicaoCarrinhoPercursoConsultaModel.fromJson(el);
+            final car =
+                ExpedicaoCarrinhoPercursoEstagioConsultaModel.fromJson(el);
 
             if (car.codEmpresa == _processoExecutavel.codEmpresa &&
                 car.origem == _processoExecutavel.origem &&

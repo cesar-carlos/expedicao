@@ -9,7 +9,7 @@ import 'package:app_expedicao/src/pages/conferencia/conferencia_controller.dart'
 
 class ScanConferenciaItemWidget extends StatelessWidget {
   final Size size;
-  final ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta;
+  final ExpedicaoCarrinhoPercursoEstagioConsultaModel percursoEstagioConsulta;
 
   const ScanConferenciaItemWidget(
     this.percursoEstagioConsulta, {
@@ -56,42 +56,6 @@ class ScanConferenciaItemWidget extends StatelessWidget {
                           onSubmittedQtd: controller.onSubmittedQuantity,
                         ),
                       ),
-
-                      // OLD
-                      // Expanded(
-                      //   child: TextField(
-                      //     enabled: !controller.viewMode,
-                      //     cursorHeight: 22,
-                      //     controller: controller.quantidadeController,
-                      //     focusNode: controller.quantidadeFocusNode,
-                      //     onSubmitted: controller.onSubmittedQuantity,
-                      //     keyboardType: TextInputType.number,
-                      //     inputFormatters: [
-                      //       NumberTextInputFormatter(
-                      //         integerDigits: 10,
-                      //         decimalDigits: 3,
-                      //         decimalSeparator: ',',
-                      //         groupDigits: 3,
-                      //         groupSeparator: '.',
-                      //         allowNegative: false,
-                      //         overrideDecimalPoint: true,
-                      //         insertDecimalPoint: false,
-                      //         insertDecimalDigits: true,
-                      //       ),
-                      //     ],
-                      //     textAlign: TextAlign.right,
-                      //     decoration: const InputDecoration(
-                      //       contentPadding:
-                      //           EdgeInsets.only(left: 10, right: 10),
-                      //       border: OutlineInputBorder(),
-                      //       labelText: 'Quantidade',
-                      //       labelStyle: TextStyle(
-                      //         fontSize: 12,
-                      //         color: Colors.black87,
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
                     ],
                   ),
                   const Spacer(),

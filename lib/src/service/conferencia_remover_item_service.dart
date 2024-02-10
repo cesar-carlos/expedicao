@@ -5,7 +5,7 @@ import 'package:app_expedicao/src/model/expedicao_conferencia_item_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_item_model.dart';
 
 class ConferenciaRemoverItemService {
-  final ExpedicaoCarrinhoPercursoConsultaModel percursoEstagioConsulta;
+  final ExpedicaoCarrinhoPercursoEstagioConsultaModel percursoEstagioConsulta;
 
   ConferenciaRemoverItemService({
     required this.percursoEstagioConsulta,

@@ -12,7 +12,7 @@ class ConferidoCarrinhoGridSource extends DataGridSource {
   List<DataGridRow> _itens = [];
 
   ConferidoCarrinhoGridSource(
-      {required List<ExpedicaoCarrinhoPercursoConsultaModel> itens}) {
+      {required List<ExpedicaoCarrinhoPercursoEstagioConsultaModel> itens}) {
     _itens = itens
         .map<DataGridRow>((i) => DataGridRow(cells: [
               DataGridCell<Widget>(
@@ -98,7 +98,7 @@ class ConferidoCarrinhoGridSource extends DataGridSource {
                     ),
                   ),
                   IconButton(
-                    icon: controller.iconGrop(i),
+                    icon: controller.iconGroup(i),
                     onPressed: () => controller.onGrouptem(this, i),
                   ),
                   const SizedBox(
