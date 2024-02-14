@@ -1,5 +1,5 @@
 import 'package:app_expedicao/src/app/app_helper.dart';
-import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
 
 class ExpedicaoCarrinhoPercursoModel {
   final int codEmpresa;

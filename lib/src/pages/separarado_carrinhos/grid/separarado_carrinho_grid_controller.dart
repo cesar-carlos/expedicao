@@ -6,7 +6,7 @@ import 'package:bootstrap_icons/bootstrap_icons.dart';
 
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/pages/separarado_carrinhos/grid/separarado_carrinho_grid_source.dart';
-import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
 
 class SeparadoCarrinhoGridController extends GetxController {
   static const gridName = 'separadoCarrinhoGrid';

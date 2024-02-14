@@ -7,7 +7,7 @@ import 'package:app_expedicao/src/repository/expedicao_separar_item/separar_item
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_consulta_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_separar_item/separar_item_consulta_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_separar/separar_consulta_repository.dart';
-import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_item_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';

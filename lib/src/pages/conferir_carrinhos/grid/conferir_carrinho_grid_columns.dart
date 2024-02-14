@@ -87,21 +87,6 @@ class ConferirCarrinhoGridColumns {
       ),
     );
 
-    // _columns.add(
-    //   GridColumn(
-    //     visible: false,
-    //     columnName: 'situacao',
-    //     maximumWidth: 120,
-    //     label: Container(
-    //       padding: padding,
-    //       alignment: Alignment.centerLeft,
-    //       child: const Text(
-    //         'Situação',
-    //       ),
-    //     ),
-    //   ),
-    // );
-
     _columns.add(
       GridColumn(
         visible: false,

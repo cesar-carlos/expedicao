@@ -35,10 +35,6 @@ class ConferirCarrinhoGridSource extends DataGridSource {
                 columnName: 'codOrigem',
                 value: i.codOrigem,
               ),
-              // DataGridCell<String>(
-              //   columnName: 'situacao',
-              //   value: i.situacaoCarrinho,
-              // ),
               DataGridCell<int>(
                 columnName: 'codCarrinhoPercurso',
                 value: i.codCarrinhoPercurso,

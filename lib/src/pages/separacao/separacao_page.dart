@@ -5,7 +5,7 @@ import 'package:bootstrap_icons/bootstrap_icons.dart';
 
 import 'package:app_expedicao/src/app/app_event_state.dart';
 import 'package:app_expedicao/src/pages/separacao/separacao_controller.dart';
-import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
 import 'package:app_expedicao/src/pages/common/form_element/button_head_form_element.dart';
 import 'package:app_expedicao/src/pages/separacao/grid_separacao/separacao_carrinho_grid.dart';
 import 'package:app_expedicao/src/pages/common/form_element/space_button_head_form_element.dart';

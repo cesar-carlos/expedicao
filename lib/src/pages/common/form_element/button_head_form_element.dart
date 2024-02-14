@@ -5,14 +5,14 @@ class ButtonHeadForm extends StatelessWidget {
   Icon icon;
   String title;
   VoidCallback? onPressed;
-  String? shotCut;
+  String? shortCut;
 
   ButtonHeadForm({
     super.key,
     required this.title,
     required this.icon,
     this.onPressed,
-    this.shotCut,
+    this.shortCut,
   });
 
   @override
@@ -32,7 +32,7 @@ class ButtonHeadForm extends StatelessWidget {
                   alignment: Alignment.topRight,
                   padding: const EdgeInsets.only(top: 2),
                   child: Text(
-                    shotCut?.toUpperCase() ?? '',
+                    shortCut?.toUpperCase() ?? '',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 13,

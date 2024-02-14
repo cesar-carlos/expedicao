@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 
 import 'package:app_expedicao/src/pages/conferir/grid/conferir_grid.dart';
-import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
 import 'package:app_expedicao/src/pages/conferencia/widget/scan_conferencia_item_widget.dart';
 import 'package:app_expedicao/src/pages/common/form_element/space_button_head_form_element.dart';
 import 'package:app_expedicao/src/pages/common/form_element/button_head_form_element.dart';
@@ -86,6 +86,7 @@ class ConferenciaPage {
               children: [
                 ButtonHeadForm(
                   title: 'Conferir tudo',
+                  shortCut: 'F7',
                   onPressed: controller.onConferirTudo,
                   icon: const Icon(
                     BootstrapIcons.list_check,
@@ -95,6 +96,7 @@ class ConferenciaPage {
                 ),
                 ButtonHeadForm(
                   title: 'Reconferir tudo',
+                  shortCut: 'F8',
                   onPressed: controller.onReconferirTudo,
                   icon: const Icon(
                     BootstrapIcons.list_task,

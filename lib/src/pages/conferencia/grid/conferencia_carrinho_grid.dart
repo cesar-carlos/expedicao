@@ -11,7 +11,7 @@ import 'package:app_expedicao/src/pages/conferencia/grid/conferencia_carrinho_gr
 import 'package:app_expedicao/src/pages/conferencia/grid/conferencia_carrinho_grid_footer.dart';
 import 'package:app_expedicao/src/pages/conferencia/grid/conferencia_carrinho_grid_source.dart';
 import 'package:app_expedicao/src/pages/conferencia/grid/conferencia_carrinho_grid_event.dart';
-import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
 
 class ConferenciaCarrinhoGrid extends StatelessWidget {
   final ExpedicaoCarrinhoPercursoEstagioConsultaModel percursoEstagioConsulta;

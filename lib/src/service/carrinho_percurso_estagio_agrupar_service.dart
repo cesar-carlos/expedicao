@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 
+import 'package:app_expedicao/src/app/app_error_alert.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_agrupamento_model.dart';
@@ -49,10 +50,15 @@ class CarrinhoPercursoEstagioAgruparService {
   }
 
   Future<List<ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel>>
-      carrinhosPercurso() async {
+      carrinhosPercurso(
+    ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel carrinhoAgrupador,
+  ) async {
     final params = '''
-        CodEmpresa = $codEmpresa
-          AND CodCarrinhoPercurso = '$codCarrinhoPercurso' ''';
+        CodEmpresa = ${carrinhoAgrupador.codEmpresa}
+          AND CodCarrinhoPercurso = ${carrinhoAgrupador.codCarrinhoPercurso}
+          AND Origem = '${carrinhoAgrupador.origem}' 
+          AND CodCarrinho <> ${carrinhoAgrupador.codCarrinho} 
+          AND Situacao <> '${ExpedicaoSituacaoModel.cancelada}' ''';
 
     final result =
         await CarrinhoPercursoAgrupamentoConsultaRepository().select(params);
@@ -80,10 +86,10 @@ class CarrinhoPercursoEstagioAgruparService {
 
     final _carrinho = await _carrinhoRepository.select(
       '''CodEmpresa = ${carrinhoAgrupar.codEmpresa} 
-        AND CodCarrinho = ${carrinhoAgrupar.codCarrinho}''',
+          AND CodCarrinho = ${carrinhoAgrupar.codCarrinho}''',
     );
 
-    if (_carrinho.isEmpty) throw Exception('Carrinho não encontrado');
+    if (_carrinho.isEmpty) throw AppErrorAlert('Carrinho não encontrado');
 
     final _newCarrinho = _carrinho.first.copyWith(
       situacao: ExpedicaoCarrinhoSituacaoModel.liberado,
@@ -92,15 +98,16 @@ class CarrinhoPercursoEstagioAgruparService {
     final _percursoEstagioModel =
         await _carrinhoPercursoEstagioRepository.select(
       '''CodEmpresa = ${carrinhoAgrupar.codEmpresa} 
-        AND CodCarrinhoPercurso = ${carrinhoAgrupar.codCarrinhoPercurso} 
-        AND item = '${carrinhoAgrupar.itemCarrinhoPercurso}' ''',
+          AND CodCarrinhoPercurso = ${carrinhoAgrupar.codCarrinhoPercurso} 
+          AND item = '${carrinhoAgrupar.itemCarrinhoPercurso}' ''',
     );
 
     if (_percursoEstagioModel.isEmpty)
-      throw Exception('Percurso estagio não encontrado');
+      throw AppErrorAlert('Percurso estagio não encontrado');
 
-    final _percursoEstagio = _percursoEstagioModel.first
-        .copyWith(situacao: ExpedicaoSituacaoModel.agrupado);
+    final _percursoEstagio = _percursoEstagioModel.first.copyWith(
+      situacao: ExpedicaoSituacaoModel.agrupado,
+    );
 
     //
     await _carrinhoPercursoEstagioRepository.update(_percursoEstagio);
@@ -113,12 +120,16 @@ class CarrinhoPercursoEstagioAgruparService {
   ) async {
     final _carrinhos = await _carrinhoRepository.select(
       '''CodEmpresa = ${carrinhoAgrupado.codEmpresa} 
-        AND CodCarrinho = ${carrinhoAgrupado.codCarrinho}''',
+          AND CodCarrinho = ${carrinhoAgrupado.codCarrinho} ''',
     );
 
-    if (_carrinhos.isEmpty) throw Exception('Carrinho não encontrado');
+    if (_carrinhos.isEmpty) throw AppErrorAlert('Carrinho não encontrado');
     if (_carrinhos.first.situacao != ExpedicaoCarrinhoSituacaoModel.liberado)
-      throw Exception('Carrinho não está liberado para cancelamento!');
+      throw AppErrorAlert(
+        'Carrinho não removido',
+        details:
+            'Carrinho não está liberado para cancelamento!. Situacao: ${_carrinhos.first.situacao}',
+      );
 
     final _newCarrinho = _carrinhos.first.copyWith(
       situacao: ExpedicaoCarrinhoSituacaoModel.conferido,
@@ -129,17 +140,17 @@ class CarrinhoPercursoEstagioAgruparService {
           AND CodCarrinhoPercurso = ${carrinhoAgrupado.codCarrinhoPercurso}
           AND Item = '${carrinhoAgrupado.itemAgrupamento}' ''');
 
-    if (agrupados.isEmpty) throw Exception('Carrinho agrupado não encontrado');
+    if (agrupados.isEmpty) throw AppErrorAlert('Carrinho não encontrado');
 
     final _carrinhosPercursoEstaio =
         await _carrinhoPercursoEstagioRepository.select(
       '''CodEmpresa = ${carrinhoAgrupado.codEmpresa}
-        AND CodCarrinhoPercurso = ${carrinhoAgrupado.codCarrinhoPercurso}
-        AND Item = '${carrinhoAgrupado.itemCarrinhoPercurso}' ''',
+          AND CodCarrinhoPercurso = ${carrinhoAgrupado.codCarrinhoPercurso}
+          AND Item = '${carrinhoAgrupado.itemCarrinhoPercurso}' ''',
     );
 
     if (_carrinhosPercursoEstaio.isEmpty)
-      throw Exception('Carrinho percurso estagio não encontrado');
+      throw AppErrorAlert('Carrinho percurso estagio não encontrado');
 
     final _percursoEstagio = _carrinhosPercursoEstaio.first.copyWith(
       situacao: ExpedicaoSituacaoModel.conferido,

@@ -1,4 +1,3 @@
-import 'package:app_expedicao/src/service/cancelamento_service.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +12,7 @@ import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
 import 'package:app_expedicao/src/service/separacao_remover_item_service.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dart';
 import 'package:app_expedicao/src/model/expedicao_separacao_item_consulta_model.dart';
-import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
 import 'package:app_expedicao/src/pages/Identificacao/wedgets/identificacao_dialog_widget.dart';
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_event_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_estagio_event_repository.dart';
@@ -26,6 +25,7 @@ import 'package:app_expedicao/src/service/separacao_adicionar_item_service.dart'
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
+import 'package:app_expedicao/src/service/cancelamento_service.dart';
 import 'package:app_expedicao/src/core/audio_helper.dart';
 
 class SeparacaoController extends GetxController {

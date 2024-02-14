@@ -17,7 +17,7 @@ import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinh
 import 'package:app_expedicao/src/pages/conferido_carrinhos/grid/conferido_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_cancelar_service.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_agrupar_service.dart';
-import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_model.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_services.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
@@ -129,7 +129,7 @@ class ConferidoCarrinhosController extends GetxController {
                       AND CodCarrinhoPercurso = ${item.codCarrinhoPercurso}
                       AND CodPercursoEstagio = ${item.codPercursoEstagio}
                       AND CodCarrinho = ${item.codCarrinho}
-                      AND Item = ${item.item} ''');
+                      AND Item = '${item.item}' ''');
 
               if (carrinho.isEmpty || carrinhosPercursoEstagio.isEmpty) {
                 await ConfirmationDialogMessageWidget.show(
@@ -202,14 +202,14 @@ class ConferidoCarrinhosController extends GetxController {
               CodEmpresa = ${item.codEmpresa}
             AND CodCarrinhoPercurso = ${item.codCarrinhoPercurso}
             AND CodCarrinho = ${item.codCarrinho}
-            AND Item = ${item.item} ''');
+            AND Item = '${item.item}' ''');
 
       if (carrinho.isEmpty || carrinhosPercursoEstagio.isEmpty) {
         await ConfirmationDialogMessageWidget.show(
           canCloseWindow: false,
           context: Get.context!,
           message: 'Carrinho não encontrado!',
-          detail: 'Carrinho não encontrado na tabela percurso estagio!',
+          detail: '''Carrinho não encontrado na tabela percurso estagio!''',
         );
 
         return;
@@ -245,11 +245,11 @@ class ConferidoCarrinhosController extends GetxController {
     };
 
     _conferidoCarrinhoGridController.onPressedGroup = (item) async {
-      bool _viewMode = [
-        ExpedicaoSituacaoModel.cancelada,
-        ExpedicaoSituacaoModel.conferido,
-        ExpedicaoSituacaoModel.agrupado
-      ].contains(item.situacao);
+      // bool _viewMode = [
+      //   ExpedicaoSituacaoModel.cancelada,
+      //   ExpedicaoSituacaoModel.conferido,
+      //   ExpedicaoSituacaoModel.agrupado
+      // ].contains(item.situacao);
 
       bool _isValidGroup = [
         ExpedicaoSituacaoModel.conferido,
@@ -259,9 +259,9 @@ class ConferidoCarrinhosController extends GetxController {
         await ConfirmationDialogMessageWidget.show(
           canCloseWindow: false,
           context: Get.context!,
-          message: 'Carrinho não conferido!',
+          message: 'Carrinho ${item.situacao.toLowerCase()}!',
           detail:
-              'Não é possível agrupar um carrinho que estaja ${item.situacao}!',
+              '''Não é possível agrupar um carrinho que estaja ${item.situacao}!''',
         );
 
         return;
@@ -364,7 +364,7 @@ class ConferidoCarrinhosController extends GetxController {
               CodEmpresa = ${item.codEmpresa}
             AND CodCarrinhoPercurso = ${item.codCarrinhoPercurso}
             AND CodCarrinho = ${item.codCarrinho}
-            AND Item = ${item.item} ''');
+            AND Item = '${item.item}' ''');
 
       if (carrinho.isEmpty || carrinhosPercursoEstagio.isEmpty) {
         await ConfirmationDialogMessageWidget.show(
@@ -499,16 +499,17 @@ class ConferidoCarrinhosController extends GetxController {
     carrinhoPercursoEvent.addListener(
       RepositoryEventListenerModel(
         id: uuid.v4(),
+        allEvent: true,
         event: Event.insert,
         callback: (data) async {
           for (var el in data.mutation) {
-            final car =
+            final event =
                 ExpedicaoCarrinhoPercursoEstagioConsultaModel.fromJson(el);
 
-            if (car.codEmpresa == _processoExecutavel.codEmpresa &&
-                car.origem == _processoExecutavel.origem &&
-                car.codOrigem == _processoExecutavel.codOrigem) {
-              _conferidoCarrinhoGridController.addGrid(car);
+            if (event.codEmpresa == _processoExecutavel.codEmpresa &&
+                event.origem == _processoExecutavel.origem &&
+                event.codOrigem == _processoExecutavel.codOrigem) {
+              _conferidoCarrinhoGridController.addGrid(event);
               _conferidoCarrinhoGridController.update();
             }
           }
@@ -520,16 +521,17 @@ class ConferidoCarrinhosController extends GetxController {
     carrinhoPercursoEvent.addListener(
       RepositoryEventListenerModel(
         id: uuid.v4(),
+        allEvent: true,
         event: Event.update,
         callback: (data) async {
           for (var el in data.mutation) {
-            final car =
+            final event =
                 ExpedicaoCarrinhoPercursoEstagioConsultaModel.fromJson(el);
 
-            if (car.codEmpresa == _processoExecutavel.codEmpresa &&
-                car.origem == _processoExecutavel.origem &&
-                car.codOrigem == _processoExecutavel.codOrigem) {
-              _conferidoCarrinhoGridController.updateGrid(car);
+            if (event.codEmpresa == _processoExecutavel.codEmpresa &&
+                event.origem == _processoExecutavel.origem &&
+                event.codOrigem == _processoExecutavel.codOrigem) {
+              _conferidoCarrinhoGridController.updateGrid(event);
               _conferidoCarrinhoGridController.update();
             }
           }
@@ -541,16 +543,17 @@ class ConferidoCarrinhosController extends GetxController {
     carrinhoPercursoEvent.addListener(
       RepositoryEventListenerModel(
         id: uuid.v4(),
+        allEvent: true,
         event: Event.delete,
         callback: (data) async {
           for (var el in data.mutation) {
-            final car =
+            final event =
                 ExpedicaoCarrinhoPercursoEstagioConsultaModel.fromJson(el);
 
-            if (car.codEmpresa == _processoExecutavel.codEmpresa &&
-                car.origem == _processoExecutavel.origem &&
-                car.codOrigem == _processoExecutavel.codOrigem) {
-              _conferidoCarrinhoGridController.removeGrid(car);
+            if (event.codEmpresa == _processoExecutavel.codEmpresa &&
+                event.origem == _processoExecutavel.origem &&
+                event.codOrigem == _processoExecutavel.codOrigem) {
+              _conferidoCarrinhoGridController.removeGrid(event);
               _conferidoCarrinhoGridController.update();
             }
           }

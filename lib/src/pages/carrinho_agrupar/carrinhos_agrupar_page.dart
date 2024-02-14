@@ -87,6 +87,7 @@ class CarrinhosAgruparPage {
                 children: [
                   ButtonHeadForm(
                     title: 'Agrupar tudo',
+                    shortCut: 'F7',
                     onPressed: controller.onAgruparTudo,
                     icon: const Icon(
                       BootstrapIcons.layers_fill,
@@ -96,6 +97,7 @@ class CarrinhosAgruparPage {
                   ),
                   ButtonHeadForm(
                     title: 'Desagrupar tudo',
+                    shortCut: 'F8',
                     onPressed: controller.onDesabruparTudo,
                     icon: const Icon(
                       BootstrapIcons.layers,

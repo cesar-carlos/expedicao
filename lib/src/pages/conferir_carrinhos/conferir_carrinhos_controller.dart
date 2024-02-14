@@ -7,7 +7,7 @@ import 'package:app_expedicao/src/model/expedicao_carrinho_conferir_consulta_mod
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_estagio_event_repository.dart';
 import 'package:app_expedicao/src/pages/conferir_carrinhos/grid/conferir_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/repository/expedicao_conferir/conferir_event_repository.dart';
-import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_consulta_model.dart';
 import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
@@ -88,40 +88,40 @@ class ConferirCarrinhosController extends GetxController {
         allEvent: true,
         callback: (data) async {
           for (var el in data.mutation) {
-            final item = ExpedicaoConferirConsultaModel.fromJson(el);
+            final event = ExpedicaoConferirConsultaModel.fromJson(el);
 
-            _conferirConsulta = item;
-            _expedicaoSituacao = item.situacao;
+            _conferirConsulta = event;
+            _expedicaoSituacao = event.situacao;
             update();
           }
         },
       ),
     );
 
-    _carrinhoPercursoEstagioEvent.addListener(
-      RepositoryEventListenerModel(
-        id: uuid.v4(),
-        event: Event.insert,
-        allEvent: true,
-        callback: (data) async {
-          for (var el in data.mutation) {
-            final item =
-                ExpedicaoCarrinhoPercursoEstagioConsultaModel.fromJson(el);
+    // _carrinhoPercursoEstagioEvent.addListener(
+    //   RepositoryEventListenerModel(
+    //     id: uuid.v4(),
+    //     event: Event.insert,
+    //     allEvent: true,
+    //     callback: (data) async {
+    //       for (var el in data.mutation) {
+    //         final event =
+    //             ExpedicaoCarrinhoPercursoEstagioConsultaModel.fromJson(el);
 
-            if (item.codEmpresa == _processoExecutavel.codEmpresa &&
-                item.origem == _processoExecutavel.origem &&
-                item.codOrigem == _processoExecutavel.codOrigem) {
-              _conferirServices
-                  .carrinhoConferir(item.codCarrinho)
-                  .then((value) {
-                _conferirCarrinhoGridController.updateGrid(value);
-                _conferirCarrinhoGridController.update();
-              });
-            }
-          }
-        },
-      ),
-    );
+    //         if (event.codEmpresa == _processoExecutavel.codEmpresa &&
+    //             event.origem == _processoExecutavel.origem &&
+    //             event.codOrigem == _processoExecutavel.codOrigem) {
+    //           _conferirServices
+    //               .carrinhoConferir(event.codCarrinho)
+    //               .then((value) {
+    //             _conferirCarrinhoGridController.updateGrid(value);
+    //             _conferirCarrinhoGridController.update();
+    //           });
+    //         }
+    //       }
+    //     },
+    //   ),
+    // );
 
     _carrinhoPercursoEstagioEvent.addListener(
       RepositoryEventListenerModel(
@@ -130,14 +130,14 @@ class ConferirCarrinhosController extends GetxController {
         allEvent: true,
         callback: (data) async {
           for (var el in data.mutation) {
-            final item =
+            final event =
                 ExpedicaoCarrinhoPercursoEstagioConsultaModel.fromJson(el);
 
-            if (item.codEmpresa == _processoExecutavel.codEmpresa &&
-                item.origem == _processoExecutavel.origem &&
-                item.codOrigem == _processoExecutavel.codOrigem) {
+            if (event.codEmpresa == _processoExecutavel.codEmpresa &&
+                event.origem == _processoExecutavel.origem &&
+                event.codOrigem == _processoExecutavel.codOrigem) {
               _conferirServices
-                  .carrinhoConferir(item.codCarrinho)
+                  .carrinhoConferir(event.codCarrinho)
                   .then((value) {
                 _conferirCarrinhoGridController.updateGrid(value);
                 _conferirCarrinhoGridController.update();

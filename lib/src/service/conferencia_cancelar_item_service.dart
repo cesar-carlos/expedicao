@@ -1,6 +1,6 @@
 import 'package:app_expedicao/src/model/expedicao_item_situacao_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_conferencia_item/conferencia_item_repository.dart';
-import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferencia_item_model.dart';
 
 class ConferenciaCancelarItemService {

@@ -2,8 +2,8 @@ import 'package:app_expedicao/src/repository/sequencia_registro/sequencia_regist
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_estagio_consulta_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_estagio_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_repository.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinhos/carrinho_repository.dart';
-import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 
 class CarrinhoPercursoServices {

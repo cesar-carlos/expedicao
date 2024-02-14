@@ -32,9 +32,7 @@ class ConferidoCarrinhosWidget extends StatelessWidget {
                 ),
               ),
             ),
-            const Expanded(
-              child: ConferidoCarrinhoGrid(),
-            ),
+            const Expanded(child: ConferidoCarrinhoGrid()),
           ]),
         );
       },

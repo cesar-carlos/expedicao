@@ -4,7 +4,7 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import 'package:app_expedicao/src/pages/separarado_carrinhos/grid/separarado_carrinho_grid_cells.dart';
 import 'package:app_expedicao/src/pages/separarado_carrinhos/grid/separarado_carrinho_grid_controller.dart';
-import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
 import 'package:app_expedicao/src/app/app_helper.dart';
 
 class SeparadoCarrinhoGridSource extends DataGridSource {
