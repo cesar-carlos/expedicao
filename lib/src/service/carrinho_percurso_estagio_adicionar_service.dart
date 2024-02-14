@@ -7,7 +7,7 @@ import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_estagio_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_estagio/expedicao_estagio_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinhos/carrinho_repository.dart';
-import 'package:app_expedicao/src/model/expedicao_percurso_estagio_model.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_model.dart';
 import 'package:app_expedicao/src/model/expedicao_estagio_model.dart';
 
@@ -22,7 +22,7 @@ class CarrinhoPercursoEstagioAdicionarService {
     required this.carrinhoPercurso,
   });
 
-  Future<ExpedicaoPercursoEstagioModel?> execute() async {
+  Future<ExpedicaoCarrinhoPercursoEstagioModel?> execute() async {
     final creatEstagio = await _createPercursoEstagio();
     await CarrinhoRepository().update(carrinho);
 
@@ -36,7 +36,7 @@ class CarrinhoPercursoEstagioAdicionarService {
     return null;
   }
 
-  Future<ExpedicaoPercursoEstagioModel> _createPercursoEstagio() async {
+  Future<ExpedicaoCarrinhoPercursoEstagioModel> _createPercursoEstagio() async {
     final percurso = await _findcodPercursoEstagio();
     String origem = _processo.origem;
     String situacao = '';
@@ -53,7 +53,7 @@ class CarrinhoPercursoEstagioAdicionarService {
         ExpedicaoSituacaoModel.conferindo;
     }
 
-    return ExpedicaoPercursoEstagioModel(
+    return ExpedicaoCarrinhoPercursoEstagioModel(
       codEmpresa: carrinhoPercurso.codEmpresa,
       codCarrinhoPercurso: carrinhoPercurso.codCarrinhoPercurso,
       item: '',

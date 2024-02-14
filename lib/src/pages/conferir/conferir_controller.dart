@@ -68,6 +68,10 @@ class ConferirController extends GetxController {
       return ExpedicaoSituacaoModel.finalizada;
     }
 
+    if (_expedicaoSituacao == ExpedicaoSituacaoModel.agrupado) {
+      return ExpedicaoSituacaoModel.agrupado;
+    }
+
     return ExpedicaoSituacaoModel.situacao[_expedicaoSituacao] ?? '';
   }
 
@@ -129,8 +133,10 @@ class ConferirController extends GetxController {
   }
 
   Future<void> _fillCarrinhoConferir() async {
-    final conferirCarr = await _conferirConsultaServices.carrinhosConferir();
-    _conferirCarrinhosController.addAllCarrinho(conferirCarr);
+    final carrinhoConferirConsulta =
+        await _conferirConsultaServices.carrinhosConferir();
+    _conferirCarrinhosController.addAllCarrinho(carrinhoConferirConsulta);
+
     _conferirCarrinhosController.update();
   }
 
@@ -138,9 +144,7 @@ class ConferirController extends GetxController {
     final params = '''
         CodEmpresa = ${_conferirConsulta.codEmpresa}
       AND Origem = '${_conferirConsulta.origem}'
-      AND CodOrigem = ${_conferirConsulta.codOrigem}
-
-    ''';
+      AND CodOrigem = ${_conferirConsulta.codOrigem} ''';
 
     final carrinhoPercursos = await CarrinhoPercursoServices().select(params);
 
@@ -191,7 +195,7 @@ class ConferirController extends GetxController {
         canCloseWindow: false,
         context: Get.context!,
         message: 'Conferencia já embalada!',
-        detail: 'Conferencia já embalada, não é possível finalizar.',
+        detail: 'Conferencia embalada, não é possível adicionar carrinhos.',
       );
 
       return;
@@ -218,24 +222,12 @@ class ConferirController extends GetxController {
       return;
     }
 
-    if (_expedicaoSituacao == ExpedicaoSituacaoModel.embalando) {
-      await ConfirmationDialogMessageWidget.show(
-        canCloseWindow: false,
-        context: Get.context!,
-        message: 'Conferencia em andamento!',
-        detail: 'Conferencia embalada, não é possível adicionar carrinhos.',
-      );
-
-      return;
-    }
-
-    await iniciarConferencia();
-
     final dialog = AdicionarCarrinhoDialogWidget(canCloseWindow: false);
-
     final carrinhoConsulta = await dialog.show();
 
     if (carrinhoConsulta != null) {
+      await iniciarConferencia();
+
       final carrinho = ExpedicaoCarrinhoModel(
         codEmpresa: carrinhoConsulta.codEmpresa,
         codCarrinho: carrinhoConsulta.codCarrinho,

@@ -87,19 +87,6 @@ class CarrinhosAgruparGridColumns {
     );
     _columns.add(
       GridColumn(
-        visible: false,
-        columnName: 'codOrigem',
-        label: Container(
-          padding: padding,
-          alignment: Alignment.centerLeft,
-          child: const Text(
-            'codOrigem',
-          ),
-        ),
-      ),
-    );
-    _columns.add(
-      GridColumn(
         visible: true,
         maximumWidth: 70,
         columnName: 'codCarrinho',

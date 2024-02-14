@@ -25,12 +25,21 @@ class ButtonFormElement extends StatelessWidget {
         focusNode: focusNode,
         clipBehavior: Clip.antiAliasWithSaveLayer,
         style: ButtonStyle(
+          overlayColor: MaterialStateProperty.resolveWith<Color>(
+            (Set<MaterialState> states) {
+              if (states.contains(MaterialState.hovered))
+                return AppColor.hoverColor; // Cor de hover
+              if (states.contains(MaterialState.pressed))
+                return AppColor.clickColor; // Cor quando pressionado
+              return AppColor.backGroundButton; // Cor padrão
+            },
+          ),
           backgroundColor: MaterialStateProperty.all<Color>(
             AppColor.backGroundButton,
           ),
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
             const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(5)),
+              borderRadius: BorderRadius.all(Radius.circular(5.0)),
             ),
           ),
         ),

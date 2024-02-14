@@ -16,7 +16,7 @@ class CarrinhoPercursoEstagioConsultaRepository {
 
   Future<List<ExpedicaoCarrinhoPercursoEstagioConsultaModel>> select(
       [String params = '']) {
-    final event = '${socket.id} carrinho.percurso.consulta';
+    final event = '${socket.id} carrinho.percurso.estagio.consulta';
     final completer =
         Completer<List<ExpedicaoCarrinhoPercursoEstagioConsultaModel>>();
     final resposeIn = uuid.v4();

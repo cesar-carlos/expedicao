@@ -15,9 +15,7 @@ class ConferenciaSituacaoCarrinhoService {
     final params = '''
         codEmpresa = $codEmpresa 
       AND codConferir = $codConferir 
-      AND codCarrinho = $codCarrinho
-
-    ''';
+      AND codCarrinho = $codCarrinho ''';
 
     final carrinhos = await ConferirCarrinhoConsultaRepository().select(params);
     if (carrinhos.isEmpty) return null;

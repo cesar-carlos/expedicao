@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 
 import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
-import 'package:app_expedicao/src/model/expedicao_percurso_estagio_model.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_estagio/expedicao_estagio_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_cancelamento/cancelamento_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_estagio_repository.dart';
@@ -16,7 +16,7 @@ class CarrinhoPercursoEstagioCancelarService {
   final _processo = Get.find<ProcessoExecutavelModel>();
 
   final ExpedicaoCarrinhoModel carrinho;
-  final ExpedicaoPercursoEstagioModel percursoEstagio;
+  final ExpedicaoCarrinhoPercursoEstagioModel percursoEstagio;
 
   CarrinhoPercursoEstagioCancelarService({
     required this.carrinho,

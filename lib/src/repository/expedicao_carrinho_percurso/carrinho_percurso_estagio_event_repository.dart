@@ -6,8 +6,8 @@ import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
 import 'package:app_expedicao/src/model/basic_event_model.dart';
 import 'package:app_expedicao/src/app/app_socket_config.dart';
 
-class CarrinhoPercursoEventRepository implements EventContract {
-  static CarrinhoPercursoEventRepository? _instancia;
+class CarrinhoPercursoEstagioEventRepository implements EventContract {
+  static CarrinhoPercursoEstagioEventRepository? _instancia;
   final List<RepositoryEventListenerModel> _listener = [];
 
   @override
@@ -15,14 +15,14 @@ class CarrinhoPercursoEventRepository implements EventContract {
 
   final _appSocket = Get.find<AppSocketConfig>();
 
-  CarrinhoPercursoEventRepository._() {
+  CarrinhoPercursoEstagioEventRepository._() {
     _onInsert();
     _onUpdate();
     _onDelete();
   }
 
-  static CarrinhoPercursoEventRepository get instancia {
-    _instancia ??= CarrinhoPercursoEventRepository._();
+  static CarrinhoPercursoEstagioEventRepository get instancia {
+    _instancia ??= CarrinhoPercursoEstagioEventRepository._();
     return _instancia!;
   }
 

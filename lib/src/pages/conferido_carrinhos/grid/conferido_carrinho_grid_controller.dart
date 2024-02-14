@@ -108,6 +108,8 @@ class ConferidoCarrinhoGridController extends GetxController {
         color = Colors.grey;
       case ExpedicaoSituacaoModel.conferido:
         color = Colors.grey;
+      case ExpedicaoSituacaoModel.agrupado:
+        color = Colors.grey;
     }
 
     return Icon(
@@ -120,19 +122,24 @@ class ConferidoCarrinhoGridController extends GetxController {
   Icon iconEdit(ExpedicaoCarrinhoPercursoEstagioConsultaModel item) {
     Color color = Colors.blue;
 
+    bool isViewIcon = [
+      ExpedicaoSituacaoModel.cancelada,
+      ExpedicaoSituacaoModel.conferido,
+      ExpedicaoSituacaoModel.agrupado
+    ].contains(item.situacao);
+
     switch (item.situacao) {
       case ExpedicaoSituacaoModel.cancelada:
         color = Colors.red;
       case ExpedicaoSituacaoModel.conferido:
         color = Colors.green;
+      case ExpedicaoSituacaoModel.agrupado:
+        color = Colors.green;
     }
 
     return Icon(
       size: iconSize,
-      item.situacao != ExpedicaoSituacaoModel.cancelada &&
-              item.situacao != ExpedicaoSituacaoModel.conferido
-          ? Icons.edit
-          : Icons.visibility,
+      !isViewIcon ? Icons.edit : Icons.visibility,
       color: color,
     );
   }
@@ -144,6 +151,8 @@ class ConferidoCarrinhoGridController extends GetxController {
       case ExpedicaoSituacaoModel.cancelada:
         color = Colors.grey;
       case ExpedicaoSituacaoModel.conferindo:
+        color = Colors.grey;
+      case ExpedicaoSituacaoModel.agrupado:
         color = Colors.grey;
       case ExpedicaoSituacaoModel.conferido:
         color = Colors.blue;
@@ -163,6 +172,8 @@ class ConferidoCarrinhoGridController extends GetxController {
       case ExpedicaoSituacaoModel.cancelada:
         color = Colors.grey;
       case ExpedicaoSituacaoModel.conferido:
+        color = Colors.grey;
+      case ExpedicaoSituacaoModel.agrupado:
         color = Colors.grey;
     }
 

@@ -1,6 +1,6 @@
 import 'package:app_expedicao/src/app/app_helper.dart';
 
-class ExpedicaoPercursoEstagioModel {
+class ExpedicaoCarrinhoPercursoEstagioModel {
   final int codEmpresa;
   final int codCarrinhoPercurso;
   final String item;
@@ -18,7 +18,7 @@ class ExpedicaoPercursoEstagioModel {
   final int? codUsuarioFinalizacao;
   final String? nomeUsuarioFinalizacao;
 
-  ExpedicaoPercursoEstagioModel({
+  ExpedicaoCarrinhoPercursoEstagioModel({
     required this.codEmpresa,
     required this.codCarrinhoPercurso,
     required this.item,
@@ -37,7 +37,7 @@ class ExpedicaoPercursoEstagioModel {
     this.nomeUsuarioFinalizacao,
   });
 
-  ExpedicaoPercursoEstagioModel copyWith({
+  ExpedicaoCarrinhoPercursoEstagioModel copyWith({
     int? codEmpresa,
     int? codCarrinhoPercurso,
     String? item,
@@ -55,7 +55,7 @@ class ExpedicaoPercursoEstagioModel {
     int? codUsuarioFinalizacao,
     String? nomeUsuarioFinalizacao,
   }) {
-    return ExpedicaoPercursoEstagioModel(
+    return ExpedicaoCarrinhoPercursoEstagioModel(
       codEmpresa: codEmpresa ?? this.codEmpresa,
       codCarrinhoPercurso: codCarrinhoPercurso ?? this.codCarrinhoPercurso,
       item: item ?? this.item,
@@ -77,8 +77,9 @@ class ExpedicaoPercursoEstagioModel {
     );
   }
 
-  factory ExpedicaoPercursoEstagioModel.fromJson(Map<String, dynamic> map) {
-    return ExpedicaoPercursoEstagioModel(
+  factory ExpedicaoCarrinhoPercursoEstagioModel.fromJson(
+      Map<String, dynamic> map) {
+    return ExpedicaoCarrinhoPercursoEstagioModel(
       codEmpresa: map['CodEmpresa'],
       codCarrinhoPercurso: map['CodCarrinhoPercurso'],
       item: map['Item'],

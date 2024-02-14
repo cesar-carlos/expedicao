@@ -13,7 +13,7 @@ class ExpedicaoCarrinhoConferirConsultaModel {
   final int codCarrinho;
   final String nomeCarrinho;
   final String codigoBarrasCarrinho;
-  String situacaoCarrinho;
+  final String situacaoCarrinhoConferencia;
   final DateTime dataInicioPercurso;
   final String horaInicioPercurso;
   final int codPercursoEstagio;
@@ -42,7 +42,7 @@ class ExpedicaoCarrinhoConferirConsultaModel {
     required this.codCarrinho,
     required this.nomeCarrinho,
     required this.codigoBarrasCarrinho,
-    required this.situacaoCarrinho,
+    required this.situacaoCarrinhoConferencia,
     required this.dataInicioPercurso,
     required this.horaInicioPercurso,
     required this.codPercursoEstagio,
@@ -59,6 +59,73 @@ class ExpedicaoCarrinhoConferirConsultaModel {
     required this.totalItemConferido,
   });
 
+  ExpedicaoCarrinhoConferirConsultaModel copyWith({
+    int? codEmpresa,
+    int? codConferir,
+    String? origem,
+    int? codOrigem,
+    String? situacao,
+    int? codCarrinhoPercurso,
+    String? itemCarrinhoPercurso,
+    int? codPrioridade,
+    String? nomePrioridade,
+    int? codCarrinho,
+    String? nomeCarrinho,
+    String? codigoBarrasCarrinho,
+    String? situacaoCarrinhoConferencia,
+    DateTime? dataInicioPercurso,
+    String? horaInicioPercurso,
+    int? codPercursoEstagio,
+    String? nomePercursoEstagio,
+    int? codUsuarioInicioEstagio,
+    String? nomeUsuarioInicioEstagio,
+    DateTime? dataInicioEstagio,
+    String? horaInicioEstagio,
+    int? codUsuarioFinalizacaoEstagio,
+    String? nomeUsuarioFinalizacaoEstagio,
+    DateTime? dataFinalizacaoEstagio,
+    String? horaFinalizacaoEstagio,
+    double? totalItemConferir,
+    double? totalItemConferido,
+  }) {
+    return ExpedicaoCarrinhoConferirConsultaModel(
+      codEmpresa: codEmpresa ?? this.codEmpresa,
+      codConferir: codConferir ?? this.codConferir,
+      origem: origem ?? this.origem,
+      codOrigem: codOrigem ?? this.codOrigem,
+      situacao: situacao ?? this.situacao,
+      codCarrinhoPercurso: codCarrinhoPercurso ?? this.codCarrinhoPercurso,
+      itemCarrinhoPercurso: itemCarrinhoPercurso ?? this.itemCarrinhoPercurso,
+      codPrioridade: codPrioridade ?? this.codPrioridade,
+      nomePrioridade: nomePrioridade ?? this.nomePrioridade,
+      codCarrinho: codCarrinho ?? this.codCarrinho,
+      nomeCarrinho: nomeCarrinho ?? this.nomeCarrinho,
+      codigoBarrasCarrinho: codigoBarrasCarrinho ?? this.codigoBarrasCarrinho,
+      situacaoCarrinhoConferencia:
+          situacaoCarrinhoConferencia ?? this.situacaoCarrinhoConferencia,
+      dataInicioPercurso: dataInicioPercurso ?? this.dataInicioPercurso,
+      horaInicioPercurso: horaInicioPercurso ?? this.horaInicioPercurso,
+      codPercursoEstagio: codPercursoEstagio ?? this.codPercursoEstagio,
+      nomePercursoEstagio: nomePercursoEstagio ?? this.nomePercursoEstagio,
+      codUsuarioInicioEstagio:
+          codUsuarioInicioEstagio ?? this.codUsuarioInicioEstagio,
+      nomeUsuarioInicioEstagio:
+          nomeUsuarioInicioEstagio ?? this.nomeUsuarioInicioEstagio,
+      dataInicioEstagio: dataInicioEstagio ?? this.dataInicioEstagio,
+      horaInicioEstagio: horaInicioEstagio ?? this.horaInicioEstagio,
+      codUsuarioFinalizacaoEstagio:
+          codUsuarioFinalizacaoEstagio ?? this.codUsuarioFinalizacaoEstagio,
+      nomeUsuarioFinalizacaoEstagio:
+          nomeUsuarioFinalizacaoEstagio ?? this.nomeUsuarioFinalizacaoEstagio,
+      dataFinalizacaoEstagio:
+          dataFinalizacaoEstagio ?? this.dataFinalizacaoEstagio,
+      horaFinalizacaoEstagio:
+          horaFinalizacaoEstagio ?? this.horaFinalizacaoEstagio,
+      totalItemConferir: totalItemConferir ?? this.totalItemConferir,
+      totalItemConferido: totalItemConferido ?? this.totalItemConferido,
+    );
+  }
+
   factory ExpedicaoCarrinhoConferirConsultaModel.fromJson(
       Map<String, dynamic> map) {
     return ExpedicaoCarrinhoConferirConsultaModel(
@@ -74,7 +141,7 @@ class ExpedicaoCarrinhoConferirConsultaModel {
       codCarrinho: map['CodCarrinho'],
       nomeCarrinho: map['NomeCarrinho'],
       codigoBarrasCarrinho: map['CodigoBarrasCarrinho'],
-      situacaoCarrinho: map['SituacaoCarrinho'],
+      situacaoCarrinhoConferencia: map['SituacaoCarrinhoConferencia'],
       dataInicioPercurso: AppHelper.tryStringToDate(map['DataInicioPercurso']),
       horaInicioPercurso: map['HoraInicioPercurso'],
       codPercursoEstagio: map['CodPercursoEstagio'],
@@ -107,7 +174,7 @@ class ExpedicaoCarrinhoConferirConsultaModel {
       'CodCarrinho': codCarrinho,
       'NomeCarrinho': nomeCarrinho,
       'CodigoBarrasCarrinho': codigoBarrasCarrinho,
-      'SituacaoCarrinho': situacaoCarrinho,
+      'SituacaoCarrinhoConferencia': situacaoCarrinhoConferencia,
       'DataInicioPercurso': dataInicioPercurso.toIso8601String(),
       'HoraInicioPercurso': horaInicioPercurso,
       'CodPercursoEstagio': codPercursoEstagio,
@@ -141,7 +208,7 @@ class ExpedicaoCarrinhoConferirConsultaModel {
         codCarrinho: $codCarrinho, 
         nomeCarrinho: $nomeCarrinho, 
         codigoBarrasCarrinho: $codigoBarrasCarrinho, 
-        situacaoCarrinho: $situacaoCarrinho, 
+        situacaoCarrinhoConferencia: $situacaoCarrinhoConferencia,
         dataInicioPercurso: $dataInicioPercurso, 
         horaInicioPercurso: $horaInicioPercurso, 
         codPercursoEstagio: $codPercursoEstagio, 

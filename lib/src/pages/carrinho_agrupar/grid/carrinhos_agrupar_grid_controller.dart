@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_agrupamento_consulta_model.dart';
 import 'package:app_expedicao/src/pages/carrinho_agrupar/grid/carrinhos_agrupar_grid_source.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 
@@ -12,54 +12,66 @@ class CarrinhosAgruparGridController extends GetxController {
   final iconSize = 19.0;
 
   final DataGridController dataGridController = DataGridController();
-  late List<ExpedicaoCarrinhoPercursoEstagioConsultaModel> _itens = [];
+  late List<ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel> _itens = [];
 
-  List<ExpedicaoCarrinhoPercursoEstagioConsultaModel> get itens => _itens;
+  List<ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel> get itens => _itens;
 
   @override
   void onInit() {
     super.onInit();
   }
 
-  void Function(ExpedicaoCarrinhoPercursoEstagioConsultaModel item)?
+  void Function(ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel item)?
       onPressedGroup;
-  void Function(ExpedicaoCarrinhoPercursoEstagioConsultaModel item)?
+  void Function(ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel item)?
       onPressedRemove;
 
-  void addGrid(ExpedicaoCarrinhoPercursoEstagioConsultaModel item) {
+  void addGrid(ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel item) {
     _itens.add(item);
   }
 
-  void addAllGrid(List<ExpedicaoCarrinhoPercursoEstagioConsultaModel> itens) {
+  void addAllGrid(
+      List<ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel> itens) {
     _itens.addAll(itens);
   }
 
-  void updateGrid(ExpedicaoCarrinhoPercursoEstagioConsultaModel item) {
-    final index = _itens.indexWhere((el) => el.item == item.item);
+  void updateGrid(ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel item) {
+    final index = _itens.indexWhere(
+        (el) => el.itemCarrinhoPercurso == item.itemCarrinhoPercurso);
     if (index == -1) return;
     _itens[index] = item;
   }
 
   void updateAllGrid(
-      List<ExpedicaoCarrinhoPercursoEstagioConsultaModel> itens) {
+      List<ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel> itens) {
     for (var el in itens) {
-      final index = _itens.indexWhere((i) => i.item == el.item);
+      final index = _itens
+          .indexWhere((i) => i.itemCarrinhoPercurso == el.itemCarrinhoPercurso);
       if (index == -1) return;
       _itens[index] = el;
     }
   }
 
   void updateGridSituationItem(String item, String situacao) {
-    final index = _itens.indexWhere((el) => el.item == item);
+    final index = _itens.indexWhere((el) => el.itemCarrinhoPercurso == item);
     if (index == -1) return;
     _itens[index] = _itens[index].copyWith(situacao: situacao);
   }
 
-  void removeGrid(ExpedicaoCarrinhoPercursoEstagioConsultaModel item) {
+  ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel? findCodigoBarras(
+      String codigoBarras) {
+    final item = _itens.firstWhereOrNull(
+      (el) => el.codigoBarrasCarrinho == codigoBarras,
+    );
+
+    return item;
+  }
+
+  void removeGrid(ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel item) {
     _itens.removeWhere((el) =>
         el.codEmpresa == item.codEmpresa &&
         el.codCarrinho == item.codCarrinho &&
-        el.item == item.item);
+        el.itemCarrinhoPercurso == item.itemCarrinhoPercurso);
   }
 
   void removeAllGrid() {
@@ -68,26 +80,26 @@ class CarrinhosAgruparGridController extends GetxController {
 
   Future<void> onRemoveItem(
     CarrinhosAgruparGridSource grid,
-    ExpedicaoCarrinhoPercursoEstagioConsultaModel item,
+    ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel item,
   ) async {
     onPressedRemove?.call(item);
   }
 
   void onGroupItem(
     CarrinhosAgruparGridSource grid,
-    ExpedicaoCarrinhoPercursoEstagioConsultaModel item,
+    ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel item,
   ) {
     onPressedGroup?.call(item);
   }
 
-  Icon iconRemove(ExpedicaoCarrinhoPercursoEstagioConsultaModel item) {
+  Icon iconRemove(ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel item) {
     Color color = Colors.red;
 
     switch (item.situacao) {
-      case ExpedicaoSituacaoModel.cancelada:
-        color = Colors.grey;
       case ExpedicaoSituacaoModel.conferido:
         color = Colors.grey;
+      case ExpedicaoSituacaoModel.agrupado:
+        color = Colors.red;
     }
 
     return Icon(
@@ -97,12 +109,12 @@ class CarrinhosAgruparGridController extends GetxController {
     );
   }
 
-  Icon iconGroup(ExpedicaoCarrinhoPercursoEstagioConsultaModel item) {
+  Icon iconGroup(ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel item) {
     Color color = Colors.blue;
 
     switch (item.situacao) {
-      case ExpedicaoSituacaoModel.cancelada:
-        color = Colors.red;
+      case ExpedicaoSituacaoModel.agrupado:
+        color = Colors.grey;
       case ExpedicaoSituacaoModel.conferido:
         color = Colors.green;
     }
@@ -114,7 +126,7 @@ class CarrinhosAgruparGridController extends GetxController {
     );
   }
 
-  Widget iconIndicator(ExpedicaoCarrinhoPercursoEstagioConsultaModel item) {
+  Widget iconIndicator(ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel item) {
     Color color = Theme.of(Get.context!).primaryColor;
 
     switch (item.situacao) {

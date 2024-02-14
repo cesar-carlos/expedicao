@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 
 import 'package:app_expedicao/src/model/expedicao_carrinho_model.dart';
-import 'package:app_expedicao/src/model/expedicao_percurso_estagio_model.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinhos/carrinho_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_estagio_repository.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
@@ -9,7 +9,7 @@ import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 class CarrinhoPercursoEstagioFinalizarService {
   final _processo = Get.find<ProcessoExecutavelModel>();
 
-  final ExpedicaoPercursoEstagioModel carrinhoPercursoEstagio;
+  final ExpedicaoCarrinhoPercursoEstagioModel carrinhoPercursoEstagio;
   final ExpedicaoCarrinhoModel carrinho;
 
   CarrinhoPercursoEstagioFinalizarService({

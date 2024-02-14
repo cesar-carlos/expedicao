@@ -4,6 +4,8 @@ abstract class ExpedicaoOrigemModel {
   static const String expedicao = 'EX';
   static const String carrinhoPercurso = 'CP';
   static const String conferenciaFinal = 'CF';
+  static const String embalagem = 'EM';
+  static const String agrupado = 'AG';
   static const String vazio = '';
 
   static String getDescricao(String origem) {
@@ -17,6 +19,7 @@ abstract class ExpedicaoOrigemModel {
     'CP': 'Carrinho Percurso',
     'CF': 'Conferencia',
     'EM': 'Embalagem',
+    'AG': 'Agrupado',
     '': ''
   };
 }

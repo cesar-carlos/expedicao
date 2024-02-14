@@ -1,22 +1,25 @@
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
-import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
-import 'package:app_expedicao/src/model/expedicao_carrinho_consulta_model.dart';
+import 'package:app_expedicao/src/service/conferir_consultas_services.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_conferir_consulta_model.dart';
-import 'package:app_expedicao/src/repository/expedicao_carrinhos/carrinho_event_repository.dart';
-import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_event_repository.dart';
+import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_estagio_event_repository.dart';
 import 'package:app_expedicao/src/pages/conferir_carrinhos/grid/conferir_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/repository/expedicao_conferir/conferir_event_repository.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_consulta_model.dart';
 import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
-import 'package:app_expedicao/src/service/conferir_consultas_services.dart';
+import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 
 class ConferirCarrinhosController extends GetxController {
   late String _expedicaoSituacao;
   late ProcessoExecutavelModel _processoExecutavel;
-  final List<RepositoryEventListenerModel> _pageListerner = [];
+
+  final _conferirEvent = ConferirEventRepository.instancia;
+
+  final _carrinhoPercursoEstagioEvent =
+      CarrinhoPercursoEstagioEventRepository.instancia;
 
   // ignore: unused_field
   late ConferirConsultaServices _conferirServices;
@@ -42,6 +45,7 @@ class ConferirCarrinhosController extends GetxController {
 
     _conferirCarrinhoGridController =
         Get.find<ConferirCarrinhoGridController>();
+
     _processoExecutavel = Get.find<ProcessoExecutavelModel>();
 
     _conferirServices = ConferirConsultaServices(
@@ -55,7 +59,6 @@ class ConferirCarrinhosController extends GetxController {
   @override
   onReady() async {
     super.onReady();
-    _evetsCarrinhoGrid();
     _liteners();
   }
 
@@ -75,32 +78,10 @@ class ConferirCarrinhosController extends GetxController {
     _conferirCarrinhoGridController.update();
   }
 
-  _evetsCarrinhoGrid() {}
-
   _liteners() {
     const uuid = Uuid();
-    final carrinhoEvent = CarrinhoEventRepository.instancia;
-    final conferirEventRepository = ConferirEventRepository.instancia;
 
-    carrinhoEvent.addListener(RepositoryEventListenerModel(
-      id: uuid.v4(),
-      allEvent: true,
-      event: Event.update,
-      callback: (data) async {
-        for (var el in data.mutation) {
-          final cat = ExpedicaoCarrinhoConsultaModel.fromJson(el);
-
-          _conferirCarrinhoGridController.updateGridSituationCarrinho(
-            cat.codCarrinho,
-            cat.situacao,
-          );
-
-          _conferirCarrinhoGridController.update();
-        }
-      },
-    ));
-
-    conferirEventRepository.addListener(
+    _conferirEvent.addListener(
       RepositoryEventListenerModel(
         id: uuid.v4(),
         event: Event.update,
@@ -116,15 +97,57 @@ class ConferirCarrinhosController extends GetxController {
         },
       ),
     );
+
+    _carrinhoPercursoEstagioEvent.addListener(
+      RepositoryEventListenerModel(
+        id: uuid.v4(),
+        event: Event.insert,
+        allEvent: true,
+        callback: (data) async {
+          for (var el in data.mutation) {
+            final item =
+                ExpedicaoCarrinhoPercursoEstagioConsultaModel.fromJson(el);
+
+            if (item.codEmpresa == _processoExecutavel.codEmpresa &&
+                item.origem == _processoExecutavel.origem &&
+                item.codOrigem == _processoExecutavel.codOrigem) {
+              _conferirServices
+                  .carrinhoConferir(item.codCarrinho)
+                  .then((value) {
+                _conferirCarrinhoGridController.updateGrid(value);
+                _conferirCarrinhoGridController.update();
+              });
+            }
+          }
+        },
+      ),
+    );
+
+    _carrinhoPercursoEstagioEvent.addListener(
+      RepositoryEventListenerModel(
+        id: uuid.v4(),
+        event: Event.update,
+        allEvent: true,
+        callback: (data) async {
+          for (var el in data.mutation) {
+            final item =
+                ExpedicaoCarrinhoPercursoEstagioConsultaModel.fromJson(el);
+
+            if (item.codEmpresa == _processoExecutavel.codEmpresa &&
+                item.origem == _processoExecutavel.origem &&
+                item.codOrigem == _processoExecutavel.codOrigem) {
+              _conferirServices
+                  .carrinhoConferir(item.codCarrinho)
+                  .then((value) {
+                _conferirCarrinhoGridController.updateGrid(value);
+                _conferirCarrinhoGridController.update();
+              });
+            }
+          }
+        },
+      ),
+    );
   }
 
-  void _removeliteners() {
-    final carrinhoEvent = CarrinhoEventRepository.instancia;
-    final carrinhoPercursoEvent = CarrinhoPercursoEventRepository.instancia;
-    final conferirEventRepository = ConferirEventRepository.instancia;
-
-    carrinhoEvent.removeListeners(_pageListerner);
-    conferirEventRepository.removeListeners(_pageListerner);
-    carrinhoPercursoEvent.removeListeners(_pageListerner);
-  }
+  void _removeliteners() {}
 }

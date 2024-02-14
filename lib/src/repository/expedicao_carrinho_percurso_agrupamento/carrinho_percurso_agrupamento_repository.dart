@@ -32,6 +32,7 @@ class CarrinhoPercursoAgrupamentoRepository {
       socket.emit(event, jsonEncode(send.toJson()));
       socket.on(resposeIn, (receiver) {
         final data = jsonDecode(receiver) as List<dynamic>;
+
         //final error = data?['error'] ?? null;
         socket.off(resposeIn);
 

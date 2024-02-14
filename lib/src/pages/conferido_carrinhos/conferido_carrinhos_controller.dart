@@ -13,15 +13,15 @@ import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_finalizar_service.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
 import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog_generic_widget.dart';
-import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_event_repository.dart';
+import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_estagio_event_repository.dart';
 import 'package:app_expedicao/src/pages/conferido_carrinhos/grid/conferido_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_cancelar_service.dart';
+import 'package:app_expedicao/src/service/carrinho_percurso_estagio_agrupar_service.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_model.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_services.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
-import 'package:app_expedicao/src/model/expedicao_percurso_estagio_model.dart';
 import 'package:app_expedicao/src/model/expedicao_item_situacao_model.dart';
-import 'package:app_expedicao/src/pages/conferir/conferir_controller.dart';
 import 'package:app_expedicao/src/pages/conferencia/conferencia_page.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_model.dart';
 import 'package:app_expedicao/src/service/carrinho_services.dart';
@@ -89,6 +89,17 @@ class ConferidoCarrinhosController extends GetxController {
           context: Get.context!,
           message: 'Carrinho já finalizado!',
           detail: 'Não é possível cancelar um carrinho já finalizado!',
+        );
+
+        return;
+      }
+
+      if (item.situacao == ExpedicaoSituacaoModel.agrupado) {
+        await ConfirmationDialogMessageWidget.show(
+          canCloseWindow: false,
+          context: Get.context!,
+          message: 'Carrinho já finalizado!',
+          detail: 'Não é possível cancelar um carrinho já agrupado',
         );
 
         return;
@@ -179,6 +190,7 @@ class ConferidoCarrinhosController extends GetxController {
       bool _viewMode = [
         ExpedicaoSituacaoModel.cancelada,
         ExpedicaoSituacaoModel.conferido,
+        ExpedicaoSituacaoModel.agrupado
       ].contains(item.situacao);
 
       final carrinho = await CarrinhoServices().select(''' 
@@ -236,6 +248,7 @@ class ConferidoCarrinhosController extends GetxController {
       bool _viewMode = [
         ExpedicaoSituacaoModel.cancelada,
         ExpedicaoSituacaoModel.conferido,
+        ExpedicaoSituacaoModel.agrupado
       ].contains(item.situacao);
 
       bool _isValidGroup = [
@@ -248,7 +261,26 @@ class ConferidoCarrinhosController extends GetxController {
           context: Get.context!,
           message: 'Carrinho não conferido!',
           detail:
-              'Não é possível agrupar um carrinho que não esteja conferido!',
+              'Não é possível agrupar um carrinho que estaja ${item.situacao}!',
+        );
+
+        return;
+      }
+
+      final _carrinhoAgruparService = CarrinhoPercursoEstagioAgruparService(
+        codEmpresa: item.codEmpresa,
+        codCarrinhoPercurso: item.codCarrinhoPercurso,
+      );
+
+      final _carrinhoPercurso =
+          await _carrinhoAgruparService.carrinhoPercurso(item.item);
+
+      if (_carrinhoPercurso == null) {
+        await ConfirmationDialogMessageWidget.show(
+          canCloseWindow: false,
+          context: Get.context!,
+          message: 'Carrinho não encontrado!',
+          detail: 'Carrinho não encontrado na tabela percurso estagio!',
         );
 
         return;
@@ -258,7 +290,7 @@ class ConferidoCarrinhosController extends GetxController {
         size: Get.size,
         canCloseWindow: false,
         context: Get.context!,
-        percursoEstagioConsulta: item,
+        carrinhoPercursoAgrupamento: _carrinhoPercurso,
       );
     };
 
@@ -279,6 +311,17 @@ class ConferidoCarrinhosController extends GetxController {
           canCloseWindow: false,
           context: Get.context!,
           message: 'Carrinho já finalizado!',
+          detail: 'Não é possível salva um carrinho que esteja finalizado!',
+        );
+
+        return;
+      }
+
+      if (item.situacao == ExpedicaoSituacaoModel.agrupado) {
+        await ConfirmationDialogMessageWidget.show(
+          canCloseWindow: false,
+          context: Get.context!,
+          message: 'Carrinho agrupado!',
           detail: 'Não é possível salva um carrinho que esteja finalizado!',
         );
 
@@ -375,7 +418,7 @@ class ConferidoCarrinhosController extends GetxController {
           context: Get.context!,
           process: () async {
             try {
-              final newPercursoEstagio = ExpedicaoPercursoEstagioModel(
+              final newPercursoEstagio = ExpedicaoCarrinhoPercursoEstagioModel(
                 codEmpresa: item.codEmpresa,
                 codCarrinhoPercurso: item.codCarrinhoPercurso,
                 item: item.item,
@@ -415,26 +458,26 @@ class ConferidoCarrinhosController extends GetxController {
               _conferidoCarrinhoGridController.update();
 
               //FINALIZAR CONFERENCIA AUTOMATICAMENTE
-              final isComplete = await _conferirConsultaServices.isComplete();
-              final existsOpenCart =
-                  await _conferirConsultaServices.existsOpenCart();
+              // final isComplete = await _conferirConsultaServices.isComplete();
+              // final existsOpenCart =
+              //     await _conferirConsultaServices.existsOpenCart();
 
-              if (isComplete && !existsOpenCart) {
-                await LoadingProcessDialogGenericWidget.show<bool>(
-                  canCloseWindow: false,
-                  context: Get.context!,
-                  process: () async {
-                    try {
-                      final separarController = Get.find<ConferirController>();
-                      await separarController.finalizarConferencia();
-                      await Future.delayed(Duration(seconds: 1));
-                      return true;
-                    } catch (err) {
-                      return false;
-                    }
-                  },
-                );
-              }
+              // if (isComplete && !existsOpenCart) {
+              //   await LoadingProcessDialogGenericWidget.show<bool>(
+              //     canCloseWindow: false,
+              //     context: Get.context!,
+              //     process: () async {
+              //       try {
+              //         final separarController = Get.find<ConferirController>();
+              //         await separarController.finalizarConferencia();
+              //         await Future.delayed(Duration(seconds: 1));
+              //         return true;
+              //       } catch (err) {
+              //         return false;
+              //       }
+              //     },
+              //   );
+              // }
 
               return true;
             } catch (err) {
@@ -447,7 +490,9 @@ class ConferidoCarrinhosController extends GetxController {
   }
 
   _liteners() {
-    final carrinhoPercursoEvent = CarrinhoPercursoEventRepository.instancia;
+    final carrinhoPercursoEvent =
+        CarrinhoPercursoEstagioEventRepository.instancia;
+
     const uuid = Uuid();
 
     //Insert carrinho

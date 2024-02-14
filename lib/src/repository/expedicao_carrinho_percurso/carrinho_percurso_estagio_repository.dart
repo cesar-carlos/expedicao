@@ -7,7 +7,7 @@ import 'package:uuid/uuid.dart';
 import 'package:app_expedicao/src/app/app_error.dart';
 import 'package:app_expedicao/src/app/app_error_code.dart';
 import 'package:app_expedicao/src/model/send_mutation_socket_model%20copy.dart';
-import 'package:app_expedicao/src/model/expedicao_percurso_estagio_model.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_model.dart';
 import 'package:app_expedicao/src/model/send_query_socket_model%20copy.dart';
 import 'package:app_expedicao/src/app/app_socket_config.dart';
 
@@ -15,9 +15,10 @@ class CarrinhoPercursoEstagioRepository {
   final uuid = const Uuid();
   var socket = Get.find<AppSocketConfig>().socket;
 
-  Future<List<ExpedicaoPercursoEstagioModel>> select([String params = '']) {
+  Future<List<ExpedicaoCarrinhoPercursoEstagioModel>> select(
+      [String params = '']) {
     final event = '${socket.id} carrinho.percurso.estagio.select';
-    final completer = Completer<List<ExpedicaoPercursoEstagioModel>>();
+    final completer = Completer<List<ExpedicaoCarrinhoPercursoEstagioModel>>();
     final resposeIn = uuid.v4();
 
     final send = SendQuerySocketModel(
@@ -43,8 +44,8 @@ class CarrinhoPercursoEstagioRepository {
           return;
         }
 
-        final list = data.map<ExpedicaoPercursoEstagioModel>((json) {
-          return ExpedicaoPercursoEstagioModel.fromJson(json);
+        final list = data.map<ExpedicaoCarrinhoPercursoEstagioModel>((json) {
+          return ExpedicaoCarrinhoPercursoEstagioModel.fromJson(json);
         }).toList();
 
         completer.complete(list);
@@ -58,10 +59,10 @@ class CarrinhoPercursoEstagioRepository {
     }
   }
 
-  Future<List<ExpedicaoPercursoEstagioModel>> insert(
-      ExpedicaoPercursoEstagioModel entity) {
+  Future<List<ExpedicaoCarrinhoPercursoEstagioModel>> insert(
+      ExpedicaoCarrinhoPercursoEstagioModel entity) {
     final event = '${socket.id} carrinho.percurso.estagio.insert';
-    final completer = Completer<List<ExpedicaoPercursoEstagioModel>>();
+    final completer = Completer<List<ExpedicaoCarrinhoPercursoEstagioModel>>();
     final resposeIn = uuid.v4();
 
     final send = SendMutationSocketModel(
@@ -83,8 +84,9 @@ class CarrinhoPercursoEstagioRepository {
           return;
         }
 
-        final list = mutation.map<ExpedicaoPercursoEstagioModel>((json) {
-          return ExpedicaoPercursoEstagioModel.fromJson(json);
+        final list =
+            mutation.map<ExpedicaoCarrinhoPercursoEstagioModel>((json) {
+          return ExpedicaoCarrinhoPercursoEstagioModel.fromJson(json);
         }).toList();
 
         completer.complete(list);
@@ -98,10 +100,10 @@ class CarrinhoPercursoEstagioRepository {
     }
   }
 
-  Future<List<ExpedicaoPercursoEstagioModel>> update(
-      ExpedicaoPercursoEstagioModel entity) {
+  Future<List<ExpedicaoCarrinhoPercursoEstagioModel>> update(
+      ExpedicaoCarrinhoPercursoEstagioModel entity) {
     final event = '${socket.id} carrinho.percurso.estagio.update';
-    final completer = Completer<List<ExpedicaoPercursoEstagioModel>>();
+    final completer = Completer<List<ExpedicaoCarrinhoPercursoEstagioModel>>();
     final resposeIn = uuid.v4();
 
     final send = SendMutationSocketModel(
@@ -122,8 +124,9 @@ class CarrinhoPercursoEstagioRepository {
           return;
         }
 
-        final list = mutation.map<ExpedicaoPercursoEstagioModel>((json) {
-          return ExpedicaoPercursoEstagioModel.fromJson(json);
+        final list =
+            mutation.map<ExpedicaoCarrinhoPercursoEstagioModel>((json) {
+          return ExpedicaoCarrinhoPercursoEstagioModel.fromJson(json);
         }).toList();
 
         completer.complete(list);
@@ -137,10 +140,10 @@ class CarrinhoPercursoEstagioRepository {
     }
   }
 
-  Future<List<ExpedicaoPercursoEstagioModel>> delete(
-      ExpedicaoPercursoEstagioModel entity) {
+  Future<List<ExpedicaoCarrinhoPercursoEstagioModel>> delete(
+      ExpedicaoCarrinhoPercursoEstagioModel entity) {
     final event = '${socket.id} carrinho.percurso.estagio.delete';
-    final completer = Completer<List<ExpedicaoPercursoEstagioModel>>();
+    final completer = Completer<List<ExpedicaoCarrinhoPercursoEstagioModel>>();
     final resposeIn = uuid.v4();
 
     final send = SendMutationSocketModel(
@@ -162,8 +165,9 @@ class CarrinhoPercursoEstagioRepository {
           return;
         }
 
-        final list = mutation.map<ExpedicaoPercursoEstagioModel>((json) {
-          return ExpedicaoPercursoEstagioModel.fromJson(json);
+        final list =
+            mutation.map<ExpedicaoCarrinhoPercursoEstagioModel>((json) {
+          return ExpedicaoCarrinhoPercursoEstagioModel.fromJson(json);
         }).toList();
 
         completer.complete(list);

@@ -13,6 +13,7 @@ abstract class ExpedicaoSituacaoModel {
   static const entregue = 'ENTREGUE';
   static const embalando = 'EMBALANDO';
   static const finalizada = 'FINALIZADA';
+  static const agrupado = 'AGRUPADO';
   static const naoLocalizada = 'NÃO LOCALIZADO';
 
   static Map<String, String> situacao = {
@@ -29,6 +30,8 @@ abstract class ExpedicaoSituacaoModel {
     conferido: 'Conferido',
     entregue: 'Entregue',
     embalando: 'Embalando',
+    finalizada: 'Finalizada',
+    agrupado: 'Agrupado',
     naoLocalizada: 'Não Localizada',
     '': ''
   };

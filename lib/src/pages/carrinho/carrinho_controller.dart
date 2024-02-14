@@ -160,11 +160,9 @@ class CarrinhoController extends GetxController {
       return 'Carrinho não listado para esta conferência.';
     }
 
-    if (carrinhoConsulta.situacaoCarrinho !=
-            ExpedicaoCarrinhoSituacaoModel.emConferencia &&
-        carrinhoConsulta.situacaoCarrinho !=
-            ExpedicaoCarrinhoSituacaoModel.separado) {
-      return 'Carrinho com situação inválida. Situacao carrinho: ${carrinhoConsulta.situacaoCarrinho}';
+    if (carrinhoConsulta.situacaoCarrinhoConferencia !=
+        ExpedicaoCarrinhoSituacaoModel.aguardando) {
+      return 'Carrinho com situação inválida. Situacao carrinho: ${carrinhoConsulta.situacaoCarrinhoConferencia}';
     }
 
     return null;

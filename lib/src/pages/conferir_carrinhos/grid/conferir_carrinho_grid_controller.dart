@@ -49,12 +49,15 @@ class ConferirCarrinhoGridController extends GetxController {
     }
   }
 
-  void updateGridSituationCarrinho(int codCarrinho, String situacao) {
-    for (var el in _itens) {
-      if (el.codCarrinho == codCarrinho) {
-        el.situacaoCarrinho = situacao;
-      }
-    }
+  void updateGridSituationSituacaoCarrinhoConferencia(
+    int codCarrinho,
+    String situacao,
+  ) {
+    final item = _itens
+        .firstWhere((el) => el.codCarrinho == codCarrinho)
+        .copyWith(situacaoCarrinhoConferencia: situacao);
+
+    updateGrid(item);
   }
 
   void removeGrid(ExpedicaoCarrinhoConferirConsultaModel item) {
@@ -71,9 +74,7 @@ class ConferirCarrinhoGridController extends GetxController {
   void editGrid(
     ConferirCarrinhoGridSource carrinhoGrid,
     ExpedicaoCarrinhoConferirConsultaModel percursoEstagioConsulta,
-  ) {
-    //TODO: implementar
-  }
+  ) {}
 
   Future<void> onRemoveItem(
     ConferirCarrinhoGridSource grid,
@@ -217,7 +218,8 @@ class ConferirCarrinhoGridController extends GetxController {
   }
 
   iconIndicator(ExpedicaoCarrinhoConferirConsultaModel item) {
-    if (item.situacaoCarrinho == ExpedicaoSituacaoModel.conferido) {
+    if (item.situacaoCarrinhoConferencia == ExpedicaoSituacaoModel.conferido ||
+        item.situacaoCarrinhoConferencia == ExpedicaoSituacaoModel.agrupado) {
       return const Icon(
         BootstrapIcons.check_circle_fill,
         color: Colors.green,

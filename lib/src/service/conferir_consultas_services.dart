@@ -45,6 +45,17 @@ class ConferirConsultaServices {
     return response;
   }
 
+  Future<ExpedicaoCarrinhoConferirConsultaModel> carrinhoConferir(
+      int codCarrinho) async {
+    final params = ''' 
+        CodEmpresa = $codEmpresa 
+      AND CodConferir = $codConferir 
+      AND CodCarrinho = $codCarrinho ''';
+
+    final response = await ConferirCarrinhoConsultaRepository().select(params);
+    return response.first;
+  }
+
   Future<List<ExpedicaoConferirItemConsultaModel>> itensConferir() async {
     final params = ''' 
         CodEmpresa = $codEmpresa 

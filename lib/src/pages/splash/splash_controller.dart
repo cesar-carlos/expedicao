@@ -54,10 +54,9 @@ class SplashController extends GetxController {
           AppRouter.splashError,
           arguments: '''
             Processo Executavel não encontrado
-             - verifique a conexão com o servidor
-             
-             ''',
+             - verifique a conexão com o servidor ''',
         );
+
         return;
       }
 
@@ -100,8 +99,7 @@ class SplashController extends GetxController {
           arguments: '''
             Separar estoque não encontrado, 
               origem: ${_processoExecutavel!.origem}
-              codigo: ${_processoExecutavel!.codOrigem}
-          ''',
+              codigo: ${_processoExecutavel!.codOrigem} ''',
         );
 
         return;
@@ -120,8 +118,7 @@ class SplashController extends GetxController {
         Get.offNamed(AppRouter.splashError, arguments: '''
             Conferir estoque não encontrado, 
               origem: ${_processoExecutavel!.origem}
-              codigo: ${_processoExecutavel!.codOrigem}
-          ''');
+              codigo: ${_processoExecutavel!.codOrigem} ''');
 
         return;
       }

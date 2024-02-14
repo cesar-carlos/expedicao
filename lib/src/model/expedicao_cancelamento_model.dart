@@ -4,7 +4,7 @@ class ExpedicaoCancelamentoModel {
   final String origem;
   final int codOrigem;
   final String itemOrigem;
-  final int codMotivoCancelamento;
+  int? codMotivoCancelamento;
   final DateTime dataCancelamento;
   final String horaCancelamento;
   final int codUsuarioCancelamento;
@@ -17,7 +17,7 @@ class ExpedicaoCancelamentoModel {
     required this.origem,
     required this.codOrigem,
     required this.itemOrigem,
-    required this.codMotivoCancelamento,
+    this.codMotivoCancelamento,
     required this.dataCancelamento,
     required this.horaCancelamento,
     required this.codUsuarioCancelamento,

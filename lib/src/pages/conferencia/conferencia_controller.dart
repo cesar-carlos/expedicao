@@ -1,4 +1,3 @@
-import 'package:app_expedicao/src/service/cancelamento_service.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +16,7 @@ import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog_wid
 import 'package:app_expedicao/src/pages/Identificacao/wedgets/identificacao_dialog_widget.dart';
 import 'package:app_expedicao/src/repository/expedicao_conferir_item/conferir_item_event_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_conferencia_item/conferencia_item_event_repository.dart';
-import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_event_repository.dart';
+import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_estagio_event_repository.dart';
 import 'package:app_expedicao/src/pages/conferencia/grid/conferencia_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget.dart';
@@ -27,6 +26,7 @@ import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 import 'package:app_expedicao/src/service/conferir_consultas_services.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
+import 'package:app_expedicao/src/service/cancelamento_service.dart';
 
 class ConferenciaController extends GetxController {
   bool canClose = true;
@@ -145,6 +145,7 @@ class ConferenciaController extends GetxController {
 
   Future<void> _fillGridConferirItens() async {
     final conferirItens = await _conferirConsultasServices.itensConferir();
+
     final conferirItensInids =
         await _conferirConsultasServices.itensConferirUnidades();
 
@@ -162,6 +163,7 @@ class ConferenciaController extends GetxController {
 
   Future<void> _fillGridConferidoItens() async {
     final conferidoItens = await _conferirConsultasServices.itensConferencia();
+
     final conferidoItensCarrinho = conferidoItens
         .where((el) =>
             el.codCarrinhoPercurso ==
@@ -175,7 +177,8 @@ class ConferenciaController extends GetxController {
 
   bool get viewMode {
     if (percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.cancelada ||
-        percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.conferido) {
+        percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.conferido ||
+        percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.agrupado) {
       _viewMode.value = true;
     }
 
@@ -505,7 +508,9 @@ class ConferenciaController extends GetxController {
 
   void _liteners() {
     const uuid = Uuid();
-    final carrinhoPercursoEvent = CarrinhoPercursoEventRepository.instancia;
+    final carrinhoPercursoEvent =
+        CarrinhoPercursoEstagioEventRepository.instancia;
+
     final conferenciaItemEvent = ConferenciaItemEventRepository.instancia;
     final conferirItemEvent = ConferirItemEventRepository.instancia;
 
@@ -638,7 +643,9 @@ class ConferenciaController extends GetxController {
   }
 
   void _removeliteners() {
-    final carrinhoPercursoEvent = CarrinhoPercursoEventRepository.instancia;
+    final carrinhoPercursoEvent =
+        CarrinhoPercursoEstagioEventRepository.instancia;
+
     final conferenciaItemEvent = ConferenciaItemEventRepository.instancia;
     final conferirItemEvent = ConferirItemEventRepository.instancia;
 

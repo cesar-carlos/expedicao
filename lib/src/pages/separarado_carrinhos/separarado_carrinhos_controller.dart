@@ -13,7 +13,7 @@ import 'package:app_expedicao/src/service/carrinho_percurso_estagio_finalizar_se
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
 import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog_generic_widget.dart';
 import 'package:app_expedicao/src/pages/separarado_carrinhos/grid/separarado_carrinho_grid_controller.dart';
-import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_event_repository.dart';
+import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_estagio_event_repository.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_cancelar_service.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dart';
@@ -401,7 +401,8 @@ class SeparadoCarrinhosController extends GetxController {
   }
 
   _liteners() {
-    final carrinhoPercursoEvent = CarrinhoPercursoEventRepository.instancia;
+    final carrinhoPercursoEvent =
+        CarrinhoPercursoEstagioEventRepository.instancia;
     const uuid = Uuid();
 
     //insert carrinho

@@ -16,7 +16,7 @@ import 'package:app_expedicao/src/model/expedicao_separacao_item_consulta_model.
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
 import 'package:app_expedicao/src/pages/Identificacao/wedgets/identificacao_dialog_widget.dart';
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_event_repository.dart';
-import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_event_repository.dart';
+import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_estagio_event_repository.dart';
 import 'package:app_expedicao/src/pages/separacao/grid_separacao/separacao_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
 import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog_widget.dart';
@@ -577,7 +577,8 @@ class SeparacaoController extends GetxController {
 
   void _liteners() {
     const uuid = Uuid();
-    final carrinhoPercursoEvent = CarrinhoPercursoEventRepository.instancia;
+    final carrinhoPercursoEvent =
+        CarrinhoPercursoEstagioEventRepository.instancia;
     final separacaoItemEvent = SeparacaoItemEventRepository.instancia;
 
     final updateCarrinhoPercurso = RepositoryEventListenerModel(
@@ -679,7 +680,8 @@ class SeparacaoController extends GetxController {
   }
 
   void _removeliteners() {
-    final carrinhoPercursoEvent = CarrinhoPercursoEventRepository.instancia;
+    final carrinhoPercursoEvent =
+        CarrinhoPercursoEstagioEventRepository.instancia;
     final separacaoItemEvent = SeparacaoItemEventRepository.instancia;
 
     carrinhoPercursoEvent.removeListeners(_pageListerner);

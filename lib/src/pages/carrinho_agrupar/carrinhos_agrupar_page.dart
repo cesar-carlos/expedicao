@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 
-import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
 import 'package:app_expedicao/src/pages/common/form_element/button_head_form_element.dart';
 import 'package:app_expedicao/src/pages/common/form_element/space_button_head_form_element.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_agrupamento_consulta_model.dart';
 import 'package:app_expedicao/src/pages/carrinho_agrupar/grid/carrinhos_agrupar_grid_footer.dart';
 import 'package:app_expedicao/src/pages/carrinho_agrupar/carrinhos_agrupar_controller.dart';
 import 'package:app_expedicao/src/pages/carrinho_agrupar/grid/carrinhos_agrupar_grid.dart';
@@ -22,8 +22,8 @@ class CarrinhosAgruparPage {
     required Size size,
     required bool canCloseWindow,
     required BuildContext context,
-    required ExpedicaoCarrinhoPercursoEstagioConsultaModel
-        percursoEstagioConsulta,
+    required ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel
+        carrinhoPercursoAgrupamento,
   }) async {
     Get.find<AppEventState>()..canCloseWindow = canCloseWindow;
 
@@ -42,7 +42,7 @@ class CarrinhosAgruparPage {
             }
           },
           child: GetBuilder<CarrinhosAgruparController>(
-            init: CarrinhosAgruparController(percursoEstagioConsulta),
+            init: CarrinhosAgruparController(carrinhoPercursoAgrupamento),
             builder: (controller) {
               return Dialog(
                 shape: RoundedRectangleBorder(
@@ -56,7 +56,7 @@ class CarrinhosAgruparPage {
                       widthBar: size.width,
                       onPressedCloseBar: () => Get.back(),
                     ),
-                    _dailog(size, controller, percursoEstagioConsulta),
+                    _dailog(size, controller, carrinhoPercursoAgrupamento),
                   ]),
                 ),
               );
@@ -70,7 +70,8 @@ class CarrinhosAgruparPage {
   static Widget _dailog(
     Size size,
     CarrinhosAgruparController controller,
-    ExpedicaoCarrinhoPercursoEstagioConsultaModel percursoEstagioConsulta,
+    ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel
+        carrinhoPercursoAgrupamento,
   ) {
     return GetBuilder(
       init: controller,
@@ -121,9 +122,7 @@ class CarrinhosAgruparPage {
                           child: TextField(
                             readOnly: true,
                             cursorHeight: 22,
-                            controller: TextEditingController(
-                              text: percursoEstagioConsulta.nomeCarrinho,
-                            ),
+                            controller: controller.controllerNomeCarrinho,
                             textAlign: TextAlign.start,
                             decoration: InputDecoration(
                               labelText: 'Carrinho selecionado',
@@ -156,10 +155,7 @@ class CarrinhosAgruparPage {
                           child: TextField(
                             readOnly: true,
                             cursorHeight: 22,
-                            controller: TextEditingController(
-                              text:
-                                  percursoEstagioConsulta.codigoBarrasCarrinho,
-                            ),
+                            controller: controller.controllerCodigoBarras,
                             textAlign: TextAlign.start,
                             decoration: InputDecoration(
                               labelText: 'Cogigo de barras',
@@ -192,9 +188,7 @@ class CarrinhosAgruparPage {
                           child: TextField(
                             readOnly: true,
                             cursorHeight: 22,
-                            controller: TextEditingController(
-                              text: percursoEstagioConsulta.situacao,
-                            ),
+                            controller: controller.controllerCarrinhoSituacao,
                             textAlign: TextAlign.start,
                             decoration: InputDecoration(
                               labelText: 'Situação do carrinho',
@@ -232,9 +226,9 @@ class CarrinhosAgruparPage {
                       child: TextField(
                         cursorHeight: 25,
                         // enabled: viewMode,
-                        // controller: scanController,
-                        // focusNode: scanFocusNode,
-                        // onSubmitted: onSubmittedScan,
+                        controller: controller.controllerScanCarrinho,
+                        focusNode: controller.focusScanCarrinho,
+                        onSubmitted: controller.onSubmittedScan,
                         textAlign: TextAlign.start,
                         decoration: InputDecoration(
                           enabledBorder: const OutlineInputBorder(

@@ -4,7 +4,7 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import 'package:app_expedicao/src/pages/carrinho_agrupar/grid/carrinhos_agrupar_grid_cells.dart';
 import 'package:app_expedicao/src/pages/carrinho_agrupar/grid/carrinhos_agrupar_grid_controller.dart';
-import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_consulta_model.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_agrupamento_consulta_model.dart';
 import 'package:app_expedicao/src/app/app_helper.dart';
 
 class CarrinhosAgruparGridSource extends DataGridSource {
@@ -12,7 +12,8 @@ class CarrinhosAgruparGridSource extends DataGridSource {
   List<DataGridRow> _itens = [];
 
   CarrinhosAgruparGridSource(
-      {required List<ExpedicaoCarrinhoPercursoEstagioConsultaModel> itens}) {
+      {required List<ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel>
+          itens}) {
     _itens = itens
         .map<DataGridRow>((i) => DataGridRow(cells: [
               DataGridCell<Widget>(
@@ -29,15 +30,11 @@ class CarrinhosAgruparGridSource extends DataGridSource {
               ),
               DataGridCell<String>(
                 columnName: 'item',
-                value: i.item,
+                value: i.itemCarrinhoPercurso,
               ),
               DataGridCell<String>(
                 columnName: 'origem',
                 value: i.origem,
-              ),
-              DataGridCell<int>(
-                columnName: 'codOrigem',
-                value: i.codOrigem,
               ),
               DataGridCell<int>(
                 columnName: 'codCarrinho',

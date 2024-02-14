@@ -89,6 +89,19 @@ class ExpedicaoConferirConsultaModel {
 
   @override
   String toString() {
-    return 'ExpedicaoConferirConsultaModel(codEmpresa: $codEmpresa, codConferir: $codConferir, origem: $origem, codOrigem: $codOrigem, codPrioridade: $codPrioridade, nomePrioridade: $nomePrioridade, situacao: $situacao, data: $data, hora: $hora, historico: $historico, observacao: $observacao)';
+    return '''
+      ExpedicaoConferirConsultaModel(
+        codEmpresa: $codEmpresa, 
+        codConferir: $codConferir, 
+        origem: $origem, 
+        codOrigem: $codOrigem, 
+        codPrioridade: $codPrioridade, 
+        nomePrioridade: $nomePrioridade, 
+        situacao: $situacao, 
+        data: $data, 
+        hora: $hora, 
+        historico: $historico, 
+        observacao: $observacao)
+      ''';
   }
 }
