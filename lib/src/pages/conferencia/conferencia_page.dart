@@ -32,20 +32,28 @@ class ConferenciaPage {
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return RawKeyboardListener(
-          focusNode: FocusNode(),
-          onKey: (RawKeyEvent event) {
-            if (event is RawKeyDownEvent) {
-              if (event.logicalKey == LogicalKeyboardKey.escape) {
-                Get.find<AppEventState>()..canCloseWindow = true;
-                Get.back();
-              }
-            }
-          },
-          child: GetBuilder<ConferenciaController>(
-            init: ConferenciaController(percursoEstagioConsulta),
-            builder: (controller) {
-              return Dialog(
+        return GetBuilder<ConferenciaController>(
+          init: ConferenciaController(percursoEstagioConsulta),
+          builder: (controller) {
+            return RawKeyboardListener(
+              focusNode: FocusNode(),
+              onKey: (RawKeyEvent event) {
+                if (event is RawKeyDownEvent) {
+                  if (event.logicalKey == LogicalKeyboardKey.f7) {
+                    controller.onConferirTudo();
+                  }
+
+                  if (event.logicalKey == LogicalKeyboardKey.f8) {
+                    controller.onReconferirTudo();
+                  }
+
+                  if (event.logicalKey == LogicalKeyboardKey.escape) {
+                    Get.find<AppEventState>()..canCloseWindow = true;
+                    Get.back();
+                  }
+                }
+              },
+              child: Dialog(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)),
                 child: SizedBox(
@@ -60,9 +68,9 @@ class ConferenciaPage {
                     _dailog(size, controller, percursoEstagioConsulta),
                   ]),
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         );
       },
     );
@@ -87,6 +95,7 @@ class ConferenciaPage {
                 ButtonHeadForm(
                   title: 'Conferir tudo',
                   shortCut: 'F7',
+                  shortCutActive: true,
                   onPressed: controller.onConferirTudo,
                   icon: const Icon(
                     BootstrapIcons.list_check,
@@ -97,6 +106,7 @@ class ConferenciaPage {
                 ButtonHeadForm(
                   title: 'Reconferir tudo',
                   shortCut: 'F8',
+                  shortCutActive: true,
                   onPressed: controller.onReconferirTudo,
                   icon: const Icon(
                     BootstrapIcons.list_task,

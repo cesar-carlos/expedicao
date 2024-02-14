@@ -5,6 +5,7 @@ class ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel {
   final String itemCarrinhoPercurso;
   final String origem;
   final String situacao;
+  final String situacaoPercurso;
   final int? codCarrinhoAgrupador;
   final String? nomeCarrinhoAgrupador;
   final int codCarrinho;
@@ -22,6 +23,7 @@ class ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel {
     required this.itemCarrinhoPercurso,
     required this.origem,
     required this.situacao,
+    required this.situacaoPercurso,
     this.codCarrinhoAgrupador,
     this.nomeCarrinhoAgrupador,
     required this.codCarrinho,
@@ -40,6 +42,7 @@ class ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel {
       String? itemCarrinhoPercurso,
       String? origem,
       String? situacao,
+      String? situacaoPercurso,
       int? codCarrinhoAgrupador,
       String? nomeCarrinhoAgrupador,
       int? codCarrinho,
@@ -56,6 +59,7 @@ class ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel {
       itemCarrinhoPercurso: itemCarrinhoPercurso ?? this.itemCarrinhoPercurso,
       origem: origem ?? this.origem,
       situacao: situacao ?? this.situacao,
+      situacaoPercurso: situacaoPercurso ?? this.situacaoPercurso,
       codCarrinhoAgrupador: codCarrinhoAgrupador ?? this.codCarrinhoAgrupador,
       nomeCarrinhoAgrupador:
           nomeCarrinhoAgrupador ?? this.nomeCarrinhoAgrupador,
@@ -78,6 +82,7 @@ class ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel {
       itemCarrinhoPercurso: map['ItemCarrinhoPercurso'],
       origem: map['Origem'],
       situacao: map['Situacao'],
+      situacaoPercurso: map['SituacaoPercurso'],
       codCarrinhoAgrupador: map['CodCarrinhoAgrupador'],
       nomeCarrinhoAgrupador: map['NomeCarrinhoAgrupador'],
       codCarrinho: map['CodCarrinho'],
@@ -98,6 +103,7 @@ class ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel {
       'ItemCarrinhoPercurso': itemCarrinhoPercurso,
       'Origem': origem,
       'Situacao': situacao,
+      'SituacaoPercurso': situacaoPercurso,
       'CodCarrinhoAgrupador': codCarrinhoAgrupador,
       'NomeCarrinhoAgrupador': nomeCarrinhoAgrupador,
       'CodCarrinho': codCarrinho,
@@ -120,6 +126,7 @@ class ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel {
         itemAgrupamento: $itemAgrupamento, 
         origem: $origem, 
         situacao: $situacao, 
+        situacaoPercurso: $situacaoPercurso,
         codCarrinhoAgrupador: $codCarrinhoAgrupador, 
         nomeCarrinhoAgrupador: $nomeCarrinhoAgrupador, 
         codCarrinho: $codCarrinho, 

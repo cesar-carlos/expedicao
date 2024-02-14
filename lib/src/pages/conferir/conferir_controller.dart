@@ -115,18 +115,31 @@ class ConferirController extends GetxController {
   }
 
   KeyEventResult handleKeyEvent(RawKeyEvent event) {
-    if (event is RawKeyDownEvent &&
-        event.logicalKey == LogicalKeyboardKey.escape) {
-      ConfirmationDialogWidget.show(
-        canCloseWindow: false,
-        context: Get.context!,
-        message: 'Deseja realmente sair?',
-        detail: 'A tela será fechada e a separação não será  cancelada.',
-      ).then((value) {
-        if (value != null && value) {
-          io.exit(0);
-        }
-      });
+    if (event is RawKeyDownEvent) {
+      if (event.logicalKey == LogicalKeyboardKey.f4) {
+        btnAdicionarCarrinho();
+      }
+
+      if (event.logicalKey == LogicalKeyboardKey.f5) {
+        btnAdicionarObservacao();
+      }
+
+      if (event.logicalKey == LogicalKeyboardKey.f6) {}
+
+      if (event.logicalKey == LogicalKeyboardKey.f7) {}
+
+      if (event.logicalKey == LogicalKeyboardKey.escape) {
+        ConfirmationDialogWidget.show(
+          canCloseWindow: false,
+          context: Get.context!,
+          message: 'Deseja realmente sair?',
+          detail: 'A tela será fechada e a separação não será  cancelada.',
+        ).then((value) {
+          if (value != null && value) {
+            io.exit(0);
+          }
+        });
+      }
     }
 
     return KeyEventResult.ignored;

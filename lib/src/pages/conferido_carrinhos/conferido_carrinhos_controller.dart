@@ -4,6 +4,7 @@ import 'package:uuid/uuid.dart';
 import 'package:app_expedicao/src/model/usuario_consulta.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
+import 'package:app_expedicao/src/pages/conferir/conferir_controller.dart';
 import 'package:app_expedicao/src/service/conferir_consultas_services.dart';
 import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
 import 'package:app_expedicao/src/service/conferencia_cancelar_item_service.dart';
@@ -15,9 +16,9 @@ import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_messag
 import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog_generic_widget.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_estagio_event_repository.dart';
 import 'package:app_expedicao/src/pages/conferido_carrinhos/grid/conferido_carrinho_grid_controller.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_cancelar_service.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_agrupar_service.dart';
-import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_model.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_services.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
@@ -458,26 +459,26 @@ class ConferidoCarrinhosController extends GetxController {
               _conferidoCarrinhoGridController.update();
 
               //FINALIZAR CONFERENCIA AUTOMATICAMENTE
-              // final isComplete = await _conferirConsultaServices.isComplete();
-              // final existsOpenCart =
-              //     await _conferirConsultaServices.existsOpenCart();
+              final isComplete = await _conferirConsultaServices.isComplete();
+              final existsOpenCart =
+                  await _conferirConsultaServices.existsOpenCart();
 
-              // if (isComplete && !existsOpenCart) {
-              //   await LoadingProcessDialogGenericWidget.show<bool>(
-              //     canCloseWindow: false,
-              //     context: Get.context!,
-              //     process: () async {
-              //       try {
-              //         final separarController = Get.find<ConferirController>();
-              //         await separarController.finalizarConferencia();
-              //         await Future.delayed(Duration(seconds: 1));
-              //         return true;
-              //       } catch (err) {
-              //         return false;
-              //       }
-              //     },
-              //   );
-              // }
+              if (isComplete && !existsOpenCart) {
+                await LoadingProcessDialogGenericWidget.show<bool>(
+                  canCloseWindow: false,
+                  context: Get.context!,
+                  process: () async {
+                    try {
+                      final separarController = Get.find<ConferirController>();
+                      await separarController.finalizarConferencia();
+                      await Future.delayed(Duration(seconds: 1));
+                      return true;
+                    } catch (err) {
+                      return false;
+                    }
+                  },
+                );
+              }
 
               return true;
             } catch (err) {
@@ -499,7 +500,7 @@ class ConferidoCarrinhosController extends GetxController {
     carrinhoPercursoEvent.addListener(
       RepositoryEventListenerModel(
         id: uuid.v4(),
-        allEvent: true,
+        allEvent: false,
         event: Event.insert,
         callback: (data) async {
           for (var el in data.mutation) {
@@ -543,7 +544,7 @@ class ConferidoCarrinhosController extends GetxController {
     carrinhoPercursoEvent.addListener(
       RepositoryEventListenerModel(
         id: uuid.v4(),
-        allEvent: true,
+        allEvent: false,
         event: Event.delete,
         callback: (data) async {
           for (var el in data.mutation) {

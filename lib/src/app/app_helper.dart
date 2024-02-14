@@ -88,7 +88,7 @@ class AppHelper {
   }
 
   static isBarCode(String value) {
-    if (value.trim().length > 7) return true;
+    if (value.trim().length > 6) return true;
     if (!AppHelper.isNumeric(value.trim())) return true;
 
     return false;

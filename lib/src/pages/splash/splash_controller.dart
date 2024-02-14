@@ -4,6 +4,7 @@ import 'package:app_expedicao/src/routes/app_router.dart';
 import 'package:app_expedicao/src/app/app_socket_config.dart';
 import 'package:app_expedicao/src/service/usuario_service.dart';
 import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
+import 'package:app_expedicao/src/model/expedicao_situacao_listen.dart';
 import 'package:app_expedicao/src/service/separar_consultas_services.dart';
 import 'package:app_expedicao/src/service/conferir_consultas_services.dart';
 import 'package:app_expedicao/src/service/processo_executavel_service.dart';
@@ -22,6 +23,7 @@ class SplashController extends GetxController {
   late ProcessoExecutavelModel? _processoExecutavel;
   late ExpedicaoSepararConsultaModel? _separarConsulta;
   late ExpedicaoConferirConsultaModel? _conferirConsulta;
+  late ExpedicaoSituacaoListen _expedicaoSituacaoListen;
   late UsuarioConsultaMoldel? _usuarioLogado;
 
   bool get isLoad => _isLoad.value;
@@ -82,7 +84,16 @@ class SplashController extends GetxController {
       return;
     }
 
+    //STATS
+    _expedicaoSituacaoListen = ExpedicaoSituacaoListen(
+      codEmpresa: _processoExecutavel!.codEmpresa,
+      origem: _processoExecutavel!.origem,
+      codOrigem: _processoExecutavel!.codOrigem,
+      situacao: '',
+    );
+
     Get.put<UsuarioConsultaMoldel>(_usuarioLogado!);
+    Get.put<ExpedicaoSituacaoListen>(_expedicaoSituacaoListen);
 
     //SEPARAR
     if (_processoExecutavel!.origem == ExpedicaoOrigemModel.separacao) {

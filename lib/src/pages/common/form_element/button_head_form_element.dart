@@ -6,6 +6,8 @@ class ButtonHeadForm extends StatelessWidget {
   String title;
   VoidCallback? onPressed;
   String? shortCut;
+  bool shortCutActive;
+  Color shortCutColor = Colors.white;
 
   ButtonHeadForm({
     super.key,
@@ -13,7 +15,14 @@ class ButtonHeadForm extends StatelessWidget {
     required this.icon,
     this.onPressed,
     this.shortCut,
-  });
+    this.shortCutActive = true,
+  }) {
+    if (shortCutActive) {
+      shortCutColor = Colors.white;
+    } else {
+      shortCutColor = Colors.red;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,13 +39,29 @@ class ButtonHeadForm extends StatelessWidget {
                 height: 90,
                 child: Container(
                   alignment: Alignment.topRight,
-                  padding: const EdgeInsets.only(top: 2),
-                  child: Text(
-                    shortCut?.toUpperCase() ?? '',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 13,
-                    ),
+                  padding: const EdgeInsets.only(top: 5),
+                  child: Stack(
+                    children: [
+                      if (shortCut != null)
+                        Container(
+                          padding: const EdgeInsets.only(right: 6),
+                          alignment: Alignment.topRight,
+                          child: Container(
+                            padding: const EdgeInsets.all(2),
+                            decoration: BoxDecoration(
+                              color: shortCutColor.withOpacity(0.50),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Text(
+                              shortCut ?? '',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 13,
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
               ),
@@ -46,20 +71,23 @@ class ButtonHeadForm extends StatelessWidget {
               height: 90,
               child: Padding(
                 padding:
-                    const EdgeInsets.only(top: 4, bottom: 2, left: 9, right: 5),
+                    const EdgeInsets.only(top: 5, bottom: 2, left: 3, right: 3),
                 child: InkWell(
                   hoverColor: Colors.white.withOpacity(0.1),
                   onTap: onPressed,
                   child: Column(
                     children: [
                       icon,
-                      const SizedBox(height: 2),
+                      const SizedBox(height: 4),
                       Text(
                         title,
                         textAlign: TextAlign.center,
                         overflow: TextOverflow.ellipsis,
-                        style:
-                            const TextStyle(color: Colors.white, fontSize: 12),
+                        style: const TextStyle(
+                          fontSize: 11,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w400,
+                        ),
                       ),
                     ],
                   ),

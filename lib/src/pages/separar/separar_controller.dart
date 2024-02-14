@@ -118,18 +118,31 @@ class SepararController extends GetxController {
   }
 
   KeyEventResult handleKeyEvent(RawKeyEvent event) {
-    if (event is RawKeyDownEvent &&
-        event.logicalKey == LogicalKeyboardKey.escape) {
-      ConfirmationDialogWidget.show(
-        canCloseWindow: false,
-        context: Get.context!,
-        message: 'Deseja realmente sair?',
-        detail: 'A tela será fechada e a separação não será  cancelada.',
-      ).then((value) {
-        if (value != null && value) {
-          io.exit(0);
-        }
-      });
+    if (event is RawKeyDownEvent) {
+      if (event.logicalKey == LogicalKeyboardKey.f4) {
+        adicionarCarrinho();
+      }
+
+      if (event.logicalKey == LogicalKeyboardKey.f5) {
+        btnAdicionarObservacao();
+      }
+
+      if (event.logicalKey == LogicalKeyboardKey.f12) {
+        btnFinalizarSeparacao();
+      }
+
+      if (event.logicalKey == LogicalKeyboardKey.escape) {
+        ConfirmationDialogWidget.show(
+          canCloseWindow: false,
+          context: Get.context!,
+          message: 'Deseja realmente sair?',
+          detail: 'A tela será fechada e a separação não será  cancelada.',
+        ).then((value) {
+          if (value != null && value) {
+            io.exit(0);
+          }
+        });
+      }
     }
 
     return KeyEventResult.ignored;

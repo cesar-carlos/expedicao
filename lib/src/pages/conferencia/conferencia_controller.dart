@@ -134,9 +134,7 @@ class ConferenciaController extends GetxController {
     final params = ''' 
             CodEmpresa = ${percursoEstagioConsulta.codEmpresa} 
           AND CodEmpresa = '${percursoEstagioConsulta.codEmpresa}' 
-          AND CodCarrinhoPercurso = ${percursoEstagioConsulta.codCarrinhoPercurso}
-        
-        ''';
+          AND CodCarrinhoPercurso = ${percursoEstagioConsulta.codCarrinhoPercurso} ''';
 
     final carrinhosPercurso = await CarrinhoPercursoServices().select(params);
     if (carrinhosPercurso.isEmpty) return;

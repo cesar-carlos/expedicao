@@ -39,6 +39,14 @@ class CarrinhosAgruparPage {
                 Get.find<AppEventState>()..canCloseWindow = true;
                 Get.back();
               }
+
+              if (event.logicalKey == LogicalKeyboardKey.f7) {
+                Get.find<CarrinhosAgruparController>().onAgruparTudo();
+              }
+
+              if (event.logicalKey == LogicalKeyboardKey.f8) {
+                Get.find<CarrinhosAgruparController>().onDesabruparTudo();
+              }
             }
           },
           child: GetBuilder<CarrinhosAgruparController>(

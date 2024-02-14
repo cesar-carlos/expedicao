@@ -1,20 +1,32 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
+import 'package:app_expedicao/src/app/app_error_alert.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog_generic_widget.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_agrupamento_consulta_model.dart';
 import 'package:app_expedicao/src/pages/carrinho_agrupar/grid/carrinhos_agrupar_grid_controller.dart';
 import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_agrupar_service.dart';
-import 'package:app_expedicao/src/app/app_error_alert.dart';
 
 class CarrinhosAgruparController extends GetxController {
+  final RxBool _viewMode = false.obs;
+
   final ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel
       carrinhoPercursoAgrupamento;
 
   late CarrinhosAgruparGridController _carrinhosAgruparGridController;
   late CarrinhoPercursoEstagioAgruparService _carrinhoAgruparService;
+
+  bool get viewMode {
+    // if (percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.cancelada ||
+    //     percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.conferido ||
+    //     percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.agrupado) {
+    //   _viewMode.value = true;
+    // }
+
+    return _viewMode.value;
+  }
 
   CarrinhosAgruparController(this.carrinhoPercursoAgrupamento);
 
@@ -54,6 +66,7 @@ class CarrinhosAgruparController extends GetxController {
     controllerScanCarrinho.dispose();
     focusScanCarrinho.dispose();
     Get.delete<CarrinhosAgruparGridController>();
+    _viewMode.close();
     super.onClose();
   }
 
@@ -130,11 +143,41 @@ class CarrinhosAgruparController extends GetxController {
   }
 
   void onAgruparTudo() {
-    print('Agrupar tudo');
+    final itensAgrupar = _carrinhosAgruparGridController.itens
+        .where((el) => el.situacao == ExpedicaoSituacaoModel.conferido)
+        .toList();
+
+    if (itensAgrupar.isEmpty) {
+      ConfirmationDialogMessageWidget.show(
+        canCloseWindow: false,
+        context: Get.context!,
+        message: 'Nenhum carrinho para agrupar!',
+        detail: 'Não existe carrinhos para serem agrupados na lista!',
+      );
+
+      return;
+    }
+
+    _addAllItemGroup(carrinhoPercursoAgrupamento);
   }
 
   void onDesabruparTudo() {
-    print('Desagrupar tudo');
+    final itensAgrupar = _carrinhosAgruparGridController.itens
+        .where((el) => el.situacao == ExpedicaoSituacaoModel.agrupado)
+        .toList();
+
+    if (itensAgrupar.isEmpty) {
+      ConfirmationDialogMessageWidget.show(
+        canCloseWindow: false,
+        context: Get.context!,
+        message: 'Nenhum carrinho encontrado!',
+        detail: 'Não existe carrinhos para serem desagrupado na lista!',
+      );
+
+      return;
+    }
+
+    _removeAllItemGroup(carrinhoPercursoAgrupamento);
   }
 
   _evetsCarrinhoGrid() {
@@ -182,6 +225,36 @@ class CarrinhosAgruparController extends GetxController {
     );
   }
 
+  Future<void> _removeAllItemGroup(
+    ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel carrinhoRemover,
+  ) async {
+    await LoadingProcessDialogGenericWidget.show<bool>(
+      canCloseWindow: false,
+      context: Get.context!,
+      process: () async {
+        try {
+          final result = await _carrinhoAgruparService.cancelarTodosAgrupamento(
+            carrinhoRemover,
+          );
+
+          _carrinhosAgruparGridController.updateAllGrid(result);
+          _carrinhosAgruparGridController.update();
+          return true;
+        } on AppErrorAlert catch (err) {
+          await ConfirmationDialogMessageWidget.show(
+            canCloseWindow: false,
+            context: Get.context!,
+            message: err.message,
+            detail: err.details ?? '',
+          );
+          return false;
+        } catch (err) {
+          return false;
+        }
+      },
+    );
+  }
+
   Future<void> _addItemGroup(
     ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel carrinhoAgrupar,
   ) async {
@@ -190,7 +263,7 @@ class CarrinhosAgruparController extends GetxController {
       context: Get.context!,
       process: () async {
         try {
-          await _carrinhoAgruparService.agruparCarrinhoPercurso(
+          await _carrinhoAgruparService.agruparCarrinho(
             carrinhoPercursoAgrupamento,
             carrinhoAgrupar,
           );
@@ -201,6 +274,36 @@ class CarrinhosAgruparController extends GetxController {
           );
 
           _carrinhosAgruparGridController.updateGrid(newItemCarrinhoPercurso!);
+          _carrinhosAgruparGridController.update();
+          return true;
+        } on AppErrorAlert catch (err) {
+          await ConfirmationDialogMessageWidget.show(
+            canCloseWindow: false,
+            context: Get.context!,
+            message: err.message,
+            detail: err.details ?? '',
+          );
+          return false;
+        } catch (err) {
+          return false;
+        }
+      },
+    );
+  }
+
+  Future<void> _addAllItemGroup(
+    ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel carrinhoAgrupar,
+  ) async {
+    await LoadingProcessDialogGenericWidget.show<bool>(
+      canCloseWindow: false,
+      context: Get.context!,
+      process: () async {
+        try {
+          final result = await _carrinhoAgruparService.agruparTodosCarrinho(
+            carrinhoAgrupar,
+          );
+
+          _carrinhosAgruparGridController.updateAllGrid(result);
           _carrinhosAgruparGridController.update();
           return true;
         } on AppErrorAlert catch (err) {

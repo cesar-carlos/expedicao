@@ -36,6 +36,14 @@ class SeparacaoPage {
           focusNode: FocusNode(),
           onKey: (RawKeyEvent event) {
             if (event is RawKeyDownEvent) {
+              if (event.logicalKey == LogicalKeyboardKey.f7) {
+                Get.find<SeparacaoController>().onSepararTudo();
+              }
+
+              if (event.logicalKey == LogicalKeyboardKey.f8) {
+                Get.find<SeparacaoController>().onReconferirTudo();
+              }
+
               if (event.logicalKey == LogicalKeyboardKey.escape) {
                 Get.find<AppEventState>()..canCloseWindow = true;
                 Get.back();
@@ -85,6 +93,8 @@ class SeparacaoPage {
               children: [
                 ButtonHeadForm(
                   title: 'Separar tudo',
+                  shortCut: 'F7',
+                  shortCutActive: true,
                   onPressed: controller.onSepararTudo,
                   icon: const Icon(
                     BootstrapIcons.list_check,
@@ -94,6 +104,8 @@ class SeparacaoPage {
                 ),
                 ButtonHeadForm(
                   title: 'Reconferir tudo',
+                  shortCut: 'F8',
+                  shortCutActive: true,
                   onPressed: controller.onReconferirTudo,
                   icon: const Icon(
                     BootstrapIcons.list_task,

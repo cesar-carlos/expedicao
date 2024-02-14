@@ -48,6 +48,7 @@ class ConferirPage extends StatelessWidget {
                       ButtonHeadForm(
                         title: 'Conferir Carrinho',
                         shortCut: 'F4',
+                        shortCutActive: true,
                         onPressed: controller.btnAdicionarCarrinho,
                         icon: const Icon(
                           BootstrapIcons.cart4,
@@ -58,6 +59,7 @@ class ConferirPage extends StatelessWidget {
                       ButtonHeadForm(
                         title: 'Histórico/Observação',
                         shortCut: 'F5',
+                        shortCutActive: true,
                         onPressed: controller.btnAdicionarObservacao,
                         icon: const Icon(
                           BootstrapIcons.file_text_fill,
@@ -66,8 +68,9 @@ class ConferirPage extends StatelessWidget {
                         ),
                       ),
                       ButtonHeadForm(
-                        title: 'Ajuste de carrinho',
+                        title: 'Quebra de carrinho',
                         shortCut: 'F6',
+                        shortCutActive: false,
                         onPressed: () {},
                         icon: const Icon(
                           BootstrapIcons.exclamation_circle_fill,
@@ -76,11 +79,23 @@ class ConferirPage extends StatelessWidget {
                         ),
                       ),
                       ButtonHeadForm(
+                        title: 'Ass. Agrupamento',
+                        onPressed: () {},
+                        shortCut: 'F7',
+                        shortCutActive: false,
+                        icon: const Icon(
+                          BootstrapIcons.grid_3x3_gap_fill,
+                          color: Colors.white,
+                          size: 33,
+                        ),
+                      ),
+                      ButtonHeadForm(
                         title: 'Finalizar Conferencia',
                         onPressed: controller.btnFinalizarConferencia,
                         shortCut: 'F12',
+                        shortCutActive: true,
                         icon: const Icon(
-                          BootstrapIcons.grid_3x3_gap_fill,
+                          BootstrapIcons.clipboard_check_fill,
                           color: Colors.white,
                           size: 33,
                         ),

@@ -66,7 +66,7 @@ class CarrinhoPercursoEstagioAgruparService {
     return result;
   }
 
-  Future<void> agruparCarrinhoPercurso(
+  Future<void> agruparCarrinho(
     ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel carrinhoAgrupador,
     ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel carrinhoAgrupar,
   ) async {
@@ -86,7 +86,7 @@ class CarrinhoPercursoEstagioAgruparService {
 
     final _carrinho = await _carrinhoRepository.select(
       '''CodEmpresa = ${carrinhoAgrupar.codEmpresa} 
-          AND CodCarrinho = ${carrinhoAgrupar.codCarrinho}''',
+          AND CodCarrinho = ${carrinhoAgrupar.codCarrinho} ''',
     );
 
     if (_carrinho.isEmpty) throw AppErrorAlert('Carrinho não encontrado');
@@ -109,10 +109,42 @@ class CarrinhoPercursoEstagioAgruparService {
       situacao: ExpedicaoSituacaoModel.agrupado,
     );
 
-    //
     await _carrinhoPercursoEstagioRepository.update(_percursoEstagio);
     await _carrinhoPercursoAgrupamentoRepository.insert(_agrupado);
     await _carrinhoRepository.update(_newCarrinho);
+  }
+
+  Future<List<ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel>>
+      agruparTodosCarrinho(
+    ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel carrinhoAgrupador,
+  ) async {
+    final params = '''
+        CodEmpresa = ${carrinhoAgrupador.codEmpresa}
+          AND CodCarrinhoPercurso = ${carrinhoAgrupador.codCarrinhoPercurso}
+          AND Origem = '${carrinhoAgrupador.origem}' 
+          AND CodCarrinho <> ${carrinhoAgrupador.codCarrinho} 
+          AND Situacao = '${ExpedicaoSituacaoModel.conferido}' ''';
+
+    final carrinhoPercursoAgrupamentoConsulta =
+        await CarrinhoPercursoAgrupamentoConsultaRepository().select(params);
+
+    if (carrinhoPercursoAgrupamentoConsulta.isEmpty)
+      throw AppErrorAlert('Não há carrinhos para agrupar');
+
+    for (final carrinhoAgrupar in carrinhoPercursoAgrupamentoConsulta) {
+      await agruparCarrinho(carrinhoAgrupador, carrinhoAgrupar);
+    }
+
+    final newParams = '''
+        CodEmpresa = ${carrinhoAgrupador.codEmpresa}
+          AND CodCarrinhoPercurso = ${carrinhoAgrupador.codCarrinhoPercurso}
+          AND Origem = '${carrinhoAgrupador.origem}' 
+          AND CodCarrinho <> ${carrinhoAgrupador.codCarrinho} 
+          AND Situacao = '${ExpedicaoSituacaoModel.agrupado}' 
+          AND CodCarrinhoAgrupador = ${carrinhoAgrupador.codCarrinho} ''';
+
+    return await CarrinhoPercursoAgrupamentoConsultaRepository()
+        .select(newParams);
   }
 
   Future<void> cancelarAgrupamento(
@@ -176,5 +208,39 @@ class CarrinhoPercursoEstagioAgruparService {
     await _carrinhoPercursoAgrupamentoRepository.update(agrupadoCancelar);
     await _cancelamentoEventRepository.insert(cancelamento);
     await _carrinhoRepository.update(_newCarrinho);
+  }
+
+  Future<List<ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel>>
+      cancelarTodosAgrupamento(
+    ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel carrinhoAgrupador,
+  ) async {
+    final params = '''
+        CodEmpresa = ${carrinhoAgrupador.codEmpresa}
+          AND CodCarrinhoPercurso = ${carrinhoAgrupador.codCarrinhoPercurso}
+          AND Origem = '${carrinhoAgrupador.origem}' 
+          AND CodCarrinho <> ${carrinhoAgrupador.codCarrinho} 
+          AND Situacao = '${ExpedicaoSituacaoModel.agrupado}' 
+          AND CodCarrinhoAgrupador = ${carrinhoAgrupador.codCarrinho} ''';
+
+    final carrinhoPercursoAgrupamentoConsulta =
+        await CarrinhoPercursoAgrupamentoConsultaRepository().select(params);
+
+    if (carrinhoPercursoAgrupamentoConsulta.isEmpty)
+      throw AppErrorAlert('Não há carrinhos para agrupar');
+
+    for (final carrinhoAgrupar in carrinhoPercursoAgrupamentoConsulta) {
+      await cancelarAgrupamento(carrinhoAgrupar);
+    }
+
+    final newParams = '''
+        CodEmpresa = ${carrinhoAgrupador.codEmpresa}
+          AND CodCarrinhoPercurso = ${carrinhoAgrupador.codCarrinhoPercurso}
+          AND Origem = '${carrinhoAgrupador.origem}' 
+          AND CodCarrinho <> ${carrinhoAgrupador.codCarrinho} 
+          AND Situacao = '${ExpedicaoSituacaoModel.conferido}' 
+          AND CodCarrinhoAgrupador IS NULL ''';
+
+    return await CarrinhoPercursoAgrupamentoConsultaRepository()
+        .select(newParams);
   }
 }
