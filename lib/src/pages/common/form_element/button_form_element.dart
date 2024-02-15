@@ -27,11 +27,13 @@ class ButtonFormElement extends StatelessWidget {
         style: ButtonStyle(
           overlayColor: MaterialStateProperty.resolveWith<Color>(
             (Set<MaterialState> states) {
+              if (states.contains(MaterialState.focused))
+                return AppColor.hoverColor;
               if (states.contains(MaterialState.hovered))
-                return AppColor.hoverColor; // Cor de hover
+                return AppColor.hoverColor;
               if (states.contains(MaterialState.pressed))
-                return AppColor.clickColor; // Cor quando pressionado
-              return AppColor.backGroundButton; // Cor padrão
+                return AppColor.clickColor;
+              return AppColor.backGroundButton;
             },
           ),
           backgroundColor: MaterialStateProperty.all<Color>(

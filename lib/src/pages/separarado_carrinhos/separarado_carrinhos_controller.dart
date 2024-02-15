@@ -9,13 +9,13 @@ import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
 import 'package:app_expedicao/src/service/separacao_finalizar_item_service.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_services.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_finalizar_service.dart';
-import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
+import 'package:app_expedicao/src/pages/common/message_dialog/message_dialog_view.dart';
 import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog_generic_widget.dart';
 import 'package:app_expedicao/src/pages/separarado_carrinhos/grid/separarado_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_estagio_event_repository.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_cancelar_service.dart';
-import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget.dart';
+import 'package:app_expedicao/src/pages/common/confirmation_dialog/confirmation_dialog_view.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dart';
 import 'package:app_expedicao/src/service/separacao_cancelar_item_service.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
@@ -77,8 +77,7 @@ class SeparadoCarrinhosController extends GetxController {
   _evetsCarrinhoGrid() {
     _separadoCarrinhoGridController.onPressedRemove = (item) async {
       if (item.situacao == ExpedicaoSituacaoModel.cancelada) {
-        await ConfirmationDialogMessageWidget.show(
-          canCloseWindow: false,
+        await MessageDialogView.show(
           context: Get.context!,
           message: 'Carrinho já cancelado!',
           detail: 'Não é possível cancelar um carrinho já cancelado!',
@@ -88,8 +87,7 @@ class SeparadoCarrinhosController extends GetxController {
       }
 
       if (item.situacao == ExpedicaoSituacaoModel.separado) {
-        await ConfirmationDialogMessageWidget.show(
-          canCloseWindow: false,
+        await MessageDialogView.show(
           context: Get.context!,
           message: 'Carrinho já finalizado!',
           detail: 'Não é possível cancelar um carrinho já finalizado!',
@@ -98,8 +96,7 @@ class SeparadoCarrinhosController extends GetxController {
         return;
       }
 
-      final bool? confirmation = await ConfirmationDialogWidget.show(
-        canCloseWindow: false,
+      final bool? confirmation = await ConfirmationDialogView.show(
         context: Get.context!,
         message: 'Deseja realmente cancelar?',
         detail: 'Ao cancelar, os itens serão removido do carrinho!',
@@ -125,7 +122,7 @@ class SeparadoCarrinhosController extends GetxController {
                 AND Item = ${item.item} ''');
 
               if (carrinho.isEmpty || carrinhosPercursoEstagio.isEmpty) {
-                await ConfirmationDialogMessageWidget.show(
+                await MessageDialogView.show(
                   canCloseWindow: false,
                   context: Get.context!,
                   message: 'Carrinho não encontrado!',
@@ -140,7 +137,7 @@ class SeparadoCarrinhosController extends GetxController {
               if (carrinhoPercursoEstagio.codUsuarioInicio !=
                       _processoExecutavel.codUsuario &&
                   _usuarioLogado.excluiCarrinhoOutroUsuario != 'S') {
-                await ConfirmationDialogMessageWidget.show(
+                await MessageDialogView.show(
                   canCloseWindow: false,
                   context: Get.context!,
                   message: 'Carrinho não pertence a você!',
@@ -202,8 +199,7 @@ class SeparadoCarrinhosController extends GetxController {
             AND Item = ${item.item} ''');
 
       if (carrinho.isEmpty || carrinhosPercursoEstagio.isEmpty) {
-        await ConfirmationDialogMessageWidget.show(
-          canCloseWindow: false,
+        await MessageDialogView.show(
           context: Get.context!,
           message: 'Carrinho não encontrado!',
           detail: 'Carrinho não encontrado na tabela percurso estagio!',
@@ -222,8 +218,7 @@ class SeparadoCarrinhosController extends GetxController {
           _processoExecutavel.codUsuario);
 
       if (_editUsuario && !_editViewMode) {
-        await ConfirmationDialogMessageWidget.show(
-          canCloseWindow: false,
+        await MessageDialogView.show(
           context: Get.context!,
           message: 'Carrinho não pertence a você!',
           detail:
@@ -243,7 +238,7 @@ class SeparadoCarrinhosController extends GetxController {
 
     _separadoCarrinhoGridController.onPressedSave = (item) async {
       if (item.situacao == ExpedicaoSituacaoModel.separado) {
-        await ConfirmationDialogMessageWidget.show(
+        await MessageDialogView.show(
           canCloseWindow: false,
           context: Get.context!,
           message: 'Carrinho já finalizado!',
@@ -254,8 +249,7 @@ class SeparadoCarrinhosController extends GetxController {
       }
 
       if (item.situacao == ExpedicaoSituacaoModel.cancelada) {
-        await ConfirmationDialogMessageWidget.show(
-          canCloseWindow: false,
+        await MessageDialogView.show(
           context: Get.context!,
           message: 'Carrinho já cancelado!',
           detail: 'Não é possível salva um carrinho que esteja cancelado!',
@@ -272,8 +266,7 @@ class SeparadoCarrinhosController extends GetxController {
           .toList();
 
       if (itensSeparacaoCarrinho.isEmpty) {
-        await ConfirmationDialogMessageWidget.show(
-          canCloseWindow: false,
+        await MessageDialogView.show(
           context: Get.context!,
           message: 'Carrinho vazio!',
           detail: 'Adicione itens ao carrinho para finalizar!',
@@ -282,7 +275,7 @@ class SeparadoCarrinhosController extends GetxController {
         return;
       }
 
-      final bool? confirmation = await ConfirmationDialogWidget.show(
+      final bool? confirmation = await ConfirmationDialogView.show(
         canCloseWindow: false,
         context: Get.context!,
         message: 'Deseja Salva?',
@@ -305,8 +298,7 @@ class SeparadoCarrinhosController extends GetxController {
                 _separarGridController.updateAllGrid(itens);
                 _separarGridController.update();
 
-                await ConfirmationDialogMessageWidget.show(
-                  canCloseWindow: false,
+                await MessageDialogView.show(
                   context: Get.context!,
                   message: 'Carrinho não pode ser salvo!',
                   detail:
@@ -328,8 +320,7 @@ class SeparadoCarrinhosController extends GetxController {
                   AND Item = ${item.item} ''');
 
               if (carrinho.isEmpty || carrinhosPercursoEstagio.isEmpty) {
-                await ConfirmationDialogMessageWidget.show(
-                  canCloseWindow: false,
+                await MessageDialogView.show(
                   context: Get.context!,
                   message: 'Carrinho não encontrado!',
                   detail: 'Carrinho não encontrado na tabela percurso estagio!',
@@ -343,8 +334,7 @@ class SeparadoCarrinhosController extends GetxController {
               if (carrinhoPercursoEstagio.codUsuarioInicio !=
                       _processoExecutavel.codUsuario &&
                   _usuarioLogado.salvaCarrinhoOutroUsuario != 'S') {
-                await ConfirmationDialogMessageWidget.show(
-                  canCloseWindow: false,
+                await MessageDialogView.show(
                   context: Get.context!,
                   message: 'Carrinho não pertence a você!',
                   detail:

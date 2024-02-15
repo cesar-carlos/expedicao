@@ -40,8 +40,8 @@ class SepararServices {
     throw UnimplementedError();
   }
 
-  Future<void> atualizar() async {
-    await repositorySeparar.update(separar);
+  static Future<void> atualizar(ExpedicaoSepararModel separar) async {
+    await SepararRepository().update(separar);
   }
 
   Future<bool> _existsPercurso() async {

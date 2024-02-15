@@ -89,7 +89,9 @@ class CarrinhoPercursoEstagioAgruparService {
           AND CodCarrinho = ${carrinhoAgrupar.codCarrinho} ''',
     );
 
-    if (_carrinho.isEmpty) throw AppErrorAlert('Carrinho não encontrado');
+    if (_carrinho.isEmpty) {
+      throw AppErrorAlert('Carrinho não encontrado');
+    }
 
     final _newCarrinho = _carrinho.first.copyWith(
       situacao: ExpedicaoCarrinhoSituacaoModel.liberado,
@@ -109,9 +111,9 @@ class CarrinhoPercursoEstagioAgruparService {
       situacao: ExpedicaoSituacaoModel.agrupado,
     );
 
+    await _carrinhoRepository.update(_newCarrinho);
     await _carrinhoPercursoEstagioRepository.update(_percursoEstagio);
     await _carrinhoPercursoAgrupamentoRepository.insert(_agrupado);
-    await _carrinhoRepository.update(_newCarrinho);
   }
 
   Future<List<ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel>>
@@ -155,7 +157,10 @@ class CarrinhoPercursoEstagioAgruparService {
           AND CodCarrinho = ${carrinhoAgrupado.codCarrinho} ''',
     );
 
-    if (_carrinhos.isEmpty) throw AppErrorAlert('Carrinho não encontrado');
+    if (_carrinhos.isEmpty) {
+      throw AppErrorAlert('Carrinho não encontrado');
+    }
+
     if (_carrinhos.first.situacao != ExpedicaoCarrinhoSituacaoModel.liberado)
       throw AppErrorAlert(
         'Carrinho não removido',
@@ -172,7 +177,9 @@ class CarrinhoPercursoEstagioAgruparService {
           AND CodCarrinhoPercurso = ${carrinhoAgrupado.codCarrinhoPercurso}
           AND Item = '${carrinhoAgrupado.itemAgrupamento}' ''');
 
-    if (agrupados.isEmpty) throw AppErrorAlert('Carrinho não encontrado');
+    if (agrupados.isEmpty) {
+      throw AppErrorAlert('Carrinho não encontrado');
+    }
 
     final _carrinhosPercursoEstaio =
         await _carrinhoPercursoEstagioRepository.select(

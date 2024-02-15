@@ -40,8 +40,8 @@ class ConferirServices {
     throw UnimplementedError();
   }
 
-  Future<void> atualizar() async {
-    await repositoryConferir.update(conferir);
+  static Future<void> atualizar(ExpedicaoConferirModel conferir) async {
+    await ConferirRepository().update(conferir);
   }
 
   Future<bool> _existsPercurso() async {

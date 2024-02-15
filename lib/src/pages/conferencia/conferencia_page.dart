@@ -36,23 +36,8 @@ class ConferenciaPage {
           init: ConferenciaController(percursoEstagioConsulta),
           builder: (controller) {
             return RawKeyboardListener(
-              focusNode: FocusNode(),
-              onKey: (RawKeyEvent event) {
-                if (event is RawKeyDownEvent) {
-                  if (event.logicalKey == LogicalKeyboardKey.f7) {
-                    controller.onConferirTudo();
-                  }
-
-                  if (event.logicalKey == LogicalKeyboardKey.f8) {
-                    controller.onReconferirTudo();
-                  }
-
-                  if (event.logicalKey == LogicalKeyboardKey.escape) {
-                    Get.find<AppEventState>()..canCloseWindow = true;
-                    Get.back();
-                  }
-                }
-              },
+              focusNode: controller.formFocusNode,
+              onKey: controller.handleKeyEvent,
               child: Dialog(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)),
@@ -65,135 +50,130 @@ class ConferenciaPage {
                       widthBar: size.width,
                       onPressedCloseBar: controller.onPressedCloseBar,
                     ),
-                    _dailog(size, controller, percursoEstagioConsulta),
+                    SizedBox(
+                      width: size.width * 0.95,
+                      height: size.height * 0.8 - _spaceHeadlement,
+                      child: Column(children: [
+                        //** HEADER BUTTON **//
+                        SpaceButtonsHeadFormElement(
+                          width: double.infinity,
+                          children: [
+                            ButtonHeadForm(
+                              title: 'Conferir tudo',
+                              shortCut: 'F7',
+                              shortCutActive: true,
+                              onPressed: controller.onConferirTudo,
+                              icon: const Icon(
+                                BootstrapIcons.list_check,
+                                color: Colors.white,
+                                size: 33,
+                              ),
+                            ),
+                            ButtonHeadForm(
+                              title: 'Reconferir tudo',
+                              shortCut: 'F8',
+                              shortCutActive: true,
+                              onPressed: controller.onReconferirTudo,
+                              icon: const Icon(
+                                BootstrapIcons.list_task,
+                                color: Colors.white,
+                                size: 33,
+                              ),
+                            ),
+                            ButtonHeadForm(
+                              title: 'Sobra de carrinho',
+                              onPressed: controller.onSobraCarrinho,
+                              icon: const Icon(
+                                BootstrapIcons.exclamation_circle_fill,
+                                color: Colors.white,
+                                size: 33,
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        //LEITOR CODIGO DE BARRAS
+                        ScanConferenciaItemWidget(
+                          percursoEstagioConsulta,
+                          size: size,
+                        ),
+
+                        //TAB VIEW
+                        Expanded(
+                          child: ClipRRect(
+                            borderRadius: const BorderRadius.only(
+                              bottomLeft: Radius.circular(10),
+                              bottomRight: Radius.circular(10),
+                            ),
+                            child: DefaultTabController(
+                              initialIndex: controller.viewMode ? 0 : 1,
+                              length: 2,
+                              animationDuration:
+                                  const Duration(milliseconds: 500),
+                              child: Column(children: [
+                                Container(
+                                  color: Colors.white,
+                                  constraints:
+                                      const BoxConstraints.expand(height: 40),
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 5),
+                                  child: TabBar(
+                                      indicatorColor: Colors.black45,
+                                      overlayColor: MaterialStateProperty.all(
+                                          Colors.black12),
+                                      indicatorPadding: EdgeInsets.zero,
+                                      tabs: const [
+                                        Row(children: [
+                                          Icon(
+                                            size: 20,
+                                            BootstrapIcons.list_task,
+                                          ),
+                                          Spacer(),
+                                          Text(
+                                            'Conferencia',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.black87,
+                                            ),
+                                          ),
+                                          Spacer(),
+                                        ]),
+                                        Row(children: [
+                                          Icon(
+                                            size: 20,
+                                            BootstrapIcons.list_check,
+                                          ),
+                                          Spacer(),
+                                          Text(
+                                            'Carrinho',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.black87,
+                                            ),
+                                          ),
+                                          Spacer(),
+                                        ]),
+                                      ]),
+                                ),
+                                Expanded(
+                                  child: TabBarView(children: [
+                                    ConferenciaCarrinhoGrid(
+                                      percursoEstagioConsulta,
+                                    ),
+                                    const ConferirGrid()
+                                  ]),
+                                ),
+                              ]),
+                            ),
+                          ),
+                        )
+                      ]),
+                    )
                   ]),
                 ),
               ),
             );
           },
-        );
-      },
-    );
-  }
-
-  static Widget _dailog(
-    Size size,
-    ConferenciaController controller,
-    ExpedicaoCarrinhoPercursoEstagioConsultaModel percursoEstagioConsulta,
-  ) {
-    return GetBuilder(
-      init: controller,
-      builder: (controller) {
-        return SizedBox(
-          width: size.width * 0.95,
-          height: size.height * 0.8 - _spaceHeadlement,
-          child: Column(children: [
-            //** HEADER BUTTON **//
-            SpaceButtonsHeadFormElement(
-              width: double.infinity,
-              children: [
-                ButtonHeadForm(
-                  title: 'Conferir tudo',
-                  shortCut: 'F7',
-                  shortCutActive: true,
-                  onPressed: controller.onConferirTudo,
-                  icon: const Icon(
-                    BootstrapIcons.list_check,
-                    color: Colors.white,
-                    size: 33,
-                  ),
-                ),
-                ButtonHeadForm(
-                  title: 'Reconferir tudo',
-                  shortCut: 'F8',
-                  shortCutActive: true,
-                  onPressed: controller.onReconferirTudo,
-                  icon: const Icon(
-                    BootstrapIcons.list_task,
-                    color: Colors.white,
-                    size: 33,
-                  ),
-                ),
-                ButtonHeadForm(
-                  title: 'Sobra de carrinho',
-                  onPressed: controller.onSobraCarrinho,
-                  icon: const Icon(
-                    BootstrapIcons.exclamation_circle_fill,
-                    color: Colors.white,
-                    size: 33,
-                  ),
-                ),
-              ],
-            ),
-
-            //LEITOR CODIGO DE BARRAS
-            ScanConferenciaItemWidget(percursoEstagioConsulta, size: size),
-
-            //tabs
-            Expanded(
-              child: ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(10),
-                  bottomRight: Radius.circular(10),
-                ),
-                child: DefaultTabController(
-                  initialIndex: controller.viewMode ? 0 : 1,
-                  length: 2,
-                  animationDuration: const Duration(milliseconds: 500),
-                  child: Column(children: [
-                    Container(
-                      color: Colors.white,
-                      constraints: const BoxConstraints.expand(height: 40),
-                      padding: const EdgeInsets.symmetric(horizontal: 5),
-                      child: TabBar(
-                          indicatorColor: Colors.black45,
-                          overlayColor:
-                              MaterialStateProperty.all(Colors.black12),
-                          indicatorPadding: EdgeInsets.zero,
-                          tabs: const [
-                            Row(children: [
-                              Icon(
-                                size: 20,
-                                BootstrapIcons.list_task,
-                              ),
-                              Spacer(),
-                              Text(
-                                'Conferencia',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.black87,
-                                ),
-                              ),
-                              Spacer(),
-                            ]),
-                            Row(children: [
-                              Icon(
-                                size: 20,
-                                BootstrapIcons.list_check,
-                              ),
-                              Spacer(),
-                              Text(
-                                'Carrinho',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.black87,
-                                ),
-                              ),
-                              Spacer(),
-                            ]),
-                          ]),
-                    ),
-                    Expanded(
-                      child: TabBarView(children: [
-                        ConferenciaCarrinhoGrid(percursoEstagioConsulta),
-                        const ConferirGrid()
-                      ]),
-                    ),
-                  ]),
-                ),
-              ),
-            )
-          ]),
         );
       },
     );

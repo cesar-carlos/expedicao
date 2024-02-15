@@ -17,9 +17,9 @@ import 'package:app_expedicao/src/pages/Identificacao/wedgets/identificacao_dial
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_event_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_estagio_event_repository.dart';
 import 'package:app_expedicao/src/pages/separacao/grid_separacao/separacao_carrinho_grid_controller.dart';
-import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
+import 'package:app_expedicao/src/pages/common/confirmation_dialog/confirmation_dialog_view.dart';
+import 'package:app_expedicao/src/pages/common/message_dialog/message_dialog_view.dart';
 import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog_widget.dart';
-import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog.widget.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';
 import 'package:app_expedicao/src/service/separacao_adicionar_item_service.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
@@ -45,6 +45,7 @@ class SeparacaoController extends GetxController {
   late TextEditingController displayController;
   late TextEditingController scanController;
 
+  late FocusNode formFocusNode;
   late FocusNode quantidadeFocusNode;
   late FocusNode displayFocusNode;
   late FocusNode scanFocusNode;
@@ -68,6 +69,7 @@ class SeparacaoController extends GetxController {
     displayController = TextEditingController(text: '');
     quantidadeController = TextEditingController(text: '1,000');
 
+    formFocusNode = FocusNode();
     scanFocusNode = FocusNode()..requestFocus();
     quantidadeFocusNode = FocusNode();
     displayFocusNode = FocusNode();
@@ -84,6 +86,9 @@ class SeparacaoController extends GetxController {
   @override
   void onReady() async {
     super.onReady();
+
+    if (_viewMode.value) formFocusNode.requestFocus();
+
     _onEditItemSeparacaoGrid();
     _onRemoveItemSeparacaoGrid();
     _listenFocusNode();
@@ -97,6 +102,7 @@ class SeparacaoController extends GetxController {
     quantidadeController.dispose();
     displayController.dispose();
 
+    formFocusNode.dispose();
     quantidadeFocusNode.dispose();
     displayFocusNode.dispose();
     scanFocusNode.dispose();
@@ -104,17 +110,28 @@ class SeparacaoController extends GetxController {
     super.onClose();
   }
 
+  KeyEventResult handleKeyEvent(RawKeyEvent event) {
+    if (event is RawKeyDownEvent) {
+      if (event.logicalKey == LogicalKeyboardKey.f7) {
+        onSepararTudo();
+      }
+
+      if (event.logicalKey == LogicalKeyboardKey.f8) {
+        onReconferirTudo();
+      }
+
+      if (event.logicalKey == LogicalKeyboardKey.escape) {
+        Get.find<AppEventState>()..canCloseWindow = true;
+        Get.back();
+      }
+    }
+
+    return KeyEventResult.ignored;
+  }
+
   onPressedCloseBar() {
     Get.find<AppEventState>()..canCloseWindow = true;
     Get.back();
-  }
-
-  KeyEventResult handleKeyEvent(RawKeyEvent event) {
-    if (event.isKeyPressed(LogicalKeyboardKey.escape)) {
-      Get.back();
-      return KeyEventResult.handled;
-    }
-    return KeyEventResult.ignored;
   }
 
   ExpedicaoCarrinhoPercursoEstagioConsultaModel get percursoEstagio =>
@@ -184,8 +201,7 @@ class SeparacaoController extends GetxController {
 
     if (scanValue.isEmpty) {
       AudioHelper().play('/error.wav');
-      await ConfirmationDialogMessageWidget.show(
-        canCloseWindow: false,
+      await MessageDialogView.show(
         context: Get.context!,
         message: 'Valor invalido!',
         detail: 'Digite o codigo de barras do produto para fazer a pesquisa!',
@@ -198,8 +214,7 @@ class SeparacaoController extends GetxController {
 
     if (textQuantityValue.isEmpty) {
       AudioHelper().play('/error.wav');
-      await ConfirmationDialogMessageWidget.show(
-        canCloseWindow: false,
+      await MessageDialogView.show(
         context: Get.context!,
         message: 'Valor invalido!',
         detail: 'Digite a quantidade do produto para fazer a separação!',
@@ -214,8 +229,7 @@ class SeparacaoController extends GetxController {
         !_separarGridController.existsCodProduto(
             AppHelper.tryStringToIntOrZero(scanValue.trim()))) {
       AudioHelper().play('/error.wav');
-      await ConfirmationDialogMessageWidget.show(
-        canCloseWindow: false,
+      await MessageDialogView.show(
         context: Get.context!,
         message: 'Produto não encontrado!',
         detail: 'Este produto não esta na lista de separação!',
@@ -236,8 +250,7 @@ class SeparacaoController extends GetxController {
 
     if (itemSepararConsulta == null) {
       AudioHelper().play('/error.wav');
-      await ConfirmationDialogMessageWidget.show(
-        canCloseWindow: false,
+      await MessageDialogView.show(
         context: Get.context!,
         message: 'Produto não encontrado!',
         detail: 'Este produto não esta na lista de separação!',
@@ -254,8 +267,7 @@ class SeparacaoController extends GetxController {
         itemSepararConsulta.codSetorEstoque != null &&
         _processoExecutavel.codSetorEstoque != null) {
       AudioHelper().play('/error.wav');
-      await ConfirmationDialogMessageWidget.show(
-        canCloseWindow: false,
+      await MessageDialogView.show(
         context: Get.context!,
         message: 'Produto fora do setor estoque!',
         detail: 'Este produto não esta no seu setor de setor estoque!',
@@ -297,8 +309,7 @@ class SeparacaoController extends GetxController {
     if ((qtdConferencia + itemSepararConsulta.quantidadeSeparacao) >
         itemSepararConsulta.quantidade) {
       AudioHelper().play('/error.wav');
-      await ConfirmationDialogMessageWidget.show(
-        canCloseWindow: false,
+      await MessageDialogView.show(
         context: Get.context!,
         message: 'Quantidade invalida!',
         detail:
@@ -324,7 +335,7 @@ class SeparacaoController extends GetxController {
 
       if (separacaoItemConsulta == null) {
         AudioHelper().play('/error.wav');
-        await ConfirmationDialogMessageWidget.show(
+        await MessageDialogView.show(
           canCloseWindow: false,
           context: Get.context!,
           message: 'Erro ao adicionar item!',
@@ -363,8 +374,7 @@ class SeparacaoController extends GetxController {
     } catch (e) {
       //ERROR ADD ITEM
       AudioHelper().play('/success.wav');
-      await ConfirmationDialogMessageWidget.show(
-        canCloseWindow: false,
+      await MessageDialogView.show(
         context: Get.context!,
         message: 'Erro ao adicionar item!',
         detail: e.toString(),
@@ -389,8 +399,7 @@ class SeparacaoController extends GetxController {
 
   Future<void> _onEditItemSeparacaoGrid() async {
     _separacaoGridController.onPressedEditItem = (el) async {
-      await ConfirmationDialogMessageWidget.show(
-        canCloseWindow: false,
+      await MessageDialogView.show(
         context: Get.context!,
         message: 'Não implementado!',
         detail: 'Não é possível editar, funcionalidade não foi implementada.',
@@ -403,8 +412,7 @@ class SeparacaoController extends GetxController {
       if (el.codSetorEstoque != null &&
           _processoExecutavel.codSetorEstoque != null &&
           el.codSetorEstoque != _processoExecutavel.codSetorEstoque) {
-        await ConfirmationDialogMessageWidget.show(
-          canCloseWindow: false,
+        await MessageDialogView.show(
           context: Get.context!,
           message: 'Não é possivel remover!',
           detail: 'O produto não esta no seu setor estoque!',
@@ -413,7 +421,7 @@ class SeparacaoController extends GetxController {
         return;
       }
 
-      final bool? confirmation = await ConfirmationDialogWidget.show(
+      final bool? confirmation = await ConfirmationDialogView.show(
         canCloseWindow: false,
         context: Get.context!,
         message: 'Deseja realmente cancelar?',
@@ -423,7 +431,7 @@ class SeparacaoController extends GetxController {
       if (confirmation == null || !confirmation) return;
 
       if (viewMode) {
-        await ConfirmationDialogMessageWidget.show(
+        await MessageDialogView.show(
           canCloseWindow: false,
           context: Get.context!,
           message: 'Não é possivel remover!',
@@ -456,8 +464,7 @@ class SeparacaoController extends GetxController {
         _separarGridController.totalQuantitySeparetion();
 
     if (viewMode) {
-      await ConfirmationDialogMessageWidget.show(
-        canCloseWindow: false,
+      await MessageDialogView.show(
         context: Get.context!,
         message: 'Não é possivel separar tudo!',
         detail: 'O carrinho esta em modo de visualização..',
@@ -467,8 +474,7 @@ class SeparacaoController extends GetxController {
     }
 
     if (totalSeparado >= totalSeparar) {
-      await ConfirmationDialogMessageWidget.show(
-        canCloseWindow: false,
+      await MessageDialogView.show(
         context: Get.context!,
         message: 'Não existe itens para separar!',
         detail: 'Todos os itens ja foram separados!',
@@ -519,8 +525,7 @@ class SeparacaoController extends GetxController {
 
   Future<void> onReconferirTudo() async {
     if (viewMode) {
-      await ConfirmationDialogMessageWidget.show(
-        canCloseWindow: false,
+      await MessageDialogView.show(
         context: Get.context!,
         message: 'Não é possivel reconferir!',
         detail: 'O carrinho esta em modo de visualização..',
@@ -530,8 +535,7 @@ class SeparacaoController extends GetxController {
     }
 
     if (_separacaoGridController.totalQuantity() == 0) {
-      await ConfirmationDialogMessageWidget.show(
-        canCloseWindow: false,
+      await MessageDialogView.show(
         context: Get.context!,
         message: 'Não existe itens no carrinho!',
         detail: 'Não é possivel reconferir, pois não existe itens no carrinho!',
@@ -604,7 +608,7 @@ class SeparacaoController extends GetxController {
             );
 
             if (cancelamentos != null) {
-              await ConfirmationDialogMessageWidget.show(
+              await MessageDialogView.show(
                 canCloseWindow: false,
                 context: Get.context!,
                 message: 'Carrinho cancelado!',
@@ -612,7 +616,7 @@ class SeparacaoController extends GetxController {
                     'Cancelado pelo usuario: ${cancelamentos.nomeUsuarioCancelamento}!',
               );
             } else {
-              await ConfirmationDialogMessageWidget.show(
+              await MessageDialogView.show(
                 canCloseWindow: false,
                 context: Get.context!,
                 message: 'Carrinho cancelado!',
@@ -628,7 +632,7 @@ class SeparacaoController extends GetxController {
             _viewMode.value = true;
             update();
 
-            await ConfirmationDialogMessageWidget.show(
+            await MessageDialogView.show(
               canCloseWindow: false,
               context: Get.context!,
               message: 'Carrinho finalizado!',

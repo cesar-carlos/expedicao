@@ -19,7 +19,7 @@ class ConferirPage extends StatelessWidget {
     return GetBuilder<ConferirController>(
       builder: (controller) {
         return RawKeyboardListener(
-          focusNode: controller.keyressFocusNode,
+          focusNode: controller.formFocusNode,
           onKey: controller.handleKeyEvent,
           child: Scaffold(
             body: SizedBox.expand(

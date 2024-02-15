@@ -20,7 +20,7 @@ class SepararPage extends StatelessWidget {
     return GetBuilder<SepararController>(
       builder: (controller) {
         return RawKeyboardListener(
-          focusNode: FocusNode(),
+          focusNode: controller.formFocusNode,
           onKey: controller.handleKeyEvent,
           child: Scaffold(
             body: SizedBox.expand(

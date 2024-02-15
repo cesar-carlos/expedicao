@@ -1,15 +1,18 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:app_expedicao/src/app/app_error_alert.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog_generic_widget.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_agrupamento_consulta_model.dart';
 import 'package:app_expedicao/src/pages/carrinho_agrupar/grid/carrinhos_agrupar_grid_controller.dart';
-import 'package:app_expedicao/src/pages/common/widget/confirmation_dialog_message_widget.dart';
+import 'package:app_expedicao/src/pages/common/message_dialog/message_dialog_view.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_agrupar_service.dart';
+import 'package:app_expedicao/src/app/app_event_state.dart';
 
 class CarrinhosAgruparController extends GetxController {
+  late FocusNode formFocusNode;
   final RxBool _viewMode = false.obs;
 
   final ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel
@@ -39,6 +42,7 @@ class CarrinhosAgruparController extends GetxController {
 
   @override
   void onInit() async {
+    formFocusNode = FocusNode();
     _carrinhosAgruparGridController = CarrinhosAgruparGridController();
     Get.put(_carrinhosAgruparGridController);
 
@@ -70,6 +74,25 @@ class CarrinhosAgruparController extends GetxController {
     super.onClose();
   }
 
+  KeyEventResult handleKeyEvent(RawKeyEvent event) {
+    if (event is RawKeyDownEvent) {
+      if (event.logicalKey == LogicalKeyboardKey.escape) {
+        Get.find<AppEventState>()..canCloseWindow = true;
+        Get.back();
+      }
+
+      if (event.logicalKey == LogicalKeyboardKey.f7) {
+        Get.find<CarrinhosAgruparController>().onAgruparTudo();
+      }
+
+      if (event.logicalKey == LogicalKeyboardKey.f8) {
+        Get.find<CarrinhosAgruparController>().onDesabruparTudo();
+      }
+    }
+
+    return KeyEventResult.ignored;
+  }
+
   Future<void> _fillGridCarrinhosAgruparGrid() async {
     final _carrinhoAgruparService = CarrinhoPercursoEstagioAgruparService(
       codEmpresa: carrinhoPercursoAgrupamento.codEmpresa,
@@ -81,12 +104,15 @@ class CarrinhosAgruparController extends GetxController {
     );
 
     final resultFiltered = result.where((el) {
-      if (el.situacao == ExpedicaoSituacaoModel.agrupado &&
-          el.codCarrinhoAgrupador != carrinhoPercursoAgrupamento.codCarrinho) {
-        return false;
-      }
+      if (el.codCarrinhoAgrupador == null) return true;
+      if (el.codCarrinhoAgrupador == carrinhoPercursoAgrupamento.codCarrinho)
+        return true;
 
-      return true;
+      return false;
+    }).where((el) {
+      if (el.situacao == ExpedicaoSituacaoModel.agrupado) return true;
+      if (el.situacao == ExpedicaoSituacaoModel.conferido) return true;
+      return false;
     }).toList();
 
     _carrinhosAgruparGridController.addAllGrid(resultFiltered);
@@ -95,15 +121,14 @@ class CarrinhosAgruparController extends GetxController {
 
   Future<void> onSubmittedScan(String? value) async {
     if (value == null || value.isEmpty) {
-      await ConfirmationDialogMessageWidget.show(
-        canCloseWindow: false,
+      await MessageDialogView.show(
         context: Get.context!,
         message: 'Valor invalido!',
         detail: 'Digite o codigo de barras do para fazer a pesquisa!',
       );
 
-      controllerScanCarrinho.clear();
       focusScanCarrinho.requestFocus();
+      controllerScanCarrinho.clear();
       return;
     }
 
@@ -111,29 +136,27 @@ class CarrinhosAgruparController extends GetxController {
         _carrinhosAgruparGridController.findCodigoBarras(value);
 
     if (carrinhoAgrupar == null) {
-      await ConfirmationDialogMessageWidget.show(
-        canCloseWindow: false,
+      await MessageDialogView.show(
         context: Get.context!,
         message: 'Carrinho não encontrado!',
         detail:
             'Carrinho não encontrado na lista de carrinhos disponiveis para agrupamento!',
       );
 
-      controllerScanCarrinho.clear();
       focusScanCarrinho.requestFocus();
+      controllerScanCarrinho.clear();
       return;
     }
 
     if (carrinhoAgrupar.situacao == ExpedicaoSituacaoModel.agrupado) {
-      await ConfirmationDialogMessageWidget.show(
-        canCloseWindow: false,
+      await MessageDialogView.show(
         context: Get.context!,
         message: 'Carrinho já agrupado!',
         detail: 'Carrinho já foi agrupado!',
       );
 
-      controllerScanCarrinho.clear();
       focusScanCarrinho.requestFocus();
+      controllerScanCarrinho.clear();
       return;
     }
 
@@ -148,8 +171,7 @@ class CarrinhosAgruparController extends GetxController {
         .toList();
 
     if (itensAgrupar.isEmpty) {
-      ConfirmationDialogMessageWidget.show(
-        canCloseWindow: false,
+      MessageDialogView.show(
         context: Get.context!,
         message: 'Nenhum carrinho para agrupar!',
         detail: 'Não existe carrinhos para serem agrupados na lista!',
@@ -167,8 +189,7 @@ class CarrinhosAgruparController extends GetxController {
         .toList();
 
     if (itensAgrupar.isEmpty) {
-      ConfirmationDialogMessageWidget.show(
-        canCloseWindow: false,
+      MessageDialogView.show(
         context: Get.context!,
         message: 'Nenhum carrinho encontrado!',
         detail: 'Não existe carrinhos para serem desagrupado na lista!',
@@ -211,8 +232,7 @@ class CarrinhosAgruparController extends GetxController {
 
           return true;
         } on AppErrorAlert catch (err) {
-          await ConfirmationDialogMessageWidget.show(
-            canCloseWindow: false,
+          await MessageDialogView.show(
             context: Get.context!,
             message: err.message,
             detail: err.details ?? '',
@@ -241,8 +261,7 @@ class CarrinhosAgruparController extends GetxController {
           _carrinhosAgruparGridController.update();
           return true;
         } on AppErrorAlert catch (err) {
-          await ConfirmationDialogMessageWidget.show(
-            canCloseWindow: false,
+          await MessageDialogView.show(
             context: Get.context!,
             message: err.message,
             detail: err.details ?? '',
@@ -277,8 +296,7 @@ class CarrinhosAgruparController extends GetxController {
           _carrinhosAgruparGridController.update();
           return true;
         } on AppErrorAlert catch (err) {
-          await ConfirmationDialogMessageWidget.show(
-            canCloseWindow: false,
+          await MessageDialogView.show(
             context: Get.context!,
             message: err.message,
             detail: err.details ?? '',
@@ -307,8 +325,7 @@ class CarrinhosAgruparController extends GetxController {
           _carrinhosAgruparGridController.update();
           return true;
         } on AppErrorAlert catch (err) {
-          await ConfirmationDialogMessageWidget.show(
-            canCloseWindow: false,
+          await MessageDialogView.show(
             context: Get.context!,
             message: err.message,
             detail: err.details ?? '',

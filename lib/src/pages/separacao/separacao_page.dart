@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 
 import 'package:app_expedicao/src/app/app_event_state.dart';
@@ -32,28 +31,13 @@ class SeparacaoPage {
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return RawKeyboardListener(
-          focusNode: FocusNode(),
-          onKey: (RawKeyEvent event) {
-            if (event is RawKeyDownEvent) {
-              if (event.logicalKey == LogicalKeyboardKey.f7) {
-                Get.find<SeparacaoController>().onSepararTudo();
-              }
-
-              if (event.logicalKey == LogicalKeyboardKey.f8) {
-                Get.find<SeparacaoController>().onReconferirTudo();
-              }
-
-              if (event.logicalKey == LogicalKeyboardKey.escape) {
-                Get.find<AppEventState>()..canCloseWindow = true;
-                Get.back();
-              }
-            }
-          },
-          child: GetBuilder<SeparacaoController>(
-            init: SeparacaoController(percursoEstagioConsulta),
-            builder: (controller) {
-              return Dialog(
+        return GetBuilder<SeparacaoController>(
+          init: SeparacaoController(percursoEstagioConsulta),
+          builder: (controller) {
+            return RawKeyboardListener(
+              focusNode: controller.formFocusNode,
+              onKey: controller.handleKeyEvent,
+              child: Dialog(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)),
                 child: SizedBox(
@@ -65,134 +49,126 @@ class SeparacaoPage {
                       widthBar: size.width,
                       onPressedCloseBar: controller.onPressedCloseBar,
                     ),
-                    _dailog(size, controller, percursoEstagioConsulta),
-                  ]),
-                ),
-              );
-            },
-          ),
-        );
-      },
-    );
-  }
-
-  static Widget _dailog(
-    Size size,
-    SeparacaoController controller,
-    ExpedicaoCarrinhoPercursoEstagioConsultaModel percursoEstagioConsulta,
-  ) {
-    return GetBuilder<SeparacaoController>(
-      builder: (controller) {
-        return SizedBox(
-          width: size.width * 0.95,
-          height: size.height * 0.8 - _spaceHeadlement,
-          child: Column(children: [
-            //** HEADER BUTTON **//
-            SpaceButtonsHeadFormElement(
-              width: double.infinity,
-              children: [
-                ButtonHeadForm(
-                  title: 'Separar tudo',
-                  shortCut: 'F7',
-                  shortCutActive: true,
-                  onPressed: controller.onSepararTudo,
-                  icon: const Icon(
-                    BootstrapIcons.list_check,
-                    color: Colors.white,
-                    size: 33,
-                  ),
-                ),
-                ButtonHeadForm(
-                  title: 'Reconferir tudo',
-                  shortCut: 'F8',
-                  shortCutActive: true,
-                  onPressed: controller.onReconferirTudo,
-                  icon: const Icon(
-                    BootstrapIcons.list_task,
-                    color: Colors.white,
-                    size: 33,
-                  ),
-                ),
-              ],
-            ),
-
-            //LEITOR CODIGO DE BARRAS
-            ScanSeparacaoItemWidget(percursoEstagioConsulta, size: size),
-
-            //tabs
-            Expanded(
-              child: ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(10),
-                  bottomRight: Radius.circular(10),
-                ),
-                child: DefaultTabController(
-                  initialIndex: controller.viewMode ? 0 : 1,
-                  length: 2,
-                  animationDuration: const Duration(milliseconds: 500),
-                  child: Column(children: [
-                    Container(
-                      color: Colors.white,
-                      constraints: const BoxConstraints.expand(height: 40),
-                      padding: const EdgeInsets.symmetric(horizontal: 5),
-                      child: TabBar(
-                          indicatorColor: Colors.black45,
-                          overlayColor:
-                              MaterialStateProperty.all(Colors.black12),
-                          indicatorPadding: EdgeInsets.zero,
-                          tabs: const [
-                            Row(children: [
-                              Icon(
-                                size: 20,
-                                BootstrapIcons.list_task,
-                              ),
-                              Spacer(),
-                              Text(
-                                'Carrinho',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.black87,
-                                ),
-                              ),
-                              Spacer(),
-                            ]),
-                            Row(children: [
-                              Icon(
-                                size: 20,
+                    SizedBox(
+                      width: size.width * 0.95,
+                      height: size.height * 0.8 - _spaceHeadlement,
+                      child: Column(children: [
+                        SpaceButtonsHeadFormElement(
+                          width: double.infinity,
+                          children: [
+                            ButtonHeadForm(
+                              title: 'Separar tudo',
+                              shortCut: 'F7',
+                              shortCutActive: true,
+                              onPressed: controller.onSepararTudo,
+                              icon: const Icon(
                                 BootstrapIcons.list_check,
+                                color: Colors.white,
+                                size: 33,
                               ),
-                              Spacer(),
-                              Text(
-                                'Separação',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.black87,
+                            ),
+                            ButtonHeadForm(
+                              title: 'Reconferir tudo',
+                              shortCut: 'F8',
+                              shortCutActive: true,
+                              onPressed: controller.onReconferirTudo,
+                              icon: const Icon(
+                                BootstrapIcons.list_task,
+                                color: Colors.white,
+                                size: 33,
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        //LEITOR CODIGO DE BARRAS
+                        ScanSeparacaoItemWidget(
+                          percursoEstagioConsulta,
+                          size: size,
+                        ),
+
+                        //TAB
+                        Expanded(
+                          child: ClipRRect(
+                            borderRadius: const BorderRadius.only(
+                              bottomLeft: Radius.circular(10),
+                              bottomRight: Radius.circular(10),
+                            ),
+                            child: DefaultTabController(
+                              initialIndex: controller.viewMode ? 0 : 1,
+                              length: 2,
+                              animationDuration:
+                                  const Duration(milliseconds: 500),
+                              child: Column(children: [
+                                Container(
+                                  color: Colors.white,
+                                  constraints:
+                                      const BoxConstraints.expand(height: 40),
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 5),
+                                  child: TabBar(
+                                      indicatorColor: Colors.black45,
+                                      overlayColor: MaterialStateProperty.all(
+                                          Colors.black12),
+                                      indicatorPadding: EdgeInsets.zero,
+                                      tabs: [
+                                        Row(children: [
+                                          Icon(
+                                            size: 20,
+                                            BootstrapIcons.list_task,
+                                          ),
+                                          Spacer(),
+                                          Text(
+                                            'Carrinho',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.black87,
+                                            ),
+                                          ),
+                                          Spacer(),
+                                        ]),
+                                        Row(children: [
+                                          Icon(
+                                            size: 20,
+                                            BootstrapIcons.list_check,
+                                          ),
+                                          Spacer(),
+                                          Text(
+                                            'Separação',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.black87,
+                                            ),
+                                          ),
+                                          Spacer(),
+                                        ]),
+                                      ]),
                                 ),
-                              ),
-                              Spacer(),
-                            ]),
-                          ]),
-                    ),
-                    Expanded(
-                      child: TabBarView(children: [
-                        Container(
-                          color: Colors.white70,
-                          child: SeparacaoCarrinhoGrid(
-                            percursoEstagioConsulta,
+                                Expanded(
+                                  child: TabBarView(children: [
+                                    Container(
+                                      color: Colors.white70,
+                                      child: SeparacaoCarrinhoGrid(
+                                        percursoEstagioConsulta,
+                                      ),
+                                    ),
+                                    Container(
+                                      color: Colors.white70,
+                                      child: const SepararGrid(),
+                                    ),
+                                  ]),
+                                ),
+                              ]),
+                            ),
                           ),
-                        ),
-                        Container(
-                          color: Colors.white70,
-                          //child: const SepararSetorGrid(),
-                          child: const SepararGrid(),
-                        ),
+                        )
                       ]),
                     ),
                   ]),
                 ),
               ),
-            )
-          ]),
+            );
+          },
         );
       },
     );
