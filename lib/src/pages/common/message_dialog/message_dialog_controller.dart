@@ -1,7 +1,7 @@
-import 'package:app_expedicao/src/app/app_event_state.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:flutter/widgets.dart';
+
+import 'package:app_expedicao/src/app/app_event_state.dart';
 
 class MessageDialogController extends GetxController {
   late FocusNode formFocusNode;
@@ -21,15 +21,11 @@ class MessageDialogController extends GetxController {
     super.onClose();
   }
 
-  KeyEventResult handleKeyEvent(RawKeyEvent event) {
-    if (event is RawKeyDownEvent) {
-      if (event.logicalKey == LogicalKeyboardKey.escape) {
-        Get.find<AppEventState>()..canCloseWindow = true;
-        Get.back(result: false);
-      }
-    }
-
-    return KeyEventResult.ignored;
+  void handleKeyEvent(KeyEvent event) {
+    // if (event.logicalKey == LogicalKeyboardKey.escape) {
+    //   Get.find<AppEventState>()..canCloseWindow = true;
+    //   Get.back(result: false);
+    // }
   }
 
   void onPressedOK() {

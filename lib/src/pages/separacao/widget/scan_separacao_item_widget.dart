@@ -22,11 +22,11 @@ class ScanSeparacaoItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<SeparacaoController>(builder: (controller) {
-      return RawKeyboardListener(
+      return KeyboardListener(
         focusNode: FocusNode(),
-        onKey: (event) {
-          if (event.isKeyPressed(LogicalKeyboardKey.escape)) {
-            Get.find<AppEventState>().canCloseWindow = true;
+        onKeyEvent: (KeyEvent event) {
+          if (event.logicalKey == LogicalKeyboardKey.escape) {
+            Get.find<AppEventState>()..canCloseWindow = true;
             Get.back();
           }
         },

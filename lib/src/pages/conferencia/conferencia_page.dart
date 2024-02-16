@@ -34,10 +34,10 @@ class ConferenciaPage {
       builder: (BuildContext context) {
         return GetBuilder<ConferenciaController>(
           init: ConferenciaController(percursoEstagioConsulta),
-          builder: (controller) {
-            return RawKeyboardListener(
+          builder: (ConferenciaController controller) {
+            return KeyboardListener(
               focusNode: controller.formFocusNode,
-              onKey: controller.handleKeyEvent,
+              onKeyEvent: controller.handleKeyEvent,
               child: Dialog(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)),

@@ -26,14 +26,12 @@ class IdentificacaoDialogWidget {
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return RawKeyboardListener(
+        return KeyboardListener(
           focusNode: FocusNode(),
-          onKey: (RawKeyEvent event) {
-            if (event is RawKeyDownEvent) {
-              if (event.logicalKey == LogicalKeyboardKey.escape) {
-                Get.find<AppEventState>()..canCloseWindow = true;
-                Get.back();
-              }
+          onKeyEvent: (KeyEvent event) {
+            if (event.logicalKey == LogicalKeyboardKey.escape) {
+              Get.find<AppEventState>()..canCloseWindow = true;
+              Get.back();
             }
           },
           child: GetBuilder<IdentificacaoController>(

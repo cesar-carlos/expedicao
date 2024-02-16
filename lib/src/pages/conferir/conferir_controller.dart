@@ -1,5 +1,3 @@
-import 'dart:io' as io;
-
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
@@ -17,8 +15,8 @@ import 'package:app_expedicao/src/repository/expedicao_conferir/conferir_event_r
 import 'package:app_expedicao/src/pages/conferido_carrinhos/conferido_carrinhos_controller.dart';
 import 'package:app_expedicao/src/pages/common/observacao_dialog/model/observacao_dialog_view_model.dart';
 import 'package:app_expedicao/src/pages/common/confirmation_dialog/confirmation_dialog_view.dart';
-import 'package:app_expedicao/src/pages/carrinho/widget/adicionar_carrinho_dialog_widget.dart';
 import 'package:app_expedicao/src/pages/conferir_carrinhos/conferir_carrinhos_controller.dart';
+import 'package:app_expedicao/src/pages/common/carrinho_dialog/carrinho_dialog_view.dart';
 import 'package:app_expedicao/src/pages/common/message_dialog/message_dialog_view.dart';
 import 'package:app_expedicao/src/pages/common/widget/loading_sever_dialog_widget.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
@@ -32,6 +30,7 @@ import 'package:app_expedicao/src/app/app_socket_config.dart';
 
 class ConferirController extends GetxController {
   bool _iniciada = false;
+
   late FocusNode formFocusNode;
   final List<RepositoryEventListenerModel> _pageListerner = [];
   late AppSocketConfig _socketClient;
@@ -91,11 +90,11 @@ class ConferirController extends GetxController {
 
   @override
   onReady() async {
-    super.onReady();
     formFocusNode.requestFocus();
     await _fillCarrinhoConferir();
     await _fillCarrinhoPercurso();
     _liteners();
+    super.onReady();
   }
 
   @override
@@ -106,41 +105,39 @@ class ConferirController extends GetxController {
     super.onClose();
   }
 
-  KeyEventResult handleKeyEvent(RawKeyEvent event) {
-    if (event is RawKeyDownEvent) {
-      if (event.logicalKey == LogicalKeyboardKey.f4) {
-        btnAdicionarCarrinho();
-      }
-
-      if (event.logicalKey == LogicalKeyboardKey.f5) {
-        btnAdicionarObservacao();
-      }
-
-      if (event.logicalKey == LogicalKeyboardKey.f6) {
-        //TODO: Implementar
-      }
-
-      if (event.logicalKey == LogicalKeyboardKey.f7) {
-        //TODO: Implementar
-      }
-
-      if (event.logicalKey == LogicalKeyboardKey.f12) {
-        btnFinalizarConferencia();
-      }
-
-      if (event.logicalKey == LogicalKeyboardKey.escape) {
-        ConfirmationDialogView.show(
-          canCloseWindow: false,
-          context: Get.context!,
-          message: 'Deseja realmente sair?',
-          detail: 'A tela será fechada e a separação não será  cancelada.',
-        ).then((value) {
-          if (value != null && value) {
-            io.exit(0);
-          }
-        });
-      }
+  KeyEventResult handleKeyEvent(KeyEvent event) {
+    if (event.logicalKey == LogicalKeyboardKey.f4) {
+      btnAdicionarCarrinho();
     }
+
+    if (event.logicalKey == LogicalKeyboardKey.f5) {
+      btnAdicionarObservacao();
+    }
+
+    if (event.logicalKey == LogicalKeyboardKey.f6) {
+      //TODO: Implementar
+    }
+
+    if (event.logicalKey == LogicalKeyboardKey.f7) {
+      //TODO: Implementar
+    }
+
+    if (event.logicalKey == LogicalKeyboardKey.f12) {
+      btnFinalizarConferencia();
+    }
+
+    // if (event.logicalKey == LogicalKeyboardKey.escape) {
+    //   setModalOpen();
+    //   ConfirmationDialogView.show(
+    //     canCloseWindow: false,
+    //     context: Get.context!,
+    //     message: 'Deseja realmente sair?',
+    //     detail: 'A tela será fechada e a separação não será  cancelada.',
+    //   ).then((value) {
+    //     if (value != null && value) io.exit(0);
+    //     setModalClose();
+    //   });
+    // }
 
     return KeyEventResult.ignored;
   }
@@ -231,8 +228,9 @@ class ConferirController extends GetxController {
       return;
     }
 
-    final dialog = AdicionarCarrinhoDialogWidget(canCloseWindow: false);
-    final carrinhoConsulta = await dialog.show();
+    final carrinhoConsulta = await CarrinhoDialogView.show(
+      context: Get.context!,
+    );
 
     if (carrinhoConsulta != null) {
       await iniciarConferencia();

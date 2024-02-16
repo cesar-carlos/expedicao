@@ -19,9 +19,9 @@ class SepararPage extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
     return GetBuilder<SepararController>(
       builder: (controller) {
-        return RawKeyboardListener(
+        return KeyboardListener(
           focusNode: controller.formFocusNode,
-          onKey: controller.handleKeyEvent,
+          onKeyEvent: controller.handleKeyEvent,
           child: Scaffold(
             body: SizedBox.expand(
               child: Column(

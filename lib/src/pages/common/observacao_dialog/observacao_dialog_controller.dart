@@ -48,18 +48,14 @@ class ObservacaoDialogController extends GetxController {
     super.onClose();
   }
 
-  KeyEventResult handleKeyEvent(RawKeyEvent event) {
-    if (event is RawKeyDownEvent) {
-      if (event.logicalKey == LogicalKeyboardKey.f12) {
-        onPressedSalvar();
-      }
-
-      if (event.logicalKey == LogicalKeyboardKey.escape) {
-        onPressedSalvar();
-      }
+  void handleKeyEvent(KeyEvent event) {
+    if (event.logicalKey == LogicalKeyboardKey.f12) {
+      onPressedSalvar();
     }
 
-    return KeyEventResult.ignored;
+    if (event.logicalKey == LogicalKeyboardKey.escape) {
+      onPressedSalvar();
+    }
   }
 
   void _historicoControllerListener() {

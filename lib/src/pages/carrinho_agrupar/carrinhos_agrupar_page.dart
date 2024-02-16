@@ -33,10 +33,10 @@ class CarrinhosAgruparPage {
       builder: (BuildContext context) {
         return GetBuilder<CarrinhosAgruparController>(
           init: CarrinhosAgruparController(carrinhoPercursoAgrupamento),
-          builder: (controller) {
-            return RawKeyboardListener(
+          builder: (CarrinhosAgruparController controller) {
+            return KeyboardListener(
               focusNode: controller.formFocusNode,
-              onKey: controller.handleKeyEvent,
+              onKeyEvent: controller.handleKeyEvent,
               child: Dialog(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)),

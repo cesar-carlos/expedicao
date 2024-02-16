@@ -17,10 +17,10 @@ class ConferirPage extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
 
     return GetBuilder<ConferirController>(
-      builder: (controller) {
-        return RawKeyboardListener(
+      builder: (ConferirController controller) {
+        return KeyboardListener(
           focusNode: controller.formFocusNode,
-          onKey: controller.handleKeyEvent,
+          onKeyEvent: controller.handleKeyEvent,
           child: Scaffold(
             body: SizedBox.expand(
               child: Column(

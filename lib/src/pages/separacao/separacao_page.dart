@@ -33,10 +33,10 @@ class SeparacaoPage {
       builder: (BuildContext context) {
         return GetBuilder<SeparacaoController>(
           init: SeparacaoController(percursoEstagioConsulta),
-          builder: (controller) {
-            return RawKeyboardListener(
+          builder: (SeparacaoController controller) {
+            return KeyboardListener(
               focusNode: controller.formFocusNode,
-              onKey: controller.handleKeyEvent,
+              onKeyEvent: controller.handleKeyEvent,
               child: Dialog(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)),

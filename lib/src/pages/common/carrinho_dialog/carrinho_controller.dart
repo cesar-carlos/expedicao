@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:app_expedicao/src/app/app_dialog.dart';
 import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
@@ -10,16 +11,19 @@ import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
 import 'package:app_expedicao/src/pages/common/widget/message_dialog_widget.dart';
 import 'package:app_expedicao/src/service/conferencia_situacao_carrinho_service.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinhos/carrinho_consulta_repository.dart';
-import 'package:app_expedicao/src/pages/carrinho/view_model/carrinho_view_model.dart';
+import 'package:app_expedicao/src/pages/common/carrinho_dialog/model/carrinho_dialog_view_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_consulta_model.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/app/app_event_state.dart';
 
 class CarrinhoController extends GetxController {
-  late ProcessoExecutavelModel _processoExecutavel;
   Uuid uuid = const Uuid();
+  late FocusNode formFocusNode;
+  late ProcessoExecutavelModel _processoExecutavel;
 
-  final CarrinhoViewModel _carrinho = CarrinhoViewModel.empty();
+  CarrinhoDialogViewModel get carrinho => _carrinho;
+
+  final CarrinhoDialogViewModel _carrinho = CarrinhoDialogViewModel.empty();
   final repotory = CarrinhoConsultaRepository();
 
   late TextEditingController textControllerCodigoCarrinho;
@@ -36,6 +40,8 @@ class CarrinhoController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+
+    formFocusNode = FocusNode();
   }
 
   @override
@@ -44,10 +50,16 @@ class CarrinhoController extends GetxController {
     textControllerCodigoCarrinho.dispose();
     focusNodeBtnAdicionarCarrinho.dispose();
     Get.find<AppEventState>()..canCloseWindow = true;
+    formFocusNode.dispose();
     super.onClose();
   }
 
-  CarrinhoViewModel get carrinho => _carrinho;
+  void handleKeyEvent(KeyEvent event) {
+    if (event.logicalKey == LogicalKeyboardKey.escape) {
+      Get.find<AppEventState>()..canCloseWindow = true;
+      Get.back(result: false);
+    }
+  }
 
   void onSubmittedForm(String text) async {
     addCarrinho();

@@ -110,23 +110,19 @@ class SeparacaoController extends GetxController {
     super.onClose();
   }
 
-  KeyEventResult handleKeyEvent(RawKeyEvent event) {
-    if (event is RawKeyDownEvent) {
-      if (event.logicalKey == LogicalKeyboardKey.f7) {
-        onSepararTudo();
-      }
-
-      if (event.logicalKey == LogicalKeyboardKey.f8) {
-        onReconferirTudo();
-      }
-
-      if (event.logicalKey == LogicalKeyboardKey.escape) {
-        Get.find<AppEventState>()..canCloseWindow = true;
-        Get.back();
-      }
+  void handleKeyEvent(KeyEvent event) {
+    if (event.logicalKey == LogicalKeyboardKey.f7) {
+      onSepararTudo();
     }
 
-    return KeyEventResult.ignored;
+    if (event.logicalKey == LogicalKeyboardKey.f8) {
+      onReconferirTudo();
+    }
+
+    if (event.logicalKey == LogicalKeyboardKey.escape) {
+      Get.find<AppEventState>()..canCloseWindow = true;
+      Get.back();
+    }
   }
 
   onPressedCloseBar() {
@@ -151,7 +147,7 @@ class SeparacaoController extends GetxController {
   }
 
   Future<void> _fillCarrinhoPercurso() async {
-    final params = ''' 
+    final params = '''
         CodEmpresa = ${percursoEstagioConsulta.codEmpresa} 
       AND CodEmpresa = '${percursoEstagioConsulta.codEmpresa}' 
       AND CodCarrinhoPercurso = ${percursoEstagioConsulta.codCarrinhoPercurso}

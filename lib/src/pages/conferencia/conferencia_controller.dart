@@ -1,7 +1,7 @@
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:app_expedicao/src/app/app_helper.dart';
 import 'package:app_expedicao/src/core/audio_helper.dart';
@@ -115,23 +115,19 @@ class ConferenciaController extends GetxController {
     super.onClose();
   }
 
-  KeyEventResult handleKeyEvent(RawKeyEvent event) {
-    if (event is RawKeyDownEvent) {
-      if (event.logicalKey == LogicalKeyboardKey.f7) {
-        onConferirTudo();
-      }
-
-      if (event.logicalKey == LogicalKeyboardKey.f8) {
-        onReconferirTudo();
-      }
-
-      if (event.logicalKey == LogicalKeyboardKey.escape) {
-        Get.find<AppEventState>()..canCloseWindow = true;
-        Get.back();
-      }
+  void handleKeyEvent(KeyEvent event) {
+    if (event.logicalKey == LogicalKeyboardKey.f7) {
+      onConferirTudo();
     }
 
-    return KeyEventResult.ignored;
+    if (event.logicalKey == LogicalKeyboardKey.f8) {
+      onReconferirTudo();
+    }
+
+    if (event.logicalKey == LogicalKeyboardKey.escape) {
+      Get.find<AppEventState>()..canCloseWindow = true;
+      Get.back();
+    }
   }
 
   ExpedicaoCarrinhoPercursoEstagioConsultaModel get percursoEstagio =>
@@ -155,7 +151,7 @@ class ConferenciaController extends GetxController {
   }
 
   Future<void> _fillCarrinhoPercurso() async {
-    final params = ''' 
+    final params = '''
             CodEmpresa = ${percursoEstagioConsulta.codEmpresa} 
           AND CodEmpresa = '${percursoEstagioConsulta.codEmpresa}' 
           AND CodCarrinhoPercurso = ${percursoEstagioConsulta.codCarrinhoPercurso} ''';

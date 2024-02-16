@@ -1,62 +1,53 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
-import 'package:app_expedicao/src/app/app_event_state.dart';
-import 'package:app_expedicao/src/pages/common/form_element/bar_head_form_element.dart';
-import 'package:app_expedicao/src/pages/common/form_element/button_form_element.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_consulta_model.dart';
-import 'package:app_expedicao/src/pages/carrinho/carrinho_controller.dart';
+import 'package:app_expedicao/src/pages/common/form_element/button_form_element.dart';
+import 'package:app_expedicao/src/pages/common/carrinho_dialog/carrinho_controller.dart';
+import 'package:app_expedicao/src/pages/common/form_element/bar_head_form_element.dart';
+import 'package:app_expedicao/src/app/app_event_state.dart';
 
-class AdicionarCarrinhoDialogWidget {
-  final bool canCloseWindow;
-  final double widthForm = 600;
-  final double heightForm = 400;
-  final double spaceBarHeadForm = 30.5;
-  final BuildContext context = Get.context!;
-  final Size size = Get.size;
+class CarrinhoDialogView {
+  static const double _widthForm = 600;
+  static const double _heightForm = 400;
+  static const double _spaceBarHeadForm = 30.5;
 
-  AdicionarCarrinhoDialogWidget({required this.canCloseWindow});
-
-  Future<ExpedicaoCarrinhoConsultaModel?> show() async {
-    Get.find<AppEventState>()..canCloseWindow = canCloseWindow;
-
+  static Future<ExpedicaoCarrinhoConsultaModel?> show({
+    required BuildContext context,
+    bool canCloseWindow = false,
+  }) async {
     return await showDialog<ExpedicaoCarrinhoConsultaModel>(
-      context: context,
       barrierDismissible: false,
+      context: context,
       builder: (BuildContext context) {
-        return RawKeyboardListener(
-          focusNode: FocusNode(),
-          onKey: (RawKeyEvent event) {
-            if (event is RawKeyDownEvent) {
-              if (event.logicalKey == LogicalKeyboardKey.escape) {
-                Get.find<AppEventState>()..canCloseWindow = true;
-                Get.back();
-              }
-            }
-          },
-          child: GetBuilder<CarrinhoController>(
-            init: CarrinhoController(),
-            builder: (controller) {
-              return Dialog(
+        final _appEventState = Get.find<AppEventState>();
+        _appEventState.canCloseWindow = canCloseWindow;
+
+        return GetBuilder<CarrinhoController>(
+          init: CarrinhoController(),
+          builder: (CarrinhoController controller) {
+            return KeyboardListener(
+              focusNode: controller.formFocusNode,
+              onKeyEvent: controller.handleKeyEvent,
+              child: Dialog(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)),
                 child: SizedBox(
-                  width: widthForm,
-                  height: heightForm,
+                  width: _widthForm,
+                  height: _heightForm,
                   child: Column(
                     children: [
                       //** HEADER BAR **//
                       BarHeadFormElement(
-                        widthBar: widthForm + 80,
+                        widthBar: _widthForm + 80,
                         title: 'Adicionar Carrinho',
                         onPressedCloseBar: () => Get.back(),
                       ),
 
                       //** BODY **//
                       Container(
-                        width: widthForm,
-                        height: heightForm - spaceBarHeadForm,
+                        width: _widthForm,
+                        height: _heightForm - _spaceBarHeadForm,
                         decoration: BoxDecoration(
                           borderRadius: const BorderRadius.vertical(
                               bottom: Radius.circular(10)),
@@ -210,9 +201,9 @@ class AdicionarCarrinhoDialogWidget {
                     ],
                   ),
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         );
       },
     );

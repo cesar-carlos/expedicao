@@ -1,5 +1,3 @@
-import 'dart:io' as io;
-
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +12,7 @@ import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';
 import 'package:app_expedicao/src/service/conferir_separacao_adicionar_service.dart';
 import 'package:app_expedicao/src/pages/common/widget/loading_sever_dialog_widget.dart';
-import 'package:app_expedicao/src/pages/carrinho/widget/adicionar_carrinho_dialog_widget.dart';
+import 'package:app_expedicao/src/pages/common/carrinho_dialog/carrinho_dialog_view.dart';
 import 'package:app_expedicao/src/pages/Identificacao/wedgets/identificacao_dialog_widget.dart';
 import 'package:app_expedicao/src/pages/common/confirmation_dialog/confirmation_dialog_view.dart';
 import 'package:app_expedicao/src/pages/separarado_carrinhos/separarado_carrinhos_controller.dart';
@@ -104,35 +102,29 @@ class SepararController extends GetxController {
     super.onClose();
   }
 
-  KeyEventResult handleKeyEvent(RawKeyEvent event) {
-    if (event is RawKeyDownEvent) {
-      if (event.logicalKey == LogicalKeyboardKey.f4) {
-        adicionarCarrinho();
-      }
-
-      if (event.logicalKey == LogicalKeyboardKey.f5) {
-        btnAdicionarObservacao();
-      }
-
-      if (event.logicalKey == LogicalKeyboardKey.f12) {
-        btnFinalizarSeparacao();
-      }
-
-      if (event.logicalKey == LogicalKeyboardKey.escape) {
-        ConfirmationDialogView.show(
-          canCloseWindow: false,
-          context: Get.context!,
-          message: 'Deseja realmente sair?',
-          detail: 'A tela será fechada e a separação não será  cancelada.',
-        ).then((value) {
-          if (value != null && value) {
-            io.exit(0);
-          }
-        });
-      }
+  void handleKeyEvent(KeyEvent event) {
+    if (event.logicalKey == LogicalKeyboardKey.f4) {
+      adicionarCarrinho();
     }
 
-    return KeyEventResult.ignored;
+    if (event.logicalKey == LogicalKeyboardKey.f5) {
+      btnAdicionarObservacao();
+    }
+
+    if (event.logicalKey == LogicalKeyboardKey.f12) {
+      btnFinalizarSeparacao();
+    }
+
+    // if (event.logicalKey == LogicalKeyboardKey.escape) {
+    //   ConfirmationDialogView.show(
+    //     canCloseWindow: false,
+    //     context: Get.context!,
+    //     message: 'Deseja realmente sair?',
+    //     detail: 'A tela será fechada e a separação não será  cancelada.',
+    //   ).then((value) {
+    //     if (value != null && value) io.exit(0);
+    //   });
+    // }
   }
 
   Future<void> _fillGridSepararItens() async {
@@ -145,7 +137,7 @@ class SepararController extends GetxController {
   }
 
   Future<void> _fillCarrinhoPercurso() async {
-    final params = ''' 
+    final params = '''
         CodEmpresa = ${_processoExecutavel.codEmpresa} 
       AND Origem = '${_processoExecutavel.origem}' 
       AND CodOrigem = ${_processoExecutavel.codOrigem} ''';
@@ -199,8 +191,9 @@ class SepararController extends GetxController {
       return;
     }
 
-    final dialog = AdicionarCarrinhoDialogWidget(canCloseWindow: false);
-    final carrinhoConsulta = await dialog.show();
+    final carrinhoConsulta = await CarrinhoDialogView.show(
+      context: Get.context!,
+    );
 
     if (carrinhoConsulta != null) {
       await iniciarSeparacao();

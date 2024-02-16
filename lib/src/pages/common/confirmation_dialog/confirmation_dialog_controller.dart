@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import 'package:app_expedicao/src/app/app_event_state.dart';
 
@@ -18,6 +17,11 @@ class ConfirmationDialogController extends GetxController {
   }
 
   @override
+  void onReady() {
+    super.onReady();
+  }
+
+  @override
   void onClose() {
     formFocusNode.dispose();
     notConfirmationFocusNode.dispose();
@@ -25,15 +29,11 @@ class ConfirmationDialogController extends GetxController {
     super.onClose();
   }
 
-  KeyEventResult handleKeyEvent(RawKeyEvent event) {
-    if (event is RawKeyDownEvent) {
-      if (event.logicalKey == LogicalKeyboardKey.escape) {
-        Get.find<AppEventState>()..canCloseWindow = true;
-        Get.back(result: false);
-      }
-    }
-
-    return KeyEventResult.ignored;
+  void handleKeyEvent(KeyEvent event) {
+    // if (event.logicalKey == LogicalKeyboardKey.escape) {
+    //   Get.find<AppEventState>()..canCloseWindow = true;
+    //   Get.back(result: false);
+    // }
   }
 
   void notConfirmationOnPressed() {

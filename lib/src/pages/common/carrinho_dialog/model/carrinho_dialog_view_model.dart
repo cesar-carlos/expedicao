@@ -1,4 +1,4 @@
-class CarrinhoViewModel {
+class CarrinhoDialogViewModel {
   late int codCarrinho;
   late String descricaoCarrinho;
   late String situacao;
@@ -7,7 +7,7 @@ class CarrinhoViewModel {
   late String observacao;
   late String codigoBarras;
 
-  CarrinhoViewModel({
+  CarrinhoDialogViewModel({
     required this.codCarrinho,
     required this.descricaoCarrinho,
     required this.situacao,
@@ -17,7 +17,7 @@ class CarrinhoViewModel {
     required this.codigoBarras,
   });
 
-  CarrinhoViewModel.empty() {
+  CarrinhoDialogViewModel.empty() {
     codCarrinho = 0;
     descricaoCarrinho = '';
     situacao = '';
@@ -27,7 +27,7 @@ class CarrinhoViewModel {
     codigoBarras = '';
   }
 
-  CarrinhoViewModel copyWith({
+  CarrinhoDialogViewModel copyWith({
     int? codCarrinho,
     String? descricaoCarrinho,
     String? situacao,
@@ -36,7 +36,7 @@ class CarrinhoViewModel {
     String? observacao,
     String? codigoBarras,
   }) {
-    return CarrinhoViewModel(
+    return CarrinhoDialogViewModel(
       codCarrinho: codCarrinho ?? this.codCarrinho,
       descricaoCarrinho: descricaoCarrinho ?? this.descricaoCarrinho,
       situacao: situacao ?? this.situacao,
