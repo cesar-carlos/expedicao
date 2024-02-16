@@ -27,7 +27,7 @@ class ObservacaoDialogView {
         return GetBuilder<ObservacaoDialogController>(
           init: ObservacaoDialogController(viewModel),
           builder: (ObservacaoDialogController controller) {
-            return KeyboardListener(
+            return Focus(
               focusNode: controller.formFocusNode,
               onKeyEvent: controller.handleKeyEvent,
               child: Dialog(

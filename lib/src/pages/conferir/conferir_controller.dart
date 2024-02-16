@@ -104,25 +104,28 @@ class ConferirController extends GetxController {
     super.onClose();
   }
 
-  void handleKeyEvent(KeyEvent event) {
+  KeyEventResult handleKeyEvent(FocusNode focusNod, KeyEvent event) {
     if (event.logicalKey == LogicalKeyboardKey.f4) {
       btnAdicionarCarrinho();
+      return KeyEventResult.handled;
     }
 
     if (event.logicalKey == LogicalKeyboardKey.f5) {
       btnAdicionarObservacao();
+      return KeyEventResult.handled;
     }
 
     if (event.logicalKey == LogicalKeyboardKey.f6) {
-      //TODO: Implementar
+      return KeyEventResult.handled;
     }
 
     if (event.logicalKey == LogicalKeyboardKey.f7) {
-      //TODO: Implementar
+      return KeyEventResult.handled;
     }
 
     if (event.logicalKey == LogicalKeyboardKey.f12) {
       btnFinalizarConferencia();
+      return KeyEventResult.handled;
     }
 
     // if (event.logicalKey == LogicalKeyboardKey.escape) {
@@ -137,6 +140,8 @@ class ConferirController extends GetxController {
     //     setModalClose();
     //   });
     // }
+
+    return KeyEventResult.ignored;
   }
 
   Future<void> _fillCarrinhoConferir() async {

@@ -2,15 +2,22 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_expedicao/src/app/app_event_state.dart';
-import 'package:app_expedicao/src/pages/Identificacao/model/identificacao_model.dart';
+import 'package:app_expedicao/src/pages/common/Identificacao_dialog/model/identificacao_dialog_view_model.dart';
 
-class IdentificacaoController extends GetxController {
+class IdentificacaoDialogController extends GetxController {
+  late FocusNode formFocusNode;
   final formKey = GlobalKey<FormState>();
   final userController = TextEditingController(text: 'Administrador');
   final passwordController = TextEditingController();
   final passwordFocusNode = FocusNode()..requestFocus();
   final loginFocusNode = FocusNode();
   final userFocusNode = FocusNode();
+
+  @override
+  void onInit() {
+    super.onInit();
+    formFocusNode = FocusNode();
+  }
 
   @override
   void onReady() async {
@@ -26,6 +33,15 @@ class IdentificacaoController extends GetxController {
     userFocusNode.dispose();
     Get.find<AppEventState>()..canCloseWindow = true;
     super.onClose();
+  }
+
+  KeyEventResult handleKeyEvent(FocusNode focusNod, KeyEvent event) {
+    // if (event.logicalKey == LogicalKeyboardKey.escape) {
+    //   Get.find<AppEventState>()..canCloseWindow = true;
+    //   Get.back(result: null);
+    // }
+
+    return KeyEventResult.ignored;
   }
 
   _listenFocusNode() {
@@ -74,7 +90,7 @@ class IdentificacaoController extends GetxController {
         //TODO: implementar login
         if (userController.text == 'Administrador' &&
             passwordController.text == 'sql@2012') {
-          final identificacaoModel = IdentificacaoModel(
+          final identificacaoModel = IdentificacaoDialogViewModel(
             codUsuario: 1,
             nomeUsuario: userController.text,
           );

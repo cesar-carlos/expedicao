@@ -1,43 +1,35 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
-import 'package:app_expedicao/src/app/app_event_state.dart';
-import 'package:app_expedicao/src/pages/Identificacao/identificacao_controller.dart';
 import 'package:app_expedicao/src/pages/common/form_element/button_form_element.dart';
 import 'package:app_expedicao/src/pages/common/form_element/bar_head_form_element.dart';
-import 'package:app_expedicao/src/pages/Identificacao/model/identificacao_model.dart';
+import 'package:app_expedicao/src/pages/common/Identificacao_dialog/model/identificacao_dialog_view_model.dart';
+import 'package:app_expedicao/src/pages/common/Identificacao_dialog/identificacao_dialog_controller.dart';
+import 'package:app_expedicao/src/app/app_event_state.dart';
 
-class IdentificacaoDialogWidget {
+class IdentificacaoDialogView {
   static const double _widthForm = 500;
-  static const double _spaceHeadlement = 30.5;
   static const double _heightForm = 312;
+  static const double _spaceHeadlement = 30.5;
 
-  IdentificacaoDialogWidget._();
-
-  static Future<IdentificacaoModel?> show({
-    required Size size,
+  static Future<IdentificacaoDialogViewModel?> show({
     required BuildContext context,
-    required bool canCloseWindow,
+    bool canCloseWindow = false,
   }) async {
-    Get.find<AppEventState>()..canCloseWindow = canCloseWindow;
-
-    return await showDialog<IdentificacaoModel>(
+    return await showDialog<IdentificacaoDialogViewModel>(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return KeyboardListener(
-          focusNode: FocusNode(),
-          onKeyEvent: (KeyEvent event) {
-            if (event.logicalKey == LogicalKeyboardKey.escape) {
-              Get.find<AppEventState>()..canCloseWindow = true;
-              Get.back();
-            }
-          },
-          child: GetBuilder<IdentificacaoController>(
-            init: IdentificacaoController(),
-            builder: (controller) {
-              return Dialog(
+        final _appEventState = Get.find<AppEventState>();
+        _appEventState.canCloseWindow = canCloseWindow;
+
+        return GetBuilder<IdentificacaoDialogController>(
+          init: IdentificacaoDialogController(),
+          builder: (IdentificacaoDialogController controller) {
+            return Focus(
+              focusNode: controller.formFocusNode,
+              onKeyEvent: controller.handleKeyEvent,
+              child: Dialog(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)),
                 child: SizedBox(
@@ -57,7 +49,7 @@ class IdentificacaoDialogWidget {
                           const EdgeInsets.only(left: 60, top: 10, right: 60),
                       width: _widthForm,
                       height: _heightForm -
-                          IdentificacaoDialogWidget._spaceHeadlement,
+                          IdentificacaoDialogView._spaceHeadlement,
                       decoration: BoxDecoration(
                         borderRadius: const BorderRadius.vertical(
                             bottom: Radius.circular(10)),
@@ -129,9 +121,9 @@ class IdentificacaoDialogWidget {
                     ),
                   ]),
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         );
       },
     );

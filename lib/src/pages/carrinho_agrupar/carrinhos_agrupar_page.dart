@@ -35,7 +35,7 @@ class CarrinhosAgruparPage {
           init:
               CarrinhosAgruparController(carrinhoPercursoAgrupamento, viewMode),
           builder: (CarrinhosAgruparController controller) {
-            return KeyboardListener(
+            return Focus(
               focusNode: controller.formFocusNode,
               onKeyEvent: controller.handleKeyEvent,
               child: Dialog(
@@ -48,7 +48,7 @@ class CarrinhosAgruparPage {
                     BarHeadFormElement(
                       title: controller.title,
                       widthBar: size.width,
-                      onPressedCloseBar: () => Get.back(),
+                      onPressedCloseBar: controller.onPressedCloseBar,
                     ),
                     SizedBox(
                       width: size.width * 0.95,

@@ -12,8 +12,8 @@ import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
 import 'package:app_expedicao/src/service/separacao_remover_item_service.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dart';
 import 'package:app_expedicao/src/model/expedicao_separacao_item_consulta_model.dart';
+import 'package:app_expedicao/src/pages/common/Identificacao_dialog/identificacao_dialog_view.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
-import 'package:app_expedicao/src/pages/Identificacao/wedgets/identificacao_dialog_widget.dart';
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_event_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_estagio_event_repository.dart';
 import 'package:app_expedicao/src/pages/separacao/grid_separacao/separacao_carrinho_grid_controller.dart';
@@ -110,19 +110,23 @@ class SeparacaoController extends GetxController {
     super.onClose();
   }
 
-  void handleKeyEvent(KeyEvent event) {
+  KeyEventResult handleKeyEvent(FocusNode focusNod, KeyEvent event) {
     if (event.logicalKey == LogicalKeyboardKey.f7) {
       onSepararTudo();
+      return KeyEventResult.handled;
     }
 
     if (event.logicalKey == LogicalKeyboardKey.f8) {
       onReconferirTudo();
+      return KeyEventResult.handled;
     }
 
     if (event.logicalKey == LogicalKeyboardKey.escape) {
       Get.find<AppEventState>()..canCloseWindow = true;
       Get.back();
     }
+
+    return KeyEventResult.ignored;
   }
 
   onPressedCloseBar() {
@@ -480,10 +484,8 @@ class SeparacaoController extends GetxController {
       return;
     }
 
-    final confirmation = await IdentificacaoDialogWidget.show(
-      size: Get.size,
+    final confirmation = await IdentificacaoDialogView.show(
       context: Get.context!,
-      canCloseWindow: false,
     );
 
     if (confirmation != null) {
@@ -541,10 +543,8 @@ class SeparacaoController extends GetxController {
       return;
     }
 
-    final confirmation = await IdentificacaoDialogWidget.show(
-      size: Get.size,
+    final confirmation = await IdentificacaoDialogView.show(
       context: Get.context!,
-      canCloseWindow: false,
     );
 
     if (confirmation != null) {

@@ -35,7 +35,7 @@ class ConferenciaPage {
         return GetBuilder<ConferenciaController>(
           init: ConferenciaController(percursoEstagioConsulta),
           builder: (ConferenciaController controller) {
-            return KeyboardListener(
+            return Focus(
               focusNode: controller.formFocusNode,
               onKeyEvent: controller.handleKeyEvent,
               child: Dialog(

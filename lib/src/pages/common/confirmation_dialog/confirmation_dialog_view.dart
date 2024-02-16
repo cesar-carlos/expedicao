@@ -25,7 +25,7 @@ class ConfirmationDialogView {
         return GetBuilder<ConfirmationDialogController>(
           init: ConfirmationDialogController(),
           builder: (ConfirmationDialogController controller) {
-            return KeyboardListener(
+            return Focus(
               focusNode: controller.formFocusNode,
               onKeyEvent: controller.handleKeyEvent,
               child: Dialog(

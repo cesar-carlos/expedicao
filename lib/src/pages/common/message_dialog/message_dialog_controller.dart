@@ -21,11 +21,13 @@ class MessageDialogController extends GetxController {
     super.onClose();
   }
 
-  void handleKeyEvent(KeyEvent event) {
+  KeyEventResult handleKeyEvent(FocusNode focusNod, KeyEvent event) {
     // if (event.logicalKey == LogicalKeyboardKey.escape) {
     //   Get.find<AppEventState>()..canCloseWindow = true;
     //   Get.back(result: false);
     // }
+
+    return KeyEventResult.ignored;
   }
 
   void onPressedOK() {

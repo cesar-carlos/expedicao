@@ -26,7 +26,7 @@ class CarrinhoDialogView {
         return GetBuilder<CarrinhoController>(
           init: CarrinhoController(),
           builder: (CarrinhoController controller) {
-            return KeyboardListener(
+            return Focus(
               focusNode: controller.formFocusNode,
               onKeyEvent: controller.handleKeyEvent,
               child: Dialog(

@@ -9,12 +9,12 @@ import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
 import 'package:app_expedicao/src/service/conferencia_cancelar_item_service.dart';
 import 'package:app_expedicao/src/service/conferencia_finalizar_item_service.dart';
 import 'package:app_expedicao/src/pages/carrinho_agrupar/carrinhos_agrupar_page.dart';
-import 'package:app_expedicao/src/pages/common/confirmation_dialog/confirmation_dialog_view.dart';
-import 'package:app_expedicao/src/service/carrinho_percurso_estagio_finalizar_service.dart';
 import 'package:app_expedicao/src/pages/common/message_dialog/message_dialog_view.dart';
+import 'package:app_expedicao/src/service/carrinho_percurso_estagio_finalizar_service.dart';
 import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog_generic_widget.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_estagio_event_repository.dart';
 import 'package:app_expedicao/src/pages/conferido_carrinhos/grid/conferido_carrinho_grid_controller.dart';
+import 'package:app_expedicao/src/pages/common/confirmation_dialog/confirmation_dialog_view.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_cancelar_service.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_agrupar_service.dart';
@@ -290,10 +290,10 @@ class ConferidoCarrinhosController extends GetxController {
       }
 
       bool _isViewMode = ![
-            ExpedicaoSituacaoModel.conferindo,
+            ExpedicaoSituacaoModel.emAndamento,
           ].contains(conferirConsulta.situacao) ||
-          [
-            ExpedicaoSituacaoModel.agrupado,
+          ![
+            ExpedicaoSituacaoModel.conferido,
           ].contains(item.situacao);
 
       await CarrinhosAgruparPage.show(

@@ -11,8 +11,8 @@ class ConferidoCarrinhoGridController extends GetxController {
   static const gridName = 'conferidoCarrinhoGrid';
   final iconSize = 19.0;
 
-  final DataGridController dataGridController = DataGridController();
-  late List<ExpedicaoCarrinhoPercursoEstagioConsultaModel> _itens = [];
+  final dataGridController = DataGridController();
+  final List<ExpedicaoCarrinhoPercursoEstagioConsultaModel> _itens = [];
 
   List<ExpedicaoCarrinhoPercursoEstagioConsultaModel> get itens => _itens;
   List<ExpedicaoCarrinhoPercursoEstagioConsultaModel> get itensSort =>
@@ -21,6 +21,11 @@ class ConferidoCarrinhoGridController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+  }
+
+  @override
+  void onReady() {
+    super.onReady();
   }
 
   void Function(ExpedicaoCarrinhoPercursoEstagioConsultaModel item)?
@@ -157,6 +162,15 @@ class ConferidoCarrinhoGridController extends GetxController {
       case ExpedicaoSituacaoModel.conferido:
         color = Colors.blue;
     }
+
+    // switch (conferidoCarrinhosController.viewMode ) {
+    //   case ExpedicaoSituacaoModel.cancelada:
+    //     color = Colors.grey;
+    //   case ExpedicaoSituacaoModel.conferido:
+    //     color = Colors.grey;
+    //   case ExpedicaoSituacaoModel.agrupado:
+    //     color = Colors.grey;
+    // }
 
     return Icon(
       size: iconSize - 1.0,

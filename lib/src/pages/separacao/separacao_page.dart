@@ -34,7 +34,7 @@ class SeparacaoPage {
         return GetBuilder<SeparacaoController>(
           init: SeparacaoController(percursoEstagioConsulta),
           builder: (SeparacaoController controller) {
-            return KeyboardListener(
+            return Focus(
               focusNode: controller.formFocusNode,
               onKeyEvent: controller.handleKeyEvent,
               child: Dialog(

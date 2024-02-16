@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:app_expedicao/src/app/app_helper.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
-import 'package:app_expedicao/src/pages/footer/footer_page_controller.dart';
+import 'package:app_expedicao/src/pages/common/footer/footer_page_controller.dart';
 import 'package:app_expedicao/src/app/app_color.dart';
 
 class FooterPage extends StatelessWidget {

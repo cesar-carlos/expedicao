@@ -12,15 +12,15 @@ import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
 import 'package:app_expedicao/src/service/conferencia_remover_item_service.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_item_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferencia_item_consulta_model.dart';
-import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
 import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog_widget.dart';
-import 'package:app_expedicao/src/pages/Identificacao/wedgets/identificacao_dialog_widget.dart';
-import 'package:app_expedicao/src/repository/expedicao_conferir_item/conferir_item_event_repository.dart';
-import 'package:app_expedicao/src/repository/expedicao_conferencia_item/conferencia_item_event_repository.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
+import 'package:app_expedicao/src/pages/common/Identificacao_dialog/identificacao_dialog_view.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_estagio_event_repository.dart';
+import 'package:app_expedicao/src/repository/expedicao_conferencia_item/conferencia_item_event_repository.dart';
+import 'package:app_expedicao/src/repository/expedicao_conferir_item/conferir_item_event_repository.dart';
 import 'package:app_expedicao/src/pages/conferencia/grid/conferencia_carrinho_grid_controller.dart';
-import 'package:app_expedicao/src/pages/common/message_dialog/message_dialog_view.dart';
 import 'package:app_expedicao/src/pages/common/confirmation_dialog/confirmation_dialog_view.dart';
+import 'package:app_expedicao/src/pages/common/message_dialog/message_dialog_view.dart';
 import 'package:app_expedicao/src/pages/conferir/grid/conferir_grid_controller.dart';
 import 'package:app_expedicao/src/service/conferencia_adicionar_item_service.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
@@ -42,7 +42,6 @@ class ConferenciaController extends GetxController {
   //late ProdutoService _produtoService;
   // ignore: unused_field
   late ProcessoExecutavelModel _processoExecutavel;
-
   late ConferirGridController _conferirGridController;
   late ConferenciaCarrinhoGridController _conferenciaGridController;
   late ConferirConsultaServices _conferirConsultasServices;
@@ -115,19 +114,23 @@ class ConferenciaController extends GetxController {
     super.onClose();
   }
 
-  void handleKeyEvent(KeyEvent event) {
+  KeyEventResult handleKeyEvent(FocusNode focusNod, KeyEvent event) {
     if (event.logicalKey == LogicalKeyboardKey.f7) {
       onConferirTudo();
+      return KeyEventResult.handled;
     }
 
     if (event.logicalKey == LogicalKeyboardKey.f8) {
       onReconferirTudo();
+      return KeyEventResult.handled;
     }
 
     if (event.logicalKey == LogicalKeyboardKey.escape) {
       Get.find<AppEventState>()..canCloseWindow = true;
       Get.back();
     }
+
+    return KeyEventResult.ignored;
   }
 
   ExpedicaoCarrinhoPercursoEstagioConsultaModel get percursoEstagio =>
@@ -419,10 +422,8 @@ class ConferenciaController extends GetxController {
       return;
     }
 
-    final confirmation = await IdentificacaoDialogWidget.show(
-      size: Get.size,
+    final confirmation = await IdentificacaoDialogView.show(
       context: Get.context!,
-      canCloseWindow: false,
     );
 
     if (confirmation != null) {
@@ -478,10 +479,8 @@ class ConferenciaController extends GetxController {
       return;
     }
 
-    final confirmation = await IdentificacaoDialogWidget.show(
-      size: Get.size,
+    final confirmation = await IdentificacaoDialogView.show(
       context: Get.context!,
-      canCloseWindow: false,
     );
 
     if (confirmation != null) {

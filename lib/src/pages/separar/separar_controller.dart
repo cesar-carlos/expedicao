@@ -13,15 +13,15 @@ import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.da
 import 'package:app_expedicao/src/service/conferir_separacao_adicionar_service.dart';
 import 'package:app_expedicao/src/pages/common/widget/loading_sever_dialog_widget.dart';
 import 'package:app_expedicao/src/pages/common/carrinho_dialog/carrinho_dialog_view.dart';
-import 'package:app_expedicao/src/pages/Identificacao/wedgets/identificacao_dialog_widget.dart';
 import 'package:app_expedicao/src/pages/common/confirmation_dialog/confirmation_dialog_view.dart';
 import 'package:app_expedicao/src/pages/separarado_carrinhos/separarado_carrinhos_controller.dart';
 import 'package:app_expedicao/src/pages/common/observacao_dialog/model/observacao_dialog_view_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_separar_item/separar_item_event_repository.dart';
-import 'package:app_expedicao/src/pages/common/message_dialog/message_dialog_view.dart';
 import 'package:app_expedicao/src/pages/common/observacao_dialog/observacao_dialog_view.dart';
 import 'package:app_expedicao/src/repository/expedicao_separar/separar_event_repository.dart';
+import 'package:app_expedicao/src/pages/common/Identificacao_dialog/identificacao_dialog_view.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_adicionar_service.dart';
+import 'package:app_expedicao/src/pages/common/message_dialog/message_dialog_view.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
@@ -102,17 +102,20 @@ class SepararController extends GetxController {
     super.onClose();
   }
 
-  void handleKeyEvent(KeyEvent event) {
+  KeyEventResult handleKeyEvent(FocusNode focusNod, KeyEvent event) {
     if (event.logicalKey == LogicalKeyboardKey.f4) {
       adicionarCarrinho();
+      return KeyEventResult.handled;
     }
 
     if (event.logicalKey == LogicalKeyboardKey.f5) {
       btnAdicionarObservacao();
+      return KeyEventResult.handled;
     }
 
     if (event.logicalKey == LogicalKeyboardKey.f12) {
       btnFinalizarSeparacao();
+      return KeyEventResult.handled;
     }
 
     // if (event.logicalKey == LogicalKeyboardKey.escape) {
@@ -125,6 +128,8 @@ class SepararController extends GetxController {
     //     if (value != null && value) io.exit(0);
     //   });
     // }
+
+    return KeyEventResult.ignored;
   }
 
   Future<void> _fillGridSepararItens() async {
@@ -328,10 +333,8 @@ class SepararController extends GetxController {
   }
 
   Future<void> configuracao() async {
-    final confirmation = await IdentificacaoDialogWidget.show(
-      size: Get.size,
+    final confirmation = await IdentificacaoDialogView.show(
       context: Get.context!,
-      canCloseWindow: false,
     );
 
     if (confirmation != null) {
