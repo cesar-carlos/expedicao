@@ -23,7 +23,7 @@ class ConferirConsultaServices {
   });
 
   Future<ExpedicaoConferirConsultaModel?> conferir() async {
-    final params = ''' 
+    final params = '''
         CodEmpresa = $codEmpresa 
       AND CodConferir = $codConferir ''';
 
@@ -37,7 +37,7 @@ class ConferirConsultaServices {
 
   Future<List<ExpedicaoCarrinhoConferirConsultaModel>>
       carrinhosConferir() async {
-    final params = ''' 
+    final params = '''
         CodEmpresa = $codEmpresa 
       AND CodConferir = $codConferir ''';
 
@@ -47,7 +47,7 @@ class ConferirConsultaServices {
 
   Future<ExpedicaoCarrinhoConferirConsultaModel> carrinhoConferir(
       int codCarrinho) async {
-    final params = ''' 
+    final params = '''
         CodEmpresa = $codEmpresa 
       AND CodConferir = $codConferir 
       AND CodCarrinho = $codCarrinho ''';
@@ -57,7 +57,7 @@ class ConferirConsultaServices {
   }
 
   Future<List<ExpedicaoConferirItemConsultaModel>> itensConferir() async {
-    final params = ''' 
+    final params = '''
         CodEmpresa = $codEmpresa 
       AND CodConferir = $codConferir ''';
 
@@ -66,7 +66,7 @@ class ConferirConsultaServices {
 
   Future<List<ExpedicaoConferirItemUnidadeMedidaConsultaModel>>
       itensConferirUnidades() async {
-    final params = ''' 
+    final params = '''
         CodEmpresa = $codEmpresa 
       AND CodConferir = $codConferir ''';
 
@@ -74,7 +74,7 @@ class ConferirConsultaServices {
   }
 
   Future<List<ExpedicaConferenciaItemConsultaModel>> itensConferencia() async {
-    final params = ''' 
+    final params = '''
         CodEmpresa = $codEmpresa 
       AND CodConferir = $codConferir ''';
 
@@ -84,7 +84,7 @@ class ConferirConsultaServices {
 
   Future<List<ExpedicaoCarrinhoPercursoEstagioConsultaModel>>
       carrinhosPercurso() async {
-    final params = ''' 
+    final params = '''
         CodEmpresa = $codEmpresa 
           AND Origem = '${ExpedicaoOrigemModel.conferencia}' 
           AND CodOrigem = $codConferir  ''';

@@ -50,6 +50,10 @@ class ObservacaoDialogController extends GetxController {
 
   void handleKeyEvent(KeyEvent event) {
     if (event.logicalKey == LogicalKeyboardKey.f12) {
+      //TODO: implementar salvar
+    }
+
+    if (event.logicalKey == LogicalKeyboardKey.enter) {
       onPressedSalvar();
     }
 

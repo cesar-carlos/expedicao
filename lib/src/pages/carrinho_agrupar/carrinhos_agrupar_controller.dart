@@ -7,8 +7,8 @@ import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog_generic_widget.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_agrupamento_consulta_model.dart';
 import 'package:app_expedicao/src/pages/carrinho_agrupar/grid/carrinhos_agrupar_grid_controller.dart';
-import 'package:app_expedicao/src/pages/common/message_dialog/message_dialog_view.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_agrupar_service.dart';
+import 'package:app_expedicao/src/pages/common/message_dialog/message_dialog_view.dart';
 import 'package:app_expedicao/src/app/app_event_state.dart';
 
 class CarrinhosAgruparController extends GetxController {
@@ -21,24 +21,22 @@ class CarrinhosAgruparController extends GetxController {
   late CarrinhosAgruparGridController _carrinhosAgruparGridController;
   late CarrinhoPercursoEstagioAgruparService _carrinhoAgruparService;
 
-  bool get viewMode {
-    // if (percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.cancelada ||
-    //     percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.conferido ||
-    //     percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.agrupado) {
-    //   _viewMode.value = true;
-    // }
+  bool get viewMode => _viewMode.value;
 
-    return _viewMode.value;
-  }
-
-  CarrinhosAgruparController(this.carrinhoPercursoAgrupamento);
+  String get title => viewMode
+      ? 'Visualizar - Agrupar Carrinhos'
+      : 'Incluir - Agrupar Carrinhos';
 
   final controllerNomeCarrinho = TextEditingController();
   final controllerCodigoBarras = TextEditingController();
   final controllerCarrinhoSituacao = TextEditingController();
   final controllerScanCarrinho = TextEditingController();
-
   final focusScanCarrinho = FocusNode();
+
+  CarrinhosAgruparController(this.carrinhoPercursoAgrupamento,
+      [bool viewMode = false]) {
+    _viewMode.value = viewMode;
+  }
 
   @override
   void onInit() async {
@@ -162,6 +160,16 @@ class CarrinhosAgruparController extends GetxController {
   }
 
   void onAgruparTudo() {
+    if (viewMode) {
+      MessageDialogView.show(
+        context: Get.context!,
+        message: 'Operação não permitida!',
+        detail: 'Operação não permitida em modo de visualização!',
+      );
+
+      return;
+    }
+
     final itensAgrupar = _carrinhosAgruparGridController.itens
         .where((el) => el.situacao == ExpedicaoSituacaoModel.conferido)
         .toList();
@@ -180,6 +188,16 @@ class CarrinhosAgruparController extends GetxController {
   }
 
   void onDesabruparTudo() {
+    if (viewMode) {
+      MessageDialogView.show(
+        context: Get.context!,
+        message: 'Operação não permitida!',
+        detail: 'Operação não permitida em modo de visualização!',
+      );
+
+      return;
+    }
+
     final itensAgrupar = _carrinhosAgruparGridController.itens
         .where((el) => el.situacao == ExpedicaoSituacaoModel.agrupado)
         .toList();
@@ -212,6 +230,16 @@ class CarrinhosAgruparController extends GetxController {
   Future<void> _removeItemGroup(
     ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel carrinhoRemover,
   ) async {
+    if (viewMode) {
+      MessageDialogView.show(
+        context: Get.context!,
+        message: 'Operação não permitida!',
+        detail: 'Operação não permitida em modo de visualização!',
+      );
+
+      return;
+    }
+
     await LoadingProcessDialogGenericWidget.show<bool>(
       canCloseWindow: false,
       context: Get.context!,
@@ -273,6 +301,16 @@ class CarrinhosAgruparController extends GetxController {
   Future<void> _addItemGroup(
     ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel carrinhoAgrupar,
   ) async {
+    if (viewMode) {
+      MessageDialogView.show(
+        context: Get.context!,
+        message: 'Operação não permitida!',
+        detail: 'Operação não permitida em modo de visualização!',
+      );
+
+      return;
+    }
+
     await LoadingProcessDialogGenericWidget.show<bool>(
       canCloseWindow: false,
       context: Get.context!,

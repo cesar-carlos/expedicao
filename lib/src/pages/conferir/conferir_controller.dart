@@ -36,7 +36,6 @@ class ConferirController extends GetxController {
   late AppSocketConfig _socketClient;
 
   late String _expedicaoSituacao;
-
   late ConferirConsultaServices _conferirConsultaServices;
   late ConferirCarrinhosController _conferirCarrinhosController;
   late ConferidoCarrinhosController _conferidoCarrinhosController;
@@ -105,7 +104,7 @@ class ConferirController extends GetxController {
     super.onClose();
   }
 
-  KeyEventResult handleKeyEvent(KeyEvent event) {
+  void handleKeyEvent(KeyEvent event) {
     if (event.logicalKey == LogicalKeyboardKey.f4) {
       btnAdicionarCarrinho();
     }
@@ -138,8 +137,6 @@ class ConferirController extends GetxController {
     //     setModalClose();
     //   });
     // }
-
-    return KeyEventResult.ignored;
   }
 
   Future<void> _fillCarrinhoConferir() async {

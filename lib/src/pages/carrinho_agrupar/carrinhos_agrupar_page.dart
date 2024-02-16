@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 
 import 'package:app_expedicao/src/pages/common/form_element/button_head_form_element.dart';
@@ -20,10 +19,11 @@ class CarrinhosAgruparPage {
 
   static Future<void> show({
     required Size size,
-    required bool canCloseWindow,
+    required bool viewMode,
     required BuildContext context,
     required ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel
         carrinhoPercursoAgrupamento,
+    bool canCloseWindow = false,
   }) async {
     Get.find<AppEventState>()..canCloseWindow = canCloseWindow;
 
@@ -32,7 +32,8 @@ class CarrinhosAgruparPage {
       context: context,
       builder: (BuildContext context) {
         return GetBuilder<CarrinhosAgruparController>(
-          init: CarrinhosAgruparController(carrinhoPercursoAgrupamento),
+          init:
+              CarrinhosAgruparController(carrinhoPercursoAgrupamento, viewMode),
           builder: (CarrinhosAgruparController controller) {
             return KeyboardListener(
               focusNode: controller.formFocusNode,
@@ -45,7 +46,7 @@ class CarrinhosAgruparPage {
                   height: size.height * 0.8,
                   child: Column(children: [
                     BarHeadFormElement(
-                      title: title,
+                      title: controller.title,
                       widthBar: size.width,
                       onPressedCloseBar: () => Get.back(),
                     ),
@@ -212,7 +213,6 @@ class CarrinhosAgruparPage {
                                   height: 45,
                                   child: TextField(
                                     cursorHeight: 25,
-                                    // enabled: viewMode,
                                     controller:
                                         controller.controllerScanCarrinho,
                                     focusNode: controller.focusScanCarrinho,

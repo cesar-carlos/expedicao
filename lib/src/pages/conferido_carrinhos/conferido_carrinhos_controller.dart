@@ -192,7 +192,7 @@ class ConferidoCarrinhosController extends GetxController {
         ExpedicaoSituacaoModel.agrupado
       ].contains(item.situacao);
 
-      final carrinho = await CarrinhoServices().select(''' 
+      final carrinho = await CarrinhoServices().select('''
             CodEmpresa = ${item.codEmpresa} 
           AND CodCarrinho = ${item.codCarrinho} ''');
 
@@ -244,11 +244,17 @@ class ConferidoCarrinhosController extends GetxController {
     };
 
     _conferidoCarrinhoGridController.onPressedGroup = (item) async {
-      // bool _viewMode = [
-      //   ExpedicaoSituacaoModel.cancelada,
-      //   ExpedicaoSituacaoModel.conferido,
-      //   ExpedicaoSituacaoModel.agrupado
-      // ].contains(item.situacao);
+      final conferirConsulta = await _conferirConsultaServices.conferir();
+
+      if (conferirConsulta == null) {
+        await MessageDialogView.show(
+          context: Get.context!,
+          message: 'Conferencia não encontrada!',
+          detail: 'Conferencia não encontrada na tabela conferencia!',
+        );
+
+        return;
+      }
 
       bool _isValidGroup = [
         ExpedicaoSituacaoModel.conferido,
@@ -256,7 +262,6 @@ class ConferidoCarrinhosController extends GetxController {
 
       if (!_isValidGroup) {
         await MessageDialogView.show(
-          canCloseWindow: false,
           context: Get.context!,
           message: 'Carrinho ${item.situacao.toLowerCase()}!',
           detail:
@@ -276,7 +281,6 @@ class ConferidoCarrinhosController extends GetxController {
 
       if (_carrinhoPercurso == null) {
         await MessageDialogView.show(
-          canCloseWindow: false,
           context: Get.context!,
           message: 'Carrinho não encontrado!',
           detail: 'Carrinho não encontrado na tabela percurso estagio!',
@@ -285,9 +289,16 @@ class ConferidoCarrinhosController extends GetxController {
         return;
       }
 
+      bool _isViewMode = ![
+            ExpedicaoSituacaoModel.conferindo,
+          ].contains(conferirConsulta.situacao) ||
+          [
+            ExpedicaoSituacaoModel.agrupado,
+          ].contains(item.situacao);
+
       await CarrinhosAgruparPage.show(
         size: Get.size,
-        canCloseWindow: false,
+        viewMode: _isViewMode,
         context: Get.context!,
         carrinhoPercursoAgrupamento: _carrinhoPercurso,
       );
@@ -296,7 +307,6 @@ class ConferidoCarrinhosController extends GetxController {
     _conferidoCarrinhoGridController.onPressedSave = (item) async {
       if (item.situacao == ExpedicaoSituacaoModel.cancelada) {
         await MessageDialogView.show(
-          canCloseWindow: false,
           context: Get.context!,
           message: 'Carrinho já cancelado!',
           detail: 'Não é possível salva um carrinho que esteja cancelado!',
@@ -354,7 +364,7 @@ class ConferidoCarrinhosController extends GetxController {
         return;
       }
 
-      final carrinho = await CarrinhoServices().select(''' 
+      final carrinho = await CarrinhoServices().select('''
             CodEmpresa = ${item.codEmpresa} 
           AND CodCarrinho = ${item.codCarrinho} ''');
 
