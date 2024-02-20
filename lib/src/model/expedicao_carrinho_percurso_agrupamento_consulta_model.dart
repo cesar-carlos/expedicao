@@ -7,10 +7,11 @@ class ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel {
   final String situacao;
   final String situacaoPercurso;
   final int? codCarrinhoAgrupador;
-  final String? nomeCarrinhoAgrupador;
   final int codCarrinho;
   final String nomeCarrinho;
   final String codigoBarrasCarrinho;
+  final String carrinhoAgrupador;
+  final String? nomeCarrinhoAgrupador;
   final DateTime dataInicio;
   final String horaInicio;
   final int codUsuarioInicio;
@@ -29,6 +30,7 @@ class ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel {
     required this.codCarrinho,
     required this.nomeCarrinho,
     required this.codigoBarrasCarrinho,
+    required this.carrinhoAgrupador,
     required this.dataInicio,
     required this.horaInicio,
     required this.codUsuarioInicio,
@@ -48,6 +50,7 @@ class ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel {
       int? codCarrinho,
       String? nomeCarrinho,
       String? codigoBarrasCarrinho,
+      String? carrinhoAgrupador,
       DateTime? dataInicio,
       String? horaInicio,
       int? codUsuarioInicio,
@@ -66,6 +69,7 @@ class ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel {
       codCarrinho: codCarrinho ?? this.codCarrinho,
       nomeCarrinho: nomeCarrinho ?? this.nomeCarrinho,
       codigoBarrasCarrinho: codigoBarrasCarrinho ?? this.codigoBarrasCarrinho,
+      carrinhoAgrupador: carrinhoAgrupador ?? this.carrinhoAgrupador,
       dataInicio: dataInicio ?? this.dataInicio,
       horaInicio: horaInicio ?? this.horaInicio,
       codUsuarioInicio: codUsuarioInicio ?? this.codUsuarioInicio,
@@ -88,6 +92,7 @@ class ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel {
       codCarrinho: map['CodCarrinho'],
       nomeCarrinho: map['NomeCarrinho'],
       codigoBarrasCarrinho: map['CodigoBarrasCarrinho'],
+      carrinhoAgrupador: map['CarrinhoAgrupador'],
       dataInicio: DateTime.parse(map['DataInicio']),
       horaInicio: map['HoraInicio'],
       codUsuarioInicio: map['CodUsuarioInicio'],
@@ -109,6 +114,7 @@ class ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel {
       'CodCarrinho': codCarrinho,
       'NomeCarrinho': nomeCarrinho,
       'CodigoBarrasCarrinho': codigoBarrasCarrinho,
+      'CarrinhoAgrupador': carrinhoAgrupador,
       'DataInicio': dataInicio.toIso8601String(),
       'HoraInicio': horaInicio,
       'CodUsuarioInicio': codUsuarioInicio,
@@ -132,6 +138,7 @@ class ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel {
         codCarrinho: $codCarrinho, 
         nomeCarrinho: $nomeCarrinho, 
         codigoBarrasCarrinho: $codigoBarrasCarrinho,
+        carrinhoAgrupador: $carrinhoAgrupador,
         dataInicio: $dataInicio, 
         horaInicio: $horaInicio, 
         codUsuarioInicio: $codUsuarioInicio, 

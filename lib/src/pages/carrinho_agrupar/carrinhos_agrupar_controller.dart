@@ -109,6 +109,9 @@ class CarrinhosAgruparController extends GetxController {
       if (el.situacao == ExpedicaoSituacaoModel.agrupado) return true;
       if (el.situacao == ExpedicaoSituacaoModel.conferido) return true;
       return false;
+    }).where((el) {
+      if (el.carrinhoAgrupador == 'S') return false;
+      return true;
     }).toList();
 
     _carrinhosAgruparGridController.addAllGrid(resultFiltered);
@@ -174,6 +177,7 @@ class CarrinhosAgruparController extends GetxController {
 
     final itensAgrupar = _carrinhosAgruparGridController.itens
         .where((el) => el.situacao == ExpedicaoSituacaoModel.conferido)
+        .where((el) => el.carrinhoAgrupador == 'N')
         .toList();
 
     if (itensAgrupar.isEmpty) {
@@ -297,6 +301,7 @@ class CarrinhosAgruparController extends GetxController {
             message: err.message,
             detail: err.details ?? '',
           );
+
           return false;
         } catch (err) {
           return false;
