@@ -114,20 +114,24 @@ class ConferenciaController extends GetxController {
     super.onClose();
   }
 
-  KeyEventResult handleKeyEvent(FocusNode focusNod, KeyEvent event) {
-    if (event.logicalKey == LogicalKeyboardKey.f7) {
-      onConferirTudo();
-      return KeyEventResult.handled;
-    }
+  KeyEventResult handleKeyEvent(RawKeyEvent event) {
+    if (event is RawKeyDownEvent) {
+      if (event.logicalKey == LogicalKeyboardKey.f7) {
+        onConferirTudo();
+        return KeyEventResult.handled;
+      }
 
-    if (event.logicalKey == LogicalKeyboardKey.f8) {
-      onReconferirTudo();
-      return KeyEventResult.handled;
-    }
+      if (event.logicalKey == LogicalKeyboardKey.f8) {
+        onReconferirTudo();
+        return KeyEventResult.handled;
+      }
 
-    if (event.logicalKey == LogicalKeyboardKey.escape) {
-      Get.find<AppEventState>()..canCloseWindow = true;
-      Get.back();
+      if (event.logicalKey == LogicalKeyboardKey.escape) {
+        Get.find<AppEventState>()..canCloseWindow = true;
+        Get.back();
+      }
+
+      return KeyEventResult.ignored;
     }
 
     return KeyEventResult.ignored;

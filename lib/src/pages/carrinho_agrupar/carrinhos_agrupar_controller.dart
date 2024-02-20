@@ -72,18 +72,22 @@ class CarrinhosAgruparController extends GetxController {
     super.onClose();
   }
 
-  KeyEventResult handleKeyEvent(FocusNode focusNod, KeyEvent event) {
-    if (event.logicalKey == LogicalKeyboardKey.escape) {
-      Get.find<AppEventState>()..canCloseWindow = true;
-      Get.back();
-    }
+  KeyEventResult handleKeyEvent(RawKeyEvent event) {
+    if (event is RawKeyDownEvent) {
+      if (event.logicalKey == LogicalKeyboardKey.escape) {
+        Get.find<AppEventState>()..canCloseWindow = true;
+        Get.back();
+      }
 
-    if (event.logicalKey == LogicalKeyboardKey.f7) {
-      Get.find<CarrinhosAgruparController>().onAgruparTudo();
-    }
+      if (event.logicalKey == LogicalKeyboardKey.f7) {
+        Get.find<CarrinhosAgruparController>().onAgruparTudo();
+      }
 
-    if (event.logicalKey == LogicalKeyboardKey.f8) {
-      Get.find<CarrinhosAgruparController>().onDesabruparTudo();
+      if (event.logicalKey == LogicalKeyboardKey.f8) {
+        Get.find<CarrinhosAgruparController>().onDesabruparTudo();
+      }
+
+      return KeyEventResult.ignored;
     }
 
     return KeyEventResult.ignored;

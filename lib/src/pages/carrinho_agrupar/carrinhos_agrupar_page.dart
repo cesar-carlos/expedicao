@@ -35,9 +35,9 @@ class CarrinhosAgruparPage {
           init:
               CarrinhosAgruparController(carrinhoPercursoAgrupamento, viewMode),
           builder: (CarrinhosAgruparController controller) {
-            return Focus(
+            return RawKeyboardListener(
               focusNode: controller.formFocusNode,
-              onKeyEvent: controller.handleKeyEvent,
+              onKey: controller.handleKeyEvent,
               child: Dialog(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)),

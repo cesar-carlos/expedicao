@@ -1,3 +1,4 @@
+import 'dart:io' as io;
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
@@ -92,6 +93,7 @@ class SepararController extends GetxController {
     super.onReady();
     await _fillGridSepararItens();
     await _fillCarrinhoPercurso();
+
     _liteners();
   }
 
@@ -102,32 +104,36 @@ class SepararController extends GetxController {
     super.onClose();
   }
 
-  KeyEventResult handleKeyEvent(FocusNode focusNod, KeyEvent event) {
-    if (event.logicalKey == LogicalKeyboardKey.f4) {
-      adicionarCarrinho();
-      return KeyEventResult.handled;
-    }
+  KeyEventResult handleKeyEvent(RawKeyEvent event) {
+    if (event is RawKeyDownEvent) {
+      if (event.logicalKey == LogicalKeyboardKey.f4) {
+        adicionarCarrinho();
+        return KeyEventResult.handled;
+      }
 
-    if (event.logicalKey == LogicalKeyboardKey.f5) {
-      btnAdicionarObservacao();
-      return KeyEventResult.handled;
-    }
+      if (event.logicalKey == LogicalKeyboardKey.f5) {
+        btnAdicionarObservacao();
+        return KeyEventResult.handled;
+      }
 
-    if (event.logicalKey == LogicalKeyboardKey.f12) {
-      btnFinalizarSeparacao();
-      return KeyEventResult.handled;
-    }
+      if (event.logicalKey == LogicalKeyboardKey.f12) {
+        btnFinalizarSeparacao();
+        return KeyEventResult.handled;
+      }
 
-    // if (event.logicalKey == LogicalKeyboardKey.escape) {
-    //   ConfirmationDialogView.show(
-    //     canCloseWindow: false,
-    //     context: Get.context!,
-    //     message: 'Deseja realmente sair?',
-    //     detail: 'A tela será fechada e a separação não será  cancelada.',
-    //   ).then((value) {
-    //     if (value != null && value) io.exit(0);
-    //   });
-    // }
+      if (event.logicalKey == LogicalKeyboardKey.escape) {
+        ConfirmationDialogView.show(
+          canCloseWindow: false,
+          context: Get.context!,
+          message: 'Deseja realmente sair?',
+          detail: 'A tela será fechada e a separação não será  cancelada.',
+        ).then((value) {
+          if (value != null && value) io.exit(0);
+        });
+      }
+
+      return KeyEventResult.ignored;
+    }
 
     return KeyEventResult.ignored;
   }

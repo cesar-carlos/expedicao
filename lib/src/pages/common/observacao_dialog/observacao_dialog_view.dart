@@ -27,9 +27,9 @@ class ObservacaoDialogView {
         return GetBuilder<ObservacaoDialogController>(
           init: ObservacaoDialogController(viewModel),
           builder: (ObservacaoDialogController controller) {
-            return Focus(
+            return RawKeyboardListener(
               focusNode: controller.formFocusNode,
-              onKeyEvent: controller.handleKeyEvent,
+              onKey: controller.handleKeyEvent,
               child: Dialog(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)),

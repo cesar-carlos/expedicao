@@ -26,9 +26,9 @@ class IdentificacaoDialogView {
         return GetBuilder<IdentificacaoDialogController>(
           init: IdentificacaoDialogController(),
           builder: (IdentificacaoDialogController controller) {
-            return Focus(
+            return RawKeyboardListener(
               focusNode: controller.formFocusNode,
-              onKeyEvent: controller.handleKeyEvent,
+              onKey: controller.handleKeyEvent,
               child: Dialog(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)),

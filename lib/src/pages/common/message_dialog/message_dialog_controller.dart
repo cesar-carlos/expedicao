@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter/services.dart';
 
 import 'package:app_expedicao/src/app/app_event_state.dart';
 
@@ -21,11 +22,15 @@ class MessageDialogController extends GetxController {
     super.onClose();
   }
 
-  KeyEventResult handleKeyEvent(FocusNode focusNod, KeyEvent event) {
-    // if (event.logicalKey == LogicalKeyboardKey.escape) {
-    //   Get.find<AppEventState>()..canCloseWindow = true;
-    //   Get.back(result: false);
-    // }
+  KeyEventResult handleKeyEvent(RawKeyEvent event) {
+    if (event is RawKeyDownEvent) {
+      if (event.logicalKey == LogicalKeyboardKey.escape) {
+        Get.find<AppEventState>()..canCloseWindow = true;
+        Get.back(result: false);
+      }
+
+      return KeyEventResult.ignored;
+    }
 
     return KeyEventResult.ignored;
   }

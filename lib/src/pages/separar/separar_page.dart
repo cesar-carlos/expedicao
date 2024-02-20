@@ -19,9 +19,9 @@ class SepararPage extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
     return GetBuilder<SepararController>(
       builder: (controller) {
-        return Focus(
+        return RawKeyboardListener(
           focusNode: controller.formFocusNode,
-          onKeyEvent: controller.handleKeyEvent,
+          onKey: controller.handleKeyEvent,
           child: Scaffold(
             body: SizedBox.expand(
               child: Column(
@@ -29,67 +29,68 @@ class SepararPage extends StatelessWidget {
                 children: [
                   //** HEADER BUTTON **//
                   SpaceButtonsHeadFormElement(
-                      width: double.infinity,
-                      children: [
-                        ButtonHeadForm(
-                          title: controller.iniciada
-                              ? 'Pausar Separação'
-                              : 'Iniciar Separação',
-                          icon: controller.iniciada
-                              ? const Icon(
-                                  BootstrapIcons.pause_btn_fill,
-                                  color: Colors.white,
-                                  size: 33,
-                                )
-                              : const Icon(
-                                  BootstrapIcons.play_btn_fill,
-                                  color: Colors.white,
-                                  size: 33,
-                                ),
+                    width: double.infinity,
+                    children: [
+                      ButtonHeadForm(
+                        title: controller.iniciada
+                            ? 'Pausar Separação'
+                            : 'Iniciar Separação',
+                        icon: controller.iniciada
+                            ? const Icon(
+                                BootstrapIcons.pause_btn_fill,
+                                color: Colors.white,
+                                size: 33,
+                              )
+                            : const Icon(
+                                BootstrapIcons.play_btn_fill,
+                                color: Colors.white,
+                                size: 33,
+                              ),
+                      ),
+                      ButtonHeadForm(
+                        title: 'Adicionar Carrinho',
+                        shortCut: 'F4',
+                        shortCutActive: true,
+                        onPressed: controller.adicionarCarrinho,
+                        icon: const Icon(
+                          BootstrapIcons.cart4,
+                          color: Colors.white,
+                          size: 33,
                         ),
-                        ButtonHeadForm(
-                          title: 'Adicionar Carrinho',
-                          shortCut: 'F4',
-                          shortCutActive: true,
-                          onPressed: controller.adicionarCarrinho,
-                          icon: const Icon(
-                            BootstrapIcons.cart4,
-                            color: Colors.white,
-                            size: 33,
-                          ),
+                      ),
+                      ButtonHeadForm(
+                        title: 'Histórico/Observação',
+                        shortCut: 'F5',
+                        shortCutActive: true,
+                        onPressed: controller.btnAdicionarObservacao,
+                        icon: const Icon(
+                          BootstrapIcons.file_text_fill,
+                          color: Colors.white,
+                          size: 33,
                         ),
-                        ButtonHeadForm(
-                          title: 'Histórico/Observação',
-                          shortCut: 'F5',
-                          shortCutActive: true,
-                          onPressed: controller.btnAdicionarObservacao,
-                          icon: const Icon(
-                            BootstrapIcons.file_text_fill,
-                            color: Colors.white,
-                            size: 33,
-                          ),
+                      ),
+                      ButtonHeadForm(
+                        title: 'Finalizar Separação',
+                        onPressed: controller.btnFinalizarSeparacao,
+                        shortCut: 'F12',
+                        shortCutActive: true,
+                        icon: const Icon(
+                          BootstrapIcons.clipboard_check_fill,
+                          color: Colors.white,
+                          size: 33,
                         ),
-                        ButtonHeadForm(
-                          title: 'Finalizar Separação',
-                          onPressed: controller.btnFinalizarSeparacao,
-                          shortCut: 'F12',
-                          shortCutActive: true,
-                          icon: const Icon(
-                            BootstrapIcons.clipboard_check_fill,
-                            color: Colors.white,
-                            size: 33,
-                          ),
+                      ),
+                      ButtonHeadForm(
+                        title: 'Configuração',
+                        onPressed: controller.configuracao,
+                        icon: const Icon(
+                          BootstrapIcons.gear_fill,
+                          color: Colors.white,
+                          size: 33,
                         ),
-                        ButtonHeadForm(
-                          title: 'Configuração',
-                          onPressed: controller.configuracao,
-                          icon: const Icon(
-                            BootstrapIcons.gear_fill,
-                            color: Colors.white,
-                            size: 33,
-                          ),
-                        ),
-                      ]),
+                      ),
+                    ],
+                  ),
 
                   //** SEPARAR ITENS **//
                   SepararItensWidget(

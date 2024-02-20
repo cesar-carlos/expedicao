@@ -54,10 +54,14 @@ class CarrinhoController extends GetxController {
     super.onClose();
   }
 
-  KeyEventResult handleKeyEvent(FocusNode focusNod, KeyEvent event) {
-    if (event.logicalKey == LogicalKeyboardKey.escape) {
-      Get.find<AppEventState>()..canCloseWindow = true;
-      Get.back(result: null);
+  KeyEventResult handleKeyEvent(RawKeyEvent event) {
+    if (event is RawKeyDownEvent) {
+      if (event.logicalKey == LogicalKeyboardKey.escape) {
+        Get.find<AppEventState>()..canCloseWindow = true;
+        Get.back(result: null);
+      }
+
+      return KeyEventResult.ignored;
     }
 
     return KeyEventResult.ignored;

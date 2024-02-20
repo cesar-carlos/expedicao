@@ -25,9 +25,9 @@ class MessageDialogView {
         return GetBuilder<MessageDialogController>(
           init: MessageDialogController(),
           builder: (MessageDialogController controller) {
-            return Focus(
+            return RawKeyboardListener(
               focusNode: controller.formFocusNode,
-              onKeyEvent: controller.handleKeyEvent,
+              onKey: controller.handleKeyEvent,
               child: Dialog(
                 child: Container(
                   width: _widthForm,
