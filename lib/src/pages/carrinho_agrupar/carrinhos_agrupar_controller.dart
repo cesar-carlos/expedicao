@@ -268,7 +268,6 @@ class CarrinhosAgruparController extends GetxController {
 
           _carrinhosAgruparGridController.updateGrid(newCarrinhoAgrupar);
           _carrinhosAgruparGridController.update();
-
           return true;
         } on AppErrorAlert catch (err) {
           await MessageDialogView.show(
@@ -296,7 +295,10 @@ class CarrinhosAgruparController extends GetxController {
             carrinhoRemover,
           );
 
-          _carrinhosAgruparGridController.updateAllGrid(result);
+          result.forEach((element) {
+            _carrinhosAgruparGridController.updateGrid(element);
+          });
+
           _carrinhosAgruparGridController.update();
           return true;
         } on AppErrorAlert catch (err) {
@@ -371,7 +373,10 @@ class CarrinhosAgruparController extends GetxController {
             carrinhoAgrupar,
           );
 
-          _carrinhosAgruparGridController.updateAllGrid(result);
+          result.forEach((element) {
+            _carrinhosAgruparGridController.updateGrid(element);
+          });
+
           _carrinhosAgruparGridController.update();
           return true;
         } on AppErrorAlert catch (err) {

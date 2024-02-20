@@ -47,6 +47,7 @@ class CarrinhosAgruparGridController extends GetxController {
     for (var el in itens) {
       final index = _itens
           .indexWhere((i) => i.itemCarrinhoPercurso == el.itemCarrinhoPercurso);
+
       if (index == -1) return;
       _itens[index] = el;
     }

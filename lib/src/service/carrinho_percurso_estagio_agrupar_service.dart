@@ -125,6 +125,7 @@ class CarrinhoPercursoEstagioAgruparService {
           AND CodCarrinhoPercurso = ${carrinhoAgrupador.codCarrinhoPercurso}
           AND Origem = '${carrinhoAgrupador.origem}' 
           AND CodCarrinho <> ${carrinhoAgrupador.codCarrinho} 
+          AND CarrinhoAgrupador = 'N' 
           AND Situacao = '${ExpedicaoSituacaoModel.conferido}' ''';
 
     final carrinhoPercursoAgrupamentoConsulta =

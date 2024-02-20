@@ -59,7 +59,7 @@ class CarrinhosAgruparGridColumns {
 
     _columns.add(
       GridColumn(
-        visible: false,
+        visible: true,
         columnName: 'item',
         maximumWidth: 50,
         label: Container(
