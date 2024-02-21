@@ -6,7 +6,7 @@ import 'package:app_expedicao/src/pages/login/login_binding.dart';
 import 'package:app_expedicao/src/pages/notfound/notfound_page.dart';
 import 'package:app_expedicao/src/pages/splash/splash_error_page.dart';
 import 'package:app_expedicao/src/pages/notfound/notfound_binding.dart';
-import 'package:app_expedicao/src/pages/common/footer/footer_page_controller.dart';
+import 'package:app_expedicao/src/pages/common/footer_page/footer_page_controller.dart';
 import 'package:app_expedicao/src/pages/manager_config/manager_binding.dart';
 import 'package:app_expedicao/src/pages/server_config/server_config_page.dart';
 import 'package:app_expedicao/src/pages/server_config/server_config_binding.dart';
@@ -66,7 +66,7 @@ class AppPageRouter {
         ExpedicaoSepararConsultaModel separarConsulta = Get.arguments;
 
         Get.put(separarConsulta);
-        Get.put(FooterPageController());
+        //Get.put(FooterPageController());
         return SepararPage(separarConsulta: separarConsulta);
       },
     ),
@@ -77,7 +77,7 @@ class AppPageRouter {
       page: () {
         ExpedicaoConferirConsultaModel conferirConsulta = Get.arguments;
 
-        Get.put(FooterPageController());
+        //Get.put(FooterPageController());
         Get.put(conferirConsulta);
         return const ConferirPage();
       },

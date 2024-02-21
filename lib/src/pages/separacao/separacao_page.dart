@@ -1,19 +1,19 @@
+import 'package:app_expedicao/src/pages/common/footer_dialog/footer_dialog.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 
 import 'package:app_expedicao/src/app/app_event_state.dart';
 import 'package:app_expedicao/src/pages/separacao/separacao_controller.dart';
-import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
 import 'package:app_expedicao/src/pages/common/form_element/button_head_form_element.dart';
-import 'package:app_expedicao/src/pages/separacao/grid_separacao/separacao_carrinho_grid.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
 import 'package:app_expedicao/src/pages/common/form_element/space_button_head_form_element.dart';
+import 'package:app_expedicao/src/pages/separacao/grid_separacao/separacao_carrinho_grid.dart';
 import 'package:app_expedicao/src/pages/separacao/widget/scan_separacao_item_widget.dart';
 import 'package:app_expedicao/src/pages/common/form_element/bar_head_form_element.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid.dart';
 
 class SeparacaoPage {
-  static const String title = 'Separar';
   static const double _spaceHeadlement = 30;
 
   SeparacaoPage._();
@@ -45,7 +45,7 @@ class SeparacaoPage {
                   height: size.height * 0.80,
                   child: Column(children: [
                     BarHeadFormElement(
-                      title: title,
+                      title: '${controller.title}',
                       widthBar: size.width,
                       onPressedCloseBar: controller.onPressedCloseBar,
                     ),
@@ -107,42 +107,43 @@ class SeparacaoPage {
                                   padding:
                                       const EdgeInsets.symmetric(horizontal: 5),
                                   child: TabBar(
-                                      indicatorColor: Colors.black45,
-                                      overlayColor: MaterialStateProperty.all(
-                                          Colors.black12),
-                                      indicatorPadding: EdgeInsets.zero,
-                                      tabs: [
-                                        Row(children: [
-                                          Icon(
-                                            size: 20,
-                                            BootstrapIcons.list_task,
+                                    indicatorColor: Colors.black45,
+                                    overlayColor: MaterialStateProperty.all(
+                                        Colors.black12),
+                                    indicatorPadding: EdgeInsets.zero,
+                                    tabs: [
+                                      Row(children: [
+                                        Icon(
+                                          size: 20,
+                                          BootstrapIcons.list_task,
+                                        ),
+                                        Spacer(),
+                                        Text(
+                                          'Carrinho',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.black87,
                                           ),
-                                          Spacer(),
-                                          Text(
-                                            'Carrinho',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              color: Colors.black87,
-                                            ),
-                                          ),
-                                          Spacer(),
-                                        ]),
-                                        Row(children: [
-                                          Icon(
-                                            size: 20,
-                                            BootstrapIcons.list_check,
-                                          ),
-                                          Spacer(),
-                                          Text(
-                                            'Separação',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              color: Colors.black87,
-                                            ),
-                                          ),
-                                          Spacer(),
-                                        ]),
+                                        ),
+                                        Spacer(),
                                       ]),
+                                      Row(children: [
+                                        Icon(
+                                          size: 20,
+                                          BootstrapIcons.list_check,
+                                        ),
+                                        Spacer(),
+                                        Text(
+                                          'Separação',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.black87,
+                                          ),
+                                        ),
+                                        Spacer(),
+                                      ]),
+                                    ],
+                                  ),
                                 ),
                                 Expanded(
                                   child: TabBarView(children: [
@@ -157,6 +158,44 @@ class SeparacaoPage {
                                       child: const SepararGrid(),
                                     ),
                                   ]),
+                                ),
+                                FooterDialog(
+                                  leftWidgets: [
+                                    Text(
+                                      controller.fullCartName,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 9,
+                                      ),
+                                    ),
+                                    // Container(
+                                    //   height: 12,
+                                    //   child: VerticalDivider(
+                                    //     color: Colors.white,
+                                    //     thickness: 2,
+                                    //     width: 20,
+                                    //   ),
+                                    // ),
+                                  ],
+                                  rightWidgets: [
+                                    Text(
+                                      '',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 9,
+                                      ),
+                                    ),
+                                    // Container(
+                                    //   height: 12,
+                                    //   child: VerticalDivider(
+                                    //     color: Colors.white,
+                                    //     thickness: 2,
+                                    //     width: 20,
+                                    //   ),
+                                    // ),
+                                  ],
                                 ),
                               ]),
                             ),

@@ -1,6 +1,6 @@
+import 'package:app_expedicao/src/pages/common/footer_dialog/footer_dialog.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 
 import 'package:app_expedicao/src/pages/conferir/grid/conferir_grid.dart';
@@ -14,7 +14,6 @@ import 'package:app_expedicao/src/pages/conferencia/conferencia_controller.dart'
 import 'package:app_expedicao/src/app/app_event_state.dart';
 
 class ConferenciaPage {
-  static const String title = 'Conferência';
   static const double _spaceHeadlement = 30;
 
   ConferenciaPage._();
@@ -46,7 +45,7 @@ class ConferenciaPage {
                   height: size.height * 0.8,
                   child: Column(children: [
                     BarHeadFormElement(
-                      title: title,
+                      title: '${controller.title}',
                       widthBar: size.width,
                       onPressedCloseBar: controller.onPressedCloseBar,
                     ),
@@ -157,11 +156,55 @@ class ConferenciaPage {
                                 ),
                                 Expanded(
                                   child: TabBarView(children: [
-                                    ConferenciaCarrinhoGrid(
-                                      percursoEstagioConsulta,
+                                    Container(
+                                      color: Colors.white70,
+                                      child: ConferenciaCarrinhoGrid(
+                                        percursoEstagioConsulta,
+                                      ),
                                     ),
-                                    const ConferirGrid()
+                                    Container(
+                                      color: Colors.white70,
+                                      child: const ConferirGrid(),
+                                    ),
                                   ]),
+                                ),
+                                FooterDialog(
+                                  leftWidgets: [
+                                    Text(
+                                      controller.fullCartName,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 9,
+                                      ),
+                                    ),
+                                    // Container(
+                                    //   height: 12,
+                                    //   child: VerticalDivider(
+                                    //     color: Colors.white,
+                                    //     thickness: 2,
+                                    //     width: 20,
+                                    //   ),
+                                    // ),
+                                  ],
+                                  rightWidgets: [
+                                    Text(
+                                      '',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 9,
+                                      ),
+                                    ),
+                                    // Container(
+                                    //   height: 12,
+                                    //   child: VerticalDivider(
+                                    //     color: Colors.white,
+                                    //     thickness: 2,
+                                    //     width: 20,
+                                    //   ),
+                                    // ),
+                                  ],
                                 ),
                               ]),
                             ),

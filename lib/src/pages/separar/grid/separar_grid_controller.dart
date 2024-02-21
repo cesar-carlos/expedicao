@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
+import 'package:app_expedicao/src/app/app_color.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_item_unidade_medida_consulta_model.dart';
@@ -19,6 +20,8 @@ class SepararGridController extends GetxController {
   final _processoExecutavel = Get.find<ProcessoExecutavelModel>();
 
   List<DataGridRow> get selectedoRows => dataGridController.selectedRows;
+  int get selectedIndex => dataGridController.selectedIndex;
+
   List<ExpedicaoSepararItemConsultaModel> get itens => _itens;
   List<ExpedicaoSepararItemConsultaModel> get itensSort =>
       _itens.toList()..sort((a, b) => a.item.compareTo(b.item));
@@ -212,9 +215,7 @@ class SepararGridController extends GetxController {
           CodEmpresa = ${el.codEmpresa}
         AND CodSepararEstoque = ${el.codSepararEstoque}
         AND CodProduto = ${el.codProduto}
-        AND Situacao <> ${ExpedicaoSituacaoModel.cancelada}
-        
-      ''');
+        AND Situacao <> ${ExpedicaoSituacaoModel.cancelada} ''');
 
       if (separacaoItens.isEmpty) {
         separarItem.add(el.copyWith(quantidadeSeparacao: 0.00));
@@ -232,9 +233,14 @@ class SepararGridController extends GetxController {
     }
   }
 
-  Color rowColor(ExpedicaoSepararItemConsultaModel el) {
+  Color rowColor(
+    DataGridRow dataGridRow,
+    ExpedicaoSepararItemConsultaModel el,
+  ) {
+    final isSelectedRow = dataGridController.selectedRows.contains(dataGridRow);
+
     if (el.quantidade == el.quantidadeSeparacao) {
-      return Color(0xFFffff00);
+      return AppColor.gridRowComplit;
     }
 
     return Colors.white;

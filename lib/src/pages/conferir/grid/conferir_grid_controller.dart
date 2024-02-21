@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
+import 'package:app_expedicao/src/app/app_color.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_item_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_item_unidade_medida_consulta_model.dart';
@@ -17,6 +18,8 @@ class ConferirGridController extends GetxController {
   final dataGridController = DataGridController();
 
   List<DataGridRow> get selectedoRows => dataGridController.selectedRows;
+  int get selectedIndex => dataGridController.selectedIndex;
+
   List<ExpedicaoConferirItemConsultaModel> get itens => _itens;
   List<ExpedicaoConferirItemConsultaModel> get itensSort =>
       _itens.toList()..sort((a, b) => a.item.compareTo(b.item));
@@ -183,9 +186,7 @@ class ConferirGridController extends GetxController {
           CodEmpresa = ${el.codEmpresa}
         AND CodConferirEstoque = ${el.codConferir}
         AND CodProduto = ${el.codProduto}
-        AND Situacao <> ${ExpedicaoSituacaoModel.cancelada}
-        
-      ''');
+        AND Situacao <> ${ExpedicaoSituacaoModel.cancelada} ''');
 
       if (separacaoItens.isEmpty) {
         conferirItem.add(el.copyWith(quantidadeConferida: 0.00));
@@ -203,9 +204,14 @@ class ConferirGridController extends GetxController {
     }
   }
 
-  Color rowColor(ExpedicaoConferirItemConsultaModel item) {
+  Color rowColor(
+    DataGridRow dataGridRow,
+    ExpedicaoConferirItemConsultaModel item,
+  ) {
+    final isSelectedRow = dataGridController.selectedRows.contains(dataGridRow);
+
     if (item.quantidade == item.quantidadeConferida) {
-      return Color(0xFFffff00);
+      return AppColor.gridRowComplit;
     }
 
     return Colors.white;

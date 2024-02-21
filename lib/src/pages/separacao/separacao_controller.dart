@@ -53,7 +53,11 @@ class SeparacaoController extends GetxController {
   SeparacaoController(this.percursoEstagioConsulta);
 
   get title {
-    return _viewMode.value ? 'Separação - Visualização' : 'Separação - Edição';
+    return _viewMode.value ? 'Separação  - Visualização' : 'Separação - Edição';
+  }
+
+  get fullCartName {
+    return '${percursoEstagioConsulta.codCarrinho} - ${percursoEstagioConsulta.nomeCarrinho}';
   }
 
   @override
@@ -158,9 +162,7 @@ class SeparacaoController extends GetxController {
     final params = '''
         CodEmpresa = ${percursoEstagioConsulta.codEmpresa} 
       AND CodEmpresa = '${percursoEstagioConsulta.codEmpresa}' 
-      AND CodCarrinhoPercurso = ${percursoEstagioConsulta.codCarrinhoPercurso}
-        
-    ''';
+      AND CodCarrinhoPercurso = ${percursoEstagioConsulta.codCarrinhoPercurso} ''';
 
     final carrinhosPercurso = await CarrinhoPercursoServices().select(params);
     if (carrinhosPercurso.isEmpty) return;
@@ -317,7 +319,7 @@ class SeparacaoController extends GetxController {
         context: Get.context!,
         message: 'Quantidade invalida!',
         detail:
-            '''A quantidade informada ${qtdConferencia.toStringAsFixed(3)}, é maior que a quantidade a separar!''',
+            '''A quantidade informada ${qtdConferencia.toStringAsFixed(3)}, é maior que a quantidade a separar! ''',
       );
 
       quantidadeController.text = '1,000';

@@ -56,6 +56,16 @@ class ConferenciaController extends GetxController {
 
   ConferenciaController(this.percursoEstagioConsulta);
 
+  get title {
+    return _viewMode.value
+        ? 'Conferencia - Visualização'
+        : 'Conferencia - Edição';
+  }
+
+  get fullCartName {
+    return '${percursoEstagioConsulta.codCarrinho} - ${percursoEstagioConsulta.nomeCarrinho}';
+  }
+
   @override
   onInit() {
     super.onInit();

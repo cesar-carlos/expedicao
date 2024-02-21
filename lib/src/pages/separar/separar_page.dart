@@ -7,8 +7,8 @@ import 'package:app_expedicao/src/pages/separarado_carrinhos/separarado_carrinho
 import 'package:app_expedicao/src/pages/common/form_element/space_button_head_form_element.dart';
 import 'package:app_expedicao/src/pages/common/form_element/button_head_form_element.dart';
 import 'package:app_expedicao/src/pages/separar/widget/separar_itens_widget.dart';
+import 'package:app_expedicao/src/pages/common/footer_page/footer_page.dart';
 import 'package:app_expedicao/src/pages/separar/separar_controller.dart';
-import 'package:app_expedicao/src/pages/common/footer/footer_page.dart';
 
 class SepararPage extends StatelessWidget {
   final ExpedicaoSepararConsultaModel separarConsulta;

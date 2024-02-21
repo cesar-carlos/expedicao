@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 
-import 'package:app_expedicao/src/pages/common/footer/footer_page.dart';
+import 'package:app_expedicao/src/pages/common/footer_page/footer_page.dart';
 import 'package:app_expedicao/src/pages/common/form_element/button_head_form_element.dart';
 import 'package:app_expedicao/src/pages/common/form_element/space_button_head_form_element.dart';
 import 'package:app_expedicao/src/pages/conferido_carrinhos/conferido_carrinhos_page.dart';
