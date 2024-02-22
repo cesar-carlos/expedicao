@@ -20,14 +20,14 @@ class SeparacaoCarrinhoGrid extends StatelessWidget {
     return GetBuilder<SeparacaoCarrinhoGridController>(
       builder: (controller) {
         return SfDataGridTheme(
-          data: SeparacaoCarrinhoGridTheme.theme,
+          data: SeparacaoCarrinhoGridTheme().theme,
           child: SfDataGrid(
             columnWidthMode: ColumnWidthMode.fill,
             controller: controller.dataGridController,
             source: SeparacaoCarrinhoGridSource(controller.itensSort),
             onCellDoubleTap: SeparacaoCarrinhoGridEvent.onCellDoubleTap,
             columns: SeparacaoCarrinhoGridColumns().columns,
-            selectionMode: SelectionMode.none,
+            selectionMode: SelectionMode.single,
             footer: SeparacaoCarrinhoGridFooter(
               codCarrinho: percursoEstagioConsulta.codCarrinho,
               item: percursoEstagioConsulta.item,

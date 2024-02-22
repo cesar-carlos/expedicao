@@ -14,7 +14,9 @@ class ConferirGridController extends GetxController {
   static const gridName = 'conferirGrid';
   final iconSize = 19.0;
 
+  bool _selectionMode = true;
   Color _selectedRowColor = AppColor.gridRowSelectedDefault;
+
   final List<ExpedicaoConferirItemConsultaModel> _itens = [];
   final List<ExpedicaoConferirItemUnidadeMedidaConsultaModel> _itemUnids = [];
   //final _processoExecutavel = Get.find<ProcessoExecutavelModel>();
@@ -25,6 +27,8 @@ class ConferirGridController extends GetxController {
   set selectedRowColor(Color value) {
     _selectedRowColor = value;
   }
+
+  bool get selectionMode => _selectionMode;
 
   List<DataGridRow> get selectedoRows => dataGridController.selectedRows;
   int get selectedIndex => dataGridController.selectedIndex;
@@ -222,6 +226,14 @@ class ConferirGridController extends GetxController {
     }
 
     return Colors.white;
+  }
+
+  void disableSelectionMode() {
+    _selectionMode = false;
+  }
+
+  void enableSelectionMode() {
+    _selectionMode = true;
   }
 
   iconIndicator(ExpedicaoConferirItemConsultaModel item) {

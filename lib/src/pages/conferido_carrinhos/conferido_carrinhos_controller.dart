@@ -70,432 +70,457 @@ class ConferidoCarrinhosController extends GetxController {
     _conferidoCarrinhoGridController.update();
   }
 
-  _evetsCarrinhoGrid() {
-    _conferidoCarrinhoGridController.onPressedRemove = (item) async {
-      if (item.situacao == ExpedicaoSituacaoModel.cancelada) {
-        await MessageDialogView.show(
-          canCloseWindow: false,
-          context: Get.context!,
-          message: 'Carrinho já cancelado!',
-          detail: 'Não é possível cancelar um carrinho já cancelado!',
-        );
-
-        return;
-      }
-
-      if (item.situacao == ExpedicaoSituacaoModel.conferido) {
-        await MessageDialogView.show(
-          canCloseWindow: false,
-          context: Get.context!,
-          message: 'Carrinho já finalizado!',
-          detail: 'Não é possível cancelar um carrinho já finalizado!',
-        );
-
-        return;
-      }
-
-      if (item.situacao == ExpedicaoSituacaoModel.agrupado) {
-        await MessageDialogView.show(
-          canCloseWindow: false,
-          context: Get.context!,
-          message: 'Carrinho já finalizado!',
-          detail: 'Não é possível cancelar um carrinho já agrupado',
-        );
-
-        return;
-      }
-
-      final bool? confirmation = await ConfirmationDialogView.show(
+  Future<void> removeCart(
+    ExpedicaoCarrinhoPercursoEstagioConsultaModel item,
+  ) async {
+    if (item.situacao == ExpedicaoSituacaoModel.cancelada) {
+      await MessageDialogView.show(
+        canCloseWindow: false,
         context: Get.context!,
-        message: 'Deseja realmente cancelar?',
-        detail: 'Ao cancelar, os itens serão removido do carrinho!',
+        message: 'Carrinho já cancelado!',
+        detail: 'Não é possível cancelar um carrinho já cancelado!',
       );
 
-      if (confirmation != null && confirmation) {
-        await LoadingProcessDialogGenericWidget.show<bool>(
-          canCloseWindow: false,
-          context: Get.context!,
-          process: () async {
-            try {
-              final carrinho = await CarrinhoServices().select(
-                '''CodEmpresa = ${item.codEmpresa} 
-                  AND CodCarrinho = ${item.codCarrinho} ''',
-              );
+      return;
+    }
 
-              final carrinhosPercursoEstagio =
-                  await CarrinhoPercursoEstagioServices().select('''
+    if (item.situacao == ExpedicaoSituacaoModel.conferido) {
+      await MessageDialogView.show(
+        canCloseWindow: false,
+        context: Get.context!,
+        message: 'Carrinho já finalizado!',
+        detail: 'Não é possível cancelar um carrinho já finalizado!',
+      );
+
+      return;
+    }
+
+    if (item.situacao == ExpedicaoSituacaoModel.agrupado) {
+      await MessageDialogView.show(
+        canCloseWindow: false,
+        context: Get.context!,
+        message: 'Carrinho já finalizado!',
+        detail: 'Não é possível cancelar um carrinho já agrupado',
+      );
+
+      return;
+    }
+
+    final bool? confirmation = await ConfirmationDialogView.show(
+      context: Get.context!,
+      message: 'Deseja realmente cancelar?',
+      detail: 'Ao cancelar, os itens serão removido do carrinho!',
+    );
+
+    if (confirmation != null && confirmation) {
+      await LoadingProcessDialogGenericWidget.show<bool>(
+        canCloseWindow: false,
+        context: Get.context!,
+        process: () async {
+          try {
+            final carrinho = await CarrinhoServices().select(
+              '''CodEmpresa = ${item.codEmpresa} 
+                  AND CodCarrinho = ${item.codCarrinho} ''',
+            );
+
+            final carrinhosPercursoEstagio =
+                await CarrinhoPercursoEstagioServices().select('''
                     CodEmpresa = ${item.codEmpresa}
                       AND CodCarrinhoPercurso = ${item.codCarrinhoPercurso}
                       AND CodPercursoEstagio = ${item.codPercursoEstagio}
                       AND CodCarrinho = ${item.codCarrinho}
                       AND Item = '${item.item}' ''');
 
-              if (carrinho.isEmpty || carrinhosPercursoEstagio.isEmpty) {
-                await MessageDialogView.show(
-                  canCloseWindow: false,
-                  context: Get.context!,
-                  message: 'Carrinho não encontrado!',
-                  detail: 'Carrinho não encontrado na tabela percurso estagio!',
-                );
-
-                return false;
-              }
-
-              //TOOD:: ADD SOLICITACAO DE SENHA
-              final carrinhoPercursoEstagio = carrinhosPercursoEstagio.last;
-              if (carrinhoPercursoEstagio.codUsuarioInicio !=
-                  _processoExecutavel.codUsuario) {
-                await MessageDialogView.show(
-                  canCloseWindow: false,
-                  context: Get.context!,
-                  message: 'Carrinho não pertence a você!',
-                  detail:
-                      '''Carrinho não pode ser cancelado. Solicite para o usuario ${carrinhoPercursoEstagio.nomeUsuarioInicio} fazer o cancelamento! ''',
-                );
-
-                return false;
-              }
-
-              final newCarrinho = carrinho.last.copyWith(
-                situacao: ExpedicaoCarrinhoSituacaoModel.emConferencia,
+            if (carrinho.isEmpty || carrinhosPercursoEstagio.isEmpty) {
+              await MessageDialogView.show(
+                canCloseWindow: false,
+                context: Get.context!,
+                message: 'Carrinho não encontrado!',
+                detail: 'Carrinho não encontrado na tabela percurso estagio!',
               );
 
-              await CarrinhoPercursoEstagioCancelarService(
-                carrinho: newCarrinho,
-                percursoEstagio: carrinhosPercursoEstagio.last,
-              ).execute();
-
-              final carrinhoPercurso = item.copyWith(
-                situacao: ExpedicaoSituacaoModel.cancelada,
-              );
-
-              ConferenciaCancelarItemService(
-                percursoEstagioConsulta: carrinhoPercurso,
-              ).cancelarAllItensCart();
-
-              _conferidoCarrinhoGridController.updateGrid(carrinhoPercurso);
-              _conferidoCarrinhoGridController.update();
-
-              return true;
-            } catch (err) {
               return false;
             }
-          },
-        );
-      }
+
+            //TOOD:: ADD SOLICITACAO DE SENHA
+            final carrinhoPercursoEstagio = carrinhosPercursoEstagio.last;
+            if (carrinhoPercursoEstagio.codUsuarioInicio !=
+                _processoExecutavel.codUsuario) {
+              await MessageDialogView.show(
+                canCloseWindow: false,
+                context: Get.context!,
+                message: 'Carrinho não pertence a você!',
+                detail:
+                    '''Carrinho não pode ser cancelado. Solicite para o usuario ${carrinhoPercursoEstagio.nomeUsuarioInicio} fazer o cancelamento! ''',
+              );
+
+              return false;
+            }
+
+            final newCarrinho = carrinho.last.copyWith(
+              situacao: ExpedicaoCarrinhoSituacaoModel.emConferencia,
+            );
+
+            await CarrinhoPercursoEstagioCancelarService(
+              carrinho: newCarrinho,
+              percursoEstagio: carrinhosPercursoEstagio.last,
+            ).execute();
+
+            final carrinhoPercurso = item.copyWith(
+              situacao: ExpedicaoSituacaoModel.cancelada,
+            );
+
+            ConferenciaCancelarItemService(
+              percursoEstagioConsulta: carrinhoPercurso,
+            ).cancelarAllItensCart();
+
+            _conferidoCarrinhoGridController.updateGrid(carrinhoPercurso);
+            _conferidoCarrinhoGridController.update();
+
+            return true;
+          } catch (err) {
+            return false;
+          }
+        },
+      );
+    }
+  }
+
+  Future<void> editCart(
+    ExpedicaoCarrinhoPercursoEstagioConsultaModel item,
+  ) async {
+    bool _viewMode = [
+      ExpedicaoSituacaoModel.cancelada,
+      ExpedicaoSituacaoModel.conferido,
+      ExpedicaoSituacaoModel.agrupado
+    ].contains(item.situacao);
+
+    final carrinho = await CarrinhoServices().select('''
+            CodEmpresa = ${item.codEmpresa} 
+          AND CodCarrinho = ${item.codCarrinho} ''');
+
+    final carrinhosPercursoEstagio =
+        await CarrinhoPercursoEstagioServices().select('''
+              CodEmpresa = ${item.codEmpresa}
+            AND CodCarrinhoPercurso = ${item.codCarrinhoPercurso}
+            AND CodCarrinho = ${item.codCarrinho}
+            AND Item = '${item.item}' ''');
+
+    if (carrinho.isEmpty || carrinhosPercursoEstagio.isEmpty) {
+      await MessageDialogView.show(
+        canCloseWindow: false,
+        context: Get.context!,
+        message: 'Carrinho não encontrado!',
+        detail: '''Carrinho não encontrado na tabela percurso estagio!''',
+      );
+
+      return;
+    }
+
+    final carrinhoPercursoEstagio = carrinhosPercursoEstagio.last;
+
+    final _editViewMode =
+        (_usuarioLogado.editaCarrinhoOutroUsuario == 'S' || _viewMode);
+
+    final _editUsuario = (carrinhoPercursoEstagio.codUsuarioInicio !=
+        _processoExecutavel.codUsuario);
+
+    //TOOD:: ADD SOLICITACAO DE SENHA
+    if (_editUsuario && !_editViewMode) {
+      await MessageDialogView.show(
+        canCloseWindow: false,
+        context: Get.context!,
+        message: 'Carrinho não pertence a você!',
+        detail:
+            '''Carrinho não pode ser editado. Solicite para o usuario ${carrinhoPercursoEstagio.nomeUsuarioInicio} editar! ''',
+      );
+
+      return;
+    }
+
+    await ConferenciaPage.show(
+      size: Get.size,
+      canCloseWindow: false,
+      context: Get.context!,
+      percursoEstagioConsulta: item,
+    );
+  }
+
+  Future<void> groupCart(
+    ExpedicaoCarrinhoPercursoEstagioConsultaModel item,
+  ) async {
+    final conferirConsulta = await _conferirConsultaServices.conferir();
+
+    if (conferirConsulta == null) {
+      await MessageDialogView.show(
+        context: Get.context!,
+        message: 'Conferencia não encontrada!',
+        detail: 'Conferencia não encontrada na tabela conferencia!',
+      );
+
+      return;
+    }
+
+    bool _isValidGroup = [
+      ExpedicaoSituacaoModel.conferido,
+    ].contains(item.situacao);
+
+    if (!_isValidGroup) {
+      await MessageDialogView.show(
+        context: Get.context!,
+        message: 'Carrinho ${item.situacao.toLowerCase()}!',
+        detail:
+            '''Não é possível agrupar um carrinho que estaja ${item.situacao}!''',
+      );
+
+      return;
+    }
+
+    final _carrinhoAgruparService = CarrinhoPercursoEstagioAgruparService(
+      codEmpresa: item.codEmpresa,
+      codCarrinhoPercurso: item.codCarrinhoPercurso,
+    );
+
+    final _carrinhoPercurso =
+        await _carrinhoAgruparService.carrinhoPercurso(item.item);
+
+    if (_carrinhoPercurso == null) {
+      await MessageDialogView.show(
+        context: Get.context!,
+        message: 'Carrinho não encontrado!',
+        detail: 'Carrinho não encontrado na tabela percurso estagio!',
+      );
+
+      return;
+    }
+
+    bool _isViewMode = ![
+          ExpedicaoSituacaoModel.emAndamento,
+        ].contains(conferirConsulta.situacao) ||
+        ![
+          ExpedicaoSituacaoModel.conferido,
+        ].contains(item.situacao);
+
+    await CarrinhosAgruparPage.show(
+      size: Get.size,
+      viewMode: _isViewMode,
+      context: Get.context!,
+      carrinhoPercursoAgrupamento: _carrinhoPercurso,
+    );
+  }
+
+  Future<bool> saveCart(
+    ExpedicaoCarrinhoPercursoEstagioConsultaModel item,
+  ) async {
+    if (item.situacao == ExpedicaoSituacaoModel.cancelada) {
+      await MessageDialogView.show(
+        context: Get.context!,
+        message: 'Carrinho já cancelado!',
+        detail: 'Não é possível salva um carrinho que esteja cancelado!',
+      );
+
+      return false;
+    }
+
+    if (item.situacao == ExpedicaoSituacaoModel.conferido) {
+      await MessageDialogView.show(
+        canCloseWindow: false,
+        context: Get.context!,
+        message: 'Carrinho já finalizado!',
+        detail: 'Não é possível salva um carrinho que esteja finalizado!',
+      );
+
+      return false;
+    }
+
+    if (item.situacao == ExpedicaoSituacaoModel.agrupado) {
+      await MessageDialogView.show(
+        canCloseWindow: false,
+        context: Get.context!,
+        message: 'Carrinho agrupado!',
+        detail: 'Não é possível salva um carrinho que esteja finalizado!',
+      );
+
+      return false;
+    }
+
+    final itensConferir = await _conferirConsultaServices.itensConferir();
+    final itensConferencia = await _conferirConsultaServices.itensConferencia();
+
+    final itensConferenciaCarrinho = itensConferencia
+        .where((el) =>
+            el.situacao != ExpedicaoItemSituacaoModel.cancelado &&
+            el.codCarrinho == item.codCarrinho)
+        .toList();
+
+    final itensConferirCarrinho = itensConferir.where(
+      (el) => el.codCarrinho == item.codCarrinho,
+    );
+
+    final isComplitCart = itensConferirCarrinho.every((el) => el.isComplited());
+
+    if (itensConferenciaCarrinho.isEmpty) {
+      await MessageDialogView.show(
+        canCloseWindow: false,
+        context: Get.context!,
+        message: 'Carrinho não conferido!',
+        detail: 'Não é possível salva um carrinho que não esteja conferido!',
+      );
+
+      return false;
+    }
+
+    final carrinho = await CarrinhoServices().select('''
+            CodEmpresa = ${item.codEmpresa} 
+          AND CodCarrinho = ${item.codCarrinho} ''');
+
+    final carrinhosPercursoEstagio =
+        await CarrinhoPercursoEstagioServices().select('''
+              CodEmpresa = ${item.codEmpresa}
+            AND CodCarrinhoPercurso = ${item.codCarrinhoPercurso}
+            AND CodCarrinho = ${item.codCarrinho}
+            AND Item = '${item.item}' ''');
+
+    if (carrinho.isEmpty || carrinhosPercursoEstagio.isEmpty) {
+      await MessageDialogView.show(
+        canCloseWindow: false,
+        context: Get.context!,
+        message: 'Carrinho não encontrado!',
+        detail: 'Carrinho não encontrado na tabela percurso estagio!',
+      );
+
+      return false;
+    }
+
+    //TOOD:: ADD SOLICITACAO DE SENHA
+    final carrinhoPercursoEstagio = carrinhosPercursoEstagio.last;
+    if (carrinhoPercursoEstagio.codUsuarioInicio !=
+        _processoExecutavel.codUsuario) {
+      await MessageDialogView.show(
+        canCloseWindow: false,
+        context: Get.context!,
+        message: 'Carrinho não pertence a você!',
+        detail:
+            '''Carrinho não pode ser editado. Solicite para o usuario ${carrinhoPercursoEstagio.nomeUsuarioInicio} salvar! ''',
+      );
+
+      return false;
+    }
+
+    if (!isComplitCart) {
+      await MessageDialogView.show(
+        canCloseWindow: false,
+        context: Get.context!,
+        message: 'Carrinho não conferido!',
+        detail:
+            'Existem itens com conferencia incorreta, não é possível salva!',
+      );
+
+      return false;
+    }
+
+    final bool? confirmation = await ConfirmationDialogView.show(
+      context: Get.context!,
+      message: 'Deseja Salva?',
+      detail: 'Ao salvar, o carrinho não podera ser mais alterado!',
+    );
+
+    if (confirmation != null && confirmation) {
+      return await LoadingProcessDialogGenericWidget.show<bool>(
+        canCloseWindow: false,
+        context: Get.context!,
+        process: () async {
+          try {
+            final newPercursoEstagio = ExpedicaoCarrinhoPercursoEstagioModel(
+              codEmpresa: item.codEmpresa,
+              codCarrinhoPercurso: item.codCarrinhoPercurso,
+              item: item.item,
+              origem: item.origem,
+              codOrigem: item.codOrigem,
+              codPercursoEstagio: item.codPercursoEstagio,
+              codCarrinho: item.codCarrinho,
+              situacao: ExpedicaoSituacaoModel.conferido,
+              dataInicio: item.dataInicio,
+              horaInicio: item.horaInicio,
+              codUsuarioInicio: item.codUsuarioInicio,
+              nomeUsuarioInicio: item.nomeUsuarioInicio,
+            );
+
+            final newCarrinho = ExpedicaoCarrinhoModel(
+              codEmpresa: item.codEmpresa,
+              codCarrinho: item.codCarrinho,
+              descricao: item.nomeCarrinho,
+              ativo: item.ativo,
+              codigoBarras: item.codigoBarrasCarrinho,
+              situacao: ExpedicaoCarrinhoSituacaoModel.conferido,
+            );
+
+            await CarrinhoPercursoEstagioFinalizarService(
+              carrinhoPercursoEstagio: newPercursoEstagio,
+              carrinho: newCarrinho,
+            ).execute();
+
+            await ConferenciaFinalizarItemService().updateAll(
+              itensConferenciaCarrinho,
+            );
+
+            for (var el in itensConferenciaCarrinho) {
+              _conferidoCarrinhoGridController.updateGridSituationItem(
+                el.itemCarrinhoPercurso,
+                ExpedicaoSituacaoModel.conferido,
+              );
+            }
+
+            _conferidoCarrinhoGridController.update();
+
+            // //FINALIZAR CONFERENCIA AUTOMATICAMENTE
+            // final isComplete = await _conferirConsultaServices.isComplete();
+            // final existsOpenCart =
+            //     await _conferirConsultaServices.existsOpenCart();
+
+            // if (isComplete && !existsOpenCart) {
+            //   await LoadingProcessDialogGenericWidget.show<bool>(
+            //     canCloseWindow: false,
+            //     context: Get.context!,
+            //     process: () async {
+            //       try {
+            //         final separarController = Get.find<ConferirController>();
+            //         await separarController.finalizarConferencia();
+            //         await Future.delayed(Duration(seconds: 1));
+            //         return true;
+            //       } catch (err) {
+            //         return false;
+            //       }
+            //     },
+            //   );
+            // }
+
+            return true;
+          } catch (err) {
+            return false;
+          }
+        },
+      );
+    }
+
+    return false;
+  }
+
+  _evetsCarrinhoGrid() {
+    _conferidoCarrinhoGridController.onPressedRemove = (item) async {
+      await removeCart(item);
     };
 
     _conferidoCarrinhoGridController.onPressedEdit = (item) async {
-      bool _viewMode = [
-        ExpedicaoSituacaoModel.cancelada,
-        ExpedicaoSituacaoModel.conferido,
-        ExpedicaoSituacaoModel.agrupado
-      ].contains(item.situacao);
-
-      final carrinho = await CarrinhoServices().select('''
-            CodEmpresa = ${item.codEmpresa} 
-          AND CodCarrinho = ${item.codCarrinho} ''');
-
-      final carrinhosPercursoEstagio =
-          await CarrinhoPercursoEstagioServices().select('''
-              CodEmpresa = ${item.codEmpresa}
-            AND CodCarrinhoPercurso = ${item.codCarrinhoPercurso}
-            AND CodCarrinho = ${item.codCarrinho}
-            AND Item = '${item.item}' ''');
-
-      if (carrinho.isEmpty || carrinhosPercursoEstagio.isEmpty) {
-        await MessageDialogView.show(
-          canCloseWindow: false,
-          context: Get.context!,
-          message: 'Carrinho não encontrado!',
-          detail: '''Carrinho não encontrado na tabela percurso estagio!''',
-        );
-
-        return;
-      }
-
-      final carrinhoPercursoEstagio = carrinhosPercursoEstagio.last;
-
-      final _editViewMode =
-          (_usuarioLogado.editaCarrinhoOutroUsuario == 'S' || _viewMode);
-
-      final _editUsuario = (carrinhoPercursoEstagio.codUsuarioInicio !=
-          _processoExecutavel.codUsuario);
-
-      //TOOD:: ADD SOLICITACAO DE SENHA
-      if (_editUsuario && !_editViewMode) {
-        await MessageDialogView.show(
-          canCloseWindow: false,
-          context: Get.context!,
-          message: 'Carrinho não pertence a você!',
-          detail:
-              '''Carrinho não pode ser editado. Solicite para o usuario ${carrinhoPercursoEstagio.nomeUsuarioInicio} editar! ''',
-        );
-
-        return;
-      }
-
-      await ConferenciaPage.show(
-        size: Get.size,
-        canCloseWindow: false,
-        context: Get.context!,
-        percursoEstagioConsulta: item,
-      );
+      await editCart(item);
     };
 
     _conferidoCarrinhoGridController.onPressedGroup = (item) async {
-      final conferirConsulta = await _conferirConsultaServices.conferir();
-
-      if (conferirConsulta == null) {
-        await MessageDialogView.show(
-          context: Get.context!,
-          message: 'Conferencia não encontrada!',
-          detail: 'Conferencia não encontrada na tabela conferencia!',
-        );
-
-        return;
-      }
-
-      bool _isValidGroup = [
-        ExpedicaoSituacaoModel.conferido,
-      ].contains(item.situacao);
-
-      if (!_isValidGroup) {
-        await MessageDialogView.show(
-          context: Get.context!,
-          message: 'Carrinho ${item.situacao.toLowerCase()}!',
-          detail:
-              '''Não é possível agrupar um carrinho que estaja ${item.situacao}!''',
-        );
-
-        return;
-      }
-
-      final _carrinhoAgruparService = CarrinhoPercursoEstagioAgruparService(
-        codEmpresa: item.codEmpresa,
-        codCarrinhoPercurso: item.codCarrinhoPercurso,
-      );
-
-      final _carrinhoPercurso =
-          await _carrinhoAgruparService.carrinhoPercurso(item.item);
-
-      if (_carrinhoPercurso == null) {
-        await MessageDialogView.show(
-          context: Get.context!,
-          message: 'Carrinho não encontrado!',
-          detail: 'Carrinho não encontrado na tabela percurso estagio!',
-        );
-
-        return;
-      }
-
-      bool _isViewMode = ![
-            ExpedicaoSituacaoModel.emAndamento,
-          ].contains(conferirConsulta.situacao) ||
-          ![
-            ExpedicaoSituacaoModel.conferido,
-          ].contains(item.situacao);
-
-      await CarrinhosAgruparPage.show(
-        size: Get.size,
-        viewMode: _isViewMode,
-        context: Get.context!,
-        carrinhoPercursoAgrupamento: _carrinhoPercurso,
-      );
+      await groupCart(item);
     };
 
     _conferidoCarrinhoGridController.onPressedSave = (item) async {
-      if (item.situacao == ExpedicaoSituacaoModel.cancelada) {
-        await MessageDialogView.show(
-          context: Get.context!,
-          message: 'Carrinho já cancelado!',
-          detail: 'Não é possível salva um carrinho que esteja cancelado!',
-        );
-
-        return;
-      }
-
-      if (item.situacao == ExpedicaoSituacaoModel.conferido) {
-        await MessageDialogView.show(
-          canCloseWindow: false,
-          context: Get.context!,
-          message: 'Carrinho já finalizado!',
-          detail: 'Não é possível salva um carrinho que esteja finalizado!',
-        );
-
-        return;
-      }
-
-      if (item.situacao == ExpedicaoSituacaoModel.agrupado) {
-        await MessageDialogView.show(
-          canCloseWindow: false,
-          context: Get.context!,
-          message: 'Carrinho agrupado!',
-          detail: 'Não é possível salva um carrinho que esteja finalizado!',
-        );
-
-        return;
-      }
-
-      final itensConferir = await _conferirConsultaServices.itensConferir();
-      final itensConferencia =
-          await _conferirConsultaServices.itensConferencia();
-
-      final itensConferenciaCarrinho = itensConferencia
-          .where((el) =>
-              el.situacao != ExpedicaoItemSituacaoModel.cancelado &&
-              el.codCarrinho == item.codCarrinho)
-          .toList();
-
-      final itensConferirCarrinho =
-          itensConferir.where((el) => el.codCarrinho == item.codCarrinho);
-
-      final isComplitCart =
-          itensConferirCarrinho.every((el) => el.isComplited());
-
-      if (itensConferenciaCarrinho.isEmpty) {
-        await MessageDialogView.show(
-          canCloseWindow: false,
-          context: Get.context!,
-          message: 'Carrinho não conferido!',
-          detail: 'Não é possível salva um carrinho que não esteja conferido!',
-        );
-
-        return;
-      }
-
-      final carrinho = await CarrinhoServices().select('''
-            CodEmpresa = ${item.codEmpresa} 
-          AND CodCarrinho = ${item.codCarrinho} ''');
-
-      final carrinhosPercursoEstagio =
-          await CarrinhoPercursoEstagioServices().select('''
-              CodEmpresa = ${item.codEmpresa}
-            AND CodCarrinhoPercurso = ${item.codCarrinhoPercurso}
-            AND CodCarrinho = ${item.codCarrinho}
-            AND Item = '${item.item}' ''');
-
-      if (carrinho.isEmpty || carrinhosPercursoEstagio.isEmpty) {
-        await MessageDialogView.show(
-          canCloseWindow: false,
-          context: Get.context!,
-          message: 'Carrinho não encontrado!',
-          detail: 'Carrinho não encontrado na tabela percurso estagio!',
-        );
-
-        return;
-      }
-
-      //TOOD:: ADD SOLICITACAO DE SENHA
-      final carrinhoPercursoEstagio = carrinhosPercursoEstagio.last;
-      if (carrinhoPercursoEstagio.codUsuarioInicio !=
-          _processoExecutavel.codUsuario) {
-        await MessageDialogView.show(
-          canCloseWindow: false,
-          context: Get.context!,
-          message: 'Carrinho não pertence a você!',
-          detail:
-              '''Carrinho não pode ser editado. Solicite para o usuario ${carrinhoPercursoEstagio.nomeUsuarioInicio} salvar! ''',
-        );
-
-        return;
-      }
-
-      if (!isComplitCart) {
-        await MessageDialogView.show(
-          canCloseWindow: false,
-          context: Get.context!,
-          message: 'Carrinho não conferido!',
-          detail:
-              'Existem itens com conferencia incorreta, não é possível salva!',
-        );
-
-        return;
-      }
-
-      final bool? confirmation = await ConfirmationDialogView.show(
-        context: Get.context!,
-        message: 'Deseja Salva?',
-        detail: 'Ao salvar, o carrinho não podera ser mais alterado!',
-      );
-
-      if (confirmation != null && confirmation) {
-        await LoadingProcessDialogGenericWidget.show<bool>(
-          canCloseWindow: false,
-          context: Get.context!,
-          process: () async {
-            try {
-              final newPercursoEstagio = ExpedicaoCarrinhoPercursoEstagioModel(
-                codEmpresa: item.codEmpresa,
-                codCarrinhoPercurso: item.codCarrinhoPercurso,
-                item: item.item,
-                origem: item.origem,
-                codOrigem: item.codOrigem,
-                codPercursoEstagio: item.codPercursoEstagio,
-                codCarrinho: item.codCarrinho,
-                situacao: ExpedicaoSituacaoModel.conferido,
-                dataInicio: item.dataInicio,
-                horaInicio: item.horaInicio,
-                codUsuarioInicio: item.codUsuarioInicio,
-                nomeUsuarioInicio: item.nomeUsuarioInicio,
-              );
-
-              final newCarrinho = ExpedicaoCarrinhoModel(
-                codEmpresa: item.codEmpresa,
-                codCarrinho: item.codCarrinho,
-                descricao: item.nomeCarrinho,
-                ativo: item.ativo,
-                codigoBarras: item.codigoBarrasCarrinho,
-                situacao: ExpedicaoCarrinhoSituacaoModel.conferido,
-              );
-
-              await CarrinhoPercursoEstagioFinalizarService(
-                carrinhoPercursoEstagio: newPercursoEstagio,
-                carrinho: newCarrinho,
-              ).execute();
-
-              await ConferenciaFinalizarItemService().updateAll(
-                itensConferenciaCarrinho,
-              );
-
-              for (var el in itensConferenciaCarrinho) {
-                _conferidoCarrinhoGridController.updateGridSituationItem(
-                  el.itemCarrinhoPercurso,
-                  ExpedicaoSituacaoModel.conferido,
-                );
-              }
-
-              _conferidoCarrinhoGridController.update();
-
-              // //FINALIZAR CONFERENCIA AUTOMATICAMENTE
-              // final isComplete = await _conferirConsultaServices.isComplete();
-              // final existsOpenCart =
-              //     await _conferirConsultaServices.existsOpenCart();
-
-              // if (isComplete && !existsOpenCart) {
-              //   await LoadingProcessDialogGenericWidget.show<bool>(
-              //     canCloseWindow: false,
-              //     context: Get.context!,
-              //     process: () async {
-              //       try {
-              //         final separarController = Get.find<ConferirController>();
-              //         await separarController.finalizarConferencia();
-              //         await Future.delayed(Duration(seconds: 1));
-              //         return true;
-              //       } catch (err) {
-              //         return false;
-              //       }
-              //     },
-              //   );
-              // }
-
-              return true;
-            } catch (err) {
-              return false;
-            }
-          },
-        );
-      }
+      await saveCart(item);
     };
   }
 

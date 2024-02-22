@@ -15,7 +15,9 @@ class SepararGridController extends GetxController {
 
   final iconSize = 19.0;
 
+  bool _selectionMode = true;
   Color _selectedRowColor = AppColor.gridRowSelectedDefault;
+
   final List<ExpedicaoSepararItemConsultaModel> _itens = [];
   final List<ExpedicaoSepararItemUnidadeMedidaConsultaModel> _itemUnids = [];
   final _processoExecutavel = Get.find<ProcessoExecutavelModel>();
@@ -26,6 +28,8 @@ class SepararGridController extends GetxController {
   set selectedRowColor(Color value) {
     _selectedRowColor = value;
   }
+
+  bool get selectionMode => _selectionMode;
 
   List<DataGridRow> get selectedoRows => dataGridController.selectedRows;
   int get selectedIndex => dataGridController.selectedIndex;
@@ -249,18 +253,12 @@ class SepararGridController extends GetxController {
     return Colors.white;
   }
 
-  void selectionRowColor(
-    DataGridRow dataGridRow,
-    ExpedicaoSepararItemConsultaModel el,
-  ) {
-    final isSelectedRow = dataGridController.selectedRows.contains(dataGridRow);
-    final isComplit = el.quantidade == el.quantidadeSeparacao;
+  void disableSelectionMode() {
+    _selectionMode = false;
+  }
 
-    if (isSelectedRow && isComplit) {
-      selectedRowColor = AppColor.gridRowSelectedComplit;
-    } else if (isSelectedRow) {
-      selectedRowColor = AppColor.gridRowSelectedDefault;
-    }
+  void enableSelectionMode() {
+    _selectionMode = true;
   }
 
   iconIndicator(ExpedicaoSepararItemConsultaModel item) {

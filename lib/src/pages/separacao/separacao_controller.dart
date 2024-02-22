@@ -12,14 +12,15 @@ import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
 import 'package:app_expedicao/src/service/separacao_remover_item_service.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dart';
 import 'package:app_expedicao/src/model/expedicao_separacao_item_consulta_model.dart';
-import 'package:app_expedicao/src/pages/common/Identificacao_dialog/identificacao_dialog_view.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
-import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_event_repository.dart';
+import 'package:app_expedicao/src/pages/separarado_carrinhos/separarado_carrinhos_controller.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_estagio_event_repository.dart';
+import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_event_repository.dart';
 import 'package:app_expedicao/src/pages/separacao/grid_separacao/separacao_carrinho_grid_controller.dart';
+import 'package:app_expedicao/src/pages/common/Identificacao_dialog/identificacao_dialog_view.dart';
 import 'package:app_expedicao/src/pages/common/confirmation_dialog/confirmation_dialog_view.dart';
-import 'package:app_expedicao/src/pages/common/message_dialog/message_dialog_view.dart';
 import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog_widget.dart';
+import 'package:app_expedicao/src/pages/common/message_dialog/message_dialog_view.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';
 import 'package:app_expedicao/src/service/separacao_adicionar_item_service.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
@@ -38,6 +39,7 @@ class SeparacaoController extends GetxController {
 
   late ProcessoExecutavelModel _processoExecutavel;
   late SepararGridController _separarGridController;
+  late SeparadoCarrinhosController _separadoCarrinhosController;
   late SeparacaoCarrinhoGridController _separacaoGridController;
   late SepararConsultaServices _separarConsultasServices;
 
@@ -67,6 +69,7 @@ class SeparacaoController extends GetxController {
 
     _separarGridController = Get.find<SepararGridController>();
     _separacaoGridController = Get.find<SeparacaoCarrinhoGridController>();
+    _separadoCarrinhosController = Get.find<SeparadoCarrinhosController>();
     _processoExecutavel = Get.find<ProcessoExecutavelModel>();
 
     scanController = TextEditingController();
@@ -123,6 +126,11 @@ class SeparacaoController extends GetxController {
 
       if (event.logicalKey == LogicalKeyboardKey.f8) {
         onReconferirTudo();
+        return KeyEventResult.handled;
+      }
+
+      if (event.logicalKey == LogicalKeyboardKey.f12) {
+        onSaveCarrinho();
         return KeyEventResult.handled;
       }
 
@@ -574,6 +582,16 @@ class SeparacaoController extends GetxController {
     }
 
     scanFocusNode.requestFocus();
+  }
+
+  Future<void> onSaveCarrinho() async {
+    final result =
+        await _separadoCarrinhosController.saveCart(percursoEstagioConsulta);
+
+    if (result) {
+      Get.find<AppEventState>()..canCloseWindow = true;
+      Get.back();
+    }
   }
 
   ExpedicaoSepararItemConsultaModel? _findItemSepararGrid(int codProduto) {

@@ -21,14 +21,14 @@ class ConferirCarrinhoGrid extends StatelessWidget {
       //tag: ConferirCarrinhoGridController.gridName,
       builder: (controller) {
         return SfDataGridTheme(
-          data: ConferirCarrinhoGridTheme.theme,
+          data: ConferirCarrinhoGridTheme().theme,
           child: SfDataGrid(
             columnWidthMode: ColumnWidthMode.fill,
             controller: controller.dataGridController,
             source: ConferirCarrinhoGridSource(itens: controller.itensSort),
             onCellDoubleTap: ConferirCarrinhoGridEvent.onCellDoubleTap,
             columns: ConferirCarrinhoGridColumns().columns,
-            selectionMode: SelectionMode.none,
+            selectionMode: SelectionMode.single,
             footer: const ConferirCarrinhoGridFooter(),
             showColumnHeaderIconOnHover: true,
             isScrollbarAlwaysShown: true,

@@ -1,3 +1,4 @@
+import 'package:app_expedicao/src/pages/conferido_carrinhos/conferido_carrinhos_controller.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
@@ -44,6 +45,7 @@ class ConferenciaController extends GetxController {
   late ProcessoExecutavelModel _processoExecutavel;
   late ConferirGridController _conferirGridController;
   late ConferenciaCarrinhoGridController _conferenciaGridController;
+  late ConferidoCarrinhosController _conferidoCarrinhosController;
   late ConferirConsultaServices _conferirConsultasServices;
 
   late TextEditingController quantidadeController;
@@ -78,6 +80,7 @@ class ConferenciaController extends GetxController {
 
     _conferirGridController = Get.find<ConferirGridController>();
     _conferenciaGridController = Get.find<ConferenciaCarrinhoGridController>();
+    _conferidoCarrinhosController = Get.find<ConferidoCarrinhosController>();
     _processoExecutavel = Get.find<ProcessoExecutavelModel>();
 
     scanFocusNode = FocusNode()..requestFocus();
@@ -133,6 +136,11 @@ class ConferenciaController extends GetxController {
 
       if (event.logicalKey == LogicalKeyboardKey.f8) {
         onReconferirTudo();
+        return KeyEventResult.handled;
+      }
+
+      if (event.logicalKey == LogicalKeyboardKey.f12) {
+        onSaveCarrinho();
         return KeyEventResult.handled;
       }
 
@@ -518,6 +526,16 @@ class ConferenciaController extends GetxController {
       _conferirGridController.update();
       _conferenciaGridController.update();
       scanFocusNode.requestFocus();
+    }
+  }
+
+  Future<void> onSaveCarrinho() async {
+    final result =
+        await _conferidoCarrinhosController.saveCart(percursoEstagioConsulta);
+
+    if (result) {
+      Get.find<AppEventState>()..canCloseWindow = true;
+      Get.back();
     }
   }
 

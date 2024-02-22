@@ -1,10 +1,10 @@
-import 'package:app_expedicao/src/pages/common/footer_dialog/footer_dialog.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 
 import 'package:app_expedicao/src/app/app_event_state.dart';
 import 'package:app_expedicao/src/pages/separacao/separacao_controller.dart';
+import 'package:app_expedicao/src/pages/common/footer_dialog/footer_dialog.dart';
 import 'package:app_expedicao/src/pages/common/form_element/button_head_form_element.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
 import 'package:app_expedicao/src/pages/common/form_element/space_button_head_form_element.dart';
@@ -74,6 +74,17 @@ class SeparacaoPage {
                               onPressed: controller.onReconferirTudo,
                               icon: const Icon(
                                 BootstrapIcons.list_task,
+                                color: Colors.white,
+                                size: 33,
+                              ),
+                            ),
+                            ButtonHeadForm(
+                              title: 'Finalizar Carrinho',
+                              onPressed: controller.onSaveCarrinho,
+                              shortCut: 'F12',
+                              shortCutActive: true,
+                              icon: const Icon(
+                                BootstrapIcons.cart_check_fill,
                                 color: Colors.white,
                                 size: 33,
                               ),

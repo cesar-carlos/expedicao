@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:io' as io;
+
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +16,7 @@ import 'package:app_expedicao/src/service/carrinho_percurso_estagio_adicionar_se
 import 'package:app_expedicao/src/pages/common/observacao_dialog/observacao_dialog_view.dart';
 import 'package:app_expedicao/src/repository/expedicao_conferir/conferir_event_repository.dart';
 import 'package:app_expedicao/src/pages/conferido_carrinhos/conferido_carrinhos_controller.dart';
+import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog_generic_widget.dart';
 import 'package:app_expedicao/src/pages/common/observacao_dialog/model/observacao_dialog_view_model.dart';
 import 'package:app_expedicao/src/pages/common/confirmation_dialog/confirmation_dialog_view.dart';
 import 'package:app_expedicao/src/pages/conferir_carrinhos/conferir_carrinhos_controller.dart';
@@ -108,7 +111,7 @@ class ConferirController extends GetxController {
   KeyEventResult handleKeyEvent(RawKeyEvent event) {
     if (event is RawKeyDownEvent) {
       if (event.logicalKey == LogicalKeyboardKey.f4) {
-        btnAdicionarCarrinho();
+        btnConferirCarrinho();
         return KeyEventResult.handled;
       }
 
@@ -193,7 +196,7 @@ class ConferirController extends GetxController {
     );
   }
 
-  Future<void> btnAdicionarCarrinho() async {
+  FutureOr<void> btnConferirCarrinho() async {
     if (_expedicaoSituacao == ExpedicaoSituacaoModel.conferido) {
       await MessageDialogView.show(
         context: Get.context!,
@@ -238,32 +241,51 @@ class ConferirController extends GetxController {
     );
 
     if (carrinhoConsulta != null) {
-      await iniciarConferencia();
+      await LoadingProcessDialogGenericWidget.show<bool>(
+        canCloseWindow: false,
+        context: Get.context!,
+        process: () async {
+          try {
+            await iniciarConferencia();
 
-      final carrinho = ExpedicaoCarrinhoModel(
-        codEmpresa: carrinhoConsulta.codEmpresa,
-        codCarrinho: carrinhoConsulta.codCarrinho,
-        descricao: carrinhoConsulta.descricaoCarrinho,
-        ativo: carrinhoConsulta.ativo,
-        codigoBarras: carrinhoConsulta.codigoBarras,
-        situacao: ExpedicaoCarrinhoSituacaoModel.conferindo,
+            final carrinho = ExpedicaoCarrinhoModel(
+              codEmpresa: carrinhoConsulta.codEmpresa,
+              codCarrinho: carrinhoConsulta.codCarrinho,
+              descricao: carrinhoConsulta.descricaoCarrinho,
+              ativo: carrinhoConsulta.ativo,
+              codigoBarras: carrinhoConsulta.codigoBarras,
+              situacao: ExpedicaoCarrinhoSituacaoModel.conferindo,
+            );
+
+            final percursoEstagio =
+                await CarrinhoPercursoEstagioAdicionarService(
+              carrinho: carrinho,
+              carrinhoPercurso: _carrinhoPercurso!,
+            ).execute();
+
+            if (percursoEstagio != null) {
+              final percursoEstagioConsulta =
+                  (await _conferirConsultaServices.carrinhosPercurso())
+                      .where((el) => el.item == percursoEstagio.item)
+                      .toList();
+
+              _conferidoCarrinhosController
+                  .addCarrinho(percursoEstagioConsulta.last);
+
+              _conferidoCarrinhosController.editCart(
+                percursoEstagioConsulta.last,
+              );
+
+              _conferidoCarrinhosController.update();
+              update();
+            }
+
+            return true;
+          } catch (err) {
+            return false;
+          }
+        },
       );
-
-      final percursoEstagio = await CarrinhoPercursoEstagioAdicionarService(
-        carrinho: carrinho,
-        carrinhoPercurso: _carrinhoPercurso!,
-      ).execute();
-
-      if (percursoEstagio != null) {
-        final percursoEstagioConsulta =
-            (await _conferirConsultaServices.carrinhosPercurso())
-                .where((el) => el.item == percursoEstagio.item)
-                .toList();
-
-        _conferidoCarrinhosController.addCarrinho(percursoEstagioConsulta.last);
-        _conferidoCarrinhosController.update();
-        update();
-      }
     }
   }
 

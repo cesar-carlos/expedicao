@@ -19,14 +19,14 @@ class CarrinhosAgruparGrid extends StatelessWidget {
     return GetBuilder<CarrinhosAgruparGridController>(
       builder: (controller) {
         return SfDataGridTheme(
-          data: CarrinhosAgruparGridTheme.theme,
+          data: CarrinhosAgruparGridTheme().theme,
           child: SfDataGrid(
             columnWidthMode: ColumnWidthMode.fill,
             controller: controller.dataGridController,
             source: CarrinhosAgruparGridSource(itens: controller.itens),
             onCellDoubleTap: CarrinhosAgruparGridEvent.onCellDoubleTap,
             columns: CarrinhosAgruparGridColumns().columns,
-            selectionMode: SelectionMode.none,
+            selectionMode: SelectionMode.single,
             showColumnHeaderIconOnHover: true,
             isScrollbarAlwaysShown: true,
             headerRowHeight: 30,

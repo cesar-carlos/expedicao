@@ -23,14 +23,14 @@ class ConferenciaCarrinhoGrid extends StatelessWidget {
       //tag: ConferenciaCarrinhoGridController.gridName,
       builder: (controller) {
         return SfDataGridTheme(
-          data: ConferenciaCarrinhoGridTheme.theme,
+          data: ConferenciaCarrinhoGridTheme().theme,
           child: SfDataGrid(
             columnWidthMode: ColumnWidthMode.fill,
             controller: controller.dataGridController,
             source: ConferenciaCarrinhoGridSource(controller.itensSort),
             onCellDoubleTap: ConferenciaCarrinhoGridEvent.onCellDoubleTap,
             columns: ConferenciaCarrinhoGridColumns().columns,
-            selectionMode: SelectionMode.none,
+            selectionMode: SelectionMode.single,
             footer: ConferenciaCarrinhoGridFooter(
               codCarrinho: percursoEstagioConsulta.codCarrinho,
               item: percursoEstagioConsulta.item,

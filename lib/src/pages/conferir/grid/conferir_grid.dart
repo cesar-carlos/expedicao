@@ -29,7 +29,9 @@ class ConferirGrid extends StatelessWidget {
             onCellDoubleTap: ConferirGridEvent().onCellDoubleTap,
             onSelectionChanged: ConferirGridEvent().onSelectionChanged,
             columns: ConferirGridColumns().columns,
-            selectionMode: SelectionMode.single,
+            selectionMode: controller.selectionMode
+                ? SelectionMode.single
+                : SelectionMode.none,
             footer: const ConferirGridFooter(),
             showColumnHeaderIconOnHover: true,
             isScrollbarAlwaysShown: true,

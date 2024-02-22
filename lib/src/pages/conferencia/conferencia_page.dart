@@ -80,14 +80,25 @@ class ConferenciaPage {
                               ),
                             ),
                             ButtonHeadForm(
-                              title: 'Sobra de carrinho',
-                              onPressed: controller.onSobraCarrinho,
+                              title: 'Finalizar Carrinho',
+                              onPressed: controller.onSaveCarrinho,
+                              shortCut: 'F12',
+                              shortCutActive: true,
                               icon: const Icon(
-                                BootstrapIcons.exclamation_circle_fill,
+                                BootstrapIcons.cart_check_fill,
                                 color: Colors.white,
                                 size: 33,
                               ),
                             ),
+                            // ButtonHeadForm(
+                            //   title: 'Sobra de carrinho',
+                            //   onPressed: controller.onSobraCarrinho,
+                            //   icon: const Icon(
+                            //     BootstrapIcons.exclamation_circle_fill,
+                            //     color: Color.fromARGB(255, 10, 10, 10),
+                            //     size: 33,
+                            //   ),
+                            // ),
                           ],
                         ),
 

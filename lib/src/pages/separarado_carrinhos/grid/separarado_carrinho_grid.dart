@@ -1,8 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
-
-// ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_core/theme.dart';
 
 import 'package:app_expedicao/src/pages/separarado_carrinhos/grid/separarado_carrinho_grid_columns.dart';
@@ -21,7 +19,7 @@ class SeparadoCarrinhoGrid extends StatelessWidget {
       //tag: SeparadoCarrinhoGridController.gridName,
       builder: (controller) {
         return SfDataGridTheme(
-          data: SeparadoCarrinhoGridTheme.theme,
+          data: SeparadoCarrinhoGridTheme().theme,
           child: SfDataGrid(
             columnWidthMode: ColumnWidthMode.fill,
             controller: controller.dataGridController,

@@ -63,7 +63,7 @@ class FooterPage extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          '${AppHelper.capitalize(processoExecutavel.nomeUsuario)}',
+                          '${AppHelper.capitalize(processoExecutavel.origem)}: ${AppHelper.capitalize(processoExecutavel.codOrigem.toString())}',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 9,
@@ -78,7 +78,7 @@ class FooterPage extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          '${AppHelper.capitalize(processoExecutavel.origem)}: ${AppHelper.capitalize(processoExecutavel.codOrigem.toString())}',
+                          '${AppHelper.capitalize(processoExecutavel.nomeUsuario)}',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 9,
@@ -100,7 +100,7 @@ class FooterPage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Text(
-                          'Versão: 1.0.1',
+                          'Versão: 1.0.8',
                           style: TextStyle(
                             color: Theme.of(context).secondaryHeaderColor,
                             fontSize: 9,

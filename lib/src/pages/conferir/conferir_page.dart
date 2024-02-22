@@ -49,7 +49,7 @@ class ConferirPage extends StatelessWidget {
                         title: 'Conferir Carrinho',
                         shortCut: 'F4',
                         shortCutActive: true,
-                        onPressed: controller.btnAdicionarCarrinho,
+                        onPressed: controller.btnConferirCarrinho,
                         icon: const Icon(
                           BootstrapIcons.cart4,
                           color: Colors.white,

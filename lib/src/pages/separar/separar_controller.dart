@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:io' as io;
+
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
@@ -18,9 +20,10 @@ import 'package:app_expedicao/src/pages/common/confirmation_dialog/confirmation_
 import 'package:app_expedicao/src/pages/separarado_carrinhos/separarado_carrinhos_controller.dart';
 import 'package:app_expedicao/src/pages/common/observacao_dialog/model/observacao_dialog_view_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_separar_item/separar_item_event_repository.dart';
+import 'package:app_expedicao/src/pages/common/Identificacao_dialog/identificacao_dialog_view.dart';
+import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog_generic_widget.dart';
 import 'package:app_expedicao/src/pages/common/observacao_dialog/observacao_dialog_view.dart';
 import 'package:app_expedicao/src/repository/expedicao_separar/separar_event_repository.dart';
-import 'package:app_expedicao/src/pages/common/Identificacao_dialog/identificacao_dialog_view.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_adicionar_service.dart';
 import 'package:app_expedicao/src/pages/common/message_dialog/message_dialog_view.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dart';
@@ -181,7 +184,7 @@ class SepararController extends GetxController {
     );
   }
 
-  Future<void> adicionarCarrinho() async {
+  FutureOr<void> adicionarCarrinho() async {
     if (_expedicaoSituacao == ExpedicaoSituacaoModel.separado) {
       await MessageDialogView.show(
         context: Get.context!,
@@ -207,33 +210,50 @@ class SepararController extends GetxController {
     );
 
     if (carrinhoConsulta != null) {
-      await iniciarSeparacao();
-      await _fillCarrinhoPercurso();
+      await LoadingProcessDialogGenericWidget.show<bool>(
+        canCloseWindow: false,
+        context: Get.context!,
+        process: () async {
+          try {
+            await iniciarSeparacao();
+            await _fillCarrinhoPercurso();
 
-      final carrinho = ExpedicaoCarrinhoModel(
-        codEmpresa: carrinhoConsulta.codEmpresa,
-        codCarrinho: carrinhoConsulta.codCarrinho,
-        descricao: carrinhoConsulta.descricaoCarrinho,
-        ativo: carrinhoConsulta.ativo,
-        codigoBarras: carrinhoConsulta.codigoBarras,
-        situacao: ExpedicaoCarrinhoSituacaoModel.emSeparacao,
+            final carrinho = ExpedicaoCarrinhoModel(
+              codEmpresa: carrinhoConsulta.codEmpresa,
+              codCarrinho: carrinhoConsulta.codCarrinho,
+              descricao: carrinhoConsulta.descricaoCarrinho,
+              ativo: carrinhoConsulta.ativo,
+              codigoBarras: carrinhoConsulta.codigoBarras,
+              situacao: ExpedicaoCarrinhoSituacaoModel.emSeparacao,
+            );
+
+            final percursoEstagio =
+                await CarrinhoPercursoEstagioAdicionarService(
+              carrinho: carrinho,
+              carrinhoPercurso: _carrinhoPercurso!,
+            ).execute();
+
+            if (percursoEstagio != null) {
+              final percursoEstagioConsulta =
+                  (await _separarConsultaServices.carrinhosPercurso())
+                      .where((el) => el.item == percursoEstagio.item)
+                      .toList();
+
+              _separarCarrinhosController.editCart(
+                percursoEstagioConsulta.last,
+              );
+
+              _separarCarrinhosController.addCart(percursoEstagioConsulta.last);
+              _separarCarrinhosController.update();
+              update();
+            }
+
+            return true;
+          } catch (err) {
+            return false;
+          }
+        },
       );
-
-      final percursoEstagio = await CarrinhoPercursoEstagioAdicionarService(
-        carrinho: carrinho,
-        carrinhoPercurso: _carrinhoPercurso!,
-      ).execute();
-
-      if (percursoEstagio != null) {
-        final percursoEstagioConsulta =
-            (await _separarConsultaServices.carrinhosPercurso())
-                .where((el) => el.item == percursoEstagio.item)
-                .toList();
-
-        _separarCarrinhosController.addCarrinho(percursoEstagioConsulta.last);
-        _separarCarrinhosController.update();
-        update();
-      }
     }
   }
 
