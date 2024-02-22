@@ -21,14 +21,15 @@ class ConferirGrid extends StatelessWidget {
       //tag: ConferirGridController.gridName,
       builder: (controller) {
         return SfDataGridTheme(
-          data: ConferirGridTheme.theme,
+          data: ConferirGridTheme().theme,
           child: SfDataGrid(
             columnWidthMode: ColumnWidthMode.fill,
             controller: controller.dataGridController,
             source: ConferirSource(controller.itensSort),
-            onCellDoubleTap: ConferirGridEvent.onCellDoubleTap,
+            onCellDoubleTap: ConferirGridEvent().onCellDoubleTap,
+            onSelectionChanged: ConferirGridEvent().onSelectionChanged,
             columns: ConferirGridColumns().columns,
-            selectionMode: SelectionMode.none,
+            selectionMode: SelectionMode.single,
             footer: const ConferirGridFooter(),
             showColumnHeaderIconOnHover: true,
             isScrollbarAlwaysShown: true,

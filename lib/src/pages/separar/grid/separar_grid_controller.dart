@@ -12,12 +12,20 @@ import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 
 class SepararGridController extends GetxController {
   static const gridName = 'separarGrid';
+
   final iconSize = 19.0;
 
+  Color _selectedRowColor = AppColor.gridRowSelectedDefault;
   final List<ExpedicaoSepararItemConsultaModel> _itens = [];
   final List<ExpedicaoSepararItemUnidadeMedidaConsultaModel> _itemUnids = [];
-  final DataGridController dataGridController = DataGridController();
   final _processoExecutavel = Get.find<ProcessoExecutavelModel>();
+  final dataGridController = DataGridController();
+
+  Color get selectedRowColor => _selectedRowColor;
+
+  set selectedRowColor(Color value) {
+    _selectedRowColor = value;
+  }
 
   List<DataGridRow> get selectedoRows => dataGridController.selectedRows;
   int get selectedIndex => dataGridController.selectedIndex;
@@ -46,7 +54,6 @@ class SepararGridController extends GetxController {
     return getItensSort(_processoExecutavel.codSetorEstoque);
   }
 
-  //ITENS
   void addGrid(ExpedicaoSepararItemConsultaModel item) {
     _itens.add(item);
   }
@@ -78,7 +85,6 @@ class SepararGridController extends GetxController {
     _itens.clear();
   }
 
-  //UNIDADES
   void addUnidade(ExpedicaoSepararItemUnidadeMedidaConsultaModel item) {
     _itemUnids.add(item);
   }
@@ -108,7 +114,6 @@ class SepararGridController extends GetxController {
         el.item == item.item);
   }
 
-  //
   void setSelectedRow(int index) {
     Future.delayed(const Duration(milliseconds: 150), () async {
       dataGridController.selectedIndex = index;
@@ -237,13 +242,25 @@ class SepararGridController extends GetxController {
     DataGridRow dataGridRow,
     ExpedicaoSepararItemConsultaModel el,
   ) {
-    final isSelectedRow = dataGridController.selectedRows.contains(dataGridRow);
-
     if (el.quantidade == el.quantidadeSeparacao) {
-      return AppColor.gridRowComplit;
+      return AppColor.gridRowSelectedComplit;
     }
 
     return Colors.white;
+  }
+
+  void selectionRowColor(
+    DataGridRow dataGridRow,
+    ExpedicaoSepararItemConsultaModel el,
+  ) {
+    final isSelectedRow = dataGridController.selectedRows.contains(dataGridRow);
+    final isComplit = el.quantidade == el.quantidadeSeparacao;
+
+    if (isSelectedRow && isComplit) {
+      selectedRowColor = AppColor.gridRowSelectedComplit;
+    } else if (isSelectedRow) {
+      selectedRowColor = AppColor.gridRowSelectedDefault;
+    }
   }
 
   iconIndicator(ExpedicaoSepararItemConsultaModel item) {

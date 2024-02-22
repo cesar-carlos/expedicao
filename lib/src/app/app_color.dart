@@ -10,7 +10,6 @@ class AppColor {
   static const backGroundBar = Color.fromARGB(255, 40, 100, 130);
   static const backGroundButton = Color.fromARGB(255, 40, 100, 130);
   static const backgroundColor = Color.fromARGB(255, 153, 175, 185);
-  static const gridRowSelected = Color.fromARGB(255, 252, 252, 2);
-  static const gridRowDefault = Color.fromARGB(255, 126, 126, 96);
-  static const gridRowComplit = Color.fromARGB(255, 252, 252, 2);
+  static const gridRowSelectedDefault = Color.fromARGB(255, 221, 221, 221);
+  static const gridRowSelectedComplit = Color.fromARGB(255, 252, 252, 2);
 }

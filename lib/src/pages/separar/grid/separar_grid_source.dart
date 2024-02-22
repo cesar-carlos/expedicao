@@ -7,7 +7,7 @@ import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.da
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dart';
 
 class SepararSource extends DataGridSource {
-  var controller = Get.find<SepararGridController>();
+  final controller = Get.find<SepararGridController>();
   List<DataGridRow> _itens = [];
 
   SepararSource(List<ExpedicaoSepararItemConsultaModel> itens) {

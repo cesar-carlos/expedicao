@@ -68,7 +68,22 @@ class FooterPage extends StatelessWidget {
                             color: Colors.white,
                             fontSize: 9,
                           ),
-                        )
+                        ),
+                        Container(
+                          height: 12,
+                          child: VerticalDivider(
+                            color: Colors.white,
+                            thickness: 2,
+                            width: 20,
+                          ),
+                        ),
+                        Text(
+                          '${AppHelper.capitalize(processoExecutavel.origem)}: ${AppHelper.capitalize(processoExecutavel.codOrigem.toString())}',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 9,
+                          ),
+                        ),
                       ],
                     ),
                   ),

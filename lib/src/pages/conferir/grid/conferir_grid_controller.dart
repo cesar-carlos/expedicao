@@ -7,15 +7,24 @@ import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_item_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_item_unidade_medida_consulta_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_repository.dart';
+//import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 
 class ConferirGridController extends GetxController {
   static const gridName = 'conferirGrid';
   final iconSize = 19.0;
 
+  Color _selectedRowColor = AppColor.gridRowSelectedDefault;
   final List<ExpedicaoConferirItemConsultaModel> _itens = [];
   final List<ExpedicaoConferirItemUnidadeMedidaConsultaModel> _itemUnids = [];
+  //final _processoExecutavel = Get.find<ProcessoExecutavelModel>();
   final dataGridController = DataGridController();
+
+  Color get selectedRowColor => _selectedRowColor;
+
+  set selectedRowColor(Color value) {
+    _selectedRowColor = value;
+  }
 
   List<DataGridRow> get selectedoRows => dataGridController.selectedRows;
   int get selectedIndex => dataGridController.selectedIndex;
@@ -208,10 +217,8 @@ class ConferirGridController extends GetxController {
     DataGridRow dataGridRow,
     ExpedicaoConferirItemConsultaModel item,
   ) {
-    final isSelectedRow = dataGridController.selectedRows.contains(dataGridRow);
-
     if (item.quantidade == item.quantidadeConferida) {
-      return AppColor.gridRowComplit;
+      return AppColor.gridRowSelectedComplit;
     }
 
     return Colors.white;
