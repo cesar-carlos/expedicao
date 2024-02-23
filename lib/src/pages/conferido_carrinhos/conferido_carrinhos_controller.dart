@@ -144,8 +144,14 @@ class ConferidoCarrinhosController extends GetxController {
 
             //TOOD:: ADD SOLICITACAO DE SENHA
             final carrinhoPercursoEstagio = carrinhosPercursoEstagio.last;
-            if (carrinhoPercursoEstagio.codUsuarioInicio !=
-                _processoExecutavel.codUsuario) {
+
+            final _editViewMode =
+                (_usuarioLogado.editaCarrinhoOutroUsuario == 'S');
+
+            final _editUsuario = (carrinhoPercursoEstagio.codUsuarioInicio !=
+                _processoExecutavel.codUsuario);
+
+            if (_editUsuario && !_editViewMode) {
               await MessageDialogView.show(
                 canCloseWindow: false,
                 context: Get.context!,
@@ -394,8 +400,12 @@ class ConferidoCarrinhosController extends GetxController {
 
     //TOOD:: ADD SOLICITACAO DE SENHA
     final carrinhoPercursoEstagio = carrinhosPercursoEstagio.last;
-    if (carrinhoPercursoEstagio.codUsuarioInicio !=
-        _processoExecutavel.codUsuario) {
+    final _editViewMode = (_usuarioLogado.editaCarrinhoOutroUsuario == 'S');
+
+    final _editUsuario = (carrinhoPercursoEstagio.codUsuarioInicio !=
+        _processoExecutavel.codUsuario);
+
+    if (_editUsuario && !_editViewMode) {
       await MessageDialogView.show(
         canCloseWindow: false,
         context: Get.context!,

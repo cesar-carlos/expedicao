@@ -29,11 +29,14 @@ class ConferidoCarrinhoGridController extends GetxController {
   }
 
   void Function(ExpedicaoCarrinhoPercursoEstagioConsultaModel item)?
-      onPressedEdit;
-  void Function(ExpedicaoCarrinhoPercursoEstagioConsultaModel item)?
       onPressedRemove;
+
+  void Function(ExpedicaoCarrinhoPercursoEstagioConsultaModel item)?
+      onPressedEdit;
+
   void Function(ExpedicaoCarrinhoPercursoEstagioConsultaModel item)?
       onPressedGroup;
+
   void Function(ExpedicaoCarrinhoPercursoEstagioConsultaModel item)?
       onPressedSave;
 

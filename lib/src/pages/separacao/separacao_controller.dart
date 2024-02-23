@@ -14,8 +14,8 @@ import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dar
 import 'package:app_expedicao/src/model/expedicao_separacao_item_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
 import 'package:app_expedicao/src/pages/separarado_carrinhos/separarado_carrinhos_controller.dart';
-import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_estagio_event_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_event_repository.dart';
+import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_estagio_event_repository.dart';
 import 'package:app_expedicao/src/pages/separacao/grid_separacao/separacao_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/pages/common/Identificacao_dialog/identificacao_dialog_view.dart';
 import 'package:app_expedicao/src/pages/common/confirmation_dialog/confirmation_dialog_view.dart';
@@ -27,7 +27,7 @@ import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/service/cancelamento_service.dart';
-import 'package:app_expedicao/src/core/audio_helper.dart';
+import 'package:app_expedicao/src/app/app_audio_helper.dart';
 
 class SeparacaoController extends GetxController {
   final RxBool _viewMode = false.obs;
@@ -214,7 +214,7 @@ class SeparacaoController extends GetxController {
     final textQuantityValue = quantidadeController.text;
 
     if (scanValue.isEmpty) {
-      AudioHelper().play('/error.wav');
+      AppAudioHelper().play('/error.wav');
       await MessageDialogView.show(
         context: Get.context!,
         message: 'Valor invalido!',
@@ -227,7 +227,7 @@ class SeparacaoController extends GetxController {
     }
 
     if (textQuantityValue.isEmpty) {
-      AudioHelper().play('/error.wav');
+      AppAudioHelper().play('/error.wav');
       await MessageDialogView.show(
         context: Get.context!,
         message: 'Valor invalido!',
@@ -242,7 +242,7 @@ class SeparacaoController extends GetxController {
     if (!_separarGridController.existsBarCode(scanValue.trim()) &&
         !_separarGridController.existsCodProduto(
             AppHelper.tryStringToIntOrZero(scanValue.trim()))) {
-      AudioHelper().play('/error.wav');
+      AppAudioHelper().play('/error.wav');
       await MessageDialogView.show(
         context: Get.context!,
         message: 'Produto não encontrado!',
@@ -263,7 +263,7 @@ class SeparacaoController extends GetxController {
         : _separarGridController.findCodProduto(int.parse(scanText));
 
     if (itemSepararConsulta == null) {
-      AudioHelper().play('/error.wav');
+      AppAudioHelper().play('/error.wav');
       await MessageDialogView.show(
         context: Get.context!,
         message: 'Produto não encontrado!',
@@ -280,7 +280,7 @@ class SeparacaoController extends GetxController {
             _processoExecutavel.codSetorEstoque &&
         itemSepararConsulta.codSetorEstoque != null &&
         _processoExecutavel.codSetorEstoque != null) {
-      AudioHelper().play('/error.wav');
+      AppAudioHelper().play('/error.wav');
       await MessageDialogView.show(
         context: Get.context!,
         message: 'Produto fora do setor estoque!',
@@ -322,7 +322,7 @@ class SeparacaoController extends GetxController {
 
     if ((qtdConferencia + itemSepararConsulta.quantidadeSeparacao) >
         itemSepararConsulta.quantidade) {
-      AudioHelper().play('/error.wav');
+      AppAudioHelper().play('/error.wav');
       await MessageDialogView.show(
         context: Get.context!,
         message: 'Quantidade invalida!',
@@ -348,7 +348,7 @@ class SeparacaoController extends GetxController {
       );
 
       if (separacaoItemConsulta == null) {
-        AudioHelper().play('/error.wav');
+        AppAudioHelper().play('/error.wav');
         await MessageDialogView.show(
           canCloseWindow: false,
           context: Get.context!,
@@ -384,10 +384,10 @@ class SeparacaoController extends GetxController {
       quantidadeController.text = '1,000';
       scanFocusNode.requestFocus();
 
-      AudioHelper().play('/success.wav');
+      AppAudioHelper().play('/success.wav');
     } catch (e) {
       //ERROR ADD ITEM
-      AudioHelper().play('/success.wav');
+      AppAudioHelper().play('/success.wav');
       await MessageDialogView.show(
         context: Get.context!,
         message: 'Erro ao adicionar item!',

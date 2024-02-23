@@ -67,17 +67,17 @@ class ConferirPage extends StatelessWidget {
                           size: 33,
                         ),
                       ),
-                      ButtonHeadForm(
-                        title: 'Quebra de carrinho',
-                        shortCut: 'F6',
-                        shortCutActive: false,
-                        onPressed: () {},
-                        icon: const Icon(
-                          BootstrapIcons.exclamation_circle_fill,
-                          color: Colors.white,
-                          size: 33,
-                        ),
-                      ),
+                      // ButtonHeadForm(
+                      //   title: 'Quebra de carrinho',
+                      //   shortCut: 'F6',
+                      //   shortCutActive: false,
+                      //   onPressed: () {},
+                      //   icon: const Icon(
+                      //     BootstrapIcons.exclamation_circle_fill,
+                      //     color: Colors.white,
+                      //     size: 33,
+                      //   ),
+                      // ),
                       ButtonHeadForm(
                         title: 'Ass. Agrupamento',
                         onPressed: () {},

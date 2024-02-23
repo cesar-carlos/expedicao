@@ -3,12 +3,12 @@ import 'dart:ffi';
 
 import 'package:media_kit/media_kit.dart';
 
-class AudioHelper {
-  static final AudioHelper _instance = AudioHelper._internal();
-  factory AudioHelper() {
+class AppAudioHelper {
+  static final AppAudioHelper _instance = AppAudioHelper._internal();
+  factory AppAudioHelper() {
     return _instance;
   }
-  AudioHelper._internal();
+  AppAudioHelper._internal();
 
   bool initializeded = false;
   bool isPlaying = false;
@@ -16,7 +16,7 @@ class AudioHelper {
   String currentFile = '';
 
   late Player audioPlayer;
-  Future<AudioHelper> _initialize() async {
+  Future<AppAudioHelper> _initialize() async {
     if (!initializeded) {
       initializeded = true;
       audioPlayer = Player();
