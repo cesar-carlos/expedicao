@@ -4,23 +4,26 @@ import 'dart:ffi';
 import 'package:media_kit/media_kit.dart';
 
 class AppAudioHelper {
-  static final AppAudioHelper _instance = AppAudioHelper._internal();
-  factory AppAudioHelper() {
-    return _instance;
-  }
-  AppAudioHelper._internal();
+  late Player audioPlayer;
 
   bool initializeded = false;
   bool isPlaying = false;
   bool isPaused = false;
   String currentFile = '';
 
-  late Player audioPlayer;
+  static final AppAudioHelper _instance = AppAudioHelper._internal();
+  factory AppAudioHelper() {
+    return _instance;
+  }
+
+  AppAudioHelper._internal();
+
   Future<AppAudioHelper> _initialize() async {
     if (!initializeded) {
       initializeded = true;
       audioPlayer = Player();
     }
+
     return this;
   }
 

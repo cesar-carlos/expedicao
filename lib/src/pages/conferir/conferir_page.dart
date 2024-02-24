@@ -67,6 +67,18 @@ class ConferirPage extends StatelessWidget {
                           size: 33,
                         ),
                       ),
+                      ButtonHeadForm(
+                        title: 'Ass. Agrupamento',
+                        onPressed: controller.btnAssistenteAgrupamento,
+                        shortCut: 'F7',
+                        shortCutActive: true,
+                        icon: const Icon(
+                          BootstrapIcons.grid_3x3_gap_fill,
+                          color: Colors.white,
+                          size: 33,
+                        ),
+                      ),
+
                       // ButtonHeadForm(
                       //   title: 'Quebra de carrinho',
                       //   shortCut: 'F6',
@@ -78,17 +90,7 @@ class ConferirPage extends StatelessWidget {
                       //     size: 33,
                       //   ),
                       // ),
-                      ButtonHeadForm(
-                        title: 'Ass. Agrupamento',
-                        onPressed: () {},
-                        shortCut: 'F7',
-                        shortCutActive: false,
-                        icon: const Icon(
-                          BootstrapIcons.grid_3x3_gap_fill,
-                          color: Colors.white,
-                          size: 33,
-                        ),
-                      ),
+
                       ButtonHeadForm(
                         title: 'Finalizar Conferencia',
                         onPressed: controller.btnFinalizarConferencia,

@@ -65,10 +65,10 @@ class CarrinhoDialogView {
                                   builder: (_, __) {
                                     return Column(
                                       children: [
-                                        const Align(
-                                          alignment: Alignment.centerLeft,
+                                        Container(
+                                          alignment: Alignment.center,
                                           child: Text(
-                                            'Detalhes',
+                                            'ADICIONAR CARRINHO',
                                             style: TextStyle(
                                               fontSize: 20,
                                               fontWeight: FontWeight.bold,
@@ -76,28 +76,28 @@ class CarrinhoDialogView {
                                           ),
                                         ),
 
-                                        Align(
+                                        Container(
                                           alignment: Alignment.centerLeft,
                                           child: Text(
                                             'Descrição: ${controller.carrinho.descricaoCarrinho}',
                                           ),
                                         ),
 
-                                        Align(
+                                        Container(
                                           alignment: Alignment.centerLeft,
                                           child: Text(
                                             'Situação: ${controller.carrinho.situacao}',
                                           ),
                                         ),
 
-                                        Align(
+                                        Container(
                                           alignment: Alignment.centerLeft,
                                           child: Text(
                                             'Local: ${controller.carrinho.local}',
                                           ),
                                         ),
 
-                                        Align(
+                                        Container(
                                           alignment: Alignment.centerLeft,
                                           child: Text(
                                             'Setor: ${controller.carrinho.setor}',

@@ -436,7 +436,6 @@ class SeparacaoController extends GetxController {
       }
 
       final bool? confirmation = await ConfirmationDialogView.show(
-        canCloseWindow: false,
         context: Get.context!,
         message: 'Deseja realmente cancelar?',
         detail: 'Ao cancelar, os itens serão removido do carrinho!',
@@ -446,7 +445,6 @@ class SeparacaoController extends GetxController {
 
       if (viewMode) {
         await MessageDialogView.show(
-          canCloseWindow: false,
           context: Get.context!,
           message: 'Não é possivel remover!',
           detail: 'O carrinho esta em modo de visualização..',
@@ -629,7 +627,6 @@ class SeparacaoController extends GetxController {
 
             if (cancelamentos != null) {
               await MessageDialogView.show(
-                canCloseWindow: false,
                 context: Get.context!,
                 message: 'Carrinho cancelado!',
                 detail:
@@ -637,7 +634,6 @@ class SeparacaoController extends GetxController {
               );
             } else {
               await MessageDialogView.show(
-                canCloseWindow: false,
                 context: Get.context!,
                 message: 'Carrinho cancelado!',
                 detail:
@@ -653,7 +649,6 @@ class SeparacaoController extends GetxController {
             update();
 
             await MessageDialogView.show(
-              canCloseWindow: false,
               context: Get.context!,
               message: 'Carrinho finalizado!',
               detail:

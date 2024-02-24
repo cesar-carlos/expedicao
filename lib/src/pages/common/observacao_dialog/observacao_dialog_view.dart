@@ -8,9 +8,9 @@ import 'package:app_expedicao/src/pages/common/observacao_dialog/model/observaca
 import 'package:app_expedicao/src/pages/common/form_element/bar_head_form_element.dart';
 
 class ObservacaoDialogView {
+  static const double _barHeadHeight = 30;
   static const double _widthForm = 600;
   static const double _heightForm = 400;
-  static const double _barHeadHeight = 30;
 
   static Future<ObservacaoDialogViewModel?> show({
     required BuildContext context,

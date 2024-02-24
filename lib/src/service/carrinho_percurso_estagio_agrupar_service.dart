@@ -17,6 +17,7 @@ import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
 class CarrinhoPercursoEstagioAgruparService {
   final int codEmpresa;
   final int codCarrinhoPercurso;
+
   final _processo = Get.find<ProcessoExecutavelModel>();
 
   final _carrinhoPercursoAgrupamentoRepository =
@@ -34,6 +35,11 @@ class CarrinhoPercursoEstagioAgruparService {
     required this.codCarrinhoPercurso,
   });
 
+  static Future<List<ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel>>
+      consulta([String params = '']) async {
+    return await CarrinhoPercursoAgrupamentoConsultaRepository().select(params);
+  }
+
   Future<ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel?> carrinhoPercurso(
     String itemCarrinhoPercurso,
   ) async {
@@ -42,8 +48,9 @@ class CarrinhoPercursoEstagioAgruparService {
           AND CodCarrinhoPercurso = '$codCarrinhoPercurso'
           AND ItemCarrinhoPercurso = $itemCarrinhoPercurso  ''';
 
-    final result =
-        await CarrinhoPercursoAgrupamentoConsultaRepository().select(params);
+    final result = await CarrinhoPercursoAgrupamentoConsultaRepository().select(
+      params,
+    );
 
     if (result.isEmpty) return null;
     return result.first;

@@ -13,7 +13,6 @@ import 'package:app_expedicao/src/app/app_event_state.dart';
 
 class CarrinhosAgruparPage {
   static const double _spaceHeadlement = 30;
-  static const String title = 'Agrupar Carrinhos';
 
   CarrinhosAgruparPage._();
 

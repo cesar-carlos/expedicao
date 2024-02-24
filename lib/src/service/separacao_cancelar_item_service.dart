@@ -13,11 +13,10 @@ class SeparacaoCancelarItemService {
   });
 
   Future<void> cancelar({required item}) async {
-    final params = ''' 
+    final params = '''
         CodEmpresa = ${percursoEstagioConsulta.codEmpresa}
       AND CodSepararEstoque = ${percursoEstagioConsulta.codOrigem}
-      AND Item = '$item'
-    ''';
+      AND Item = '$item' ''';
 
     final repository = SeparacaoItemRepository();
     final response = await repository.select(params);
@@ -55,23 +54,19 @@ class SeparacaoCancelarItemService {
 
   Future<List<ExpedicaSeparacaoItemConsultaModel>>
       _getSeparacaoItensCarrinho() async {
-    final params = ''' 
+    final params = '''
         CodEmpresa = ${percursoEstagioConsulta.codEmpresa}
       AND CodSepararEstoque = ${percursoEstagioConsulta.codOrigem}
       AND CodCarrinhoPercurso = ${percursoEstagioConsulta.codCarrinhoPercurso}  
-      AND ItemCarrinhoPercurso = '${percursoEstagioConsulta.item}'
-
-      ''';
+      AND ItemCarrinhoPercurso = '${percursoEstagioConsulta.item}' ''';
 
     return await SeparacaoItemConsultaRepository().select(params);
   }
 
   Future<List<ExpedicaoSeparacaoItemModel>> _getSeparacaoItens() async {
-    final params = ''' 
+    final params = '''
         CodEmpresa = ${percursoEstagioConsulta.codEmpresa}
-      AND CodSepararEstoque = ${percursoEstagioConsulta.codOrigem}
-
-      ''';
+      AND CodSepararEstoque = ${percursoEstagioConsulta.codOrigem} ''';
 
     return await SeparacaoItemRepository().select(params);
   }

@@ -4,8 +4,11 @@ class ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel {
   final String? itemAgrupamento;
   final String itemCarrinhoPercurso;
   final String origem;
+  final int codOrigem;
   final String situacao;
   final String situacaoPercurso;
+  final int? codPercursoEstagio;
+  final String? descricaoPercursoEstagio;
   final int? codCarrinhoAgrupador;
   final int codCarrinho;
   final String nomeCarrinho;
@@ -23,8 +26,11 @@ class ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel {
     this.itemAgrupamento,
     required this.itemCarrinhoPercurso,
     required this.origem,
+    required this.codOrigem,
     required this.situacao,
     required this.situacaoPercurso,
+    this.codPercursoEstagio,
+    this.descricaoPercursoEstagio,
     this.codCarrinhoAgrupador,
     this.nomeCarrinhoAgrupador,
     required this.codCarrinho,
@@ -43,8 +49,11 @@ class ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel {
       String? itemAgrupamento,
       String? itemCarrinhoPercurso,
       String? origem,
+      int? codOrigem,
       String? situacao,
       String? situacaoPercurso,
+      int? codPercursoEstagio,
+      String? descricaoPercursoEstagio,
       int? codCarrinhoAgrupador,
       String? nomeCarrinhoAgrupador,
       int? codCarrinho,
@@ -61,8 +70,12 @@ class ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel {
       itemAgrupamento: itemAgrupamento ?? this.itemAgrupamento,
       itemCarrinhoPercurso: itemCarrinhoPercurso ?? this.itemCarrinhoPercurso,
       origem: origem ?? this.origem,
+      codOrigem: codOrigem ?? this.codOrigem,
       situacao: situacao ?? this.situacao,
       situacaoPercurso: situacaoPercurso ?? this.situacaoPercurso,
+      codPercursoEstagio: codPercursoEstagio ?? this.codPercursoEstagio,
+      descricaoPercursoEstagio:
+          descricaoPercursoEstagio ?? this.descricaoPercursoEstagio,
       codCarrinhoAgrupador: codCarrinhoAgrupador ?? this.codCarrinhoAgrupador,
       nomeCarrinhoAgrupador:
           nomeCarrinhoAgrupador ?? this.nomeCarrinhoAgrupador,
@@ -85,8 +98,11 @@ class ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel {
       itemAgrupamento: map['ItemAgrupamento'],
       itemCarrinhoPercurso: map['ItemCarrinhoPercurso'],
       origem: map['Origem'],
+      codOrigem: map['CodOrigem'],
       situacao: map['Situacao'],
       situacaoPercurso: map['SituacaoPercurso'],
+      codPercursoEstagio: map['CodPercursoEstagio'],
+      descricaoPercursoEstagio: map['DescricaoPercursoEstagio'],
       codCarrinhoAgrupador: map['CodCarrinhoAgrupador'],
       nomeCarrinhoAgrupador: map['NomeCarrinhoAgrupador'],
       codCarrinho: map['CodCarrinho'],
@@ -107,8 +123,11 @@ class ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel {
       'ItemAgrupamento': itemAgrupamento,
       'ItemCarrinhoPercurso': itemCarrinhoPercurso,
       'Origem': origem,
+      'CodOrigem': codOrigem,
       'Situacao': situacao,
       'SituacaoPercurso': situacaoPercurso,
+      'CodPercursoEstagio': codPercursoEstagio,
+      'DescricaoPercursoEstagio': descricaoPercursoEstagio,
       'CodCarrinhoAgrupador': codCarrinhoAgrupador,
       'NomeCarrinhoAgrupador': nomeCarrinhoAgrupador,
       'CodCarrinho': codCarrinho,
@@ -131,6 +150,7 @@ class ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel {
         itemCarrinhoPercurso: $itemCarrinhoPercurso, 
         itemAgrupamento: $itemAgrupamento, 
         origem: $origem, 
+        codOrigem: $codOrigem,
         situacao: $situacao, 
         situacaoPercurso: $situacaoPercurso,
         codCarrinhoAgrupador: $codCarrinhoAgrupador, 

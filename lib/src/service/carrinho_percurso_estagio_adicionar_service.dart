@@ -1,4 +1,3 @@
-import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
 import 'package:get/get.dart';
 
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
@@ -10,6 +9,7 @@ import 'package:app_expedicao/src/repository/expedicao_carrinhos/carrinho_reposi
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_model.dart';
 import 'package:app_expedicao/src/model/expedicao_estagio_model.dart';
+import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
 
 class CarrinhoPercursoEstagioAdicionarService {
   final _processo = Get.find<ProcessoExecutavelModel>();
@@ -71,11 +71,9 @@ class CarrinhoPercursoEstagioAdicionarService {
 
   Future<ExpedicaoEstagioModel?> _findcodPercursoEstagio() async {
     final repository = ExpedicaoEstagioRepository();
-    final params = ''' 
+    final params = '''
         Origem LIKE '${_processo.origem}'  
-      AND Ativo = 'S' 
-      
-      ''';
+      AND Ativo = 'S' ''';
 
     final estagios = await repository.select(params);
     if (estagios.isEmpty) return null;

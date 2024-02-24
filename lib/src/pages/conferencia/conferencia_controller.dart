@@ -578,7 +578,6 @@ class ConferenciaController extends GetxController {
 
             if (cancelamentos != null) {
               await MessageDialogView.show(
-                canCloseWindow: false,
                 context: Get.context!,
                 message: 'Carrinho cancelado!',
                 detail:
@@ -586,7 +585,6 @@ class ConferenciaController extends GetxController {
               );
             } else {
               await MessageDialogView.show(
-                canCloseWindow: false,
                 context: Get.context!,
                 message: 'Carrinho cancelado!',
                 detail:

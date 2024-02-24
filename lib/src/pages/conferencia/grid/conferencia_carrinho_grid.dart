@@ -1,8 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/widgets.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
-
-// ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_core/theme.dart';
 
 import 'package:app_expedicao/src/pages/conferencia/grid/conferencia_carrinho_grid_theme.dart';

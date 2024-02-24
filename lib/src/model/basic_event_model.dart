@@ -1,6 +1,7 @@
 class BasicEventModel {
   String session;
   String resposeIn;
+
   List<Map<String, dynamic>> mutation;
 
   BasicEventModel({

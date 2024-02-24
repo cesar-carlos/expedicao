@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io' as io;
 
+import 'package:app_expedicao/src/pages/carrinho_agrupar/carrinhos_agrupar_page.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,8 @@ import 'package:app_expedicao/src/pages/common/observacao_dialog/observacao_dial
 import 'package:app_expedicao/src/repository/expedicao_conferir/conferir_event_repository.dart';
 import 'package:app_expedicao/src/pages/conferido_carrinhos/conferido_carrinhos_controller.dart';
 import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog_generic_widget.dart';
+import 'package:app_expedicao/src/pages/carrinho_agrupar_assistente/model/carrinhos_agrupar_assistente_view_model.dart';
+import 'package:app_expedicao/src/pages/carrinho_agrupar_assistente/carrinhos_agrupar_assistente_view.dart';
 import 'package:app_expedicao/src/pages/common/observacao_dialog/model/observacao_dialog_view_model.dart';
 import 'package:app_expedicao/src/pages/common/confirmation_dialog/confirmation_dialog_view.dart';
 import 'package:app_expedicao/src/pages/conferir_carrinhos/conferir_carrinhos_controller.dart';
@@ -120,11 +123,8 @@ class ConferirController extends GetxController {
         return KeyEventResult.handled;
       }
 
-      if (event.logicalKey == LogicalKeyboardKey.f6) {
-        return KeyEventResult.handled;
-      }
-
       if (event.logicalKey == LogicalKeyboardKey.f7) {
+        btnAssistenteAgrupamento();
         return KeyEventResult.handled;
       }
 
@@ -189,7 +189,6 @@ class ConferirController extends GetxController {
 
   Future<void> pausarConferencia() async {
     await MessageDialogView.show(
-      canCloseWindow: false,
       context: Get.context!,
       message: 'Não implementado!',
       detail: 'Não é possível pausar, funcionalidade não foi implementada.',
@@ -318,13 +317,47 @@ class ConferirController extends GetxController {
     }
   }
 
+  Future<void> btnAssistenteAgrupamento() async {
+    bool _isValidGroupCart = [
+      ExpedicaoSituacaoModel.emAndamento,
+      ExpedicaoSituacaoModel.conferindo
+    ].contains(conferirConsulta.situacao);
+
+    if (!_isValidGroupCart) {
+      await MessageDialogView.show(
+        context: Get.context!,
+        message: 'Conferencia finalizada!',
+        detail: 'Conferencia finalizada, não é possível agrupar carrinhos.',
+      );
+
+      return;
+    }
+
+    final result = await CarrinhosAgruparAssistenteView.show(
+      context: Get.context!,
+      input: CarrinhosAgruparAssistenteViewModel(
+        codEmpresa: _processoExecutavel.codEmpresa,
+        origem: _processoExecutavel.origem,
+        codOrigem: _processoExecutavel.codOrigem,
+      ),
+    );
+
+    if (result != null) {
+      await CarrinhosAgruparPage.show(
+        size: Get.size,
+        viewMode: false,
+        context: Get.context!,
+        carrinhoPercursoAgrupamento: result,
+      );
+    }
+  }
+
   Future<void> btnFinalizarConferencia() async {
     final isComplete = await _conferirConsultaServices.isComplete();
     final existsOpenCart = await _conferirConsultaServices.existsOpenCart();
 
     if (_expedicaoSituacao == ExpedicaoSituacaoModel.cancelada) {
       await MessageDialogView.show(
-        canCloseWindow: true,
         context: Get.context!,
         message: 'Conferencia cancelada!',
         detail: 'Conferencia cancelada, não é possível finalizar.',
@@ -335,7 +368,6 @@ class ConferirController extends GetxController {
 
     if (_expedicaoSituacao == ExpedicaoSituacaoModel.embalando) {
       await MessageDialogView.show(
-        canCloseWindow: true,
         context: Get.context!,
         message: 'Conferencia embalada!',
         detail: 'Conferencia embalada, não é possível finalizar.',
@@ -346,7 +378,6 @@ class ConferirController extends GetxController {
 
     if (_expedicaoSituacao == ExpedicaoSituacaoModel.entregue) {
       await MessageDialogView.show(
-        canCloseWindow: true,
         context: Get.context!,
         message: 'Conferencia entregue!',
         detail: 'Conferencia entregue, não é possível finalizar.',
@@ -357,7 +388,6 @@ class ConferirController extends GetxController {
 
     if (_expedicaoSituacao == ExpedicaoSituacaoModel.conferido) {
       await MessageDialogView.show(
-        canCloseWindow: true,
         context: Get.context!,
         message: 'Conferencia já finalizada!',
         detail: 'Conferencia já finalizada, não é possível finalizar.',
@@ -368,7 +398,6 @@ class ConferirController extends GetxController {
 
     if (_expedicaoSituacao == ExpedicaoSituacaoModel.embalando) {
       await MessageDialogView.show(
-        canCloseWindow: true,
         context: Get.context!,
         message: 'Conferencia já embalada!',
         detail: 'Conferencia já embalada, não é possível finalizar novamente.',
@@ -379,7 +408,6 @@ class ConferirController extends GetxController {
 
     if (!isComplete) {
       await MessageDialogView.show(
-        canCloseWindow: true,
         context: Get.context!,
         message: 'Conferencia não finalizada!',
         detail: 'Conferencia não finalizada, existem itens não separados.',
@@ -390,7 +418,6 @@ class ConferirController extends GetxController {
 
     if (existsOpenCart) {
       await MessageDialogView.show(
-        canCloseWindow: true,
         context: Get.context!,
         message: 'Conferencia não finalizada!',
         detail: 'Conferencia não finalizada, existem carrinhos em aberto.',

@@ -75,7 +75,6 @@ class ConferidoCarrinhosController extends GetxController {
   ) async {
     if (item.situacao == ExpedicaoSituacaoModel.cancelada) {
       await MessageDialogView.show(
-        canCloseWindow: false,
         context: Get.context!,
         message: 'Carrinho já cancelado!',
         detail: 'Não é possível cancelar um carrinho já cancelado!',
@@ -86,7 +85,6 @@ class ConferidoCarrinhosController extends GetxController {
 
     if (item.situacao == ExpedicaoSituacaoModel.conferido) {
       await MessageDialogView.show(
-        canCloseWindow: false,
         context: Get.context!,
         message: 'Carrinho já finalizado!',
         detail: 'Não é possível cancelar um carrinho já finalizado!',
@@ -97,7 +95,6 @@ class ConferidoCarrinhosController extends GetxController {
 
     if (item.situacao == ExpedicaoSituacaoModel.agrupado) {
       await MessageDialogView.show(
-        canCloseWindow: false,
         context: Get.context!,
         message: 'Carrinho já finalizado!',
         detail: 'Não é possível cancelar um carrinho já agrupado',
@@ -133,7 +130,6 @@ class ConferidoCarrinhosController extends GetxController {
 
             if (carrinho.isEmpty || carrinhosPercursoEstagio.isEmpty) {
               await MessageDialogView.show(
-                canCloseWindow: false,
                 context: Get.context!,
                 message: 'Carrinho não encontrado!',
                 detail: 'Carrinho não encontrado na tabela percurso estagio!',
@@ -153,7 +149,6 @@ class ConferidoCarrinhosController extends GetxController {
 
             if (_editUsuario && !_editViewMode) {
               await MessageDialogView.show(
-                canCloseWindow: false,
                 context: Get.context!,
                 message: 'Carrinho não pertence a você!',
                 detail:
@@ -214,7 +209,6 @@ class ConferidoCarrinhosController extends GetxController {
 
     if (carrinho.isEmpty || carrinhosPercursoEstagio.isEmpty) {
       await MessageDialogView.show(
-        canCloseWindow: false,
         context: Get.context!,
         message: 'Carrinho não encontrado!',
         detail: '''Carrinho não encontrado na tabela percurso estagio!''',
@@ -234,7 +228,6 @@ class ConferidoCarrinhosController extends GetxController {
     //TOOD:: ADD SOLICITACAO DE SENHA
     if (_editUsuario && !_editViewMode) {
       await MessageDialogView.show(
-        canCloseWindow: false,
         context: Get.context!,
         message: 'Carrinho não pertence a você!',
         detail:
@@ -330,7 +323,6 @@ class ConferidoCarrinhosController extends GetxController {
 
     if (item.situacao == ExpedicaoSituacaoModel.conferido) {
       await MessageDialogView.show(
-        canCloseWindow: false,
         context: Get.context!,
         message: 'Carrinho já finalizado!',
         detail: 'Não é possível salva um carrinho que esteja finalizado!',
@@ -341,7 +333,6 @@ class ConferidoCarrinhosController extends GetxController {
 
     if (item.situacao == ExpedicaoSituacaoModel.agrupado) {
       await MessageDialogView.show(
-        canCloseWindow: false,
         context: Get.context!,
         message: 'Carrinho agrupado!',
         detail: 'Não é possível salva um carrinho que esteja finalizado!',
@@ -367,7 +358,6 @@ class ConferidoCarrinhosController extends GetxController {
 
     if (itensConferenciaCarrinho.isEmpty) {
       await MessageDialogView.show(
-        canCloseWindow: false,
         context: Get.context!,
         message: 'Carrinho não conferido!',
         detail: 'Não é possível salva um carrinho que não esteja conferido!',
@@ -389,7 +379,6 @@ class ConferidoCarrinhosController extends GetxController {
 
     if (carrinho.isEmpty || carrinhosPercursoEstagio.isEmpty) {
       await MessageDialogView.show(
-        canCloseWindow: false,
         context: Get.context!,
         message: 'Carrinho não encontrado!',
         detail: 'Carrinho não encontrado na tabela percurso estagio!',
@@ -407,7 +396,6 @@ class ConferidoCarrinhosController extends GetxController {
 
     if (_editUsuario && !_editViewMode) {
       await MessageDialogView.show(
-        canCloseWindow: false,
         context: Get.context!,
         message: 'Carrinho não pertence a você!',
         detail:
@@ -419,7 +407,6 @@ class ConferidoCarrinhosController extends GetxController {
 
     if (!isComplitCart) {
       await MessageDialogView.show(
-        canCloseWindow: false,
         context: Get.context!,
         message: 'Carrinho não conferido!',
         detail:

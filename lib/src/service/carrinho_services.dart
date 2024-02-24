@@ -1,13 +1,11 @@
 import 'package:app_expedicao/src/model/expedicao_carrinho_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinhos/carrinho_consulta_repository.dart';
-import 'package:app_expedicao/src/repository/sequencia_registro/sequencia_registro_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinhos/carrinho_repository.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_consulta_model.dart';
 
 class CarrinhoServices {
   final repository = CarrinhoRepository();
   final repositoryConsulta = CarrinhoConsultaRepository();
-  final repositorySequecia = SequenciaRegistroRepository();
 
   Future<List<ExpedicaoCarrinhoConsultaModel>> consulta(
       [String params = '']) async {

@@ -7,7 +7,6 @@ import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_item_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_item_unidade_medida_consulta_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_repository.dart';
-//import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 
 class ConferirGridController extends GetxController {
@@ -19,7 +18,6 @@ class ConferirGridController extends GetxController {
 
   final List<ExpedicaoConferirItemConsultaModel> _itens = [];
   final List<ExpedicaoConferirItemUnidadeMedidaConsultaModel> _itemUnids = [];
-  //final _processoExecutavel = Get.find<ProcessoExecutavelModel>();
   final dataGridController = DataGridController();
 
   Color get selectedRowColor => _selectedRowColor;
@@ -108,7 +106,6 @@ class ConferirGridController extends GetxController {
         el.item == item.item);
   }
 
-  //
   void setSelectedRow(int index) {
     Future.delayed(const Duration(milliseconds: 150), () async {
       dataGridController.selectedIndex = index;
@@ -140,7 +137,10 @@ class ConferirGridController extends GetxController {
         .fold<double>(0.00, (acm, el) => acm + el.quantidadeConferida);
   }
 
-  //LOCALIZACAO
+  bool isCompliteSeparetion() {
+    return _itens.every((el) => el.quantidade == el.quantidadeConferida);
+  }
+
   ExpedicaoConferirItemConsultaModel findItem(String Item) {
     final el = _itens.where((el) => el.item == Item).toList();
     return el.first;
