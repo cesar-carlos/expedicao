@@ -50,7 +50,6 @@ class AppSocketConfig extends GetxController {
   onDisconnect() {
     _socket.onDisconnect((_) {
       _isConnected.value = false;
-      //_socket.clearListeners();
     });
   }
 

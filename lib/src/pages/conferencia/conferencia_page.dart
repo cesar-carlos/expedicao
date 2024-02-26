@@ -1,11 +1,12 @@
-import 'package:app_expedicao/src/pages/common/footer_dialog/footer_dialog.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 
+import 'package:app_expedicao/src/app/app_color.dart';
 import 'package:app_expedicao/src/pages/conferir/grid/conferir_grid.dart';
-import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
+import 'package:app_expedicao/src/pages/common/footer_dialog/footer_dialog.dart';
 import 'package:app_expedicao/src/pages/conferencia/widget/scan_conferencia_item_widget.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
 import 'package:app_expedicao/src/pages/common/form_element/space_button_head_form_element.dart';
 import 'package:app_expedicao/src/pages/common/form_element/button_head_form_element.dart';
 import 'package:app_expedicao/src/pages/conferencia/grid/conferencia_carrinho_grid.dart';
@@ -53,7 +54,6 @@ class ConferenciaPage {
                       width: size.width * 0.95,
                       height: size.height * 0.8 - _spaceHeadlement,
                       child: Column(children: [
-                        //** HEADER BUTTON **//
                         SpaceButtonsHeadFormElement(
                           width: double.infinity,
                           children: [
@@ -90,6 +90,7 @@ class ConferenciaPage {
                                 size: 33,
                               ),
                             ),
+
                             // ButtonHeadForm(
                             //   title: 'Sobra de carrinho',
                             //   onPressed: controller.onSobraCarrinho,
@@ -116,10 +117,9 @@ class ConferenciaPage {
                               bottomRight: Radius.circular(10),
                             ),
                             child: DefaultTabController(
-                              initialIndex: controller.viewMode ? 0 : 1,
                               length: 2,
-                              animationDuration:
-                                  const Duration(milliseconds: 500),
+                              initialIndex: controller.viewMode ? 0 : 1,
+                              animationDuration: Duration(milliseconds: 500),
                               child: Column(children: [
                                 Container(
                                   color: Colors.white,
@@ -128,19 +128,23 @@ class ConferenciaPage {
                                   padding:
                                       const EdgeInsets.symmetric(horizontal: 5),
                                   child: TabBar(
-                                      indicatorColor: Colors.black45,
+                                      enableFeedback: true,
+                                      indicatorColor: controller.isComplitCart()
+                                          ? AppColor.gridRowSelectedComplit
+                                          : Colors.red,
                                       overlayColor: MaterialStateProperty.all(
-                                          Colors.black12),
+                                        Colors.black12,
+                                      ),
                                       indicatorPadding: EdgeInsets.zero,
-                                      tabs: const [
+                                      tabs: [
                                         Row(children: [
                                           Icon(
                                             size: 20,
-                                            BootstrapIcons.list_task,
+                                            BootstrapIcons.list_check,
                                           ),
                                           Spacer(),
                                           Text(
-                                            'Conferencia',
+                                            'CONFERIDO',
                                             style: TextStyle(
                                               fontSize: 16,
                                               color: Colors.black87,
@@ -151,11 +155,11 @@ class ConferenciaPage {
                                         Row(children: [
                                           Icon(
                                             size: 20,
-                                            BootstrapIcons.list_check,
+                                            BootstrapIcons.list_task,
                                           ),
                                           Spacer(),
                                           Text(
-                                            'Carrinho',
+                                            '${controller.fullCartName}',
                                             style: TextStyle(
                                               fontSize: 16,
                                               color: Colors.black87,
@@ -175,7 +179,7 @@ class ConferenciaPage {
                                     ),
                                     Container(
                                       color: Colors.white70,
-                                      child: const ConferirGrid(),
+                                      child: ConferirGrid(),
                                     ),
                                   ]),
                                 ),
@@ -189,6 +193,7 @@ class ConferenciaPage {
                                         fontSize: 9,
                                       ),
                                     ),
+
                                     // Container(
                                     //   height: 12,
                                     //   child: VerticalDivider(
@@ -199,14 +204,15 @@ class ConferenciaPage {
                                     // ),
                                   ],
                                   rightWidgets: [
-                                    Text(
-                                      '',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 9,
-                                      ),
-                                    ),
+                                    // Text(
+                                    //   '',
+                                    //   style: TextStyle(
+                                    //     color: Colors.white,
+                                    //     fontWeight: FontWeight.bold,
+                                    //     fontSize: 9,
+                                    //   ),
+                                    // ),
+
                                     // Container(
                                     //   height: 12,
                                     //   child: VerticalDivider(

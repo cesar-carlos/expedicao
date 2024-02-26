@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io' as io;
 
-import 'package:app_expedicao/src/pages/carrinho_agrupar/carrinhos_agrupar_page.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
@@ -18,14 +17,14 @@ import 'package:app_expedicao/src/pages/common/observacao_dialog/observacao_dial
 import 'package:app_expedicao/src/repository/expedicao_conferir/conferir_event_repository.dart';
 import 'package:app_expedicao/src/pages/conferido_carrinhos/conferido_carrinhos_controller.dart';
 import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog_generic_widget.dart';
-import 'package:app_expedicao/src/pages/carrinho_agrupar_assistente/model/carrinhos_agrupar_assistente_view_model.dart';
 import 'package:app_expedicao/src/pages/carrinho_agrupar_assistente/carrinhos_agrupar_assistente_view.dart';
+import 'package:app_expedicao/src/pages/carrinho_agrupar_assistente/model/carrinhos_agrupar_assistente_view_model.dart';
 import 'package:app_expedicao/src/pages/common/observacao_dialog/model/observacao_dialog_view_model.dart';
 import 'package:app_expedicao/src/pages/common/confirmation_dialog/confirmation_dialog_view.dart';
 import 'package:app_expedicao/src/pages/conferir_carrinhos/conferir_carrinhos_controller.dart';
 import 'package:app_expedicao/src/pages/common/carrinho_dialog/carrinho_dialog_view.dart';
 import 'package:app_expedicao/src/pages/common/message_dialog/message_dialog_view.dart';
-import 'package:app_expedicao/src/pages/common/widget/loading_sever_dialog_widget.dart';
+import 'package:app_expedicao/src/pages/carrinho_agrupar/carrinhos_agrupar_page.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
 import 'package:app_expedicao/src/service/conferencia_finalizar_service.dart';
@@ -33,14 +32,12 @@ import 'package:app_expedicao/src/service/conferir_consultas_services.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_model.dart';
-import 'package:app_expedicao/src/app/app_socket_config.dart';
 
 class ConferirController extends GetxController {
   bool _iniciada = false;
 
   late FocusNode formFocusNode;
   final List<RepositoryEventListenerModel> _pageListerner = [];
-  late AppSocketConfig _socketClient;
 
   late String _expedicaoSituacao;
   late ConferirConsultaServices _conferirConsultaServices;
@@ -81,7 +78,6 @@ class ConferirController extends GetxController {
   onInit() async {
     super.onInit();
     formFocusNode = FocusNode();
-    _socketClient = Get.find<AppSocketConfig>();
     _processoExecutavel = Get.find<ProcessoExecutavelModel>();
     _conferirConsulta = Get.find<ExpedicaoConferirConsultaModel>();
     _conferirCarrinhosController = Get.find<ConferirCarrinhosController>();
@@ -452,13 +448,13 @@ class ConferirController extends GetxController {
     const uuid = Uuid();
     final conferirEvent = ConferirEventRepository.instancia;
 
-    _socketClient.isConnect.listen((event) {
-      if (event) return;
-      LoadingSeverDialogWidget.show(
-        context: Get.context!,
-        canCloseWindow: true,
-      );
-    });
+    // _socketClient.isConnect.listen((event) {
+    //   if (event) return;
+    //   LoadingSeverDialogWidget.show(
+    //     context: Get.context!,
+    //     canCloseWindow: true,
+    //   );
+    // });
 
     final conferir = RepositoryEventListenerModel(
       id: uuid.v4(),
@@ -468,6 +464,7 @@ class ConferirController extends GetxController {
           final item = ExpedicaoConferirModel.fromJson(el);
 
           if (_conferirConsulta.codEmpresa == item.codEmpresa &&
+              _conferirConsulta.origem == item.origem &&
               _conferirConsulta.codConferir == item.codConferir) {
             _expedicaoSituacao = item.situacao;
             _conferirConsulta.situacao = item.situacao;
@@ -477,13 +474,12 @@ class ConferirController extends GetxController {
       },
     );
 
-    _pageListerner.add(conferir);
     conferirEvent.addListener(conferir);
+    _pageListerner.add(conferir);
   }
 
   void _removeAllliteners() {
     final conferirEvent = ConferirEventRepository.instancia;
-
     conferirEvent.removeListeners(_pageListerner);
     _pageListerner.clear();
   }

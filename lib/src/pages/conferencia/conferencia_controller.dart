@@ -27,11 +27,11 @@ import 'package:app_expedicao/src/service/conferencia_adicionar_item_service.dar
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 import 'package:app_expedicao/src/service/conferir_consultas_services.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
-import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/service/cancelamento_service.dart';
 
 class ConferenciaController extends GetxController {
   bool canClose = true;
+
   late FocusNode formFocusNode;
   final RxBool _viewMode = false.obs;
 
@@ -40,14 +40,12 @@ class ConferenciaController extends GetxController {
   final ExpedicaoCarrinhoPercursoEstagioConsultaModel percursoEstagioConsulta;
   final List<RepositoryEventListenerModel> _pageListerner = [];
 
-  //late ProdutoService _produtoService;
-  // ignore: unused_field
-  late ProcessoExecutavelModel _processoExecutavel;
   late ConferirGridController _conferirGridController;
   late ConferenciaCarrinhoGridController _conferenciaGridController;
   late ConferidoCarrinhosController _conferidoCarrinhosController;
   late ConferirConsultaServices _conferirConsultasServices;
 
+  late TabController tabController;
   late TextEditingController quantidadeController;
   late TextEditingController displayController;
   late TextEditingController scanController;
@@ -68,6 +66,12 @@ class ConferenciaController extends GetxController {
     return '${percursoEstagioConsulta.codCarrinho} - ${percursoEstagioConsulta.nomeCarrinho}';
   }
 
+  bool isComplitCart() {
+    return _conferirGridController.isCompliteCart(
+      percursoEstagioConsulta.codCarrinho,
+    );
+  }
+
   @override
   onInit() {
     super.onInit();
@@ -81,11 +85,10 @@ class ConferenciaController extends GetxController {
     _conferirGridController = Get.find<ConferirGridController>();
     _conferenciaGridController = Get.find<ConferenciaCarrinhoGridController>();
     _conferidoCarrinhosController = Get.find<ConferidoCarrinhosController>();
-    _processoExecutavel = Get.find<ProcessoExecutavelModel>();
 
     scanFocusNode = FocusNode()..requestFocus();
-    displayFocusNode = FocusNode();
     quantidadeFocusNode = FocusNode();
+    displayFocusNode = FocusNode();
     formFocusNode = FocusNode();
 
     _conferirConsultasServices = ConferirConsultaServices(
@@ -108,6 +111,10 @@ class ConferenciaController extends GetxController {
     _onRemoveItemConferenciaGrid();
     _listenFocusNode();
     _liteners();
+
+    _conferirGridController.changeListListen.listen((event) {
+      update();
+    });
   }
 
   @override
@@ -117,13 +124,15 @@ class ConferenciaController extends GetxController {
     quantidadeFocusNode.dispose();
     displayController.dispose();
     scanFocusNode.dispose();
-    _viewMode.close();
-    _removeliteners();
 
     Get.delete<ConferenciaController>();
     Get.delete<ConferirGridController>();
     Get.delete<ConferenciaCarrinhoGridController>();
     Get.find<AppEventState>()..canCloseWindow = true;
+    _conferirGridController.dispose();
+
+    _removeliteners();
+    _viewMode.close();
     super.onClose();
   }
 
@@ -354,9 +363,8 @@ class ConferenciaController extends GetxController {
 
     scanController.text = '';
     quantidadeController.text = '1,000';
-    scanFocusNode.requestFocus();
-
     AppAudioHelper().play('/success.wav');
+    scanFocusNode.requestFocus();
   }
 
   bool validQuantitySeparate(String scanText, double value) {
@@ -403,9 +411,7 @@ class ConferenciaController extends GetxController {
       if (confirmation != null && confirmation) {
         await ConferenciaRemoverItemService(
           percursoEstagioConsulta: percursoEstagioConsulta,
-        ).remove(
-          item: el.item,
-        );
+        ).remove(item: el.item);
 
         _conferenciaGridController.removeGrid(el);
         final itemConferir = _findItemConferirGrid(el.codProduto)!;

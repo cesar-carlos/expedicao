@@ -130,7 +130,7 @@ class SeparacaoPage {
                                         ),
                                         Spacer(),
                                         Text(
-                                          'Carrinho',
+                                          '${controller.fullCartName}',
                                           style: TextStyle(
                                             fontSize: 16,
                                             color: Colors.black87,

@@ -11,16 +11,18 @@ import 'package:bootstrap_icons/bootstrap_icons.dart';
 
 class ConferirGridController extends GetxController {
   static const gridName = 'conferirGrid';
-  final iconSize = 19.0;
 
+  final iconSize = 19.0;
   bool _selectionMode = true;
   Color _selectedRowColor = AppColor.gridRowSelectedDefault;
+  Rx<String> _changeListListen = ''.obs;
 
   final List<ExpedicaoConferirItemConsultaModel> _itens = [];
   final List<ExpedicaoConferirItemUnidadeMedidaConsultaModel> _itemUnids = [];
   final dataGridController = DataGridController();
 
   Color get selectedRowColor => _selectedRowColor;
+  Rx<String> get changeListListen => _changeListListen;
 
   set selectedRowColor(Color value) {
     _selectedRowColor = value;
@@ -42,24 +44,29 @@ class ConferirGridController extends GetxController {
 
   @override
   void onClose() {
-    super.onClose();
     dataGridController.dispose();
+    _changeListListen.close();
+    super.onClose();
   }
 
   void addGrid(ExpedicaoConferirItemConsultaModel item) {
+    _changeListListen.value = DateTime.now().toString();
     _itens.add(item);
   }
 
   void addAllGrid(List<ExpedicaoConferirItemConsultaModel> itens) {
+    _changeListListen.value = DateTime.now().toString();
     _itens.addAll(itens);
   }
 
   void updateGrid(ExpedicaoConferirItemConsultaModel item) {
+    _changeListListen.value = DateTime.now().toString();
     final index = _itens.indexWhere((el) => el.item == item.item);
     _itens[index] = item;
   }
 
   void updateAllGrid(List<ExpedicaoConferirItemConsultaModel> itens) {
+    _changeListListen.value = DateTime.now().toString();
     for (var el in itens) {
       final index = _itens.indexWhere((i) => i.item == el.item);
       _itens[index] = el;
@@ -67,6 +74,7 @@ class ConferirGridController extends GetxController {
   }
 
   void removeGrid(ExpedicaoConferirItemConsultaModel item) {
+    _changeListListen.value = DateTime.now().toString();
     _itens.removeWhere((el) =>
         el.codEmpresa == item.codEmpresa &&
         el.codConferir == item.codConferir &&
@@ -74,6 +82,7 @@ class ConferirGridController extends GetxController {
   }
 
   void removeAllGrid() {
+    _changeListListen.value = DateTime.now().toString();
     _itens.clear();
   }
 
@@ -137,8 +146,14 @@ class ConferirGridController extends GetxController {
         .fold<double>(0.00, (acm, el) => acm + el.quantidadeConferida);
   }
 
-  bool isCompliteSeparetion() {
+  bool isComplite() {
     return _itens.every((el) => el.quantidade == el.quantidadeConferida);
+  }
+
+  bool isCompliteCart(int codCarrinho) {
+    return _itens
+        .where((el) => el.codCarrinho == codCarrinho)
+        .every((el) => el.quantidade == el.quantidadeConferida);
   }
 
   ExpedicaoConferirItemConsultaModel findItem(String Item) {
