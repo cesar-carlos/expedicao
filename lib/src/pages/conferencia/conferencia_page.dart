@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 
-import 'package:app_expedicao/src/app/app_color.dart';
 import 'package:app_expedicao/src/pages/conferir/grid/conferir_grid.dart';
 import 'package:app_expedicao/src/pages/common/footer_dialog/footer_dialog.dart';
 import 'package:app_expedicao/src/pages/conferencia/widget/scan_conferencia_item_widget.dart';
@@ -108,6 +107,25 @@ class ConferenciaPage {
                           percursoEstagioConsulta,
                           size: size,
                         ),
+                        SizedBox(
+                          height: 25,
+                          width: size.width,
+                          child: Container(
+                            alignment: Alignment.center,
+                            color: controller.isComplitCart()
+                                ? Colors.green
+                                : Colors.red,
+                            child: Text(
+                              controller.isComplitCart()
+                                  ? 'CARRINHO CONFERIDO'
+                                  : 'CARRINHO NÃO CONFERIDO',
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
 
                         //TAB VIEW
                         Expanded(
@@ -130,7 +148,7 @@ class ConferenciaPage {
                                   child: TabBar(
                                       enableFeedback: true,
                                       indicatorColor: controller.isComplitCart()
-                                          ? AppColor.gridRowSelectedComplit
+                                          ? Colors.green
                                           : Colors.red,
                                       overlayColor: MaterialStateProperty.all(
                                         Colors.black12,

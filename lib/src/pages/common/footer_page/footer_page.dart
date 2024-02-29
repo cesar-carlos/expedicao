@@ -100,7 +100,7 @@ class FooterPage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Text(
-                          'Versão: 1.0.8',
+                          'Versão: 1.0.9',
                           style: TextStyle(
                             color: Theme.of(context).secondaryHeaderColor,
                             fontSize: 9,
