@@ -1,3 +1,5 @@
+import 'package:app_expedicao/src/model/expedicao_carrinho_consulta_model.dart';
+
 class ExpedicaoCarrinhoModel {
   final int codEmpresa;
   final int codCarrinho;
@@ -30,6 +32,18 @@ class ExpedicaoCarrinhoModel {
       ativo: ativo ?? this.ativo,
       codigoBarras: codigoBarras ?? this.codigoBarras,
       situacao: situacao ?? this.situacao,
+    );
+  }
+
+  factory ExpedicaoCarrinhoModel.fromConsulta(
+      ExpedicaoCarrinhoConsultaModel model) {
+    return ExpedicaoCarrinhoModel(
+      codEmpresa: model.codEmpresa,
+      codCarrinho: model.codCarrinho,
+      descricao: model.descricaoCarrinho,
+      ativo: model.ativo,
+      codigoBarras: model.codigoBarras,
+      situacao: model.situacao,
     );
   }
 

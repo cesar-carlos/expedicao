@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 
-// ignore: library_prefixes
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:app_expedicao/src/app/app_api_file_init.dart';
 
@@ -18,7 +17,6 @@ class AppSocketConfig extends GetxController {
 
   Future<void> confg() async {
     final apiServerModel = await AppApiFileInit.getConfg();
-    //_baseUrl = 'http://localhost:3001';
     _baseUrl = 'http://${apiServerModel!.hostServer}:${apiServerModel.port}';
   }
 

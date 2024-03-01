@@ -8,6 +8,6 @@ import 'package:syncfusion_flutter_core/theme.dart';
 class CarrinhosAgruparGridTheme {
   SfDataGridThemeData get theme => SfDataGridThemeData(
         rowHoverColor: Theme.of(Get.context!).primaryColor.withOpacity(0.4),
-        headerColor: AppColor.gridRowSelectedDefault,
+        headerColor: AppColor.gridRowSelectedRowColor,
       );
 }

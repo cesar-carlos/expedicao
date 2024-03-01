@@ -14,7 +14,7 @@ class ConferirGridController extends GetxController {
 
   final iconSize = 19.0;
   bool _selectionMode = true;
-  Color _selectedRowColor = AppColor.gridRowSelectedDefault;
+  Color _selectedRowColor = AppColor.gridRowSelectedRowColor;
   Rx<String> _changeListListen = ''.obs;
 
   final List<ExpedicaoConferirItemConsultaModel> _itens = [];

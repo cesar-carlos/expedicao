@@ -18,7 +18,7 @@ class SepararServices {
 
   Future<void> iniciar() async {
     final newSeparar = separar.copyWith(
-      situacao: ExpedicaoSituacaoModel.emAndamento,
+      situacao: ExpedicaoSituacaoModel.separado,
     );
 
     if (!await _existsPercurso()) {
@@ -45,7 +45,7 @@ class SepararServices {
   }
 
   Future<bool> _existsPercurso() async {
-    final params = ''' 
+    final params = '''
         CodEmpresa = ${separar.codEmpresa} 
       AND Origem = '$origem' 
       AND CodOrigem = ${separar.codSepararEstoque} 

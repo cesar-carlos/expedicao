@@ -22,6 +22,7 @@ class AppAudioHelper {
     if (!initializeded) {
       initializeded = true;
       audioPlayer = Player();
+      audioPlayer.setVolume(250.0);
     }
 
     return this;

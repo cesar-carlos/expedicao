@@ -31,22 +31,22 @@ class SepararPage extends StatelessWidget {
                   SpaceButtonsHeadFormElement(
                     width: double.infinity,
                     children: [
-                      ButtonHeadForm(
-                        title: controller.iniciada
-                            ? 'Pausar Separação'
-                            : 'Iniciar Separação',
-                        icon: controller.iniciada
-                            ? const Icon(
-                                BootstrapIcons.pause_btn_fill,
-                                color: Colors.white,
-                                size: 33,
-                              )
-                            : const Icon(
-                                BootstrapIcons.play_btn_fill,
-                                color: Colors.white,
-                                size: 33,
-                              ),
-                      ),
+                      // ButtonHeadForm(
+                      //   title: controller.iniciada
+                      //       ? 'Pausar Separação'
+                      //       : 'Iniciar Separação',
+                      //   icon: controller.iniciada
+                      //       ? const Icon(
+                      //           BootstrapIcons.pause_btn_fill,
+                      //           color: Colors.white,
+                      //           size: 33,
+                      //         )
+                      //       : const Icon(
+                      //           BootstrapIcons.play_btn_fill,
+                      //           color: Colors.white,
+                      //           size: 33,
+                      //         ),
+                      // ),
                       ButtonHeadForm(
                         title: 'Adicionar Carrinho',
                         shortCut: 'F4',

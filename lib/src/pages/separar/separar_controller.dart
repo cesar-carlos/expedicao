@@ -158,16 +158,14 @@ class SepararController extends GetxController {
 
     final carrinhoPercursos = await CarrinhoPercursoServices().select(params);
 
-    if (carrinhoPercursos.isNotEmpty) {
+    if (carrinhoPercursos.isNotEmpty)
       _carrinhoPercurso = carrinhoPercursos.first;
-    }
   }
 
   Future<void> iniciarSeparacao() async {
     _iniciada = !_iniciada;
-    if (_carrinhoPercurso == null) {
-      await _fillCarrinhoPercurso();
-    }
+
+    if (_carrinhoPercurso == null) await _fillCarrinhoPercurso();
 
     final separar = ExpedicaoSepararModel.fromConsulta(_separarConsulta);
     await SepararServices(separar).iniciar();
@@ -218,12 +216,8 @@ class SepararController extends GetxController {
             await iniciarSeparacao();
             await _fillCarrinhoPercurso();
 
-            final carrinho = ExpedicaoCarrinhoModel(
-              codEmpresa: carrinhoConsulta.codEmpresa,
-              codCarrinho: carrinhoConsulta.codCarrinho,
-              descricao: carrinhoConsulta.descricaoCarrinho,
-              ativo: carrinhoConsulta.ativo,
-              codigoBarras: carrinhoConsulta.codigoBarras,
+            final carrinho =
+                ExpedicaoCarrinhoModel.fromConsulta(carrinhoConsulta).copyWith(
               situacao: ExpedicaoCarrinhoSituacaoModel.emSeparacao,
             );
 
