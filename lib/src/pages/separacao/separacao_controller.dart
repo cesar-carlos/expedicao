@@ -13,6 +13,7 @@ import 'package:app_expedicao/src/service/separacao_remover_item_service.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dart';
 import 'package:app_expedicao/src/model/expedicao_separacao_item_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
+import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog_generic_widget.dart';
 import 'package:app_expedicao/src/pages/separarado_carrinhos/separarado_carrinhos_controller.dart';
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_event_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_estagio_event_repository.dart';
@@ -423,6 +424,16 @@ class SeparacaoController extends GetxController {
 
   Future<void> _onRemoveItemSeparacaoGrid() async {
     _separacaoGridController.onPressedRemoveItem = (el) async {
+      if (viewMode) {
+        await MessageDialogView.show(
+          context: Get.context!,
+          message: 'Não é possivel remover!',
+          detail: 'O carrinho esta em modo de visualização..',
+        );
+
+        return;
+      }
+
       if (el.codSetorEstoque != null &&
           _processoExecutavel.codSetorEstoque != null &&
           el.codSetorEstoque != _processoExecutavel.codSetorEstoque) {
@@ -441,32 +452,34 @@ class SeparacaoController extends GetxController {
         detail: 'Ao cancelar, os itens serão removido do carrinho!',
       );
 
-      if (confirmation == null || !confirmation) return;
-
-      if (viewMode) {
-        await MessageDialogView.show(
+      if (confirmation != null && confirmation) {
+        await LoadingProcessDialogGenericWidget.show<bool>(
           context: Get.context!,
-          message: 'Não é possivel remover!',
-          detail: 'O carrinho esta em modo de visualização..',
+          process: () async {
+            try {
+              await SeparacaoRemoverItemService(
+                percursoEstagioConsulta: percursoEstagioConsulta,
+              ).remove(item: el.item);
+
+              _separacaoGridController.removeGrid(el);
+              final itemSeparar = _findItemSepararGrid(el.codProduto)!;
+              _separacaoGridController.update();
+              _separarGridController.update();
+
+              _separarGridController.updateGrid(
+                itemSeparar.copyWith(
+                  quantidadeSeparacao:
+                      itemSeparar.quantidadeSeparacao - el.quantidade,
+                ),
+              );
+
+              return true;
+            } catch (err) {
+              return false;
+            }
+          },
         );
-
-        return;
       }
-
-      await SeparacaoRemoverItemService(
-        percursoEstagioConsulta: percursoEstagioConsulta,
-      ).remove(
-        item: el.item,
-      );
-
-      _separacaoGridController.removeGrid(el);
-      final itemSeparar = _findItemSepararGrid(el.codProduto)!;
-      _separacaoGridController.update();
-      _separarGridController.update();
-
-      _separarGridController.updateGrid(itemSeparar.copyWith(
-        quantidadeSeparacao: itemSeparar.quantidadeSeparacao - el.quantidade,
-      ));
     };
   }
 

@@ -169,8 +169,9 @@ class SepararController extends GetxController {
 
     final separar = ExpedicaoSepararModel.fromConsulta(_separarConsulta);
     await SepararServices(separar).iniciar();
-    _expedicaoSituacao = ExpedicaoSituacaoModel.emAndamento;
-    _separarConsulta.situacao = ExpedicaoSituacaoModel.emAndamento;
+
+    _expedicaoSituacao = ExpedicaoSituacaoModel.separando;
+    _separarConsulta.situacao = ExpedicaoSituacaoModel.separando;
     update();
   }
 
@@ -203,13 +204,11 @@ class SepararController extends GetxController {
       return;
     }
 
-    final carrinhoConsulta = await CarrinhoDialogView.show(
-      context: Get.context!,
-    );
+    final carrinhoConsulta =
+        await CarrinhoDialogView.show(context: Get.context!);
 
     if (carrinhoConsulta != null) {
       await LoadingProcessDialogGenericWidget.show<bool>(
-        canCloseWindow: false,
         context: Get.context!,
         process: () async {
           try {
@@ -233,9 +232,8 @@ class SepararController extends GetxController {
                       .where((el) => el.item == percursoEstagio.item)
                       .toList();
 
-              _separarCarrinhosController.editCart(
-                percursoEstagioConsulta.last,
-              );
+              _separarCarrinhosController
+                  .editCart(percursoEstagioConsulta.last);
 
               _separarCarrinhosController.addCart(percursoEstagioConsulta.last);
               _separarCarrinhosController.update();

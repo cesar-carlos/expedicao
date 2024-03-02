@@ -67,6 +67,7 @@ class ConferenciaPage {
                                 size: 33,
                               ),
                             ),
+
                             ButtonHeadForm(
                               title: 'Reconferir tudo',
                               shortCut: 'F8',
@@ -78,6 +79,7 @@ class ConferenciaPage {
                                 size: 33,
                               ),
                             ),
+
                             ButtonHeadForm(
                               title: 'Finalizar Carrinho',
                               onPressed: controller.onSaveCarrinho,
@@ -107,18 +109,15 @@ class ConferenciaPage {
                           percursoEstagioConsulta,
                           size: size,
                         ),
+
                         SizedBox(
                           height: 25,
                           width: size.width,
                           child: Container(
                             alignment: Alignment.center,
-                            color: controller.isComplitCart()
-                                ? Colors.green
-                                : Colors.red,
+                            color: controller.colorIndicator,
                             child: Text(
-                              controller.isComplitCart()
-                                  ? 'CARRINHO CONFERIDO'
-                                  : 'CARRINHO NÃO CONFERIDO',
+                              controller.displaySituacao,
                               style: TextStyle(
                                 fontSize: 18,
                                 color: Colors.white,
@@ -147,9 +146,7 @@ class ConferenciaPage {
                                       const EdgeInsets.symmetric(horizontal: 5),
                                   child: TabBar(
                                       enableFeedback: true,
-                                      indicatorColor: controller.isComplitCart()
-                                          ? Colors.green
-                                          : Colors.red,
+                                      indicatorColor: controller.colorIndicator,
                                       overlayColor: MaterialStateProperty.all(
                                         Colors.black12,
                                       ),

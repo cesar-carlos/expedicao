@@ -107,7 +107,6 @@ class SeparadoCarrinhosController extends GetxController {
 
     if (confirmation != null && confirmation) {
       await LoadingProcessDialogGenericWidget.show<bool>(
-        canCloseWindow: false,
         context: Get.context!,
         process: () async {
           try {
@@ -268,8 +267,9 @@ class SeparadoCarrinhosController extends GetxController {
     final itensSeparacao = await _separarConsultaServices.itensSeparacao();
     final itensSeparacaoCarrinho = itensSeparacao
         .where((el) =>
-            el.situacao != ExpedicaoItemSituacaoModel.cancelado &&
-            el.codCarrinho == item.codCarrinho)
+            el.codEmpresa == item.codEmpresa &&
+            el.codCarrinho == item.codCarrinho &&
+            el.situacao != ExpedicaoItemSituacaoModel.cancelado)
         .toList();
 
     if (itensSeparacaoCarrinho.isEmpty) {
@@ -283,19 +283,13 @@ class SeparadoCarrinhosController extends GetxController {
     }
 
     final bool? confirmation = await ConfirmationDialogView.show(
-      canCloseWindow: false,
       context: Get.context!,
       message: 'Deseja Salva?',
       detail: 'Ao salvar, o carrinho não podera ser mais alterado!',
     );
 
-    if (confirmation == null) return false;
-    if (!confirmation) return false;
-
-    //SAVE CART
-    if (confirmation) {
+    if (confirmation != null && confirmation) {
       return await LoadingProcessDialogGenericWidget.show<bool>(
-        canCloseWindow: false,
         context: Get.context!,
         process: () async {
           try {
@@ -303,7 +297,6 @@ class SeparadoCarrinhosController extends GetxController {
                 await _separarConsultaServices.cartIsValid(item.codCarrinho);
 
             if (!cartIsValid) {
-              //FOÇA A ATUALIZAÇÃO DOS ITENS
               final itens = await _separarConsultaServices.itensSaparar();
               _separarGridController.updateAllGrid(itens);
               _separarGridController.update();

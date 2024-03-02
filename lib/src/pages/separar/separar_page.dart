@@ -2,13 +2,13 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 
+import 'package:app_expedicao/src/pages/separar/separar_controller.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
 import 'package:app_expedicao/src/pages/separarado_carrinhos/separarado_carrinhos_page.dart';
 import 'package:app_expedicao/src/pages/common/form_element/space_button_head_form_element.dart';
 import 'package:app_expedicao/src/pages/common/form_element/button_head_form_element.dart';
 import 'package:app_expedicao/src/pages/separar/widget/separar_itens_widget.dart';
 import 'package:app_expedicao/src/pages/common/footer_page/footer_page.dart';
-import 'package:app_expedicao/src/pages/separar/separar_controller.dart';
 
 class SepararPage extends StatelessWidget {
   final ExpedicaoSepararConsultaModel separarConsulta;
@@ -27,7 +27,6 @@ class SepararPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  //** HEADER BUTTON **//
                   SpaceButtonsHeadFormElement(
                     width: double.infinity,
                     children: [
@@ -47,6 +46,7 @@ class SepararPage extends StatelessWidget {
                       //           size: 33,
                       //         ),
                       // ),
+
                       ButtonHeadForm(
                         title: 'Adicionar Carrinho',
                         shortCut: 'F4',
@@ -58,6 +58,7 @@ class SepararPage extends StatelessWidget {
                           size: 33,
                         ),
                       ),
+
                       ButtonHeadForm(
                         title: 'Histórico/Observação',
                         shortCut: 'F5',
@@ -69,6 +70,7 @@ class SepararPage extends StatelessWidget {
                           size: 33,
                         ),
                       ),
+
                       ButtonHeadForm(
                         title: 'Finalizar Separação',
                         onPressed: controller.btnFinalizarSeparacao,
@@ -80,6 +82,7 @@ class SepararPage extends StatelessWidget {
                           size: 33,
                         ),
                       ),
+
                       ButtonHeadForm(
                         title: 'Configuração',
                         onPressed: controller.configuracao,
@@ -91,18 +94,12 @@ class SepararPage extends StatelessWidget {
                       ),
                     ],
                   ),
-
-                  //** SEPARAR ITENS **//
                   SepararItensWidget(
                     size: Size(size.width, ((size.height - 81) * .6)),
                   ),
-
-                  //** SEPARAR CARRINHOS **//
                   SeparadoCarrinhoPage(
                     size: Size(size.width, (size.height - 81) * .4),
                   ),
-
-                  //** FOOTER **//
                   const FooterPage()
                 ],
               ),

@@ -43,7 +43,11 @@ class ConferirSource extends DataGridSource {
                   value: i.codCarrinhoPercurso,
                 ),
                 DataGridCell<String>(
-                  columnName: 'ItemCarrinhoPercurso',
+                  columnName: 'itemCarrinhoPercurso',
+                  value: i.itemCarrinhoPercurso,
+                ),
+                DataGridCell<String>(
+                  columnName: 'situacaoCarrinhoPercurso',
                   value: i.itemCarrinhoPercurso,
                 ),
                 DataGridCell<int>(
@@ -53,14 +57,6 @@ class ConferirSource extends DataGridSource {
                 DataGridCell<String>(
                   columnName: 'nomeProduto',
                   value: i.nomeProduto,
-                ),
-                DataGridCell<String>(
-                  columnName: 'ativo',
-                  value: i.ativo,
-                ),
-                DataGridCell<String>(
-                  columnName: 'codTipoProduto',
-                  value: i.codTipoProduto,
                 ),
                 DataGridCell<String>(
                   columnName: 'codUnidadeMedida',
@@ -93,10 +89,6 @@ class ConferirSource extends DataGridSource {
                 DataGridCell<String>(
                   columnName: 'nomeSetorEstoque',
                   value: i.nomeSetorEstoque,
-                ),
-                DataGridCell<String>(
-                  columnName: 'ncm',
-                  value: i.ncm,
                 ),
                 DataGridCell<String>(
                   columnName: 'codigoBarras',

@@ -1,26 +1,27 @@
 abstract class ExpedicaoCarrinhoSituacaoModel {
-  static const liberado = 'LIBERADO';
   static const emSeparacao = 'EM SEPARACAO';
-  static const separando = 'SEPARANDO';
-  static const separado = 'SEPARADO';
+  static const liberado = 'LIBERADO';
+  //static const separando = 'SEPARANDO';
   static const emConferencia = 'EM CONFERENCIA';
-  static const conferindo = 'CONFERINDO';
+  static const separado = 'SEPARADO';
+  //static const conferindo = 'CONFERINDO';
   static const conferido = 'CONFERIDO';
-  static const cancelado = 'CANCELADO';
-  static const finalizado = 'FINALIZADO';
-  static const aguardando = 'AGUARDANDO';
+  //static const cancelado = 'CANCELADO';
+  //static const finalizado = 'FINALIZADO';
+  //static const aguardando = 'AGUARDANDO';
 
   static Map<String, String> situacao = {
-    liberado: 'Liberado',
     emSeparacao: 'Em Separação',
-    separando: 'Separando',
-    separado: 'Separado',
+    liberado: 'Liberado',
+    //separando: 'Separando',
+
     emConferencia: 'Em Conferência',
-    conferindo: 'Conferindo',
+    separado: 'Separado',
+    //conferindo: 'Conferindo',
     conferido: 'Conferido',
-    cancelado: 'Cancelado',
-    finalizado: 'Finalizado',
-    aguardando: 'Aguardando',
+    //cancelado: 'Cancelado',
+    //finalizado: 'Finalizado',
+    //aguardando: 'Aguardando',
     '': ''
   };
 }

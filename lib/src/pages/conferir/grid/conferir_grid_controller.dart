@@ -150,7 +150,9 @@ class ConferirGridController extends GetxController {
     return _itens.every((el) => el.quantidade == el.quantidadeConferida);
   }
 
-  bool isCompliteCart(int codCarrinho) {
+  bool isCompliteCart(
+    int codCarrinho,
+  ) {
     return _itens
         .where((el) => el.codCarrinho == codCarrinho)
         .every((el) => el.quantidade == el.quantidadeConferida);

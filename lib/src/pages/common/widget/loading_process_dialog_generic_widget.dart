@@ -7,9 +7,9 @@ import 'package:app_expedicao/src/app/app_event_state.dart';
 
 class LoadingProcessDialogGenericWidget {
   static Future<T> show<T>({
-    required bool canCloseWindow,
     required BuildContext context,
     required Future<T> Function() process,
+    bool canCloseWindow = false,
   }) async {
     Completer<T> completer = Completer<T>();
     final _appEventState = Get.find<AppEventState>();

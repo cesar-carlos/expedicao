@@ -169,15 +169,14 @@ class ConferirController extends GetxController {
 
   Future<void> iniciarConferencia() async {
     _iniciada = !_iniciada;
-    if (_carrinhoPercurso == null) {
-      await _fillCarrinhoPercurso();
-    }
+    if (_carrinhoPercurso == null) await _fillCarrinhoPercurso();
 
     final conferir = ExpedicaoConferirModel.fromConsulta(_conferirConsulta);
     _expedicaoSituacao = conferir.situacao;
 
-    if (_expedicaoSituacao != ExpedicaoSituacaoModel.conferido) {
-      _conferirConsulta.situacao = ExpedicaoSituacaoModel.emAndamento;
+    if (_expedicaoSituacao == ExpedicaoSituacaoModel.emPausa ||
+        _expedicaoSituacao == ExpedicaoSituacaoModel.aguardando) {
+      _conferirConsulta.situacao = ExpedicaoSituacaoModel.emConverencia;
       await ConferirServices(conferir).iniciar();
       update();
     }
@@ -237,7 +236,6 @@ class ConferirController extends GetxController {
 
     if (carrinhoConsulta != null) {
       await LoadingProcessDialogGenericWidget.show<bool>(
-        canCloseWindow: false,
         context: Get.context!,
         process: () async {
           try {
@@ -249,7 +247,7 @@ class ConferirController extends GetxController {
               descricao: carrinhoConsulta.descricaoCarrinho,
               ativo: carrinhoConsulta.ativo,
               codigoBarras: carrinhoConsulta.codigoBarras,
-              situacao: ExpedicaoCarrinhoSituacaoModel.conferindo,
+              situacao: ExpedicaoCarrinhoSituacaoModel.emConferencia,
             );
 
             final percursoEstagio =

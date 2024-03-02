@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
-import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/pages/separarado_carrinhos/grid/separarado_carrinho_grid_source.dart';
@@ -25,9 +25,11 @@ class SeparadoCarrinhoGridController extends GetxController {
   }
 
   void Function(ExpedicaoCarrinhoPercursoEstagioConsultaModel item)?
-      onPressedEdit;
-  void Function(ExpedicaoCarrinhoPercursoEstagioConsultaModel item)?
       onPressedRemove;
+
+  void Function(ExpedicaoCarrinhoPercursoEstagioConsultaModel item)?
+      onPressedEdit;
+
   void Function(ExpedicaoCarrinhoPercursoEstagioConsultaModel item)?
       onPressedSave;
 

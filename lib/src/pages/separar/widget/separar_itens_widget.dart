@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:app_expedicao/src/pages/separar/separar_controller.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid.dart';
+import 'package:app_expedicao/src/app/app_color.dart';
 
 class SepararItensWidget extends StatelessWidget {
   final Size size;
@@ -19,12 +20,11 @@ class SepararItensWidget extends StatelessWidget {
           child: Column(
             children: [
               Container(
-                decoration: BoxDecoration(
-                  borderRadius:
-                      const BorderRadius.vertical(top: Radius.circular(0)),
-                  color: Theme.of(context).primaryColor,
-                ),
                 width: size.width,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(0)),
+                  color: AppColor.primaryColor,
+                ),
                 child: Center(
                   child: Text(
                     'SEPARAÇÃO ITENS - ${controller.expedicaoSituacaoDisplay.toUpperCase()}',

@@ -20,16 +20,12 @@ class SepararFinalizarService {
 
     final paramsSeparar = '''
         CodEmpresa = $codEmpresa
-      AND CodSepararEstoque = $codSepararEstoque
-
-    ''';
+      AND CodSepararEstoque = $codSepararEstoque ''';
 
     final paramsPercurso = '''
         CodEmpresa = $codEmpresa
       AND Origem = '${ExpedicaoOrigemModel.separacao}'
-      AND CodOrigem = $codSepararEstoque
-
-    ''';
+      AND CodOrigem = $codSepararEstoque ''';
 
     final separarEstoque = await separarRepository.select(paramsSeparar);
 
@@ -50,10 +46,13 @@ class SepararFinalizarService {
       );
     }
 
-    final separarFinalizada = separarEstoque.first.copyWith(
-      situacao: ExpedicaoSituacaoModel.separado,
-    );
+    final carrinhoPercursoFinalizado = carrinhoPercurso.first
+        .copyWith(situacao: ExpedicaoSituacaoModel.separado);
+
+    final separarFinalizada = separarEstoque.first
+        .copyWith(situacao: ExpedicaoSituacaoModel.separado);
 
     await separarRepository.update(separarFinalizada);
+    await carrinhoPercursoRepository.update(carrinhoPercursoFinalizado);
   }
 }

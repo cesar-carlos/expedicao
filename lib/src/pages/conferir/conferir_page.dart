@@ -29,22 +29,23 @@ class ConferirPage extends StatelessWidget {
                   SpaceButtonsHeadFormElement(
                     width: double.infinity,
                     children: [
-                      ButtonHeadForm(
-                        title: controller.iniciada
-                            ? 'Pausar Conferencia'
-                            : 'Iniciar Conferencia',
-                        icon: controller.iniciada
-                            ? const Icon(
-                                BootstrapIcons.pause_btn_fill,
-                                color: Colors.white,
-                                size: 33,
-                              )
-                            : const Icon(
-                                BootstrapIcons.play_btn_fill,
-                                color: Colors.white,
-                                size: 33,
-                              ),
-                      ),
+                      // ButtonHeadForm(
+                      //   title: controller.iniciada
+                      //       ? 'Pausar Conferencia'
+                      //       : 'Iniciar Conferencia',
+                      //   icon: controller.iniciada
+                      //       ? const Icon(
+                      //           BootstrapIcons.pause_btn_fill,
+                      //           color: Colors.white,
+                      //           size: 33,
+                      //         )
+                      //       : const Icon(
+                      //           BootstrapIcons.play_btn_fill,
+                      //           color: Colors.white,
+                      //           size: 33,
+                      //         ),
+                      // ),
+
                       ButtonHeadForm(
                         title: 'Conferir Carrinho',
                         shortCut: 'F4',
@@ -56,6 +57,7 @@ class ConferirPage extends StatelessWidget {
                           size: 33,
                         ),
                       ),
+
                       ButtonHeadForm(
                         title: 'Histórico/Observação',
                         shortCut: 'F5',
@@ -67,6 +69,7 @@ class ConferirPage extends StatelessWidget {
                           size: 33,
                         ),
                       ),
+
                       ButtonHeadForm(
                         title: 'Ass. Agrupamento',
                         onPressed: controller.btnAssistenteAgrupamento,

@@ -111,7 +111,6 @@ class ConferidoCarrinhosController extends GetxController {
 
     if (confirmation != null && confirmation) {
       await LoadingProcessDialogGenericWidget.show<bool>(
-        canCloseWindow: false,
         context: Get.context!,
         process: () async {
           try {
@@ -424,7 +423,6 @@ class ConferidoCarrinhosController extends GetxController {
 
     if (confirmation != null && confirmation) {
       return await LoadingProcessDialogGenericWidget.show<bool>(
-        canCloseWindow: false,
         context: Get.context!,
         process: () async {
           try {
@@ -477,7 +475,6 @@ class ConferidoCarrinhosController extends GetxController {
 
             // if (isComplete && !existsOpenCart) {
             //   await LoadingProcessDialogGenericWidget.show<bool>(
-            //     canCloseWindow: false,
             //     context: Get.context!,
             //     process: () async {
             //       try {

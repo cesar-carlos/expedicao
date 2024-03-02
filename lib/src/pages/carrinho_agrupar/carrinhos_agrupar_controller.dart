@@ -256,7 +256,6 @@ class CarrinhosAgruparController extends GetxController {
     }
 
     await LoadingProcessDialogGenericWidget.show<bool>(
-      canCloseWindow: false,
       context: Get.context!,
       process: () async {
         try {
@@ -275,6 +274,7 @@ class CarrinhosAgruparController extends GetxController {
             message: err.message,
             detail: err.details ?? '',
           );
+
           return false;
         } catch (err) {
           return false;
@@ -287,7 +287,6 @@ class CarrinhosAgruparController extends GetxController {
     ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel carrinhoRemover,
   ) async {
     await LoadingProcessDialogGenericWidget.show<bool>(
-      canCloseWindow: false,
       context: Get.context!,
       process: () async {
         try {
@@ -330,7 +329,6 @@ class CarrinhosAgruparController extends GetxController {
     }
 
     await LoadingProcessDialogGenericWidget.show<bool>(
-      canCloseWindow: false,
       context: Get.context!,
       process: () async {
         try {
@@ -353,6 +351,7 @@ class CarrinhosAgruparController extends GetxController {
             message: err.message,
             detail: err.details ?? '',
           );
+
           return false;
         } catch (err) {
           return false;
@@ -365,7 +364,6 @@ class CarrinhosAgruparController extends GetxController {
     ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel carrinhoAgrupar,
   ) async {
     await LoadingProcessDialogGenericWidget.show<bool>(
-      canCloseWindow: false,
       context: Get.context!,
       process: () async {
         try {
@@ -385,6 +383,7 @@ class CarrinhosAgruparController extends GetxController {
             message: err.message,
             detail: err.details ?? '',
           );
+
           return false;
         } catch (err) {
           return false;

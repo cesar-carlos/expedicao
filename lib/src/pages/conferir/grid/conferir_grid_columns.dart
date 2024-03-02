@@ -128,6 +128,20 @@ class ConferirGridColumns {
 
     _columns.add(
       GridColumn(
+        visible: false,
+        columnName: 'situacaoCarrinhoPercurso',
+        label: Container(
+          padding: padding,
+          alignment: Alignment.center,
+          child: const Text(
+            'SituacaoCarrinhoPercurso',
+          ),
+        ),
+      ),
+    );
+
+    _columns.add(
+      GridColumn(
         visible: true,
         maximumWidth: 70,
         columnName: 'codProduto',
@@ -150,34 +164,6 @@ class ConferirGridColumns {
           alignment: Alignment.centerLeft,
           child: const Text(
             'Nome Produto',
-          ),
-        ),
-      ),
-    );
-
-    _columns.add(
-      GridColumn(
-        visible: false,
-        columnName: 'ativo',
-        label: Container(
-          padding: padding,
-          alignment: Alignment.centerLeft,
-          child: const Text(
-            'ativo',
-          ),
-        ),
-      ),
-    );
-
-    _columns.add(
-      GridColumn(
-        visible: false,
-        columnName: 'codTipoProduto',
-        label: Container(
-          padding: padding,
-          alignment: Alignment.centerLeft,
-          child: const Text(
-            'codTipoProduto',
           ),
         ),
       ),
@@ -296,21 +282,6 @@ class ConferirGridColumns {
           alignment: Alignment.centerLeft,
           child: const Text(
             'Setor',
-          ),
-        ),
-      ),
-    );
-
-    _columns.add(
-      GridColumn(
-        visible: false,
-        maximumWidth: 60,
-        columnName: 'ncm',
-        label: Container(
-          padding: padding,
-          alignment: Alignment.centerLeft,
-          child: const Text(
-            'ncm',
           ),
         ),
       ),

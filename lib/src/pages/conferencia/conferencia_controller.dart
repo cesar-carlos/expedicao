@@ -56,17 +56,49 @@ class ConferenciaController extends GetxController {
 
   ConferenciaController(this.percursoEstagioConsulta);
 
-  get title {
+  String get title {
     return _viewMode.value
         ? 'Conferencia - Visualização'
         : 'Conferencia - Edição';
   }
 
-  get fullCartName {
+  String get fullCartName {
     return '${percursoEstagioConsulta.codCarrinho} - ${percursoEstagioConsulta.nomeCarrinho}';
   }
 
-  bool isComplitCart() {
+  String get displaySituacao {
+    if (percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.cancelada)
+      return 'CANCELADO';
+
+    if (percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.conferindo &&
+        isComplitCart) return 'CONFERIDO';
+
+    if (percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.conferido)
+      return 'CONFERIDO';
+
+    if (percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.agrupado)
+      return 'AGRUPADO';
+
+    return percursoEstagioConsulta.situacao;
+  }
+
+  Color get colorIndicator {
+    if (percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.cancelada)
+      return Colors.red;
+
+    if (percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.conferindo &&
+        isComplitCart) return Colors.green;
+
+    if (percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.conferido)
+      return Colors.green;
+
+    if (percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.agrupado)
+      return Colors.green;
+
+    return Colors.orange;
+  }
+
+  bool get isComplitCart {
     return _conferirGridController.isCompliteCart(
       percursoEstagioConsulta.codCarrinho,
     );

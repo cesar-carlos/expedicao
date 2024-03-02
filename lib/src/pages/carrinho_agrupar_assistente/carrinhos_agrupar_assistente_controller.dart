@@ -90,7 +90,6 @@ class CarrinhosAgruparAssistenteController extends GetxController {
       String codigoCarrinho) async {
     return await LoadingProcessDialogGenericWidget.show<
         ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel?>(
-      canCloseWindow: false,
       context: Get.context!,
       process: () async {
         try {
