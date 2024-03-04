@@ -314,6 +314,7 @@ class ConferirController extends GetxController {
   Future<void> btnAssistenteAgrupamento() async {
     bool _isValidGroupCart = [
       ExpedicaoSituacaoModel.emAndamento,
+      ExpedicaoSituacaoModel.emConverencia,
       ExpedicaoSituacaoModel.conferindo
     ].contains(conferirConsulta.situacao);
 
@@ -426,9 +427,7 @@ class ConferirController extends GetxController {
       detail: 'Não será possível adicionar ou alterar mais os carrinhos.',
     );
 
-    if (confirmation != null && confirmation) {
-      await finalizarConferencia();
-    }
+    if (confirmation != null && confirmation) await finalizarConferencia();
   }
 
   Future<void> finalizarConferencia() async {

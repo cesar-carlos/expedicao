@@ -89,8 +89,8 @@ class ExpedicaoConferirModel {
       codOrigem: model.codOrigem,
       codPrioridade: model.codPrioridade,
       situacao: model.situacao,
-      data: model.data,
-      hora: model.hora,
+      data: model.dataLancamento,
+      hora: model.horaLancamento,
       historico: model.historico,
       observacao: model.observacao,
     );

@@ -5,24 +5,32 @@ class ExpedicaoConferirConsultaModel {
   final int codConferir;
   final String origem;
   final int codOrigem;
+  final int codCarrinhoPercurso;
+  String situacao;
+  final DateTime dataLancamento;
+  final String horaLancamento;
+  final String tipoEntidade;
+  final int codEntidade;
+  final String nomeEntidade;
   final int codPrioridade;
   final String nomePrioridade;
-  String situacao;
-  final DateTime data;
-  final String hora;
-  String? historico;
-  String? observacao;
+  final String? historico;
+  final String? observacao;
 
   ExpedicaoConferirConsultaModel({
     required this.codEmpresa,
     required this.codConferir,
     required this.origem,
     required this.codOrigem,
+    required this.codCarrinhoPercurso,
+    required this.situacao,
+    required this.dataLancamento,
+    required this.horaLancamento,
+    required this.tipoEntidade,
+    required this.codEntidade,
+    required this.nomeEntidade,
     required this.codPrioridade,
     required this.nomePrioridade,
-    required this.situacao,
-    required this.data,
-    required this.hora,
     this.historico,
     this.observacao,
   });
@@ -32,11 +40,15 @@ class ExpedicaoConferirConsultaModel {
     int? codConferir,
     String? origem,
     int? codOrigem,
+    int? codCarrinhoPercurso,
+    String? situacao,
+    DateTime? dataLancamento,
+    String? horaLancamento,
+    String? tipoEntidade,
+    int? codEntidade,
+    String? nomeEntidade,
     int? codPrioridade,
     String? nomePrioridade,
-    String? situacao,
-    DateTime? data,
-    String? hora,
     String? historico,
     String? observacao,
   }) {
@@ -45,45 +57,62 @@ class ExpedicaoConferirConsultaModel {
       codConferir: codConferir ?? this.codConferir,
       origem: origem ?? this.origem,
       codOrigem: codOrigem ?? this.codOrigem,
+      codCarrinhoPercurso: codCarrinhoPercurso ?? this.codCarrinhoPercurso,
+      situacao: situacao ?? this.situacao,
+      dataLancamento: dataLancamento ?? this.dataLancamento,
+      horaLancamento: horaLancamento ?? this.horaLancamento,
+      tipoEntidade: tipoEntidade ?? this.tipoEntidade,
+      codEntidade: codEntidade ?? this.codEntidade,
+      nomeEntidade: nomeEntidade ?? this.nomeEntidade,
       codPrioridade: codPrioridade ?? this.codPrioridade,
       nomePrioridade: nomePrioridade ?? this.nomePrioridade,
-      situacao: situacao ?? this.situacao,
-      data: data ?? this.data,
-      hora: hora ?? this.hora,
       historico: historico ?? this.historico,
       observacao: observacao ?? this.observacao,
     );
   }
 
   factory ExpedicaoConferirConsultaModel.fromJson(Map map) {
-    return ExpedicaoConferirConsultaModel(
-      codEmpresa: map['CodEmpresa'],
-      codConferir: map['CodConferir'],
-      origem: map['Origem'],
-      codOrigem: map['CodOrigem'],
-      codPrioridade: map['CodPrioridade'],
-      nomePrioridade: map['NomePrioridade'],
-      situacao: map['Situacao'],
-      data: AppHelper.tryStringToDate(map['Data']),
-      hora: map['Hora'] ?? '00:00:00',
-      historico: map['Historico'],
-      observacao: map['Observacao'],
-    );
+    try {
+      return ExpedicaoConferirConsultaModel(
+        codEmpresa: map['CodEmpresa'],
+        codConferir: map['CodConferir'],
+        origem: map['Origem'],
+        codOrigem: map['CodOrigem'],
+        codCarrinhoPercurso: map['CodCarrinhoPercurso'],
+        situacao: map['Situacao'],
+        dataLancamento: AppHelper.tryStringToDate(map['DataLancamento']),
+        horaLancamento: map['HoraLancamento'],
+        tipoEntidade: map['TipoEntidade'],
+        codEntidade: map['CodEntidade'],
+        nomeEntidade: map['NomeEntidade'],
+        codPrioridade: map['CodPrioridade'],
+        nomePrioridade: map['NomePrioridade'],
+        historico: map['Historico'],
+        observacao: map['Observacao'],
+      );
+    } catch (e) {
+      print('Erro ao converter json para ExpedicaoConferirConsultaModel: $e');
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toJson() {
     return {
-      "CodEmpresa": codEmpresa,
-      "CodConferir": codConferir,
-      "Origem": origem,
-      "CodOrigem": codOrigem,
-      "CodPrioridade": codPrioridade,
-      "NomePrioridade": nomePrioridade,
-      "Situacao": situacao,
-      "Data": data.toIso8601String(),
-      "Hora": hora,
-      "Historico": historico,
-      "Observacao": observacao,
+      'CodEmpresa': codEmpresa,
+      'CodConferir': codConferir,
+      'Origem': origem,
+      'CodOrigem': codOrigem,
+      'CodCarrinhoPercurso': codCarrinhoPercurso,
+      'Situacao': situacao,
+      'DataLancamento': dataLancamento.toIso8601String(),
+      'HoraLancamento': horaLancamento,
+      'TipoEntidade': tipoEntidade,
+      'CodEntidade': codEntidade,
+      'NomeEntidade': nomeEntidade,
+      'CodPrioridade': codPrioridade,
+      'NomePrioridade': nomePrioridade,
+      'Historico': historico,
+      'Observacao': observacao,
     };
   }
 
@@ -95,13 +124,17 @@ class ExpedicaoConferirConsultaModel {
         codConferir: $codConferir, 
         origem: $origem, 
         codOrigem: $codOrigem, 
+        codCarrinhoPercurso: $codCarrinhoPercurso, 
+        situacao: $situacao, 
+        dataLancamento: $dataLancamento, 
+        horaLancamento: $horaLancamento, 
+        tipoEntidade: $tipoEntidade, 
+        codEntidade: $codEntidade, 
+        nomeEntidade: $nomeEntidade, 
         codPrioridade: $codPrioridade, 
         nomePrioridade: $nomePrioridade, 
-        situacao: $situacao, 
-        data: $data, 
-        hora: $hora, 
         historico: $historico, 
-        observacao: $observacao)
-      ''';
+        observacao: $observacao
+      )''';
   }
 }

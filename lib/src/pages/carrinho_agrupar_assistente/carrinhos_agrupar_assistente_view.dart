@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-//import 'package:bootstrap_icons/bootstrap_icons.dart';
 
 import 'package:app_expedicao/src/pages/common/form_element/button_form_element.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_agrupamento_consulta_model.dart';

@@ -23,6 +23,7 @@ class CarrinhosAgruparGridController extends GetxController {
 
   void Function(ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel item)?
       onPressedGroup;
+
   void Function(ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel item)?
       onPressedRemove;
 

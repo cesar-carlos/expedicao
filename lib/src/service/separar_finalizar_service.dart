@@ -34,9 +34,7 @@ class SepararFinalizarService {
 
     if (separarEstoque.isEmpty) {
       throw AppError(
-        AppErrorCode.separarNaoEncontrado,
-        'Separar não encontrado',
-      );
+          AppErrorCode.separarNaoEncontrado, 'Separar não encontrado');
     }
 
     if (carrinhoPercurso.isEmpty) {

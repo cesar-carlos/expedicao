@@ -21,7 +21,6 @@ class ConferirCarrinhosController extends GetxController {
   final _carrinhoPercursoEstagioEvent =
       CarrinhoPercursoEstagioEventRepository.instancia;
 
-  // ignore: unused_field
   late ConferirConsultaServices _conferirServices;
   late ConferirCarrinhoGridController _conferirCarrinhoGridController;
   late ExpedicaoConferirConsultaModel _conferirConsulta;
@@ -90,38 +89,42 @@ class ConferirCarrinhosController extends GetxController {
           for (var el in data.mutation) {
             final event = ExpedicaoConferirConsultaModel.fromJson(el);
 
-            _conferirConsulta = event;
-            _expedicaoSituacao = event.situacao;
-            update();
+            if (event.codEmpresa == _processoExecutavel.codEmpresa &&
+                event.origem == _processoExecutavel.origem &&
+                event.codOrigem == _processoExecutavel.codOrigem) {
+              _conferirConsulta = event;
+              _expedicaoSituacao = event.situacao;
+              update();
+            }
           }
         },
       ),
     );
 
-    // _carrinhoPercursoEstagioEvent.addListener(
-    //   RepositoryEventListenerModel(
-    //     id: uuid.v4(),
-    //     event: Event.insert,
-    //     allEvent: true,
-    //     callback: (data) async {
-    //       for (var el in data.mutation) {
-    //         final event =
-    //             ExpedicaoCarrinhoPercursoEstagioConsultaModel.fromJson(el);
+    _carrinhoPercursoEstagioEvent.addListener(
+      RepositoryEventListenerModel(
+        id: uuid.v4(),
+        event: Event.insert,
+        allEvent: true,
+        callback: (data) async {
+          for (var el in data.mutation) {
+            final event =
+                ExpedicaoCarrinhoPercursoEstagioConsultaModel.fromJson(el);
 
-    //         if (event.codEmpresa == _processoExecutavel.codEmpresa &&
-    //             event.origem == _processoExecutavel.origem &&
-    //             event.codOrigem == _processoExecutavel.codOrigem) {
-    //           _conferirServices
-    //               .carrinhoConferir(event.codCarrinho)
-    //               .then((value) {
-    //             _conferirCarrinhoGridController.updateGrid(value);
-    //             _conferirCarrinhoGridController.update();
-    //           });
-    //         }
-    //       }
-    //     },
-    //   ),
-    // );
+            if (event.codEmpresa == _processoExecutavel.codEmpresa &&
+                event.origem == _processoExecutavel.origem &&
+                event.codOrigem == _processoExecutavel.codOrigem) {
+              _conferirServices
+                  .carrinhoConferir(event.codCarrinho)
+                  .then((value) {
+                _conferirCarrinhoGridController.updateGrid(value);
+                _conferirCarrinhoGridController.update();
+              });
+            }
+          }
+        },
+      ),
+    );
 
     _carrinhoPercursoEstagioEvent.addListener(
       RepositoryEventListenerModel(

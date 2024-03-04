@@ -294,6 +294,7 @@ class ConferidoCarrinhosController extends GetxController {
 
     bool _isViewMode = ![
           ExpedicaoSituacaoModel.emAndamento,
+          ExpedicaoSituacaoModel.emConverencia
         ].contains(conferirConsulta.situacao) ||
         ![
           ExpedicaoSituacaoModel.conferido,
