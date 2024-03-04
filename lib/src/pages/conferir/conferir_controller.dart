@@ -445,26 +445,17 @@ class ConferirController extends GetxController {
     const uuid = Uuid();
     final conferirEvent = ConferirEventRepository.instancia;
 
-    // _socketClient.isConnect.listen((event) {
-    //   if (event) return;
-    //   LoadingSeverDialogWidget.show(
-    //     context: Get.context!,
-    //     canCloseWindow: true,
-    //   );
-    // });
-
     final conferir = RepositoryEventListenerModel(
       id: uuid.v4(),
       event: Event.update,
       callback: (data) async {
         for (var el in data.mutation) {
-          final item = ExpedicaoConferirModel.fromJson(el);
+          final event = ExpedicaoConferirConsultaModel.fromJson(el);
 
-          if (_conferirConsulta.codEmpresa == item.codEmpresa &&
-              _conferirConsulta.origem == item.origem &&
-              _conferirConsulta.codConferir == item.codConferir) {
-            _expedicaoSituacao = item.situacao;
-            _conferirConsulta.situacao = item.situacao;
+          if (_conferirConsulta.codEmpresa == event.codEmpresa &&
+              _conferirConsulta.codConferir == event.codConferir) {
+            _expedicaoSituacao = event.situacao;
+            _conferirConsulta.situacao = event.situacao;
             update();
           }
         }

@@ -80,9 +80,7 @@ class CarrinhoController extends GetxController {
       })?> getCarrinho(String codigoBarras) async {
     final params = '''
         CodEmpresa = ${_processoExecutavel.codEmpresa} 
-      AND CodigoBarras = '$codigoBarras'
-      
-      ''';
+      AND CodigoBarras = '$codigoBarras' ''';
 
     final List<ExpedicaoCarrinhoConsultaModel> carrinhos =
         await repotory.select(params);
@@ -174,14 +172,20 @@ class CarrinhoController extends GetxController {
       codConferir: _processoExecutavel.codOrigem,
     ).consulta(input.codCarrinho);
 
-    if (carrinhoConsulta == null) {
+    if (carrinhoConsulta == null)
       return 'Carrinho não listado para esta conferência.';
-    }
 
-    // if (carrinhoConsulta.situacaoCarrinhoConferencia !=
-    //     ExpedicaoCarrinhoSituacaoModel.aguardando) {
-    //   return 'Carrinho com situação inválida. Situacao carrinho: ${carrinhoConsulta.situacaoCarrinhoConferencia}';
-    // }
+    final situacaoInfalidas = [
+      ExpedicaoCarrinhoSituacaoModel.liberado,
+      ExpedicaoCarrinhoSituacaoModel.conferido,
+      ExpedicaoCarrinhoSituacaoModel.conferindo,
+      ExpedicaoCarrinhoSituacaoModel.agrupado
+    ];
+
+    if (situacaoInfalidas
+        .contains(carrinhoConsulta.situacaoCarrinhoConferencia)) {
+      return 'Carrinho com situação inválida. Situacao carrinho: ${carrinhoConsulta.situacaoCarrinhoConferencia}';
+    }
 
     return null;
   }

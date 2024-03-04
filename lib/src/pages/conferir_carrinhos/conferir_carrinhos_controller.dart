@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
@@ -29,11 +30,17 @@ class ConferirCarrinhosController extends GetxController {
   ExpedicaoConferirConsultaModel get conferirConsulta => _conferirConsulta;
 
   String get expedicaoSituacaoDisplay {
-    if (_expedicaoSituacao == ExpedicaoSituacaoModel.conferido) {
-      return ExpedicaoSituacaoModel.finalizada;
-    }
+    return _expedicaoSituacao;
+  }
 
-    return ExpedicaoSituacaoModel.situacao[_expedicaoSituacao] ?? '';
+  Color get colorIndicator {
+    if (_conferirConsulta.situacao == ExpedicaoSituacaoModel.cancelada)
+      return Colors.red;
+
+    if (_conferirConsulta.situacao == ExpedicaoSituacaoModel.conferido)
+      return Colors.green;
+
+    return Colors.orange;
   }
 
   @override
@@ -90,8 +97,7 @@ class ConferirCarrinhosController extends GetxController {
             final event = ExpedicaoConferirConsultaModel.fromJson(el);
 
             if (event.codEmpresa == _processoExecutavel.codEmpresa &&
-                event.origem == _processoExecutavel.origem &&
-                event.codOrigem == _processoExecutavel.codOrigem) {
+                event.codConferir == _processoExecutavel.codOrigem) {
               _conferirConsulta = event;
               _expedicaoSituacao = event.situacao;
               update();

@@ -37,14 +37,11 @@ class CarrinhoDialogView {
                   height: _heightForm,
                   child: Column(
                     children: [
-                      //** HEADER BAR **//
                       BarHeadFormElement(
                         widthBar: _widthForm + 80,
                         title: 'Adicionar Carrinho',
                         onPressedCloseBar: () => Get.back(),
                       ),
-
-                      //** BODY **//
                       Container(
                         width: _widthForm,
                         height: _heightForm - _spaceBarHeadForm,
@@ -55,7 +52,6 @@ class CarrinhoDialogView {
                         ),
                         child: Column(
                           children: [
-                            ///** DETALHES CARRINHO **//
                             Expanded(
                               child: Container(
                                 padding: const EdgeInsets.only(
@@ -75,36 +71,30 @@ class CarrinhoDialogView {
                                             ),
                                           ),
                                         ),
-
                                         Container(
                                           alignment: Alignment.centerLeft,
                                           child: Text(
                                             'Descrição: ${controller.carrinho.descricaoCarrinho}',
                                           ),
                                         ),
-
                                         Container(
                                           alignment: Alignment.centerLeft,
                                           child: Text(
                                             'Situação: ${controller.carrinho.situacao}',
                                           ),
                                         ),
-
                                         Container(
                                           alignment: Alignment.centerLeft,
                                           child: Text(
                                             'Local: ${controller.carrinho.local}',
                                           ),
                                         ),
-
                                         Container(
                                           alignment: Alignment.centerLeft,
                                           child: Text(
                                             'Setor: ${controller.carrinho.setor}',
                                           ),
                                         ),
-
-                                        ///** OBSERVARCAO **//
                                         const SizedBox(height: 10),
                                         Container(
                                           width: double.infinity,
@@ -130,8 +120,6 @@ class CarrinhoDialogView {
                                 ),
                               ),
                             ),
-
-                            ///** CODIGO CARRINHO  **//
                             Container(
                               height: 70,
                               padding:
@@ -170,8 +158,6 @@ class CarrinhoDialogView {
                                 ),
                               ),
                             ),
-
-                            ///** FOOTER BUTTON **//
                             Container(
                               padding:
                                   const EdgeInsets.only(right: 30, bottom: 10),
