@@ -17,26 +17,28 @@ class ConferirCarrinhosWidget extends StatelessWidget {
         return SizedBox(
           width: size.width,
           height: size.height,
-          child: Column(children: [
-            Container(
-              width: size.width,
-              color: Theme.of(context).primaryColor,
-              child: Container(
-                alignment: Alignment.center,
-                color: controller.colorIndicator,
-                child: Text(
-                  'CARRINHOS ${controller.expedicaoSituacaoDisplay}',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    color: Colors.white,
+          child: Column(
+            children: [
+              Container(
+                width: size.width,
+                color: Theme.of(context).primaryColor,
+                child: Container(
+                  alignment: Alignment.center,
+                  color: controller.colorIndicator,
+                  child: Text(
+                    controller.expedicaoSituacaoDisplay,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
-            ),
-            const Expanded(
-              child: ConferirCarrinhoGrid(),
-            ),
-          ]),
+              const Expanded(
+                child: ConferirCarrinhoGrid(),
+              ),
+            ],
+          ),
         );
       },
     );

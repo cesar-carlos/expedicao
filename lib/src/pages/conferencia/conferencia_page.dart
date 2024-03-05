@@ -104,7 +104,6 @@ class ConferenciaPage {
                           ],
                         ),
 
-                        //LEITOR CODIGO DE BARRAS
                         ScanConferenciaItemWidget(
                           percursoEstagioConsulta,
                           size: size,

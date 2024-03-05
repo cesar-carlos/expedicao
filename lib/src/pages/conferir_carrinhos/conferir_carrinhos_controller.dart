@@ -40,6 +40,12 @@ class ConferirCarrinhosController extends GetxController {
     if (_conferirConsulta.situacao == ExpedicaoSituacaoModel.conferido)
       return Colors.green;
 
+    if (_conferirConsulta.situacao == ExpedicaoSituacaoModel.embalado)
+      return Colors.blue;
+
+    if (_conferirConsulta.situacao == ExpedicaoSituacaoModel.entregue)
+      return Colors.blue;
+
     return Colors.orange;
   }
 

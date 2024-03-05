@@ -62,6 +62,7 @@ class ConferirController extends GetxController {
   }
 
   String get expedicaoSituacaoModel => _expedicaoSituacao;
+
   String get expedicaoSituacaoDisplay {
     if (_expedicaoSituacao == ExpedicaoSituacaoModel.conferido) {
       return ExpedicaoSituacaoModel.finalizada;
@@ -313,16 +314,20 @@ class ConferirController extends GetxController {
 
   Future<void> btnAssistenteAgrupamento() async {
     bool _isValidGroupCart = [
+      ExpedicaoSituacaoModel.cancelada,
       ExpedicaoSituacaoModel.emAndamento,
       ExpedicaoSituacaoModel.emConverencia,
-      ExpedicaoSituacaoModel.conferindo
+      ExpedicaoSituacaoModel.conferindo,
+      ExpedicaoSituacaoModel.embalando,
+      ExpedicaoSituacaoModel.embalado,
+      ExpedicaoSituacaoModel.entregue
     ].contains(conferirConsulta.situacao);
 
-    if (!_isValidGroupCart) {
+    if (_isValidGroupCart) {
       await MessageDialogView.show(
         context: Get.context!,
-        message: 'Conferencia finalizada!',
-        detail: 'Conferencia finalizada, não é possível agrupar carrinhos.',
+        message: '${_expedicaoSituacao}!',
+        detail: 'Conferencia ${_expedicaoSituacao}, não é possível agrupar.',
       );
 
       return;
@@ -351,51 +356,19 @@ class ConferirController extends GetxController {
     final isComplete = await _conferirConsultaServices.isComplete();
     final existsOpenCart = await _conferirConsultaServices.existsOpenCart();
 
-    if (_expedicaoSituacao == ExpedicaoSituacaoModel.cancelada) {
+    final notValidFinalize = [
+      ExpedicaoSituacaoModel.cancelada,
+      ExpedicaoSituacaoModel.embalando,
+      ExpedicaoSituacaoModel.conferido,
+      ExpedicaoSituacaoModel.embalado,
+      ExpedicaoSituacaoModel.entregue
+    ].contains(_expedicaoSituacao);
+
+    if (notValidFinalize) {
       await MessageDialogView.show(
         context: Get.context!,
-        message: 'Conferencia cancelada!',
-        detail: 'Conferencia cancelada, não é possível finalizar.',
-      );
-
-      return;
-    }
-
-    if (_expedicaoSituacao == ExpedicaoSituacaoModel.embalando) {
-      await MessageDialogView.show(
-        context: Get.context!,
-        message: 'Conferencia embalada!',
-        detail: 'Conferencia embalada, não é possível finalizar.',
-      );
-
-      return;
-    }
-
-    if (_expedicaoSituacao == ExpedicaoSituacaoModel.entregue) {
-      await MessageDialogView.show(
-        context: Get.context!,
-        message: 'Conferencia entregue!',
-        detail: 'Conferencia entregue, não é possível finalizar.',
-      );
-
-      return;
-    }
-
-    if (_expedicaoSituacao == ExpedicaoSituacaoModel.conferido) {
-      await MessageDialogView.show(
-        context: Get.context!,
-        message: 'Conferencia já finalizada!',
-        detail: 'Conferencia já finalizada, não é possível finalizar.',
-      );
-
-      return;
-    }
-
-    if (_expedicaoSituacao == ExpedicaoSituacaoModel.embalando) {
-      await MessageDialogView.show(
-        context: Get.context!,
-        message: 'Conferencia já embalada!',
-        detail: 'Conferencia já embalada, não é possível finalizar novamente.',
+        message: '${_expedicaoSituacao}!',
+        detail: 'Conferencia ${_expedicaoSituacao}, não é possível finalizar.',
       );
 
       return;

@@ -24,10 +24,9 @@ class ConferidoCarrinhosWidget extends StatelessWidget {
               child: const Center(
                 child: Text(
                   'CARRINHOS',
-                  style: TextStyle(
+                  style: const TextStyle(
+                    fontSize: 18,
                     color: Colors.white,
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),

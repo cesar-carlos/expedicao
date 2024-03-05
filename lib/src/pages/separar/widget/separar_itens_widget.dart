@@ -25,13 +25,14 @@ class SepararItensWidget extends StatelessWidget {
                   borderRadius: BorderRadius.vertical(top: Radius.circular(0)),
                   color: AppColor.primaryColor,
                 ),
-                child: Center(
+                child: Container(
+                  alignment: Alignment.center,
+                  color: controller.colorIndicator,
                   child: Text(
-                    'SEPARAÇÃO ITENS - ${controller.expedicaoSituacaoDisplay.toUpperCase()}',
+                    controller.expedicaoSituacaoDisplay,
                     style: const TextStyle(
+                      fontSize: 18,
                       color: Colors.white,
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),

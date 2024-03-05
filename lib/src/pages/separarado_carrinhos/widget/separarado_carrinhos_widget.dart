@@ -17,25 +17,26 @@ class SeparadoCarrinhosWidget extends StatelessWidget {
         return SizedBox(
           width: size.width,
           height: size.height,
-          child: Column(children: [
-            Container(
-              width: size.width,
-              color: Theme.of(context).primaryColor,
-              child: const Center(
-                child: Text(
-                  'CARRINHOS SEPARADOS',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
+          child: Column(
+            children: [
+              Container(
+                width: size.width,
+                color: Theme.of(context).primaryColor,
+                child: const Center(
+                  child: Text(
+                    'CARRINHOS',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
-            ),
-            const Expanded(
-              child: SeparadoCarrinhoGrid(),
-            ),
-          ]),
+              const Expanded(
+                child: SeparadoCarrinhoGrid(),
+              ),
+            ],
+          ),
         );
       },
     );

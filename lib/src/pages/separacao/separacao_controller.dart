@@ -63,6 +63,20 @@ class SeparacaoController extends GetxController {
     return '${percursoEstagioConsulta.codCarrinho} - ${percursoEstagioConsulta.nomeCarrinho}';
   }
 
+  String get displaySituacao {
+    return percursoEstagioConsulta.situacao;
+  }
+
+  Color get colorIndicator {
+    if (percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.cancelada)
+      return Colors.red;
+
+    if (percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.separado)
+      return Colors.green;
+
+    return Colors.orange;
+  }
+
   @override
   void onInit() {
     super.onInit();

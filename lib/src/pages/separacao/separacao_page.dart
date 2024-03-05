@@ -91,14 +91,28 @@ class SeparacaoPage {
                             ),
                           ],
                         ),
-
-                        //LEITOR CODIGO DE BARRAS
                         ScanSeparacaoItemWidget(
                           percursoEstagioConsulta,
                           size: size,
                         ),
 
-                        //TAB
+                        SizedBox(
+                          height: 25,
+                          width: size.width,
+                          child: Container(
+                            alignment: Alignment.center,
+                            color: controller.colorIndicator,
+                            child: Text(
+                              controller.displaySituacao,
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        //TAB VIEW
                         Expanded(
                           child: ClipRRect(
                             borderRadius: const BorderRadius.only(

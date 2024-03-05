@@ -44,12 +44,12 @@ class ButtonHeadForm extends StatelessWidget {
                     children: [
                       if (shortCut != null)
                         Container(
-                          padding: const EdgeInsets.only(right: 6),
                           alignment: Alignment.topRight,
+                          padding: const EdgeInsets.only(right: 6),
                           child: Container(
                             padding: const EdgeInsets.all(2),
                             decoration: BoxDecoration(
-                              color: shortCutColor.withOpacity(0.50),
+                              color: shortCutColor.withOpacity(0.40),
                               borderRadius: BorderRadius.circular(5),
                             ),
                             child: Text(

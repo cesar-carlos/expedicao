@@ -27,8 +27,7 @@ class ConferirItensWidget extends StatelessWidget {
                 width: size.width,
                 child: const Center(
                   child: Text(
-                    //'CONFERIR ITENS - ${controller.expedicaoSituacaoDisplay.toUpperCase()}',
-                    'CONFERIR ITENS ',
+                    'CONFERIR ITENS',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 17,

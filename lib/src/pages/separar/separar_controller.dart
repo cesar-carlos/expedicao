@@ -53,7 +53,9 @@ class SepararController extends GetxController {
   ExpedicaoCarrinhoPercursoModel? _carrinhoPercurso;
 
   ExpedicaoSepararConsultaModel get separarConsulta => _separarConsulta;
+
   int? get codSetorEstoque => _processoExecutavel.codSetorEstoque;
+
   String get expedicaoSituacaoModel => _expedicaoSituacao;
 
   bool get iniciada {
@@ -67,11 +69,17 @@ class SepararController extends GetxController {
   }
 
   String get expedicaoSituacaoDisplay {
-    if (_expedicaoSituacao == ExpedicaoSituacaoModel.separado) {
-      return ExpedicaoSituacaoModel.finalizada;
-    }
+    return _expedicaoSituacao;
+  }
 
-    return ExpedicaoSituacaoModel.situacao[_expedicaoSituacao] ?? '';
+  Color get colorIndicator {
+    if (_separarConsulta.situacao == ExpedicaoSituacaoModel.cancelada)
+      return Colors.red;
+
+    if (_separarConsulta.situacao == ExpedicaoSituacaoModel.separado)
+      return Colors.green;
+
+    return Colors.orange;
   }
 
   @override
@@ -282,21 +290,16 @@ class SepararController extends GetxController {
     final isComplete = await _separarConsultaServices.isComplete();
     final existsOpenCart = await _separarConsultaServices.existsOpenCart();
 
-    if (_expedicaoSituacao == ExpedicaoSituacaoModel.cancelada) {
+    final notValidFinalize = [
+      ExpedicaoSituacaoModel.cancelada,
+      ExpedicaoSituacaoModel.separado
+    ].contains(_expedicaoSituacao);
+
+    if (notValidFinalize) {
       await MessageDialogView.show(
         context: Get.context!,
-        message: 'Separação cancelada!',
-        detail: 'Separação cancelada, não é possível finalizar.',
-      );
-
-      return;
-    }
-
-    if (_expedicaoSituacao == ExpedicaoSituacaoModel.separado) {
-      await MessageDialogView.show(
-        context: Get.context!,
-        message: 'Separação já finalizada!',
-        detail: 'Separação já finalizada, não é possível finalizar novamente.',
+        message: '${_expedicaoSituacao}!',
+        detail: '${_expedicaoSituacao}, não é possível finalizar.',
       );
 
       return;
