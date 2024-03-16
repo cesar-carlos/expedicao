@@ -313,17 +313,14 @@ class ConferirController extends GetxController {
   }
 
   Future<void> btnAssistenteAgrupamento() async {
-    bool _isValidGroupCart = [
+    bool _isNotValidGroupCart = [
       ExpedicaoSituacaoModel.cancelada,
-      ExpedicaoSituacaoModel.emAndamento,
-      ExpedicaoSituacaoModel.emConverencia,
-      ExpedicaoSituacaoModel.conferindo,
-      ExpedicaoSituacaoModel.embalando,
+      ExpedicaoSituacaoModel.conferido,
       ExpedicaoSituacaoModel.embalado,
-      ExpedicaoSituacaoModel.entregue
+      ExpedicaoSituacaoModel.entregue,
     ].contains(conferirConsulta.situacao);
 
-    if (_isValidGroupCart) {
+    if (_isNotValidGroupCart) {
       await MessageDialogView.show(
         context: Get.context!,
         message: '${_expedicaoSituacao}!',
