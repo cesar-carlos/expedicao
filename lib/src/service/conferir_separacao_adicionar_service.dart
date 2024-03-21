@@ -19,17 +19,15 @@ class ConferirSeparacaoAdicionarService {
     final conferir = _createConferir(_conferirItensSeparacaoConsulta.first);
 
     try {
-      print('ENTRANDO NO TRY DO CONFERIR SEPARACAO ADICIONAR SERVICE');
-      final newConferirs = await ConferirRepository().insert(conferir);
-      print('APOS INSERIR CONFERIR SEPARACAO ADICIONAR SERVICE');
+      final result = await ConferirRepository().insert(conferir);
+
       final newItensConferir = _createItensConferir(
-        newConferirs.first,
+        result.first,
         _conferirItensSeparacaoConsulta,
       );
 
       await ConferirItemRepository().insertAll(newItensConferir);
     } catch (e) {
-      print('ERRO NO CONFERIR SEPARACAO ADICIONAR SERVICE');
       throw AppError(e.toString());
     }
   }

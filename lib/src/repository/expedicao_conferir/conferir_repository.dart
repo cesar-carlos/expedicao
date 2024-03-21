@@ -70,13 +70,17 @@ class ConferirRepository {
         final error = data?['error'] ?? null;
         socket.off(resposeIn);
 
-        if (error != null) throw AppError(error);
+        if (error != null) {
+          completer.completeError(error);
+          return;
+        }
 
         final list = mutation.map<ExpedicaoConferirModel>((json) {
           return ExpedicaoConferirModel.fromJson(json);
         }).toList();
 
         completer.complete(list);
+        return;
       });
 
       return completer.future;
