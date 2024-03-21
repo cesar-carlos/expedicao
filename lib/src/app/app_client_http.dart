@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 
 import 'package:app_expedicao/src/app/app_error.dart';
 import 'package:app_expedicao/src/app/app_api_file_init.dart';
-import 'package:app_expedicao/src/app/app_error_code.dart';
 
 class AppClientHttp {
   final client = Dio();
@@ -25,7 +24,6 @@ class AppClientHttp {
     } on DioException catch (err) {
       //TODO: Tratar erros status code
       appError = AppError(
-        AppErrorCode.serverNotFound,
         'Erro na requisição',
         details: err.toString(),
       );

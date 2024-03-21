@@ -5,8 +5,7 @@ import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:app_expedicao/src/app/app_error.dart';
-import 'package:app_expedicao/src/app/app_error_code.dart';
-import 'package:app_expedicao/src/model/send_query_socket_model%20copy.dart';
+import 'package:app_expedicao/src/model/send_query_socket_model.dart';
 import 'package:app_expedicao/src/model/estoque_produto_conversao_unidade_consulta_model.dart';
 import 'package:app_expedicao/src/app/app_socket_config.dart';
 
@@ -35,11 +34,6 @@ class EstoqueProdutoConversaoUnidadeConsultaRepository {
         //final error = data?['error'] ?? null;
         socket.off(resposeIn);
 
-        // if (error != null) {
-        //   completer.completeError(AppError(AppErrorCode.separacao, error));
-        //   return;
-        // }
-
         if (data.isEmpty) {
           completer.complete([]);
           return;
@@ -56,7 +50,7 @@ class EstoqueProdutoConversaoUnidadeConsultaRepository {
       return completer.future;
     } catch (e) {
       socket.off(resposeIn);
-      completer.completeError(AppError(AppErrorCode.separacao, e.toString()));
+      completer.completeError(AppError(e.toString()));
       return completer.future;
     }
   }

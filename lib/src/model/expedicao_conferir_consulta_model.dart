@@ -5,8 +5,8 @@ class ExpedicaoConferirConsultaModel {
   final int codConferir;
   final String origem;
   final int codOrigem;
-  final int codCarrinhoPercurso;
   String situacao;
+  final int codCarrinhoPercurso;
   final DateTime dataLancamento;
   final String horaLancamento;
   final String tipoEntidade;
@@ -22,8 +22,8 @@ class ExpedicaoConferirConsultaModel {
     required this.codConferir,
     required this.origem,
     required this.codOrigem,
-    required this.codCarrinhoPercurso,
     required this.situacao,
+    required this.codCarrinhoPercurso,
     required this.dataLancamento,
     required this.horaLancamento,
     required this.tipoEntidade,
@@ -40,8 +40,8 @@ class ExpedicaoConferirConsultaModel {
     int? codConferir,
     String? origem,
     int? codOrigem,
-    int? codCarrinhoPercurso,
     String? situacao,
+    int? codCarrinhoPercurso,
     DateTime? dataLancamento,
     String? horaLancamento,
     String? tipoEntidade,
@@ -57,8 +57,8 @@ class ExpedicaoConferirConsultaModel {
       codConferir: codConferir ?? this.codConferir,
       origem: origem ?? this.origem,
       codOrigem: codOrigem ?? this.codOrigem,
-      codCarrinhoPercurso: codCarrinhoPercurso ?? this.codCarrinhoPercurso,
       situacao: situacao ?? this.situacao,
+      codCarrinhoPercurso: codCarrinhoPercurso ?? this.codCarrinhoPercurso,
       dataLancamento: dataLancamento ?? this.dataLancamento,
       horaLancamento: horaLancamento ?? this.horaLancamento,
       tipoEntidade: tipoEntidade ?? this.tipoEntidade,
@@ -78,8 +78,8 @@ class ExpedicaoConferirConsultaModel {
         codConferir: map['CodConferir'],
         origem: map['Origem'],
         codOrigem: map['CodOrigem'],
-        codCarrinhoPercurso: map['CodCarrinhoPercurso'],
         situacao: map['Situacao'],
+        codCarrinhoPercurso: map['CodCarrinhoPercurso'],
         dataLancamento: AppHelper.tryStringToDate(map['DataLancamento']),
         horaLancamento: map['HoraLancamento'],
         tipoEntidade: map['TipoEntidade'],
@@ -102,8 +102,8 @@ class ExpedicaoConferirConsultaModel {
       'CodConferir': codConferir,
       'Origem': origem,
       'CodOrigem': codOrigem,
-      'CodCarrinhoPercurso': codCarrinhoPercurso,
       'Situacao': situacao,
+      'CodCarrinhoPercurso': codCarrinhoPercurso,
       'DataLancamento': dataLancamento.toIso8601String(),
       'HoraLancamento': horaLancamento,
       'TipoEntidade': tipoEntidade,
@@ -124,8 +124,8 @@ class ExpedicaoConferirConsultaModel {
         codConferir: $codConferir, 
         origem: $origem, 
         codOrigem: $codOrigem, 
-        codCarrinhoPercurso: $codCarrinhoPercurso, 
         situacao: $situacao, 
+        codCarrinhoPercurso: $codCarrinhoPercurso, 
         dataLancamento: $dataLancamento, 
         horaLancamento: $horaLancamento, 
         tipoEntidade: $tipoEntidade, 

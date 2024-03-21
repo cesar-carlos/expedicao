@@ -343,14 +343,22 @@ class SepararController extends GetxController {
       codSepararEstoque: _separarConsulta.codSepararEstoque,
     ).execute();
 
-    _expedicaoSituacao = ExpedicaoSituacaoModel.separado;
     _separarConsulta.situacao = ExpedicaoSituacaoModel.separado;
+    _expedicaoSituacao = ExpedicaoSituacaoModel.separado;
 
-    await ConferirSeparacaoAdicionarService(
-      carrinhoPercurso: _carrinhoPercurso!,
-    ).execute();
+    try {
+      await ConferirSeparacaoAdicionarService(
+              carrinhoPercurso: _carrinhoPercurso!)
+          .execute();
 
-    update();
+      update();
+    } catch (e) {
+      await MessageDialogView.show(
+        context: Get.context!,
+        message: 'Erro ao adicionar conferência!',
+        detail: e.toString(),
+      );
+    }
   }
 
   Future<void> configuracao() async {

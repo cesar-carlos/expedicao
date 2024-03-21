@@ -4,9 +4,8 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
-import 'package:app_expedicao/src/app/app_error_code.dart';
-import 'package:app_expedicao/src/model/send_mutation_socket_model%20copy.dart';
-import 'package:app_expedicao/src/model/send_query_socket_model%20copy.dart';
+import 'package:app_expedicao/src/model/send_mutation_socket_model.dart';
+import 'package:app_expedicao/src/model/send_query_socket_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 import 'package:app_expedicao/src/app/app_socket_config.dart';
 import 'package:app_expedicao/src/app/app_error.dart';
@@ -30,13 +29,7 @@ class CarrinhoPercursoRepository {
       socket.emit(event, jsonEncode(send.toJson()));
       socket.on(resposeIn, (receiver) {
         final data = jsonDecode(receiver) as List<dynamic>;
-        //final error = data?['error'] ?? null;
         socket.off(resposeIn);
-
-        // if (error != null) {
-        //   completer.completeError(AppError(AppErrorCode.separacao, error));
-        //   return;
-        // }
 
         if (data.isEmpty) {
           completer.complete([]);
@@ -53,7 +46,7 @@ class CarrinhoPercursoRepository {
       return completer.future;
     } catch (e) {
       socket.off(resposeIn);
-      completer.completeError(AppError(AppErrorCode.separacao, e.toString()));
+      completer.completeError(AppError(e.toString()));
       return completer.future;
     }
   }
@@ -79,7 +72,7 @@ class CarrinhoPercursoRepository {
         socket.off(resposeIn);
 
         if (error != null) {
-          completer.completeError(AppError(AppErrorCode.separacao, error));
+          completer.completeError(AppError(error));
           return;
         }
 
@@ -93,7 +86,7 @@ class CarrinhoPercursoRepository {
       return completer.future;
     } catch (e) {
       socket.off(resposeIn);
-      completer.completeError(AppError(AppErrorCode.separacao, e.toString()));
+      completer.completeError(AppError(e.toString()));
       return completer.future;
     }
   }
@@ -119,7 +112,7 @@ class CarrinhoPercursoRepository {
         socket.off(resposeIn);
 
         if (error != null) {
-          completer.completeError(AppError(AppErrorCode.separacao, error));
+          completer.completeError(AppError(error));
           return;
         }
 
@@ -133,7 +126,7 @@ class CarrinhoPercursoRepository {
       return completer.future;
     } catch (e) {
       socket.off(resposeIn);
-      completer.completeError(AppError(AppErrorCode.separacao, e.toString()));
+      completer.completeError(AppError(e.toString()));
       return completer.future;
     }
   }
@@ -159,7 +152,7 @@ class CarrinhoPercursoRepository {
         socket.off(resposeIn);
 
         if (error != null) {
-          completer.completeError(AppError(AppErrorCode.separacao, error));
+          completer.completeError(AppError(error));
           return;
         }
 
@@ -173,7 +166,7 @@ class CarrinhoPercursoRepository {
       return completer.future;
     } catch (e) {
       socket.off(resposeIn);
-      completer.completeError(AppError(AppErrorCode.separacao, e.toString()));
+      completer.completeError(AppError(e.toString()));
       return completer.future;
     }
   }

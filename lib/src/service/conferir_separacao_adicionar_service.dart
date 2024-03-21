@@ -7,59 +7,42 @@ import 'package:app_expedicao/src/repository/expedicao_conferir_item/conferir_it
 import 'package:app_expedicao/src/repository/expedicao_conferir/conferir_repository.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_model.dart';
 import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
-import 'package:app_expedicao/src/app/app_error_code.dart';
 import 'package:app_expedicao/src/app/app_error.dart';
 
 class ConferirSeparacaoAdicionarService {
-  //final _processo = Get.find<ProcessoExecutavelModel>();
-
   final ExpedicaoCarrinhoPercursoModel carrinhoPercurso;
-  late List<ExpedicaoConferirItemSeparacaoConsultaModel>
-      _conferirItensSeparacaoConsulta;
 
   ConferirSeparacaoAdicionarService({required this.carrinhoPercurso});
 
   Future<void> execute() async {
-    await _findSeparacao();
-
+    final _conferirItensSeparacaoConsulta = await _findSeparacao();
     final conferir = _createConferir(_conferirItensSeparacaoConsulta.first);
-    final newConferirs = await ConferirRepository().insert(conferir);
 
-    if (newConferirs.isEmpty) {
-      throw AppError(
-        AppErrorCode.erroCriarExpedicaoConferir,
-        'erro tenta criar (Expedicao.Conferir)',
+    try {
+      print('ENTRANDO NO TRY DO CONFERIR SEPARACAO ADICIONAR SERVICE');
+      final newConferirs = await ConferirRepository().insert(conferir);
+      print('APOS INSERIR CONFERIR SEPARACAO ADICIONAR SERVICE');
+      final newItensConferir = _createItensConferir(
+        newConferirs.first,
+        _conferirItensSeparacaoConsulta,
       );
+
+      await ConferirItemRepository().insertAll(newItensConferir);
+    } catch (e) {
+      print('ERRO NO CONFERIR SEPARACAO ADICIONAR SERVICE');
+      throw AppError(e.toString());
     }
-
-    final newItensConferir = _createItensConferir(
-      newConferirs.first,
-      _conferirItensSeparacaoConsulta,
-    );
-
-    await ConferirItemRepository().insertAll(newItensConferir);
   }
 
-  _findSeparacao() async {
+  Future<List<ExpedicaoConferirItemSeparacaoConsultaModel>>
+      _findSeparacao() async {
     final params = '''
         CodEmpresa = ${carrinhoPercurso.codEmpresa}
       AND Origem = '${carrinhoPercurso.origem}'
       AND CodSepararEstoque = ${carrinhoPercurso.codOrigem}
-      AND Situacao = '${ExpedicaoSituacaoModel.separado}'
+      AND Situacao = '${ExpedicaoSituacaoModel.separado}' ''';
 
-    ''';
-
-    final result =
-        await ConferirItemConsultaSeparacaoRepository().select(params);
-
-    if (result.isEmpty) {
-      throw throw AppError(
-        AppErrorCode.separarEstagioNaoEncontrado,
-        'conferir separacao item consulta, não encontrado',
-      );
-    }
-
-    _conferirItensSeparacaoConsulta = result;
+    return await ConferirItemConsultaSeparacaoRepository().select(params);
   }
 
   ExpedicaoConferirModel _createConferir(
@@ -83,17 +66,13 @@ class ConferirSeparacaoAdicionarService {
     ExpedicaoConferirModel conferir,
     List<ExpedicaoConferirItemSeparacaoConsultaModel> itens,
   ) {
-    int sequence = 0;
     final newItens = <ExpedicaoConferirItemModel>[];
 
     for (var el in itens) {
-      sequence++;
-      final item = sequence.toString().padLeft(5, '0');
-
       final newItem = ExpedicaoConferirItemModel(
         codEmpresa: conferir.codEmpresa,
         codConferir: conferir.codConferir,
-        item: item,
+        item: '00000',
         codCarrinhoPercurso: el.codCarrinhoPercurso,
         itemCarrinhoPercurso: el.itemCarrinhoPercurso,
         codProduto: el.codProduto,
