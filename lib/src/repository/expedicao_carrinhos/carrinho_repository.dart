@@ -72,7 +72,7 @@ class CarrinhoRepository {
         socket.off(resposeIn);
 
         if (error != null) {
-          completer.completeError(AppError(error));
+          completer.completeError(error);
           return;
         }
 
@@ -81,6 +81,7 @@ class CarrinhoRepository {
         }).toList();
 
         completer.complete(list);
+        return;
       });
 
       return completer.future;
@@ -111,7 +112,7 @@ class CarrinhoRepository {
         socket.off(resposeIn);
 
         if (error != null) {
-          completer.completeError(AppError(error));
+          completer.completeError(error);
           return;
         }
 
@@ -120,6 +121,7 @@ class CarrinhoRepository {
         }).toList();
 
         completer.complete(list);
+        return;
       });
 
       return completer.future;
@@ -150,7 +152,7 @@ class CarrinhoRepository {
         socket.off(resposeIn);
 
         if (error != null) {
-          completer.completeError(AppError(error));
+          completer.completeError(error);
           return;
         }
 
@@ -159,6 +161,7 @@ class CarrinhoRepository {
         }).toList();
 
         completer.complete(list);
+        return;
       });
 
       return completer.future;

@@ -77,7 +77,7 @@ class CarrinhoPercursoAgrupamentoRepository {
         socket.off(resposeIn);
 
         if (error != null) {
-          completer.completeError(AppError(error));
+          completer.completeError(error);
           return;
         }
 
@@ -87,6 +87,7 @@ class CarrinhoPercursoAgrupamentoRepository {
         }).toList();
 
         completer.complete(list);
+        return;
       });
 
       return completer.future;
@@ -119,7 +120,7 @@ class CarrinhoPercursoAgrupamentoRepository {
         socket.off(resposeIn);
 
         if (error != null) {
-          completer.completeError(AppError(error));
+          completer.completeError(error);
           return;
         }
 
@@ -129,6 +130,7 @@ class CarrinhoPercursoAgrupamentoRepository {
         }).toList();
 
         completer.complete(list);
+        return;
       });
 
       return completer.future;
@@ -158,9 +160,10 @@ class CarrinhoPercursoAgrupamentoRepository {
         final data = jsonDecode(receiver);
         final mutation = data?['mutation'] ?? [];
         final error = data?['error'] ?? null;
+        socket.off(resposeIn);
 
         if (error != null) {
-          completer.completeError(AppError(error));
+          completer.completeError(error);
           return;
         }
 
@@ -170,6 +173,7 @@ class CarrinhoPercursoAgrupamentoRepository {
         }).toList();
 
         completer.complete(list);
+        return;
       });
 
       return completer.future;

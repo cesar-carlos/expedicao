@@ -73,7 +73,7 @@ class SeparacaoItemRepository {
         socket.off(resposeIn);
 
         if (error != null) {
-          completer.completeError(AppError(error));
+          completer.completeError(error);
           return;
         }
 
@@ -82,6 +82,7 @@ class SeparacaoItemRepository {
         }).toList();
 
         completer.complete(list);
+        return;
       });
 
       return completer.future;
@@ -113,7 +114,7 @@ class SeparacaoItemRepository {
         socket.off(resposeIn);
 
         if (error != null) {
-          completer.completeError(AppError(error));
+          completer.completeError(error);
           return;
         }
 
@@ -122,6 +123,7 @@ class SeparacaoItemRepository {
         }).toList();
 
         completer.complete(list);
+        return;
       });
 
       return completer.future;
@@ -153,7 +155,7 @@ class SeparacaoItemRepository {
         socket.off(resposeIn);
 
         if (error != null) {
-          completer.completeError(AppError(error));
+          completer.completeError(error);
           return;
         }
 
@@ -162,6 +164,7 @@ class SeparacaoItemRepository {
         }).toList();
 
         completer.complete(list);
+        return;
       });
 
       return completer.future;
@@ -193,7 +196,7 @@ class SeparacaoItemRepository {
         socket.off(resposeIn);
 
         if (error != null) {
-          completer.completeError(AppError(error));
+          completer.completeError(error);
           return;
         }
 
@@ -202,6 +205,7 @@ class SeparacaoItemRepository {
         }).toList();
 
         completer.complete(list);
+        return;
       });
 
       return completer.future;
@@ -233,7 +237,7 @@ class SeparacaoItemRepository {
         socket.off(resposeIn);
 
         if (error != null) {
-          completer.completeError(AppError(error));
+          completer.completeError(error);
           return;
         }
 
@@ -242,6 +246,7 @@ class SeparacaoItemRepository {
         }).toList();
 
         completer.complete(list);
+        return;
       });
 
       return completer.future;
@@ -273,7 +278,7 @@ class SeparacaoItemRepository {
         socket.off(resposeIn);
 
         if (error != null) {
-          completer.completeError(AppError(error));
+          completer.completeError(error);
           return;
         }
 
@@ -282,6 +287,7 @@ class SeparacaoItemRepository {
         }).toList();
 
         completer.complete(list);
+        return;
       });
 
       return completer.future;

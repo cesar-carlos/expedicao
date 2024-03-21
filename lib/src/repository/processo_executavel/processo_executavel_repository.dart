@@ -71,7 +71,7 @@ class ProcessoExecutavelRepository {
         socket.off(resposeIn);
 
         if (error != null) {
-          completer.completeError(AppError(error));
+          completer.completeError(error);
           return;
         }
 
@@ -80,6 +80,7 @@ class ProcessoExecutavelRepository {
         }).toList();
 
         completer.complete(list);
+        return;
       });
 
       return completer.future;
@@ -110,7 +111,7 @@ class ProcessoExecutavelRepository {
         socket.off(resposeIn);
 
         if (error != null) {
-          completer.completeError(AppError(error));
+          completer.completeError(error);
           return;
         }
 
@@ -119,6 +120,7 @@ class ProcessoExecutavelRepository {
         }).toList();
 
         completer.complete(list);
+        return;
       });
 
       return completer.future;
@@ -149,7 +151,7 @@ class ProcessoExecutavelRepository {
         socket.off(resposeIn);
 
         if (error != null) {
-          completer.completeError(AppError(error));
+          completer.completeError(error);
           return;
         }
 
@@ -158,6 +160,7 @@ class ProcessoExecutavelRepository {
         }).toList();
 
         completer.complete(list);
+        return;
       });
 
       return completer.future;

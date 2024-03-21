@@ -72,7 +72,7 @@ class CarrinhoPercursoRepository {
         socket.off(resposeIn);
 
         if (error != null) {
-          completer.completeError(AppError(error));
+          completer.completeError(error);
           return;
         }
 
@@ -81,6 +81,7 @@ class CarrinhoPercursoRepository {
         }).toList();
 
         completer.complete(list);
+        return;
       });
 
       return completer.future;
@@ -112,7 +113,7 @@ class CarrinhoPercursoRepository {
         socket.off(resposeIn);
 
         if (error != null) {
-          completer.completeError(AppError(error));
+          completer.completeError(error);
           return;
         }
 
@@ -121,6 +122,7 @@ class CarrinhoPercursoRepository {
         }).toList();
 
         completer.complete(list);
+        return;
       });
 
       return completer.future;
@@ -152,7 +154,7 @@ class CarrinhoPercursoRepository {
         socket.off(resposeIn);
 
         if (error != null) {
-          completer.completeError(AppError(error));
+          completer.completeError(error);
           return;
         }
 
@@ -161,6 +163,7 @@ class CarrinhoPercursoRepository {
         }).toList();
 
         completer.complete(list);
+        return;
       });
 
       return completer.future;

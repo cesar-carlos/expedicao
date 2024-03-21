@@ -74,7 +74,7 @@ class CarrinhoPercursoEstagioRepository {
         socket.off(resposeIn);
 
         if (error != null) {
-          completer.completeError(AppError(error));
+          completer.completeError(error);
           return;
         }
 
@@ -84,6 +84,7 @@ class CarrinhoPercursoEstagioRepository {
         }).toList();
 
         completer.complete(list);
+        return;
       });
 
       return completer.future;
@@ -112,9 +113,10 @@ class CarrinhoPercursoEstagioRepository {
         final data = jsonDecode(receiver);
         final mutation = data?['mutation'] ?? [];
         final error = data?['error'] ?? null;
+        socket.off(resposeIn);
 
         if (error != null) {
-          completer.completeError(AppError(error));
+          completer.completeError(error);
           return;
         }
 
@@ -124,6 +126,7 @@ class CarrinhoPercursoEstagioRepository {
         }).toList();
 
         completer.complete(list);
+        return;
       });
 
       return completer.future;
@@ -155,7 +158,7 @@ class CarrinhoPercursoEstagioRepository {
         socket.off(resposeIn);
 
         if (error != null) {
-          completer.completeError(AppError(error));
+          completer.completeError(error);
           return;
         }
 
@@ -165,6 +168,7 @@ class CarrinhoPercursoEstagioRepository {
         }).toList();
 
         completer.complete(list);
+        return;
       });
 
       return completer.future;
