@@ -27,11 +27,13 @@ class EstoqueProdutoConsultaRepository {
     try {
       socket.emit(event, jsonEncode(send.toJson()));
       socket.on(resposeIn, (receiver) {
-        final data = jsonDecode(receiver) as List<dynamic>;
+        final respose = jsonDecode(receiver);
+        final error = respose?['Error'] ?? null;
+        final data = respose?['Data'] ?? [];
         socket.off(resposeIn);
 
-        if (data.isEmpty) {
-          completer.complete([]);
+        if (error != null) {
+          completer.completeError(error);
           return;
         }
 

@@ -26,30 +26,29 @@ class ConferenciaItemRepository {
       where: params,
     );
 
-    try {
-      socket.emit(event, jsonEncode(send.toJson()));
-      socket.on(resposeIn, (receiver) {
-        final data = jsonDecode(receiver) as List<dynamic>;
-        socket.off(resposeIn);
+    socket.emit(event, jsonEncode(send.toJson()));
+    socket.on(resposeIn, (receiver) {
+      try {
+        final respose = jsonDecode(receiver);
+        final error = respose?['Error'] ?? null;
+        final data = respose?['Data'] ?? [];
 
-        if (data.isEmpty) {
-          completer.complete([]);
-          return;
-        }
+        if (error != null) throw error;
 
         final list = data.map<ExpedicaoConferenciaItemModel>((json) {
           return ExpedicaoConferenciaItemModel.fromJson(json);
         }).toList();
 
         completer.complete(list);
-      });
+      } catch (e) {
+        completer.completeError(AppError(e.toString()));
+        return completer.future;
+      } finally {
+        socket.off(resposeIn);
+      }
+    });
 
-      return completer.future;
-    } catch (e) {
-      socket.off(resposeIn);
-      completer.completeError(AppError(e.toString()));
-      return completer.future;
-    }
+    return completer.future;
   }
 
   Future<List<ExpedicaoConferenciaItemModel>> insert(
@@ -64,33 +63,29 @@ class ConferenciaItemRepository {
       mutation: entity.toJson(),
     );
 
-    try {
-      socket.emit(event, jsonEncode(send.toJson()));
-      socket.on(resposeIn, (receiver) {
-        final data = jsonDecode(receiver);
-        final mutation = data?['mutation'] ?? [];
-        final error = data?['error'] ?? null;
-        socket.off(resposeIn);
+    socket.emit(event, jsonEncode(send.toJson()));
+    socket.on(resposeIn, (receiver) {
+      try {
+        final respose = jsonDecode(receiver);
+        final mutation = respose?['Mutation'] ?? [];
+        final error = respose?['Error'] ?? null;
 
-        if (error != null) {
-          completer.completeError(error);
-          return;
-        }
+        if (error != null) throw error;
 
         final list = mutation.map<ExpedicaoConferenciaItemModel>((json) {
           return ExpedicaoConferenciaItemModel.fromJson(json);
         }).toList();
 
         completer.complete(list);
-        return;
-      });
+      } catch (e) {
+        completer.completeError(AppError(e.toString()));
+        return completer.future;
+      } finally {
+        socket.off(resposeIn);
+      }
+    });
 
-      return completer.future;
-    } catch (e) {
-      socket.off(resposeIn);
-      completer.completeError(AppError(e.toString()));
-      return completer.future;
-    }
+    return completer.future;
   }
 
   Future<List<ExpedicaoConferenciaItemModel>> insertAll(
@@ -105,33 +100,29 @@ class ConferenciaItemRepository {
       mutations: entity.map((el) => el.toJson()).toList(),
     );
 
-    try {
-      socket.emit(event, jsonEncode(send.toJson()));
-      socket.on(resposeIn, (receiver) {
-        final data = jsonDecode(receiver);
-        final mutation = data?['mutation'] ?? [];
-        final error = data?['error'] ?? null;
-        socket.off(resposeIn);
+    socket.emit(event, jsonEncode(send.toJson()));
+    socket.on(resposeIn, (receiver) {
+      try {
+        final respose = jsonDecode(receiver);
+        final mutation = respose?['Mutation'] ?? [];
+        final error = respose?['Error'] ?? null;
 
-        if (error != null) {
-          completer.completeError(error);
-          return;
-        }
+        if (error != null) throw error;
 
         final list = mutation.map<ExpedicaoConferenciaItemModel>((json) {
           return ExpedicaoConferenciaItemModel.fromJson(json);
         }).toList();
 
         completer.complete(list);
-        return;
-      });
+      } catch (e) {
+        completer.completeError(AppError(e.toString()));
+        return completer.future;
+      } finally {
+        socket.off(resposeIn);
+      }
+    });
 
-      return completer.future;
-    } catch (e) {
-      socket.off(resposeIn);
-      completer.completeError(AppError(e.toString()));
-      return completer.future;
-    }
+    return completer.future;
   }
 
   Future<List<ExpedicaoConferenciaItemModel>> update(
@@ -146,33 +137,29 @@ class ConferenciaItemRepository {
       mutation: entity.toJson(),
     );
 
-    try {
-      socket.emit(event, jsonEncode(send.toJson()));
-      socket.on(resposeIn, (receiver) {
-        final data = jsonDecode(receiver);
-        final mutation = data?['mutation'] ?? [];
-        final error = data?['error'] ?? null;
-        socket.off(resposeIn);
+    socket.emit(event, jsonEncode(send.toJson()));
+    socket.on(resposeIn, (receiver) {
+      try {
+        final respose = jsonDecode(receiver);
+        final mutation = respose?['Mutation'] ?? [];
+        final error = respose?['Error'] ?? null;
 
-        if (error != null) {
-          completer.completeError(error);
-          return;
-        }
+        if (error != null) throw error;
 
         final list = mutation.map<ExpedicaoConferenciaItemModel>((json) {
           return ExpedicaoConferenciaItemModel.fromJson(json);
         }).toList();
 
         completer.complete(list);
-        return;
-      });
+      } catch (e) {
+        completer.completeError(AppError(e.toString()));
+        return completer.future;
+      } finally {
+        socket.off(resposeIn);
+      }
+    });
 
-      return completer.future;
-    } catch (e) {
-      socket.off(resposeIn);
-      completer.completeError(AppError(e.toString()));
-      return completer.future;
-    }
+    return completer.future;
   }
 
   Future<List<ExpedicaoConferenciaItemModel>> updateAll(
@@ -187,33 +174,28 @@ class ConferenciaItemRepository {
       mutations: entity.map((el) => el.toJson()).toList(),
     );
 
-    try {
-      socket.emit(event, jsonEncode(send.toJson()));
-      socket.on(resposeIn, (receiver) {
-        final data = jsonDecode(receiver);
-        final mutation = data?['mutation'] ?? [];
-        final error = data?['error'] ?? null;
-        socket.off(resposeIn);
+    socket.emit(event, jsonEncode(send.toJson()));
+    socket.on(resposeIn, (receiver) {
+      try {
+        final respose = jsonDecode(receiver);
+        final mutation = respose?['Mutation'] ?? [];
+        final error = respose?['Error'] ?? null;
 
-        if (error != null) {
-          completer.completeError(error);
-          return;
-        }
-
+        if (error != null) throw error;
         final list = mutation.map<ExpedicaoConferenciaItemModel>((json) {
           return ExpedicaoConferenciaItemModel.fromJson(json);
         }).toList();
 
         completer.complete(list);
-        return;
-      });
+      } catch (e) {
+        completer.completeError(AppError(e.toString()));
+        return completer.future;
+      } finally {
+        socket.off(resposeIn);
+      }
+    });
 
-      return completer.future;
-    } catch (e) {
-      socket.off(resposeIn);
-      completer.completeError(AppError(e.toString()));
-      return completer.future;
-    }
+    return completer.future;
   }
 
   Future<List<ExpedicaoConferenciaItemModel>> delete(
@@ -228,33 +210,29 @@ class ConferenciaItemRepository {
       mutation: entity.toJson(),
     );
 
-    try {
-      socket.emit(event, jsonEncode(send.toJson()));
-      socket.on(resposeIn, (receiver) {
-        final data = jsonDecode(receiver);
-        final mutation = data?['mutation'] ?? [];
-        final error = data?['error'] ?? null;
-        socket.off(resposeIn);
+    socket.emit(event, jsonEncode(send.toJson()));
+    socket.on(resposeIn, (receiver) {
+      try {
+        final respose = jsonDecode(receiver);
+        final mutation = respose?['Mutation'] ?? [];
+        final error = respose?['Error'] ?? null;
 
-        if (error != null) {
-          completer.completeError(error);
-          return;
-        }
+        if (error != null) throw error;
 
         final list = mutation.map<ExpedicaoConferenciaItemModel>((json) {
           return ExpedicaoConferenciaItemModel.fromJson(json);
         }).toList();
 
         completer.complete(list);
-        return;
-      });
+      } catch (e) {
+        completer.completeError(AppError(e.toString()));
+        return completer.future;
+      } finally {
+        socket.off(resposeIn);
+      }
+    });
 
-      return completer.future;
-    } catch (e) {
-      socket.off(resposeIn);
-      completer.completeError(AppError(e.toString()));
-      return completer.future;
-    }
+    return completer.future;
   }
 
   Future<List<ExpedicaoConferenciaItemModel>> deleteAll(
@@ -269,32 +247,28 @@ class ConferenciaItemRepository {
       mutations: entity.map((el) => el.toJson()).toList(),
     );
 
-    try {
-      socket.emit(event, jsonEncode(send.toJson()));
-      socket.on(resposeIn, (receiver) {
-        final data = jsonDecode(receiver);
-        final mutation = data?['mutation'] ?? [];
-        final error = data?['error'] ?? null;
-        socket.off(resposeIn);
+    socket.emit(event, jsonEncode(send.toJson()));
+    socket.on(resposeIn, (receiver) {
+      try {
+        final respose = jsonDecode(receiver);
+        final mutation = respose?['Mutation'] ?? [];
+        final error = respose?['Error'] ?? null;
 
-        if (error != null) {
-          completer.completeError(error);
-          return;
-        }
+        if (error != null) throw error;
 
         final list = mutation.map<ExpedicaoConferenciaItemModel>((json) {
           return ExpedicaoConferenciaItemModel.fromJson(json);
         }).toList();
 
         completer.complete(list);
-        return;
-      });
+      } catch (e) {
+        completer.completeError(AppError(e.toString()));
+        return completer.future;
+      } finally {
+        socket.off(resposeIn);
+      }
+    });
 
-      return completer.future;
-    } catch (e) {
-      socket.off(resposeIn);
-      completer.completeError(AppError(e.toString()));
-      return completer.future;
-    }
+    return completer.future;
   }
 }

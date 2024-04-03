@@ -67,23 +67,28 @@ class ExpedicaoSepararItemModel {
     );
   }
 
-  factory ExpedicaoSepararItemModel.fromJson(Map<String, dynamic> map) {
-    return ExpedicaoSepararItemModel(
-      codEmpresa: map['CodEmpresa'],
-      codSepararEstoque: map['CodSepararEstoque'],
-      item: map['Item'],
-      codSetorEstoque: map['CodSetorEstoque'],
-      origem: map['Origem'],
-      codOrigem: map['CodOrigem'],
-      itemOrigem: map['ItemOrigem'],
-      codLocaArmazenagem: map['CodLocaArmazenagem'],
-      codProduto: map['CodProduto'],
-      codUnidadeMedida: map['CodUnidadeMedida'],
-      quantidade: AppHelper.stringToDouble(map['Quantidade']),
-      quantidadeInterna: AppHelper.stringToDouble(map['QuantidadeInterna']),
-      quantidadeExterna: AppHelper.stringToDouble(map['QuantidadeExterna']),
-      quantidadeSeparacao: AppHelper.stringToDouble(map['QuantidadeSeparacao']),
-    );
+  factory ExpedicaoSepararItemModel.fromJson(Map<String, dynamic> json) {
+    try {
+      return ExpedicaoSepararItemModel(
+        codEmpresa: json['CodEmpresa'],
+        codSepararEstoque: json['CodSepararEstoque'],
+        item: json['Item'],
+        codSetorEstoque: json['CodSetorEstoque'],
+        origem: json['Origem'],
+        codOrigem: json['CodOrigem'],
+        itemOrigem: json['ItemOrigem'],
+        codLocaArmazenagem: json['CodLocaArmazenagem'],
+        codProduto: json['CodProduto'],
+        codUnidadeMedida: json['CodUnidadeMedida'],
+        quantidade: AppHelper.stringToDouble(json['Quantidade']),
+        quantidadeInterna: AppHelper.stringToDouble(json['QuantidadeInterna']),
+        quantidadeExterna: AppHelper.stringToDouble(json['QuantidadeExterna']),
+        quantidadeSeparacao:
+            AppHelper.stringToDouble(json['QuantidadeSeparacao']),
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -103,5 +108,26 @@ class ExpedicaoSepararItemModel {
     data['QuantidadeExterna'] = quantidadeExterna.toStringAsFixed(4);
     data['QuantidadeSeparacao'] = quantidadeSeparacao.toStringAsFixed(4);
     return data;
+  }
+
+  @override
+  String toString() {
+    return '''
+      ExpedicaoSepararItemModel(
+        codEmpresa: $codEmpresa, 
+        codSepararEstoque: $codSepararEstoque, 
+        item: $item, 
+        codSetorEstoque: $codSetorEstoque, 
+        origem: $origem, 
+        codOrigem: $codOrigem, 
+        itemOrigem: $itemOrigem, 
+        codLocaArmazenagem: $codLocaArmazenagem, 
+        codProduto: $codProduto, 
+        codUnidadeMedida: $codUnidadeMedida, 
+        quantidade: $quantidade, 
+        quantidadeInterna: $quantidadeInterna, 
+        quantidadeExterna: $quantidadeExterna, 
+        quantidadeSeparacao: $quantidadeSeparacao
+    )''';
   }
 }

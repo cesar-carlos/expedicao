@@ -134,29 +134,33 @@ class ProcessoExecutavelModel {
     bancoDados = input.bancoDados;
   }
 
-  factory ProcessoExecutavelModel.fromJson(Map map) {
-    return ProcessoExecutavelModel(
-      codProcessoExecutavel: map['CodProcessoExecutavel'],
-      codEmpresa: map['CodEmpresa'],
-      codFilial: map['CodFilial'],
-      status: map['Status'],
-      contexto: map['Contexto'],
-      origem: map['Origem'],
-      codOrigem: map['CodOrigem'],
-      itemOrigem: map['ItemOrigem'],
-      dataAbertura:
-          DateTime.parse(map['DataAbertura'].toString().replaceAll('/', '')),
-      codUsuario: map['CodUsuario'],
-      nomeUsuario: map['NomeUsuario'],
-      codSetorEstoque: map['CodSetorEstoque'],
-      codSetorConferencia: map['CodSetorConferencia'],
-      codContaFinanceira: map['CodContaFinanceira'],
-      codPeriodoCaixa: map['CodPeriodoCaixa'],
-      statusPeriodoCaixa: map['StatusPeriodoCaixa'],
-      usuarioWindows: map['UsuarioWindows'],
-      nomeComputador: map['NomeComputador'],
-      bancoDados: map['BancoDados'],
-    );
+  factory ProcessoExecutavelModel.fromJson(Map<String, dynamic> json) {
+    try {
+      return ProcessoExecutavelModel(
+        codProcessoExecutavel: json['CodProcessoExecutavel'],
+        codEmpresa: json['CodEmpresa'],
+        codFilial: json['CodFilial'],
+        status: json['Status'],
+        contexto: json['Contexto'],
+        origem: json['Origem'],
+        codOrigem: json['CodOrigem'],
+        itemOrigem: json['ItemOrigem'],
+        dataAbertura:
+            DateTime.parse(json['DataAbertura'].toString().replaceAll('/', '')),
+        codUsuario: json['CodUsuario'],
+        nomeUsuario: json['NomeUsuario'],
+        codSetorEstoque: json['CodSetorEstoque'],
+        codSetorConferencia: json['CodSetorConferencia'],
+        codContaFinanceira: json['CodContaFinanceira'],
+        codPeriodoCaixa: json['CodPeriodoCaixa'],
+        statusPeriodoCaixa: json['StatusPeriodoCaixa'],
+        usuarioWindows: json['UsuarioWindows'],
+        nomeComputador: json['NomeComputador'],
+        bancoDados: json['BancoDados'],
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   factory ProcessoExecutavelModel.fromBase64(String texto) {
@@ -211,7 +215,7 @@ class ProcessoExecutavelModel {
         statusPeriodoCaixa: $statusPeriodoCaixa, 
         usuarioWindows: $usuarioWindows, 
         nomeComputador: $nomeComputador, 
-        bancoDados: $bancoDados)
-      ''';
+        bancoDados: $bancoDados
+    )''';
   }
 }

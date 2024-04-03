@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class AppColor {
   static const primaryColor = Color.fromARGB(255, 96, 125, 139);
   static const secondaryColor = Color.fromARGB(255, 242, 244, 245);
+  static const errorColor = Color.fromARGB(255, 223, 114, 106);
 
   static const clickColor = Color.fromARGB(255, 96, 140, 150);
   static const hoverColor = Color.fromARGB(255, 6, 118, 138);

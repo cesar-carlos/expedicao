@@ -1,6 +1,6 @@
 import 'package:app_expedicao/src/app/app_helper.dart';
 
-class ExpedicaoConferirItemSeparacaoConsultaModel {
+class ExpedicaoSeparadoItemConsultaModel {
   final int codEmpresa;
   final int codSepararEstoque;
   final int codCarrinhoPercurso;
@@ -14,6 +14,7 @@ class ExpedicaoConferirItemSeparacaoConsultaModel {
   final String nomeCarrinho;
   final String codigoBarrasCarrinho;
   final String situacaoCarrinho;
+  final int codLocalArmazenagem;
   final int codProduto;
   final String nomeProduto;
   final String codUnidadeMedida;
@@ -24,7 +25,6 @@ class ExpedicaoConferirItemSeparacaoConsultaModel {
   final String? nomeMarca;
   final int? codSetorEstoque;
   final String? nomeSetorEstoque;
-  final String? ncm;
   final String? codigoBarras;
   final String? codigoBarras2;
   final String? codigoReferencia;
@@ -37,7 +37,7 @@ class ExpedicaoConferirItemSeparacaoConsultaModel {
   final String? historico;
   final String? observacao;
 
-  ExpedicaoConferirItemSeparacaoConsultaModel({
+  ExpedicaoSeparadoItemConsultaModel({
     required this.codEmpresa,
     required this.codSepararEstoque,
     required this.codCarrinhoPercurso,
@@ -51,6 +51,7 @@ class ExpedicaoConferirItemSeparacaoConsultaModel {
     required this.nomeCarrinho,
     required this.codigoBarrasCarrinho,
     required this.situacaoCarrinho,
+    required this.codLocalArmazenagem,
     required this.codProduto,
     required this.nomeProduto,
     required this.codUnidadeMedida,
@@ -61,7 +62,6 @@ class ExpedicaoConferirItemSeparacaoConsultaModel {
     this.nomeMarca,
     this.codSetorEstoque,
     this.nomeSetorEstoque,
-    this.ncm,
     this.codigoBarras,
     this.codigoBarras2,
     this.codigoReferencia,
@@ -75,7 +75,7 @@ class ExpedicaoConferirItemSeparacaoConsultaModel {
     this.observacao,
   });
 
-  ExpedicaoConferirItemSeparacaoConsultaModel copyWith({
+  ExpedicaoSeparadoItemConsultaModel copyWith({
     int? codEmpresa,
     int? codSepararEstoque,
     int? codCarrinhoPercurso,
@@ -89,6 +89,7 @@ class ExpedicaoConferirItemSeparacaoConsultaModel {
     String? nomeCarrinho,
     String? codigoBarrasCarrinho,
     String? situacaoCarrinho,
+    int? codLocalArmazenagem,
     int? codProduto,
     String? nomeProduto,
     String? codUnidadeMedida,
@@ -112,7 +113,7 @@ class ExpedicaoConferirItemSeparacaoConsultaModel {
     String? historico,
     String? observacao,
   }) {
-    return ExpedicaoConferirItemSeparacaoConsultaModel(
+    return ExpedicaoSeparadoItemConsultaModel(
       codEmpresa: codEmpresa ?? this.codEmpresa,
       codSepararEstoque: codSepararEstoque ?? this.codSepararEstoque,
       codCarrinhoPercurso: codCarrinhoPercurso ?? this.codCarrinhoPercurso,
@@ -126,6 +127,7 @@ class ExpedicaoConferirItemSeparacaoConsultaModel {
       nomeCarrinho: nomeCarrinho ?? this.nomeCarrinho,
       codigoBarrasCarrinho: codigoBarrasCarrinho ?? this.codigoBarrasCarrinho,
       situacaoCarrinho: situacaoCarrinho ?? this.situacaoCarrinho,
+      codLocalArmazenagem: codLocalArmazenagem ?? this.codLocalArmazenagem,
       codProduto: codProduto ?? this.codProduto,
       nomeProduto: nomeProduto ?? this.nomeProduto,
       codUnidadeMedida: codUnidadeMedida ?? this.codUnidadeMedida,
@@ -135,7 +137,6 @@ class ExpedicaoConferirItemSeparacaoConsultaModel {
       codMarca: codMarca ?? this.codMarca,
       nomeMarca: nomeMarca ?? this.nomeMarca,
       nomeSetorEstoque: nomeSetorEstoque ?? this.nomeSetorEstoque,
-      ncm: ncm ?? this.ncm,
       codigoBarras: codigoBarras ?? this.codigoBarras,
       codigoBarras2: codigoBarras2 ?? this.codigoBarras2,
       codigoReferencia: codigoReferencia ?? this.codigoReferencia,
@@ -151,45 +152,50 @@ class ExpedicaoConferirItemSeparacaoConsultaModel {
     );
   }
 
-  factory ExpedicaoConferirItemSeparacaoConsultaModel.fromJson(
-      Map<String, dynamic> map) {
-    return ExpedicaoConferirItemSeparacaoConsultaModel(
-      codEmpresa: map['CodEmpresa'],
-      codSepararEstoque: map['CodSepararEstoque'],
-      codCarrinhoPercurso: map['CodCarrinhoPercurso'],
-      itemCarrinhoPercurso: map['ItemCarrinhoPercurso'],
-      situacao: map['Situacao'],
-      origem: map['Origem'],
-      codOrigem: map['CodOrigem'],
-      codPrioridade: map['CodPrioridade'],
-      nomePrioridade: map['NomePrioridade'],
-      codCarrinho: map['CodCarrinho'],
-      nomeCarrinho: map['NomeCarrinho'],
-      codigoBarrasCarrinho: map['CodigoBarrasCarrinho'],
-      situacaoCarrinho: map['SituacaoCarrinho'],
-      codProduto: map['CodProduto'],
-      nomeProduto: map['NomeProduto'],
-      codUnidadeMedida: map['CodUnidadeMedida'],
-      nomeUnidadeMedida: map['NomeUnidadeMedida'],
-      codGrupoProduto: map['CodGrupoProduto'],
-      nomeGrupoProduto: map['NomeGrupoProduto'],
-      codMarca: map['CodMarca'],
-      nomeMarca: map['NomeMarca'],
-      codSetorEstoque: map['CodSetorEstoque'],
-      nomeSetorEstoque: map['NomeSetorEstoque'],
-      ncm: map['NCM'] ?? '00000000',
-      codigoBarras: map['CodigoBarras'],
-      codigoBarras2: map['CodigoBarras2'],
-      codigoReferencia: map['CodigoReferencia'],
-      codigoFornecedor: map['CodigoFornecedor'],
-      codigoFabricante: map['CodigoFabricante'],
-      codigoOriginal: map['CodigoOriginal'],
-      endereco: map['Endereco'],
-      enderecoDescricao: map['EnderecoDescricao'],
-      quantidadeSeparacao: AppHelper.stringToDouble(map['QuantidadeSeparacao']),
-      historico: map['Historico'],
-      observacao: map['Observacao'],
-    );
+  factory ExpedicaoSeparadoItemConsultaModel.fromJson(
+      Map<String, dynamic> json) {
+    try {
+      return ExpedicaoSeparadoItemConsultaModel(
+        codEmpresa: json['CodEmpresa'],
+        codSepararEstoque: json['CodSepararEstoque'],
+        codCarrinhoPercurso: json['CodCarrinhoPercurso'],
+        itemCarrinhoPercurso: json['ItemCarrinhoPercurso'],
+        situacao: json['Situacao'],
+        origem: json['Origem'],
+        codOrigem: json['CodOrigem'],
+        codPrioridade: json['CodPrioridade'],
+        nomePrioridade: json['NomePrioridade'],
+        codCarrinho: json['CodCarrinho'],
+        nomeCarrinho: json['NomeCarrinho'],
+        codigoBarrasCarrinho: json['CodigoBarrasCarrinho'],
+        situacaoCarrinho: json['SituacaoCarrinho'],
+        codLocalArmazenagem: json['CodLocalArmazenagem'],
+        codProduto: json['CodProduto'],
+        nomeProduto: json['NomeProduto'],
+        codUnidadeMedida: json['CodUnidadeMedida'],
+        nomeUnidadeMedida: json['NomeUnidadeMedida'],
+        codGrupoProduto: json['CodGrupoProduto'],
+        nomeGrupoProduto: json['NomeGrupoProduto'],
+        codMarca: json['CodMarca'],
+        nomeMarca: json['NomeMarca'],
+        codSetorEstoque: json['CodSetorEstoque'],
+        nomeSetorEstoque: json['NomeSetorEstoque'],
+        codigoBarras: json['CodigoBarras'],
+        codigoBarras2: json['CodigoBarras2'],
+        codigoReferencia: json['CodigoReferencia'],
+        codigoFornecedor: json['CodigoFornecedor'],
+        codigoFabricante: json['CodigoFabricante'],
+        codigoOriginal: json['CodigoOriginal'],
+        endereco: json['Endereco'],
+        enderecoDescricao: json['EnderecoDescricao'],
+        quantidadeSeparacao:
+            AppHelper.stringToDouble(json['QuantidadeSeparacao']),
+        historico: json['Historico'],
+        observacao: json['Observacao'],
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -207,6 +213,7 @@ class ExpedicaoConferirItemSeparacaoConsultaModel {
       'NomeCarrinho': nomeCarrinho,
       'CodigoBarrasCarrinho': codigoBarrasCarrinho,
       'SituacaoCarrinho': situacaoCarrinho,
+      'CodLocalArmazenagem': codLocalArmazenagem,
       'CodProduto': codProduto,
       'NomeProduto': nomeProduto,
       'CodUnidadeMedida': codUnidadeMedida,
@@ -217,7 +224,6 @@ class ExpedicaoConferirItemSeparacaoConsultaModel {
       'NomeMarca': nomeMarca,
       'CodSetorEstoque': codSetorEstoque,
       'NomeSetorEstoque': nomeSetorEstoque,
-      'NCM': ncm,
       'CodigoBarras': codigoBarras,
       'CodigoBarras2': codigoBarras2,
       'CodigoReferencia': codigoReferencia,
@@ -249,6 +255,7 @@ class ExpedicaoConferirItemSeparacaoConsultaModel {
         nomeCarrinho: $nomeCarrinho, 
         codigoBarrasCarrinho: $codigoBarrasCarrinho, 
         situacaoCarrinho: $situacaoCarrinho, 
+        codLocalArmazenagem: $codLocalArmazenagem,
         codProduto: $codProduto, 
         nomeProduto: $nomeProduto, 
         codUnidadeMedida: $codUnidadeMedida, 
@@ -259,7 +266,6 @@ class ExpedicaoConferirItemSeparacaoConsultaModel {
         nomeMarca: $nomeMarca, 
         codSetorEstoque: $codSetorEstoque, 
         nomeSetorEstoque: $nomeSetorEstoque, 
-        ncm: $ncm, 
         codigoBarras: $codigoBarras, 
         codigoBarras2: $codigoBarras2, 
         codigoReferencia: $codigoReferencia, 

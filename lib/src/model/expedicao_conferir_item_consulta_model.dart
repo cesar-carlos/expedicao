@@ -129,38 +129,44 @@ class ExpedicaoConferirItemConsultaModel {
     );
   }
 
-  factory ExpedicaoConferirItemConsultaModel.fromJson(Map map) {
-    return ExpedicaoConferirItemConsultaModel(
-      codEmpresa: map['CodEmpresa'],
-      codConferir: map['CodConferir'],
-      item: map['Item'],
-      origem: map['Origem'],
-      codOrigem: map['CodOrigem'],
-      codCarrinhoPercurso: map['CodCarrinhoPercurso'],
-      itemCarrinhoPercurso: map['ItemCarrinhoPercurso'],
-      situacaoCarrinhoPercurso: map['SituacaoCarrinhoPercurso'],
-      codCarrinho: map['CodCarrinho'],
-      codProduto: map['CodProduto'],
-      nomeProduto: map['NomeProduto'],
-      codUnidadeMedida: map['CodUnidadeMedida'],
-      nomeUnidadeMedida: map['NomeUnidadeMedida'],
-      codGrupoProduto: map['CodGrupoProduto'],
-      nomeGrupoProduto: map['NomeGrupoProduto'],
-      codMarca: map['CodMarca'],
-      nomeMarca: map['NomeMarca'],
-      codSetorEstoque: map['CodSetorEstoque'],
-      nomeSetorEstoque: map['NomeSetorEstoque'],
-      codigoBarras: map['CodigoBarras'],
-      codigoBarras2: map['CodigoBarras2'],
-      codigoReferencia: map['CodigoReferencia'],
-      codigoFornecedor: map['CodigoFornecedor'],
-      codigoFabricante: map['CodigoFabricante'],
-      codigoOriginal: map['CodigoOriginal'],
-      endereco: map['Endereco'],
-      enderecoDescricao: map['EnderecoDescricao'],
-      quantidade: AppHelper.stringToDouble(map['Quantidade']),
-      quantidadeConferida: AppHelper.stringToDouble(map['QuantidadeConferida']),
-    );
+  factory ExpedicaoConferirItemConsultaModel.fromJson(
+      Map<String, dynamic> json) {
+    try {
+      return ExpedicaoConferirItemConsultaModel(
+        codEmpresa: json['CodEmpresa'],
+        codConferir: json['CodConferir'],
+        item: json['Item'],
+        origem: json['Origem'],
+        codOrigem: json['CodOrigem'],
+        codCarrinhoPercurso: json['CodCarrinhoPercurso'],
+        itemCarrinhoPercurso: json['ItemCarrinhoPercurso'],
+        situacaoCarrinhoPercurso: json['SituacaoCarrinhoPercurso'],
+        codCarrinho: json['CodCarrinho'],
+        codProduto: json['CodProduto'],
+        nomeProduto: json['NomeProduto'],
+        codUnidadeMedida: json['CodUnidadeMedida'],
+        nomeUnidadeMedida: json['NomeUnidadeMedida'],
+        codGrupoProduto: json['CodGrupoProduto'],
+        nomeGrupoProduto: json['NomeGrupoProduto'],
+        codMarca: json['CodMarca'],
+        nomeMarca: json['NomeMarca'],
+        codSetorEstoque: json['CodSetorEstoque'],
+        nomeSetorEstoque: json['NomeSetorEstoque'],
+        codigoBarras: json['CodigoBarras'],
+        codigoBarras2: json['CodigoBarras2'],
+        codigoReferencia: json['CodigoReferencia'],
+        codigoFornecedor: json['CodigoFornecedor'],
+        codigoFabricante: json['CodigoFabricante'],
+        codigoOriginal: json['CodigoOriginal'],
+        endereco: json['Endereco'],
+        enderecoDescricao: json['EnderecoDescricao'],
+        quantidade: AppHelper.stringToDouble(json['Quantidade']),
+        quantidadeConferida:
+            AppHelper.stringToDouble(json['QuantidadeConferida']),
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -233,7 +239,7 @@ class ExpedicaoConferirItemConsultaModel {
         endereco: $endereco, 
         enderecoDescricao: $enderecoDescricao, 
         quantidade: $quantidade, 
-        quantidadeConferida: $quantidadeConferida)
-    ''';
+        quantidadeConferida: $quantidadeConferida
+    )''';
   }
 }

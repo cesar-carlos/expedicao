@@ -71,27 +71,26 @@ class ExpedicaoConferirConsultaModel {
     );
   }
 
-  factory ExpedicaoConferirConsultaModel.fromJson(Map map) {
+  factory ExpedicaoConferirConsultaModel.fromJson(Map<String, dynamic> json) {
     try {
       return ExpedicaoConferirConsultaModel(
-        codEmpresa: map['CodEmpresa'],
-        codConferir: map['CodConferir'],
-        origem: map['Origem'],
-        codOrigem: map['CodOrigem'],
-        situacao: map['Situacao'],
-        codCarrinhoPercurso: map['CodCarrinhoPercurso'],
-        dataLancamento: AppHelper.tryStringToDate(map['DataLancamento']),
-        horaLancamento: map['HoraLancamento'],
-        tipoEntidade: map['TipoEntidade'],
-        codEntidade: map['CodEntidade'],
-        nomeEntidade: map['NomeEntidade'],
-        codPrioridade: map['CodPrioridade'],
-        nomePrioridade: map['NomePrioridade'],
-        historico: map['Historico'],
-        observacao: map['Observacao'],
+        codEmpresa: json['CodEmpresa'],
+        codConferir: json['CodConferir'],
+        origem: json['Origem'],
+        codOrigem: json['CodOrigem'],
+        situacao: json['Situacao'],
+        codCarrinhoPercurso: json['CodCarrinhoPercurso'],
+        dataLancamento: AppHelper.tryStringToDate(json['DataLancamento']),
+        horaLancamento: json['HoraLancamento'],
+        tipoEntidade: json['TipoEntidade'],
+        codEntidade: json['CodEntidade'],
+        nomeEntidade: json['NomeEntidade'],
+        codPrioridade: json['CodPrioridade'],
+        nomePrioridade: json['NomePrioridade'],
+        historico: json['Historico'],
+        observacao: json['Observacao'],
       );
     } catch (e) {
-      print('Erro ao converter json para ExpedicaoConferirConsultaModel: $e');
       rethrow;
     }
   }

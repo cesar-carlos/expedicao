@@ -32,7 +32,7 @@ class AppPageRouter {
     GetPage(
         name: AppRouter.splashError,
         transition: Transition.fadeIn,
-        page: () => SplashErrorPage(detail: Get.arguments)),
+        page: () => SplashErrorPage(errorMessage: Get.arguments)),
     GetPage(
       name: AppRouter.login,
       binding: LoginBinding(),

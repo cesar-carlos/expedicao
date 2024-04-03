@@ -67,23 +67,27 @@ class ExpedicaoSepararConsultaModel {
     );
   }
 
-  factory ExpedicaoSepararConsultaModel.fromJson(Map<String, dynamic> map) {
-    return ExpedicaoSepararConsultaModel(
-      codEmpresa: map['CodEmpresa'],
-      codSepararEstoque: map['CodSepararEstoque'],
-      codTipoOperacao: map['CodTipoOperacaoExpedicao'],
-      nomeTipoOperacao: map['NomeTipoOperacaoExpedicao'],
-      situacao: map['Situacao'],
-      tipoEntidade: map['TipoEntidade'],
-      dataEmissao: AppHelper.tryStringToDate(map['DataEmissao']),
-      horaEmissao: map['HoraEmissao'],
-      codEntidade: map['CodEntidade'],
-      nomeEntidade: map['NomeEntidade'],
-      codPrioridade: map['CodPrioridade'],
-      nomePrioridade: map['NomePrioridade'],
-      historico: map['Historico'],
-      observacao: map['Observacao'],
-    );
+  factory ExpedicaoSepararConsultaModel.fromJson(Map<String, dynamic> json) {
+    try {
+      return ExpedicaoSepararConsultaModel(
+        codEmpresa: json['CodEmpresa'],
+        codSepararEstoque: json['CodSepararEstoque'],
+        codTipoOperacao: json['CodTipoOperacaoExpedicao'],
+        nomeTipoOperacao: json['NomeTipoOperacaoExpedicao'],
+        situacao: json['Situacao'],
+        tipoEntidade: json['TipoEntidade'],
+        dataEmissao: AppHelper.tryStringToDate(json['DataEmissao']),
+        horaEmissao: json['HoraEmissao'],
+        codEntidade: json['CodEntidade'],
+        nomeEntidade: json['NomeEntidade'],
+        codPrioridade: json['CodPrioridade'],
+        nomePrioridade: json['NomePrioridade'],
+        historico: json['Historico'],
+        observacao: json['Observacao'],
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -122,7 +126,7 @@ class ExpedicaoSepararConsultaModel {
         codPrioridade: $codPrioridade, 
         nomePrioridade: $nomePrioridade, 
         historico: $historico, 
-        observacao: $observacao)
-      ''';
+        observacao: $observacao
+    )''';
   }
 }

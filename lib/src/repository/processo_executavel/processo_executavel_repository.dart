@@ -5,8 +5,8 @@ import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:app_expedicao/src/app/app_error.dart';
-import 'package:app_expedicao/src/model/send_mutation_socket_model.dart';
 import 'package:app_expedicao/src/model/send_query_socket_model.dart';
+import 'package:app_expedicao/src/model/send_mutation_socket_model.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/app/app_socket_config.dart';
 
@@ -25,30 +25,29 @@ class ProcessoExecutavelRepository {
       where: params,
     );
 
-    try {
-      socket.emit(event, jsonEncode(send.toJson()));
-      socket.on(resposeIn, (receiver) {
-        final data = jsonDecode(receiver);
-        socket.off(resposeIn);
+    socket.emit(event, jsonEncode(send.toJson()));
+    socket.on(resposeIn, (receiver) {
+      try {
+        final respose = jsonDecode(receiver);
+        final error = respose?['Error'] ?? null;
+        final data = respose?['Data'] ?? [];
 
-        if (data.isEmpty) {
-          completer.complete([]);
-          return;
-        }
+        if (error != null) throw error;
 
         final list = data.map<ProcessoExecutavelModel>((json) {
           return ProcessoExecutavelModel.fromJson(json);
         }).toList();
 
         completer.complete(list);
-      });
+      } catch (e) {
+        completer.completeError(AppError(e.toString()));
+        return completer.future;
+      } finally {
+        socket.off(resposeIn);
+      }
+    });
 
-      return completer.future;
-    } catch (e) {
-      socket.off(resposeIn);
-      completer.completeError(AppError(e.toString()));
-      return completer.future;
-    }
+    return completer.future;
   }
 
   Future<List<ProcessoExecutavelModel>> insert(ProcessoExecutavelModel entity) {
@@ -62,33 +61,29 @@ class ProcessoExecutavelRepository {
       mutation: entity.toJson(),
     );
 
-    try {
-      socket.emit(event, jsonEncode(send.toJson()));
-      socket.on(resposeIn, (receiver) {
-        final data = jsonDecode(receiver);
-        final mutation = data?['mutation'] ?? [];
-        final error = data?['error'] ?? null;
-        socket.off(resposeIn);
+    socket.emit(event, jsonEncode(send.toJson()));
+    socket.on(resposeIn, (receiver) {
+      try {
+        final respose = jsonDecode(receiver);
+        final mutation = respose?['Mutation'] ?? [];
+        final error = respose?['Error'] ?? null;
 
-        if (error != null) {
-          completer.completeError(error);
-          return;
-        }
+        if (error != null) throw error;
 
         final list = mutation.map<ProcessoExecutavelModel>((json) {
           return ProcessoExecutavelModel.fromJson(json);
         }).toList();
 
         completer.complete(list);
-        return;
-      });
+      } catch (e) {
+        completer.completeError(AppError(e.toString()));
+        return completer.future;
+      } finally {
+        socket.off(resposeIn);
+      }
+    });
 
-      return completer.future;
-    } catch (e) {
-      socket.off(resposeIn);
-      completer.completeError(AppError(e.toString()));
-      return completer.future;
-    }
+    return completer.future;
   }
 
   Future<List<ProcessoExecutavelModel>> update(ProcessoExecutavelModel entity) {
@@ -102,33 +97,29 @@ class ProcessoExecutavelRepository {
       mutation: entity.toJson(),
     );
 
-    try {
-      socket.emit(event, jsonEncode(send.toJson()));
-      socket.on(resposeIn, (receiver) {
-        final data = jsonDecode(receiver);
-        final mutation = data?['mutation'] ?? [];
-        final error = data?['error'] ?? null;
-        socket.off(resposeIn);
+    socket.emit(event, jsonEncode(send.toJson()));
+    socket.on(resposeIn, (receiver) {
+      try {
+        final respose = jsonDecode(receiver);
+        final mutation = respose?['Mutation'] ?? [];
+        final error = respose?['Error'] ?? null;
 
-        if (error != null) {
-          completer.completeError(error);
-          return;
-        }
+        if (error != null) throw error;
 
         final list = mutation.map<ProcessoExecutavelModel>((json) {
           return ProcessoExecutavelModel.fromJson(json);
         }).toList();
 
         completer.complete(list);
-        return;
-      });
+      } catch (e) {
+        completer.completeError(AppError(e.toString()));
+        return completer.future;
+      } finally {
+        socket.off(resposeIn);
+      }
+    });
 
-      return completer.future;
-    } catch (e) {
-      socket.off(resposeIn);
-      completer.completeError(AppError(e.toString()));
-      return completer.future;
-    }
+    return completer.future;
   }
 
   Future<List<ProcessoExecutavelModel>> delete(ProcessoExecutavelModel entity) {
@@ -142,32 +133,28 @@ class ProcessoExecutavelRepository {
       mutation: entity.toJson(),
     );
 
-    try {
-      socket.emit(event, jsonEncode(send.toJson()));
-      socket.on(resposeIn, (receiver) {
-        final data = jsonDecode(receiver);
-        final mutation = data?['mutation'] ?? [];
-        final error = data?['error'] ?? null;
-        socket.off(resposeIn);
+    socket.emit(event, jsonEncode(send.toJson()));
+    socket.on(resposeIn, (receiver) {
+      try {
+        final respose = jsonDecode(receiver);
+        final mutation = respose?['Mutation'] ?? [];
+        final error = respose?['Error'] ?? null;
 
-        if (error != null) {
-          completer.completeError(error);
-          return;
-        }
+        if (error != null) throw error;
 
         final list = mutation.map<ProcessoExecutavelModel>((json) {
           return ProcessoExecutavelModel.fromJson(json);
         }).toList();
 
         completer.complete(list);
-        return;
-      });
+      } catch (e) {
+        completer.completeError(AppError(e.toString()));
+        return completer.future;
+      } finally {
+        socket.off(resposeIn);
+      }
+    });
 
-      return completer.future;
-    } catch (e) {
-      socket.off(resposeIn);
-      completer.completeError(AppError(e.toString()));
-      return completer.future;
-    }
+    return completer.future;
   }
 }

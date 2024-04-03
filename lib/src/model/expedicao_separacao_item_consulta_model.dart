@@ -148,43 +148,47 @@ class ExpedicaSeparacaoItemConsultaModel {
   }
 
   factory ExpedicaSeparacaoItemConsultaModel.fromJson(
-      Map<String, dynamic> map) {
-    return ExpedicaSeparacaoItemConsultaModel(
-      codEmpresa: map['CodEmpresa'],
-      codSepararEstoque: map['CodSepararEstoque'],
-      item: map['Item'],
-      sessionId: map['SessionId'],
-      situacao: map['Situacao'] ?? '',
-      codCarrinho: map['CodCarrinho'],
-      nomeCarrinho: map['NomeCarrinho'],
-      codigoBarrasCarrinho: map['CodigoBarrasCarrinho'],
-      codCarrinhoPercurso: map['CodCarrinhoPercurso'],
-      itemCarrinhoPercurso: map['ItemCarrinhoPercurso'],
-      codProduto: map['CodProduto'],
-      nomeProduto: map['NomeProduto'],
-      codUnidadeMedida: map['CodUnidadeMedida'],
-      nomeUnidadeMedida: map['NomeUnidadeMedida'],
-      codGrupoProduto: map['CodGrupoProduto'],
-      nomeGrupoProduto: map['NomeGrupoProduto'],
-      codMarca: map['CodMarca'],
-      nomeMarca: map['NomeMarca'],
-      codSetorEstoque: map['CodSetorEstoque'],
-      nomeSetorEstoque: map['NomeSetorEstoque'],
-      ncm: map['NCM'] ?? '00000000',
-      codigoBarras: map['CodigoBarras'],
-      codigoBarras2: map['CodigoBarras2'],
-      codigoReferencia: map['CodigoReferencia'],
-      codigoFornecedor: map['CodigoFornecedor'],
-      codigoFabricante: map['CodigoFabricante'],
-      codigoOriginal: map['CodigoOriginal'],
-      endereco: map['Endereco'],
-      enderecoDescricao: map['EnderecoDescricao'],
-      codSeparador: map['CodSeparador'],
-      nomeSeparador: map['NomeSeparador'],
-      dataSeparacao: AppHelper.tryStringToDate(map['DataSeparacao']),
-      horaSeparacao: map['HoraSeparacao'],
-      quantidade: AppHelper.stringToDouble(map['Quantidade']),
-    );
+      Map<String, dynamic> json) {
+    try {
+      return ExpedicaSeparacaoItemConsultaModel(
+        codEmpresa: json['CodEmpresa'],
+        codSepararEstoque: json['CodSepararEstoque'],
+        item: json['Item'],
+        sessionId: json['SessionId'],
+        situacao: json['Situacao'] ?? '',
+        codCarrinho: json['CodCarrinho'],
+        nomeCarrinho: json['NomeCarrinho'],
+        codigoBarrasCarrinho: json['CodigoBarrasCarrinho'],
+        codCarrinhoPercurso: json['CodCarrinhoPercurso'],
+        itemCarrinhoPercurso: json['ItemCarrinhoPercurso'],
+        codProduto: json['CodProduto'],
+        nomeProduto: json['NomeProduto'],
+        codUnidadeMedida: json['CodUnidadeMedida'],
+        nomeUnidadeMedida: json['NomeUnidadeMedida'],
+        codGrupoProduto: json['CodGrupoProduto'],
+        nomeGrupoProduto: json['NomeGrupoProduto'],
+        codMarca: json['CodMarca'],
+        nomeMarca: json['NomeMarca'],
+        codSetorEstoque: json['CodSetorEstoque'],
+        nomeSetorEstoque: json['NomeSetorEstoque'],
+        ncm: json['NCM'] ?? '00000000',
+        codigoBarras: json['CodigoBarras'],
+        codigoBarras2: json['CodigoBarras2'],
+        codigoReferencia: json['CodigoReferencia'],
+        codigoFornecedor: json['CodigoFornecedor'],
+        codigoFabricante: json['CodigoFabricante'],
+        codigoOriginal: json['CodigoOriginal'],
+        endereco: json['Endereco'],
+        enderecoDescricao: json['EnderecoDescricao'],
+        codSeparador: json['CodSeparador'],
+        nomeSeparador: json['NomeSeparador'],
+        dataSeparacao: AppHelper.tryStringToDate(json['DataSeparacao']),
+        horaSeparacao: json['HoraSeparacao'],
+        quantidade: AppHelper.stringToDouble(json['Quantidade']),
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -263,7 +267,7 @@ class ExpedicaSeparacaoItemConsultaModel {
         nomeSeparador: $nomeSeparador, 
         dataSeparacao: $dataSeparacao, 
         horaSeparacao: $horaSeparacao, 
-        quantidade: $quantidade)
-    ''';
+        quantidade: $quantidade
+    )''';
   }
 }

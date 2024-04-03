@@ -57,20 +57,24 @@ class ExpedicaoCancelamentoModel {
     );
   }
 
-  factory ExpedicaoCancelamentoModel.fromJson(Map<String, dynamic> map) {
-    return ExpedicaoCancelamentoModel(
-      codEmpresa: map['CodEmpresa'],
-      codCancelamento: map['CodCancelamento'],
-      origem: map['Origem'],
-      codOrigem: map['CodOrigem'],
-      itemOrigem: map['ItemOrigem'],
-      codMotivoCancelamento: map['CodMotivoCancelamento'],
-      dataCancelamento: DateTime.parse(map['DataCancelamento']),
-      horaCancelamento: map['HoraCancelamento'],
-      codUsuarioCancelamento: map['CodUsuarioCancelamento'],
-      nomeUsuarioCancelamento: map['NomeUsuarioCancelamento'],
-      observacaoCancelamento: map['ObservacaoCancelamento'],
-    );
+  factory ExpedicaoCancelamentoModel.fromJson(Map<String, dynamic> json) {
+    try {
+      return ExpedicaoCancelamentoModel(
+        codEmpresa: json['CodEmpresa'],
+        codCancelamento: json['CodCancelamento'],
+        origem: json['Origem'],
+        codOrigem: json['CodOrigem'],
+        itemOrigem: json['ItemOrigem'],
+        codMotivoCancelamento: json['CodMotivoCancelamento'],
+        dataCancelamento: DateTime.parse(json['DataCancelamento']),
+        horaCancelamento: json['HoraCancelamento'],
+        codUsuarioCancelamento: json['CodUsuarioCancelamento'],
+        nomeUsuarioCancelamento: json['NomeUsuarioCancelamento'],
+        observacaoCancelamento: json['ObservacaoCancelamento'],
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -87,5 +91,23 @@ class ExpedicaoCancelamentoModel {
       'NomeUsuarioCancelamento': nomeUsuarioCancelamento,
       'ObservacaoCancelamento': observacaoCancelamento,
     };
+  }
+
+  @override
+  String toString() {
+    return '''
+      ExpedicaoCancelamentoModel(
+        codEmpresa: $codEmpresa, 
+        codCancelamento: $codCancelamento, 
+        origem: $origem, 
+        codOrigem: $codOrigem, 
+        itemOrigem: $itemOrigem, 
+        codMotivoCancelamento: $codMotivoCancelamento, 
+        dataCancelamento: $dataCancelamento, 
+        horaCancelamento: $horaCancelamento, 
+        codUsuarioCancelamento: $codUsuarioCancelamento, 
+        nomeUsuarioCancelamento: $nomeUsuarioCancelamento, 
+        observacaoCancelamento: $observacaoCancelamento
+    )''';
   }
 }

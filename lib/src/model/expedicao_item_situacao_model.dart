@@ -9,6 +9,7 @@ abstract class ExpedicaoItemSituacaoModel {
   static const String pausado = 'PA';
   static const String reiniciado = 'RE';
   static const String finalizado = 'FN';
+  static const String armazenar = 'AR';
   static const String vazio = '';
 
   static String getDescricao(String situacao) {
@@ -25,6 +26,8 @@ abstract class ExpedicaoItemSituacaoModel {
     'EX': 'Expedido',
     'PA': 'Pausado',
     'RE': 'Reiniciado',
+    'FN': 'Finalizado',
+    'AR': 'Armazenar',
     '': ''
   };
 }

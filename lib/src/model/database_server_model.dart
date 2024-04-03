@@ -33,15 +33,19 @@ class DataBaseServerModel {
     );
   }
 
-  factory DataBaseServerModel.fromJson(Map map) {
-    return DataBaseServerModel(
-      userName: map['userName'],
-      password: map['password'],
-      serverName: map['serverName'],
-      database: map['database'],
-      databaseName: map['databaseName'],
-      port: map['port'],
-    );
+  factory DataBaseServerModel.fromJson(Map<String, dynamic> json) {
+    try {
+      return DataBaseServerModel(
+        userName: json['userName'],
+        password: json['password'],
+        serverName: json['serverName'],
+        database: json['database'],
+        databaseName: json['databaseName'],
+        port: json['port'],
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -64,7 +68,7 @@ class DataBaseServerModel {
         serverName: $serverName, 
         database: $database, 
         databaseName: $databaseName, 
-        port: $port)
-    ''';
+        port: $port
+    )''';
   }
 }

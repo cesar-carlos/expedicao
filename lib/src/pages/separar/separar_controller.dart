@@ -13,7 +13,6 @@ import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
 import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';
-import 'package:app_expedicao/src/service/conferir_separacao_adicionar_service.dart';
 import 'package:app_expedicao/src/pages/common/widget/loading_sever_dialog_widget.dart';
 import 'package:app_expedicao/src/pages/common/carrinho_dialog/carrinho_dialog_view.dart';
 import 'package:app_expedicao/src/pages/common/confirmation_dialog/confirmation_dialog_view.dart';
@@ -338,20 +337,14 @@ class SepararController extends GetxController {
   }
 
   Future<void> finalizarSeparacao() async {
-    await SepararFinalizarService(
-      codEmpresa: _separarConsulta.codEmpresa,
-      codSepararEstoque: _separarConsulta.codSepararEstoque,
-    ).execute();
-
-    _separarConsulta.situacao = ExpedicaoSituacaoModel.separado;
-    _expedicaoSituacao = ExpedicaoSituacaoModel.separado;
-
     try {
-      await ConferirSeparacaoAdicionarService(
-              carrinhoPercurso: _carrinhoPercurso!)
-          .execute();
+      await SepararFinalizarService(
+        separarConsulta: _separarConsulta,
+        carrinhoPercurso: _carrinhoPercurso!,
+      ).execute();
 
-      update();
+      _separarConsulta.situacao = ExpedicaoSituacaoModel.separado;
+      _expedicaoSituacao = ExpedicaoSituacaoModel.separado;
     } catch (e) {
       await MessageDialogView.show(
         context: Get.context!,

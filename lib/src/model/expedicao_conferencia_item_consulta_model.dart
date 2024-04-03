@@ -135,40 +135,45 @@ class ExpedicaConferenciaItemConsultaModel {
     );
   }
 
-  factory ExpedicaConferenciaItemConsultaModel.fromJson(Map map) {
-    return ExpedicaConferenciaItemConsultaModel(
-      codEmpresa: map['CodEmpresa'],
-      codConferir: map['CodConferir'],
-      item: map['Item'],
-      sessionId: map['SessionId'],
-      situacao: map['Situacao'],
-      codCarrinho: map['CodCarrinho'],
-      nomeCarrinho: map['NomeCarrinho'],
-      codigoBarrasCarrinho: map['CodigoBarrasCarrinho'],
-      codCarrinhoPercurso: map['CodCarrinhoPercurso'],
-      itemCarrinhoPercurso: map['ItemCarrinhoPercurso'],
-      codProduto: map['CodProduto'],
-      nomeProduto: map['NomeProduto'],
-      codUnidadeMedida: map['CodUnidadeMedida'],
-      nomeUnidadeMedida: map['NomeUnidadeMedida'],
-      codGrupoProduto: map['CodGrupoProduto'],
-      nomeGrupoProduto: map['NomeGrupoProduto'],
-      codMarca: map['CodMarca'],
-      nomeMarca: map['NomeMarca'],
-      codigoBarras: map['CodigoBarras'],
-      codigoBarras2: map['CodigoBarras2'],
-      codigoReferencia: map['CodigoReferencia'],
-      codigoFornecedor: map['CodigoFornecedor'],
-      codigoFabricante: map['CodigoFabricante'],
-      codigoOriginal: map['CodigoOriginal'],
-      endereco: map['Endereco'],
-      enderecoDescricao: map['EnderecoDescricao'],
-      codConferente: map['CodConferente'],
-      nomeConferente: map['NomeConferente'],
-      dataConferencia: AppHelper.tryStringToDate(map['DataConferencia']),
-      horaConferencia: map['HoraConferencia'] ?? '00:00:00',
-      quantidade: AppHelper.stringToDouble(map['Quantidade']),
-    );
+  factory ExpedicaConferenciaItemConsultaModel.fromJson(
+      Map<String, dynamic> json) {
+    try {
+      return ExpedicaConferenciaItemConsultaModel(
+        codEmpresa: json['CodEmpresa'],
+        codConferir: json['CodConferir'],
+        item: json['Item'],
+        sessionId: json['SessionId'],
+        situacao: json['Situacao'],
+        codCarrinho: json['CodCarrinho'],
+        nomeCarrinho: json['NomeCarrinho'],
+        codigoBarrasCarrinho: json['CodigoBarrasCarrinho'],
+        codCarrinhoPercurso: json['CodCarrinhoPercurso'],
+        itemCarrinhoPercurso: json['ItemCarrinhoPercurso'],
+        codProduto: json['CodProduto'],
+        nomeProduto: json['NomeProduto'],
+        codUnidadeMedida: json['CodUnidadeMedida'],
+        nomeUnidadeMedida: json['NomeUnidadeMedida'],
+        codGrupoProduto: json['CodGrupoProduto'],
+        nomeGrupoProduto: json['NomeGrupoProduto'],
+        codMarca: json['CodMarca'],
+        nomeMarca: json['NomeMarca'],
+        codigoBarras: json['CodigoBarras'],
+        codigoBarras2: json['CodigoBarras2'],
+        codigoReferencia: json['CodigoReferencia'],
+        codigoFornecedor: json['CodigoFornecedor'],
+        codigoFabricante: json['CodigoFabricante'],
+        codigoOriginal: json['CodigoOriginal'],
+        endereco: json['Endereco'],
+        enderecoDescricao: json['EnderecoDescricao'],
+        codConferente: json['CodConferente'],
+        nomeConferente: json['NomeConferente'],
+        dataConferencia: AppHelper.tryStringToDate(json['DataConferencia']),
+        horaConferencia: json['HoraConferencia'] ?? '00:00:00',
+        quantidade: AppHelper.stringToDouble(json['Quantidade']),
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -241,7 +246,7 @@ class ExpedicaConferenciaItemConsultaModel {
         nomeConferente: $nomeConferente, 
         dataConferencia: $dataConferencia, 
         horaConferencia: $horaConferencia, 
-        quantidade: $quantidade)
-    ''';
+        quantidade: $quantidade
+    )''';
   }
 }

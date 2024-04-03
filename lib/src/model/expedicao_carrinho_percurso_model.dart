@@ -64,18 +64,23 @@ class ExpedicaoCarrinhoPercursoModel {
     );
   }
 
-  factory ExpedicaoCarrinhoPercursoModel.fromJson(Map<String, dynamic> map) {
-    return ExpedicaoCarrinhoPercursoModel(
-      codEmpresa: map['CodEmpresa'],
-      codCarrinhoPercurso: map['CodCarrinhoPercurso'],
-      origem: map['Origem'],
-      codOrigem: map['CodOrigem'],
-      situacao: map['Situacao'],
-      dataInicio: AppHelper.tryStringToDate(map['DataInicio']),
-      horaInicio: map['HoraInicio'] ?? '00:00:00',
-      dataFinalizacao: AppHelper.tryStringToDateOrNull(map['DataFinalizacao']),
-      horaFinalizacao: map['HoraFinalizacao'],
-    );
+  factory ExpedicaoCarrinhoPercursoModel.fromJson(Map<String, dynamic> json) {
+    try {
+      return ExpedicaoCarrinhoPercursoModel(
+        codEmpresa: json['CodEmpresa'],
+        codCarrinhoPercurso: json['CodCarrinhoPercurso'],
+        origem: json['Origem'],
+        codOrigem: json['CodOrigem'],
+        situacao: json['Situacao'],
+        dataInicio: AppHelper.tryStringToDate(json['DataInicio']),
+        horaInicio: json['HoraInicio'] ?? '00:00:00',
+        dataFinalizacao:
+            AppHelper.tryStringToDateOrNull(json['DataFinalizacao']),
+        horaFinalizacao: json['HoraFinalizacao'],
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -104,7 +109,7 @@ class ExpedicaoCarrinhoPercursoModel {
         dataInicio: $dataInicio, 
         horaInicio: $horaInicio, 
         dataFinalizacao: $dataFinalizacao, 
-        horaFinalizacao: $horaFinalizacao)
-      ''';
+        horaFinalizacao: $horaFinalizacao
+    )''';
   }
 }

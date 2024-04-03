@@ -78,25 +78,30 @@ class ExpedicaoCarrinhoPercursoEstagioModel {
   }
 
   factory ExpedicaoCarrinhoPercursoEstagioModel.fromJson(
-      Map<String, dynamic> map) {
-    return ExpedicaoCarrinhoPercursoEstagioModel(
-      codEmpresa: map['CodEmpresa'],
-      codCarrinhoPercurso: map['CodCarrinhoPercurso'],
-      item: map['Item'],
-      origem: map['Origem'],
-      codOrigem: map['CodOrigem'],
-      codPercursoEstagio: map['CodPercursoEstagio'],
-      codCarrinho: map['CodCarrinho'],
-      situacao: map['Situacao'],
-      dataInicio: DateTime.parse(map['DataInicio']),
-      horaInicio: map['HoraInicio'],
-      codUsuarioInicio: map['CodUsuarioInicio'],
-      nomeUsuarioInicio: map['NomeUsuarioInicio'],
-      dataFinalizacao: AppHelper.tryStringToDateOrNull(map['DataFinalizacao']),
-      horaFinalizacao: map['HoraFinalizacao'],
-      codUsuarioFinalizacao: map['CodUsuarioFinalizacao'],
-      nomeUsuarioFinalizacao: map['NomeUsuarioFinalizacao'],
-    );
+      Map<String, dynamic> json) {
+    try {
+      return ExpedicaoCarrinhoPercursoEstagioModel(
+        codEmpresa: json['CodEmpresa'],
+        codCarrinhoPercurso: json['CodCarrinhoPercurso'],
+        item: json['Item'],
+        origem: json['Origem'],
+        codOrigem: json['CodOrigem'],
+        codPercursoEstagio: json['CodPercursoEstagio'],
+        codCarrinho: json['CodCarrinho'],
+        situacao: json['Situacao'],
+        dataInicio: DateTime.parse(json['DataInicio']),
+        horaInicio: json['HoraInicio'],
+        codUsuarioInicio: json['CodUsuarioInicio'],
+        nomeUsuarioInicio: json['NomeUsuarioInicio'],
+        dataFinalizacao:
+            AppHelper.tryStringToDateOrNull(json['DataFinalizacao']),
+        horaFinalizacao: json['HoraFinalizacao'],
+        codUsuarioFinalizacao: json['CodUsuarioFinalizacao'],
+        nomeUsuarioFinalizacao: json['NomeUsuarioFinalizacao'],
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -139,7 +144,7 @@ class ExpedicaoCarrinhoPercursoEstagioModel {
         dataFinalizacao: $dataFinalizacao, 
         horaFinalizacao: $horaFinalizacao, 
         codUsuarioFinalizacao: $codUsuarioFinalizacao, 
-        nomeUsuarioFinalizacao: $nomeUsuarioFinalizacao)
-    ''';
+        nomeUsuarioFinalizacao: $nomeUsuarioFinalizacao
+    )''';
   }
 }

@@ -5,13 +5,12 @@ class ProcessoExecutavelService {
   Future<ProcessoExecutavelModel?> executar() async {
     try {
       final repository = ProcessoExecutavelRepository();
-      const params = "Status LIKE 'Ativo'";
+      //final dataAtual = DateTime.now().toIso8601String().substring(0, 10);
+      final params = " Status LIKE 'Ativo' ";
 
       final response = await repository.select(params);
 
-      if (response.isEmpty) {
-        return null;
-      }
+      if (response.isEmpty) return null;
 
       response.sort((a, b) {
         return b.dataAbertura.compareTo(a.dataAbertura);

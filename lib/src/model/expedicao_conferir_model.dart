@@ -96,26 +96,30 @@ class ExpedicaoConferirModel {
     );
   }
 
-  factory ExpedicaoConferirModel.fromJson(Map map) {
-    return ExpedicaoConferirModel(
-      codEmpresa: map['CodEmpresa'],
-      codConferir: map['CodConferir'],
-      origem: map['Origem'],
-      codOrigem: map['CodOrigem'],
-      codPrioridade: map['CodPrioridade'],
-      situacao: map['Situacao'],
-      data: AppHelper.tryStringToDate(map['Data']),
-      hora: map['Hora'],
-      historico: map['Historico'],
-      observacao: map['Observacao'],
-      codMotivoCancelamento: map['CodMotivoCancelamento'],
-      dataCancelamento:
-          AppHelper.tryStringToDateOrNull(map['DataCancelamento']),
-      horaCancelamento: map['HoraCancelamento'],
-      codUsuarioCancelamento: map['CodUsuarioCancelamento'],
-      nomeUsuarioCancelamento: map['NomeUsuarioCancelamento'],
-      observacaoCancelamento: map['ObservacaoCancelamento'],
-    );
+  factory ExpedicaoConferirModel.fromJson(Map<String, dynamic> json) {
+    try {
+      return ExpedicaoConferirModel(
+        codEmpresa: json['CodEmpresa'],
+        codConferir: json['CodConferir'],
+        origem: json['Origem'],
+        codOrigem: json['CodOrigem'],
+        codPrioridade: json['CodPrioridade'],
+        situacao: json['Situacao'],
+        data: AppHelper.tryStringToDate(json['Data']),
+        hora: json['Hora'],
+        historico: json['Historico'],
+        observacao: json['Observacao'],
+        codMotivoCancelamento: json['CodMotivoCancelamento'],
+        dataCancelamento:
+            AppHelper.tryStringToDateOrNull(json['DataCancelamento']),
+        horaCancelamento: json['HoraCancelamento'],
+        codUsuarioCancelamento: json['CodUsuarioCancelamento'],
+        nomeUsuarioCancelamento: json['NomeUsuarioCancelamento'],
+        observacaoCancelamento: json['ObservacaoCancelamento'],
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -158,7 +162,7 @@ class ExpedicaoConferirModel {
         horaCancelamento: $horaCancelamento, 
         codUsuarioCancelamento: $codUsuarioCancelamento, 
         nomeUsuarioCancelamento: $nomeUsuarioCancelamento, 
-        observacaoCancelamento: $observacaoCancelamento)
-      ''';
+        observacaoCancelamento: $observacaoCancelamento
+    )''';
   }
 }

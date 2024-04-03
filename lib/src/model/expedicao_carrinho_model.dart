@@ -47,15 +47,19 @@ class ExpedicaoCarrinhoModel {
     );
   }
 
-  factory ExpedicaoCarrinhoModel.fromJson(Map<String, dynamic> map) {
-    return ExpedicaoCarrinhoModel(
-      codEmpresa: map['CodEmpresa'],
-      codCarrinho: map['CodCarrinho'],
-      descricao: map['Descricao'],
-      ativo: map['Ativo'],
-      codigoBarras: map['CodigoBarras'],
-      situacao: map['Situacao'],
-    );
+  factory ExpedicaoCarrinhoModel.fromJson(Map<String, dynamic> json) {
+    try {
+      return ExpedicaoCarrinhoModel(
+        codEmpresa: json['CodEmpresa'],
+        codCarrinho: json['CodCarrinho'],
+        descricao: json['Descricao'],
+        ativo: json['Ativo'],
+        codigoBarras: json['CodigoBarras'],
+        situacao: json['Situacao'],
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -78,7 +82,7 @@ class ExpedicaoCarrinhoModel {
         descricao: $descricao, 
         ativo: $ativo, 
         codigoBarras: $codigoBarras, 
-        situacao: $situacao)
-    ''';
+        situacao: $situacao
+    )''';
   }
 }

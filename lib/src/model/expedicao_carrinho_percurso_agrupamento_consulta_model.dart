@@ -91,29 +91,33 @@ class ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel {
   }
 
   factory ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel.fromJson(
-      Map<String, dynamic> map) {
-    return ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel(
-      codEmpresa: map['CodEmpresa'],
-      codCarrinhoPercurso: map['CodCarrinhoPercurso'],
-      itemAgrupamento: map['ItemAgrupamento'],
-      itemCarrinhoPercurso: map['ItemCarrinhoPercurso'],
-      origem: map['Origem'],
-      codOrigem: map['CodOrigem'],
-      situacao: map['Situacao'],
-      situacaoPercurso: map['SituacaoPercurso'],
-      codPercursoEstagio: map['CodPercursoEstagio'],
-      descricaoPercursoEstagio: map['DescricaoPercursoEstagio'],
-      codCarrinhoAgrupador: map['CodCarrinhoAgrupador'],
-      nomeCarrinhoAgrupador: map['NomeCarrinhoAgrupador'],
-      codCarrinho: map['CodCarrinho'],
-      nomeCarrinho: map['NomeCarrinho'],
-      codigoBarrasCarrinho: map['CodigoBarrasCarrinho'],
-      carrinhoAgrupador: map['CarrinhoAgrupador'],
-      dataInicio: DateTime.parse(map['DataInicio']),
-      horaInicio: map['HoraInicio'],
-      codUsuarioInicio: map['CodUsuarioInicio'],
-      nomeUsuarioInicio: map['NomeUsuarioInicio'],
-    );
+      Map<String, dynamic> json) {
+    try {
+      return ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel(
+        codEmpresa: json['CodEmpresa'],
+        codCarrinhoPercurso: json['CodCarrinhoPercurso'],
+        itemAgrupamento: json['ItemAgrupamento'],
+        itemCarrinhoPercurso: json['ItemCarrinhoPercurso'],
+        origem: json['Origem'],
+        codOrigem: json['CodOrigem'],
+        situacao: json['Situacao'],
+        situacaoPercurso: json['SituacaoPercurso'],
+        codPercursoEstagio: json['CodPercursoEstagio'],
+        descricaoPercursoEstagio: json['DescricaoPercursoEstagio'],
+        codCarrinhoAgrupador: json['CodCarrinhoAgrupador'],
+        nomeCarrinhoAgrupador: json['NomeCarrinhoAgrupador'],
+        codCarrinho: json['CodCarrinho'],
+        nomeCarrinho: json['NomeCarrinho'],
+        codigoBarrasCarrinho: json['CodigoBarrasCarrinho'],
+        carrinhoAgrupador: json['CarrinhoAgrupador'],
+        dataInicio: DateTime.parse(json['DataInicio']),
+        horaInicio: json['HoraInicio'],
+        codUsuarioInicio: json['CodUsuarioInicio'],
+        nomeUsuarioInicio: json['NomeUsuarioInicio'],
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -163,7 +167,6 @@ class ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel {
         horaInicio: $horaInicio, 
         codUsuarioInicio: $codUsuarioInicio, 
         nomeUsuarioInicio: $nomeUsuarioInicio
-      )
-    ''';
+    )''';
   }
 }

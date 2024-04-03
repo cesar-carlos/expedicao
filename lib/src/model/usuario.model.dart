@@ -21,11 +21,11 @@ class UsuarioModel {
     );
   }
 
-  factory UsuarioModel.fromJson(Map<String, dynamic> map) {
+  factory UsuarioModel.fromJson(Map<String, dynamic> json) {
     return UsuarioModel(
-      codUsuario: map['CodUsuario'] as int,
-      nomeUsuario: map['NomeUsuario'] as String,
-      ativo: map['Ativo'] as String,
+      codUsuario: json['CodUsuario'] as int,
+      nomeUsuario: json['NomeUsuario'] as String,
+      ativo: json['Ativo'] as String,
     );
   }
 
@@ -43,7 +43,7 @@ class UsuarioModel {
       UsuarioModel(
         codUsuario: $codUsuario, 
         nomeUsuario: $nomeUsuario, 
-        ativo: $ativo)
-    ''';
+        ativo: $ativo
+    )''';
   }
 }

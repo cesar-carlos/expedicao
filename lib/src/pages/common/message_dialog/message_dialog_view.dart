@@ -1,3 +1,4 @@
+import 'package:app_expedicao/src/app/app_color.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
@@ -6,8 +7,8 @@ import 'package:app_expedicao/src/pages/common/message_dialog/message_dialog_con
 import 'package:app_expedicao/src/app/app_event_state.dart';
 
 class MessageDialogView {
-  static const double _widthForm = 350;
-  static const double _heightForm = 200;
+  static const double _widthForm = 380;
+  static const double _heightForm = 230;
 
   static Future<bool?> show({
     required BuildContext context,
@@ -30,25 +31,27 @@ class MessageDialogView {
               onKey: controller.handleKeyEvent,
               child: Dialog(
                 child: Container(
-                  width: _widthForm,
-                  height: _heightForm,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(7),
-                    color: Colors.white,
+                    color: AppColor.foregroundColor,
                   ),
-                  child: SizedBox.expand(
+                  child: SizedBox(
+                    width: _widthForm,
+                    height: _heightForm,
                     child: Padding(
-                      padding: EdgeInsets.only(left: 20, right: 15, top: 30),
+                      padding: EdgeInsets.only(left: 20, top: 15, right: 10),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            message,
-                            style: const TextStyle(fontSize: 20),
-                          ),
+                          Text(message, style: const TextStyle(fontSize: 20)),
                           const SizedBox(height: 10),
-                          Text(detail),
+                          SizedBox(
+                            height: _heightForm - 115,
+                            child: SingleChildScrollView(
+                              child: Text(detail),
+                            ),
+                          ),
                           const Spacer(),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,

@@ -73,24 +73,28 @@ class EstoqueProdutoConversaoUnidadeConsultaModel {
   }
 
   factory EstoqueProdutoConversaoUnidadeConsultaModel.fromJson(
-      Map<String, dynamic> map) {
-    return EstoqueProdutoConversaoUnidadeConsultaModel(
-      codProduto: map['CodProduto'],
-      nomeProduto: map['NomeProduto'],
-      item: map['Item'],
-      codUnidadeMedida: map['CodUnidadeMedida'],
-      unidadeMedidaDescricao: map['UnidadeMedidaDescricao'],
-      unidadeMedidaPadrao: map['UnidadeMedidaPadrao'],
-      tipoFatorConversao: map['TipoFatorConversao'] ?? 'M',
-      fatorConversao: AppHelper.stringToDouble(map['FatorConversao']),
-      codigoBarras: map['CodigoBarras'],
-      precoVenda: AppHelper.stringToDouble(map['PrecoVenda']),
-      precoVenda2: AppHelper.stringToDouble(map['PrecoVenda2']),
-      precoVenda3: AppHelper.stringToDouble(map['PrecoVenda3']),
-      precoVenda4: AppHelper.stringToDouble(map['PrecoVenda4']),
-      precoVenda5: AppHelper.stringToDouble(map['PrecoVenda5']),
-      observacao: map['Observacao'],
-    );
+      Map<String, dynamic> json) {
+    try {
+      return EstoqueProdutoConversaoUnidadeConsultaModel(
+        codProduto: json['CodProduto'],
+        nomeProduto: json['NomeProduto'],
+        item: json['Item'],
+        codUnidadeMedida: json['CodUnidadeMedida'],
+        unidadeMedidaDescricao: json['UnidadeMedidaDescricao'],
+        unidadeMedidaPadrao: json['UnidadeMedidaPadrao'],
+        tipoFatorConversao: json['TipoFatorConversao'] ?? 'M',
+        fatorConversao: AppHelper.stringToDouble(json['FatorConversao']),
+        codigoBarras: json['CodigoBarras'],
+        precoVenda: AppHelper.stringToDouble(json['PrecoVenda']),
+        precoVenda2: AppHelper.stringToDouble(json['PrecoVenda2']),
+        precoVenda3: AppHelper.stringToDouble(json['PrecoVenda3']),
+        precoVenda4: AppHelper.stringToDouble(json['PrecoVenda4']),
+        precoVenda5: AppHelper.stringToDouble(json['PrecoVenda5']),
+        observacao: json['Observacao'],
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -111,5 +115,27 @@ class EstoqueProdutoConversaoUnidadeConsultaModel {
       'PrecoVenda5': precoVenda5,
       'Observacao': observacao,
     };
+  }
+
+  @override
+  String toString() {
+    return '''
+      EstoqueProdutoConversaoUnidadeConsultaModel(
+        codProduto: $codProduto, 
+        nomeProduto: $nomeProduto, 
+        item: $item, 
+        codUnidadeMedida: $codUnidadeMedida, 
+        unidadeMedidaDescricao: $unidadeMedidaDescricao, 
+        unidadeMedidaPadrao: $unidadeMedidaPadrao, 
+        tipoFatorConversao: $tipoFatorConversao, 
+        fatorConversao: $fatorConversao, 
+        codigoBarras: $codigoBarras, 
+        precoVenda: $precoVenda, 
+        precoVenda2: $precoVenda2, 
+        precoVenda3: $precoVenda3, 
+        precoVenda4: $precoVenda4, 
+        precoVenda5: $precoVenda5, 
+        observacao: $observacao
+    )''';
   }
 }

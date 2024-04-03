@@ -29,14 +29,18 @@ class ExpedicaoEstagioModel {
     );
   }
 
-  factory ExpedicaoEstagioModel.fromJson(Map<String, dynamic> map) {
-    return ExpedicaoEstagioModel(
-      codPercursoEstagio: map['CodPercursoEstagio'],
-      descricao: map['Descricao'],
-      ativo: map['Ativo'],
-      origem: map['Origem'],
-      sequencia: map['Sequencia'],
-    );
+  factory ExpedicaoEstagioModel.fromJson(Map<String, dynamic> json) {
+    try {
+      return ExpedicaoEstagioModel(
+        codPercursoEstagio: json['CodPercursoEstagio'],
+        descricao: json['Descricao'],
+        ativo: json['Ativo'],
+        origem: json['Origem'],
+        sequencia: json['Sequencia'],
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -51,6 +55,12 @@ class ExpedicaoEstagioModel {
 
   @override
   String toString() {
-    return 'ExpedicaoEstagioModel(codPercursoEstagio: $codPercursoEstagio, descricao: $descricao, ativo: $ativo, origem: $origem, sequencia: $sequencia)';
+    return '''ExpedicaoEstagioModel(
+      codPercursoEstagio: $codPercursoEstagio, 
+      descricao: $descricao, 
+      ativo: $ativo, origem: 
+      $origem, sequencia: 
+      $sequencia
+    )''';
   }
 }

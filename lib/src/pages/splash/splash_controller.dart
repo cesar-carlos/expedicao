@@ -1,15 +1,16 @@
 import 'package:get/get.dart';
 
 import 'package:app_expedicao/src/routes/app_router.dart';
+import 'package:app_expedicao/src/model/error.message.dart';
 import 'package:app_expedicao/src/app/app_socket_config.dart';
 import 'package:app_expedicao/src/service/usuario_service.dart';
 import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
 import 'package:app_expedicao/src/service/separar_consultas_services.dart';
 import 'package:app_expedicao/src/service/conferir_consultas_services.dart';
-import 'package:app_expedicao/src/service/processo_executavel_service.dart';
-import 'package:app_expedicao/src/model/expedicao_conferir_consulta_model.dart';
 import 'package:app_expedicao/src/pages/common/widget/loading_sever_dialog_widget.dart';
+import 'package:app_expedicao/src/model/expedicao_conferir_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
+import 'package:app_expedicao/src/service/processo_executavel_service.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/app/app_server_file_init.dart';
 import 'package:app_expedicao/src/model/usuario_consulta.dart';
@@ -37,7 +38,6 @@ class SplashController extends GetxController {
     _isLoad.value = false;
     await Future.delayed(const Duration(seconds: 1));
 
-    //CONFIG SERVER
     final existsfileConfApi = await _existsfileConfApi();
     if (!existsfileConfApi) {
       Get.offNamed(AppRouter.login);
@@ -50,13 +50,12 @@ class SplashController extends GetxController {
       _processoExecutavel = await ProcessoExecutavelService().executar();
 
       if (_processoExecutavel == null) {
-        Get.offNamed(
-          AppRouter.splashError,
-          arguments: '''
-            Processo Executavel não encontrado
-             - verifique a conexão com o servidor ''',
+        final errorMessage = ErrorMessage(
+          title: 'Erro',
+          message: 'verifique a conexão com o servidor',
         );
 
+        Get.offNamed(AppRouter.splashError, arguments: errorMessage);
         return;
       }
 
@@ -74,11 +73,12 @@ class SplashController extends GetxController {
     }
 
     if (_usuarioLogado == null) {
-      Get.offNamed(
-        AppRouter.splashError,
-        arguments: 'Usuario Logado não encontrado',
+      final errorMessage = ErrorMessage(
+        title: 'Erro',
+        message: 'Usuario Logado não encontrado',
       );
 
+      Get.offNamed(AppRouter.splashError, arguments: errorMessage);
       return;
     }
 
@@ -94,14 +94,12 @@ class SplashController extends GetxController {
       _separarConsulta = await separarConsultaServices.separar();
 
       if (_separarConsulta == null) {
-        Get.offNamed(
-          AppRouter.splashError,
-          arguments: '''
-            Separar estoque não encontrado, 
-              origem: ${_processoExecutavel!.origem}
-              codigo: ${_processoExecutavel!.codOrigem} ''',
+        final errorMessage = ErrorMessage(
+          title: 'Erro',
+          message: 'Separar estoque não encontrado',
         );
 
+        Get.offNamed(AppRouter.splashError, arguments: errorMessage);
         return;
       }
     }
@@ -115,11 +113,12 @@ class SplashController extends GetxController {
 
       _conferirConsulta = await conferirConsultaServices.conferir();
       if (_conferirConsulta == null) {
-        Get.offNamed(AppRouter.splashError, arguments: '''
-            Conferir estoque não encontrado, 
-              origem: ${_processoExecutavel!.origem}
-              codigo: ${_processoExecutavel!.codOrigem} ''');
+        final errorMessage = ErrorMessage(
+          title: 'Erro',
+          message: 'Conferir estoque não encontrado',
+        );
 
+        Get.offNamed(AppRouter.splashError, arguments: errorMessage);
         return;
       }
     }

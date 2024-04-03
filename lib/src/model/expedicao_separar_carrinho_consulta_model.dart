@@ -30,21 +30,25 @@ class ExpedicaoSepararCarrinhoConsultaModel {
   });
 
   factory ExpedicaoSepararCarrinhoConsultaModel.fromJson(
-      Map<String, dynamic> map) {
-    return ExpedicaoSepararCarrinhoConsultaModel(
-      codEmpresa: map['CodEmpresa'],
-      codCarrinhoPercurso: map['CodCarrinhoPercurso'],
-      origem: map['Origem'],
-      codOrigem: map['CodOrigem'],
-      codCarrinho: map['CodCarrinho'],
-      carrinhoNome: map['CarrinhoNome'],
-      codigoBarras: map['CodigoBarras'],
-      situacao: map['Situacao'],
-      dataInicio: AppHelper.tryStringToDate(map['DataInicio']),
-      horaInicio: map['HoraInicio'] ?? '00:00:00',
-      codUsuario: map['CodUsuario'],
-      nomeUsuario: map['NomeUsuario'],
-    );
+      Map<String, dynamic> json) {
+    try {
+      return ExpedicaoSepararCarrinhoConsultaModel(
+        codEmpresa: json['CodEmpresa'],
+        codCarrinhoPercurso: json['CodCarrinhoPercurso'],
+        origem: json['Origem'],
+        codOrigem: json['CodOrigem'],
+        codCarrinho: json['CodCarrinho'],
+        carrinhoNome: json['CarrinhoNome'],
+        codigoBarras: json['CodigoBarras'],
+        situacao: json['Situacao'],
+        dataInicio: AppHelper.tryStringToDate(json['DataInicio']),
+        horaInicio: json['HoraInicio'] ?? '00:00:00',
+        codUsuario: json['CodUsuario'],
+        nomeUsuario: json['NomeUsuario'],
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -62,5 +66,24 @@ class ExpedicaoSepararCarrinhoConsultaModel {
       'CodUsuario': codUsuario,
       'NomeUsuario': nomeUsuario,
     };
+  }
+
+  @override
+  String toString() {
+    return '''
+      ExpedicaoSepararCarrinhoConsultaModel(
+        codEmpresa: $codEmpresa, 
+        codCarrinhoPercurso: $codCarrinhoPercurso, 
+        origem: $origem, 
+        codOrigem: $codOrigem, 
+        codCarrinho: $codCarrinho, 
+        carrinhoNome: $carrinhoNome, 
+        codigoBarras: $codigoBarras, 
+        situacao: $situacao, 
+        dataInicio: $dataInicio, 
+        horaInicio: $horaInicio, 
+        codUsuario: $codUsuario, 
+        nomeUsuario: $nomeUsuario
+    )''';
   }
 }

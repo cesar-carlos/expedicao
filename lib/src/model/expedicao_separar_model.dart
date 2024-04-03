@@ -107,28 +107,32 @@ class ExpedicaoSepararModel {
     );
   }
 
-  factory ExpedicaoSepararModel.fromJson(Map map) {
-    return ExpedicaoSepararModel(
-      codEmpresa: map['CodEmpresa'],
-      codSepararEstoque: map['CodSepararEstoque'],
-      codTipoOperacaoExpedicao: map['CodTipoOperacaoExpedicao'],
-      tipoEntidade: map['TipoEntidade'],
-      codEntidade: map['CodEntidade'],
-      nomeEntidade: map['NomeEntidade'],
-      situacao: map['Situacao'],
-      data: AppHelper.tryStringToDate(map['Data']),
-      hora: map['Hora'] ?? '00:00:00',
-      codPrioridade: map['CodPrioridade'],
-      historico: map['Historico'],
-      observacao: map['Observacao'],
-      codMotivoCancelamento: map['CodMotivoCancelamento'],
-      dataCancelamento:
-          AppHelper.tryStringToDateOrNull(map['DataCancelamento']),
-      horaCancelamento: map['HoraCancelamento'],
-      codUsuarioCancelamento: map['CodUsuarioCancelamento'],
-      nomeUsuarioCancelamento: map['NomeUsuarioCancelamento'],
-      observacaoCancelamento: map['ObservacaoCancelamento'],
-    );
+  factory ExpedicaoSepararModel.fromJson(Map<String, dynamic> json) {
+    try {
+      return ExpedicaoSepararModel(
+        codEmpresa: json['CodEmpresa'],
+        codSepararEstoque: json['CodSepararEstoque'],
+        codTipoOperacaoExpedicao: json['CodTipoOperacaoExpedicao'],
+        tipoEntidade: json['TipoEntidade'],
+        codEntidade: json['CodEntidade'],
+        nomeEntidade: json['NomeEntidade'],
+        situacao: json['Situacao'],
+        data: AppHelper.tryStringToDate(json['Data']),
+        hora: json['Hora'] ?? '00:00:00',
+        codPrioridade: json['CodPrioridade'],
+        historico: json['Historico'],
+        observacao: json['Observacao'],
+        codMotivoCancelamento: json['CodMotivoCancelamento'],
+        dataCancelamento:
+            AppHelper.tryStringToDateOrNull(json['DataCancelamento']),
+        horaCancelamento: json['HoraCancelamento'],
+        codUsuarioCancelamento: json['CodUsuarioCancelamento'],
+        nomeUsuarioCancelamento: json['NomeUsuarioCancelamento'],
+        observacaoCancelamento: json['ObservacaoCancelamento'],
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -175,7 +179,7 @@ class ExpedicaoSepararModel {
         horaCancelamento: $horaCancelamento, 
         codUsuarioCancelamento: $codUsuarioCancelamento, 
         nomeUsuarioCancelamento: $nomeUsuarioCancelamento, 
-        observacaoCancelamento: $observacaoCancelamento)
-      ''';
+        observacaoCancelamento: $observacaoCancelamento
+    )''';
   }
 }

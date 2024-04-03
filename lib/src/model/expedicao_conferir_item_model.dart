@@ -63,18 +63,23 @@ class ExpedicaoConferirItemModel {
     );
   }
 
-  factory ExpedicaoConferirItemModel.fromJson(Map<String, dynamic> map) {
-    return ExpedicaoConferirItemModel(
-      codEmpresa: map['CodEmpresa'],
-      codConferir: map['CodConferir'],
-      item: map['Item'],
-      codCarrinhoPercurso: map['CodCarrinhoPercurso'],
-      itemCarrinhoPercurso: map['ItemCarrinhoPercurso'],
-      codProduto: map['CodProduto'],
-      codUnidadeMedida: map['CodUnidadeMedida'],
-      quantidade: AppHelper.stringToDouble(map['Quantidade']),
-      quantidadeConferida: AppHelper.stringToDouble(map['QuantidadeConferida']),
-    );
+  factory ExpedicaoConferirItemModel.fromJson(Map<String, dynamic> json) {
+    try {
+      return ExpedicaoConferirItemModel(
+        codEmpresa: json['CodEmpresa'],
+        codConferir: json['CodConferir'],
+        item: json['Item'],
+        codCarrinhoPercurso: json['CodCarrinhoPercurso'],
+        itemCarrinhoPercurso: json['ItemCarrinhoPercurso'],
+        codProduto: json['CodProduto'],
+        codUnidadeMedida: json['CodUnidadeMedida'],
+        quantidade: AppHelper.stringToDouble(json['Quantidade']),
+        quantidadeConferida:
+            AppHelper.stringToDouble(json['QuantidadeConferida']),
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -93,6 +98,16 @@ class ExpedicaoConferirItemModel {
 
   @override
   String toString() {
-    return 'ExpedicaoConferirItemModel(codEmpresa: $codEmpresa, codConferir: $codConferir, item: $item, codCarrinhoPercurso: $codCarrinhoPercurso, itemCarrinhoPercurso: $itemCarrinhoPercurso, codProduto: $codProduto, codUnidadeMedida: $codUnidadeMedida, quantidade: $quantidade, quantidadeConferida: $quantidadeConferida)';
+    return '''ExpedicaoConferirItemModel(
+      codEmpresa: $codEmpresa, 
+      codConferir: $codConferir, 
+      item: $item, 
+      codCarrinhoPercurso: $codCarrinhoPercurso, 
+      itemCarrinhoPercurso: $itemCarrinhoPercurso, 
+      codProduto: $codProduto, 
+      codUnidadeMedida: $codUnidadeMedida, 
+      quantidade: $quantidade, 
+      quantidadeConferida: $quantidadeConferida
+    )''';
   }
 }

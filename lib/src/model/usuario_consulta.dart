@@ -106,31 +106,35 @@ class UsuarioConsultaMoldel {
     );
   }
 
-  factory UsuarioConsultaMoldel.fromJson(Map<String, dynamic> map) {
-    return UsuarioConsultaMoldel(
-      codEmpresa: map['CodEmpresa'],
-      codUsuario: map['CodUsuario'],
-      nomeUsuario: map['NomeUsuario'],
-      ativo: map['Ativo'],
-      codContaFinanceira: map['CodContaFinanceira'],
-      nomeContaFinanceira: map['NomeContaFinanceira'],
-      nomeCaixaOperador: map['NomeCaixaOperador'],
-      codLocalArmazenagem: map['CodLocalArmazenagem'],
-      nomeLocalArmazenagem: map['NomeLocalArmazenagem'],
-      codVendedor: map['CodVendedor'],
-      nomeVendedor: map['NomeVendedor'],
-      codSetorEstoque: map['CodSetorEstoque'],
-      descricaoSetorEstoque: map['DescricaoSetorEstoque'],
-      permiteSepararForaSequencia: map['PermiteSepararForaSequencia'],
-      visualizaTodasSeparacoes: map['VisualizaTodasSeparacoes'],
-      codSetorConferencia: map['CodSetorConferencia'],
-      descricaoSetorConferencia: map['DescricaoSetorConferencia'],
-      permiteConferirForaSequencia: map['PermiteConferirForaSequencia'],
-      visualizaTodasConferencias: map['VisualizaTodasConferencias'],
-      salvaCarrinhoOutroUsuario: map['SalvaCarrinhoOutroUsuario'],
-      editaCarrinhoOutroUsuario: map['EditaCarrinhoOutroUsuario'],
-      excluiCarrinhoOutroUsuario: map['ExcluiCarrinhoOutroUsuario'],
-    );
+  factory UsuarioConsultaMoldel.fromJson(Map<String, dynamic> json) {
+    try {
+      return UsuarioConsultaMoldel(
+        codEmpresa: json['CodEmpresa'],
+        codUsuario: json['CodUsuario'],
+        nomeUsuario: json['NomeUsuario'],
+        ativo: json['Ativo'],
+        codContaFinanceira: json['CodContaFinanceira'],
+        nomeContaFinanceira: json['NomeContaFinanceira'],
+        nomeCaixaOperador: json['NomeCaixaOperador'],
+        codLocalArmazenagem: json['CodLocalArmazenagem'],
+        nomeLocalArmazenagem: json['NomeLocalArmazenagem'],
+        codVendedor: json['CodVendedor'],
+        nomeVendedor: json['NomeVendedor'],
+        codSetorEstoque: json['CodSetorEstoque'],
+        descricaoSetorEstoque: json['DescricaoSetorEstoque'],
+        permiteSepararForaSequencia: json['PermiteSepararForaSequencia'],
+        visualizaTodasSeparacoes: json['VisualizaTodasSeparacoes'],
+        codSetorConferencia: json['CodSetorConferencia'],
+        descricaoSetorConferencia: json['DescricaoSetorConferencia'],
+        permiteConferirForaSequencia: json['PermiteConferirForaSequencia'],
+        visualizaTodasConferencias: json['VisualizaTodasConferencias'],
+        salvaCarrinhoOutroUsuario: json['SalvaCarrinhoOutroUsuario'],
+        editaCarrinhoOutroUsuario: json['EditaCarrinhoOutroUsuario'],
+        excluiCarrinhoOutroUsuario: json['ExcluiCarrinhoOutroUsuario'],
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toJson() {

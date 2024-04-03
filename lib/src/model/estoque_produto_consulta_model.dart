@@ -43,29 +43,33 @@ class EstoqueProdutoConsultaModel {
     this.enderecoDescricao,
   });
 
-  factory EstoqueProdutoConsultaModel.fromJson(Map map) {
-    return EstoqueProdutoConsultaModel(
-      codProduto: map['CodProduto'],
-      nomeProduto: map['NomeProduto'],
-      ativo: map['Ativo'],
-      codTipoProduto: map['CodTipoProduto'],
-      codUnidadeMedida: map['CodUnidadeMedida'],
-      nomeUnidadeMedida: map['NomeUnidadeMedida'],
-      codGrupoProduto: map['CodGrupoProduto'],
-      nomeGrupoProduto: map['NomeGrupoProduto'],
-      codMarca: map['CodMarca'],
-      nomeMarca: map['NomeMarca'],
-      codSetorEstoque: map['CodSetorEstoque'],
-      ncm: map['NCM'],
-      codigoBarras: map['CodigoBarras'],
-      codigoBarras2: map['CodigoBarras2'],
-      codigoReferencia: map['CodigoReferencia'],
-      codigoFornecedor: map['CodigoFornecedor'],
-      codigoFabricante: map['CodigoFabricante'],
-      codigoOriginal: map['CodigoOriginal'],
-      endereco: map['Endereco'],
-      enderecoDescricao: map['EnderecoDescricao'],
-    );
+  factory EstoqueProdutoConsultaModel.fromJson(Map<String, dynamic> json) {
+    try {
+      return EstoqueProdutoConsultaModel(
+        codProduto: json['CodProduto'],
+        nomeProduto: json['NomeProduto'],
+        ativo: json['Ativo'],
+        codTipoProduto: json['CodTipoProduto'],
+        codUnidadeMedida: json['CodUnidadeMedida'],
+        nomeUnidadeMedida: json['NomeUnidadeMedida'],
+        codGrupoProduto: json['CodGrupoProduto'],
+        nomeGrupoProduto: json['NomeGrupoProduto'],
+        codMarca: json['CodMarca'],
+        nomeMarca: json['NomeMarca'],
+        codSetorEstoque: json['CodSetorEstoque'],
+        ncm: json['NCM'],
+        codigoBarras: json['CodigoBarras'],
+        codigoBarras2: json['CodigoBarras2'],
+        codigoReferencia: json['CodigoReferencia'],
+        codigoFornecedor: json['CodigoFornecedor'],
+        codigoFabricante: json['CodigoFabricante'],
+        codigoOriginal: json['CodigoOriginal'],
+        endereco: json['Endereco'],
+        enderecoDescricao: json['EnderecoDescricao'],
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -116,7 +120,7 @@ class EstoqueProdutoConsultaModel {
           codigoFabricante: $codigoFabricante, 
           codigoOriginal: $codigoOriginal, 
           endereco: $endereco, 
-          enderecoDescricao: $enderecoDescricao)
-    ''';
+          enderecoDescricao: $enderecoDescricao
+    )''';
   }
 }

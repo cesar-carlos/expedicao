@@ -6,18 +6,17 @@ import 'package:uuid/uuid.dart';
 
 import 'package:app_expedicao/src/app/app_error.dart';
 import 'package:app_expedicao/src/model/send_query_socket_model.dart';
-import 'package:app_expedicao/src/model/expedicao_conferir_item_separacao_consulta_model.dart';
+import 'package:app_expedicao/src/model/expedicao_separado_item_consulta_model.dart';
 import 'package:app_expedicao/src/app/app_socket_config.dart';
 
 class ConferirItemConsultaSeparacaoRepository {
   final uuid = const Uuid();
   var socket = Get.find<AppSocketConfig>().socket;
 
-  Future<List<ExpedicaoConferirItemSeparacaoConsultaModel>> select(
+  Future<List<ExpedicaoSeparadoItemConsultaModel>> select(
       [String params = '']) {
     final event = '${socket.id} conferir.separacao.item.consulta';
-    final completer =
-        Completer<List<ExpedicaoConferirItemSeparacaoConsultaModel>>();
+    final completer = Completer<List<ExpedicaoSeparadoItemConsultaModel>>();
     final resposeIn = uuid.v4();
 
     final send = SendQuerySocketModel(
@@ -26,31 +25,28 @@ class ConferirItemConsultaSeparacaoRepository {
       where: params,
     );
 
-    try {
-      socket.emit(event, jsonEncode(send.toJson()));
-      socket.on(resposeIn, (receiver) {
-        final data = jsonDecode(receiver);
+    socket.emit(event, jsonEncode(send.toJson()));
+    socket.on(resposeIn, (receiver) {
+      try {
+        final respose = jsonDecode(receiver);
+        final error = respose?['Error'] ?? null;
+        final data = respose?['Data'] ?? [];
 
-        socket.off(resposeIn);
+        if (error != null) throw error;
 
-        if (data.isEmpty) {
-          completer.complete([]);
-          return;
-        }
-
-        final list =
-            data.map<ExpedicaoConferirItemSeparacaoConsultaModel>((json) {
-          return ExpedicaoConferirItemSeparacaoConsultaModel.fromJson(json);
+        final list = data.map<ExpedicaoSeparadoItemConsultaModel>((json) {
+          return ExpedicaoSeparadoItemConsultaModel.fromJson(json);
         }).toList();
 
         completer.complete(list);
-      });
+      } catch (e) {
+        completer.completeError(AppError(e.toString()));
+        return completer.future;
+      } finally {
+        socket.off(resposeIn);
+      }
+    });
 
-      return completer.future;
-    } catch (e) {
-      socket.off(resposeIn);
-      completer.completeError(AppError(e.toString()));
-      return completer.future;
-    }
+    return completer.future;
   }
 }

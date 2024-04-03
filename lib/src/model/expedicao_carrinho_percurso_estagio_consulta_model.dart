@@ -106,32 +106,37 @@ class ExpedicaoCarrinhoPercursoEstagioConsultaModel {
   }
 
   factory ExpedicaoCarrinhoPercursoEstagioConsultaModel.fromJson(
-      Map<String, dynamic> map) {
-    return ExpedicaoCarrinhoPercursoEstagioConsultaModel(
-      codEmpresa: map['CodEmpresa'],
-      codCarrinhoPercurso: map['CodCarrinhoPercurso'],
-      item: map['Item'],
-      codPercursoEstagio: map['CodPercursoEstagio'],
-      origem: map['Origem'],
-      codOrigem: map['CodOrigem'],
-      situacao: map['Situacao'],
-      carrinhoAgrupador: map['CarrinhoAgrupador'],
-      codCarrinhoAgrupador: map['CodCarrinhoAgrupador'],
-      codCarrinho: map['CodCarrinho'],
-      nomeCarrinho: map['NomeCarrinho'],
-      codigoBarrasCarrinho: map['CodigoBarrasCarrinho'],
-      ativo: map['Ativo'],
-      codUsuarioInicio: map['CodUsuarioInicio'],
-      nomeUsuarioInicio: map['NomeUsuarioInicio'],
-      dataInicio: AppHelper.tryStringToDate(map['DataInicio']),
-      horaInicio: map['HoraInicio'] ?? '00:00:00',
-      codUsuarioFinalizacao: map['CodUsuarioFinalizacao'],
-      nomeUsuarioFinalizacao: map['NomeUsuarioFinalizacao'],
-      dataFinalizacao: AppHelper.tryStringToDateOrNull(map['DataFinalizacao']),
-      horaFinalizacao: map['HoraFinalizacao'],
-      codSetorEstoque: map['CodSetorEstoque'],
-      nomeSetorEstoque: map['NomeSetorEstoque'],
-    );
+      Map<String, dynamic> json) {
+    try {
+      return ExpedicaoCarrinhoPercursoEstagioConsultaModel(
+        codEmpresa: json['CodEmpresa'],
+        codCarrinhoPercurso: json['CodCarrinhoPercurso'],
+        item: json['Item'],
+        codPercursoEstagio: json['CodPercursoEstagio'],
+        origem: json['Origem'],
+        codOrigem: json['CodOrigem'],
+        situacao: json['Situacao'],
+        carrinhoAgrupador: json['CarrinhoAgrupador'],
+        codCarrinhoAgrupador: json['CodCarrinhoAgrupador'],
+        codCarrinho: json['CodCarrinho'],
+        nomeCarrinho: json['NomeCarrinho'],
+        codigoBarrasCarrinho: json['CodigoBarrasCarrinho'],
+        ativo: json['Ativo'],
+        codUsuarioInicio: json['CodUsuarioInicio'],
+        nomeUsuarioInicio: json['NomeUsuarioInicio'],
+        dataInicio: AppHelper.tryStringToDate(json['DataInicio']),
+        horaInicio: json['HoraInicio'] ?? '00:00:00',
+        codUsuarioFinalizacao: json['CodUsuarioFinalizacao'],
+        nomeUsuarioFinalizacao: json['NomeUsuarioFinalizacao'],
+        dataFinalizacao:
+            AppHelper.tryStringToDateOrNull(json['DataFinalizacao']),
+        horaFinalizacao: json['HoraFinalizacao'],
+        codSetorEstoque: json['CodSetorEstoque'],
+        nomeSetorEstoque: json['NomeSetorEstoque'],
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -189,6 +194,6 @@ class ExpedicaoCarrinhoPercursoEstagioConsultaModel {
         horaFinalizacao: $horaFinalizacao, 
         codSetorEstoque: $codSetorEstoque, 
         nomeSetorEstoque: $nomeSetorEstoque
-    ''';
+    )''';
   }
 }

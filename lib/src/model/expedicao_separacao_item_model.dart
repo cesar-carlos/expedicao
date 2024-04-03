@@ -88,23 +88,27 @@ class ExpedicaoSeparacaoItemModel {
     );
   }
 
-  factory ExpedicaoSeparacaoItemModel.fromJson(Map<String, dynamic> map) {
-    return ExpedicaoSeparacaoItemModel(
-      codEmpresa: map['CodEmpresa'],
-      codSepararEstoque: map['CodSepararEstoque'],
-      item: map['Item'],
-      sessionId: map['SessionId'],
-      situacao: map['Situacao'],
-      codCarrinhoPercurso: map['CodCarrinhoPercurso'],
-      itemCarrinhoPercurso: map['ItemCarrinhoPercurso'],
-      codSeparador: map['CodSeparador'],
-      nomeSeparador: map['NomeSeparador'],
-      dataSeparacao: AppHelper.tryStringToDate(map['DataSeparacao']),
-      horaSeparacao: map['HoraSeparacao'] ?? '00:00:00',
-      codProduto: map['CodProduto'],
-      codUnidadeMedida: map['CodUnidadeMedida'],
-      quantidade: AppHelper.stringToDouble(map['Quantidade']),
-    );
+  factory ExpedicaoSeparacaoItemModel.fromJson(Map<String, dynamic> json) {
+    try {
+      return ExpedicaoSeparacaoItemModel(
+        codEmpresa: json['CodEmpresa'],
+        codSepararEstoque: json['CodSepararEstoque'],
+        item: json['Item'],
+        sessionId: json['SessionId'],
+        situacao: json['Situacao'],
+        codCarrinhoPercurso: json['CodCarrinhoPercurso'],
+        itemCarrinhoPercurso: json['ItemCarrinhoPercurso'],
+        codSeparador: json['CodSeparador'],
+        nomeSeparador: json['NomeSeparador'],
+        dataSeparacao: AppHelper.tryStringToDate(json['DataSeparacao']),
+        horaSeparacao: json['HoraSeparacao'] ?? '00:00:00',
+        codProduto: json['CodProduto'],
+        codUnidadeMedida: json['CodUnidadeMedida'],
+        quantidade: AppHelper.stringToDouble(json['Quantidade']),
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -143,7 +147,7 @@ class ExpedicaoSeparacaoItemModel {
         horaSeparacao: $horaSeparacao, 
         codProduto: $codProduto, 
         codUnidadeMedida: $codUnidadeMedida, 
-        quantidade: $quantidade)
-      ''';
+        quantidade: $quantidade
+    )''';
   }
 }

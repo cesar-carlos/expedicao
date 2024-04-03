@@ -1,50 +1,58 @@
+import 'package:app_expedicao/src/app/app_error.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_item_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
-import 'package:app_expedicao/src/model/expedicao_conferir_item_separacao_consulta_model.dart';
+import 'package:app_expedicao/src/model/expedicao_separado_item_consulta_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_conferir_item/conferir_item_consulta_separacao_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_conferir_item/conferir_item_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_conferir/conferir_repository.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_model.dart';
 import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
-import 'package:app_expedicao/src/app/app_error.dart';
 
 class ConferirSeparacaoAdicionarService {
   final ExpedicaoCarrinhoPercursoModel carrinhoPercurso;
 
-  ConferirSeparacaoAdicionarService({required this.carrinhoPercurso});
+  ConferirSeparacaoAdicionarService(this.carrinhoPercurso);
 
   Future<void> execute() async {
-    final _conferirItensSeparacaoConsulta = await _findSeparacao();
-    final conferir = _createConferir(_conferirItensSeparacaoConsulta.first);
+    final itensSeparacaoConsulta = await _findSeparado();
+    final conferir = _createConferir(itensSeparacaoConsulta.first);
 
     try {
       final result = await ConferirRepository().insert(conferir);
 
       final newItensConferir = _createItensConferir(
         result.first,
-        _conferirItensSeparacaoConsulta,
+        itensSeparacaoConsulta,
       );
 
       await ConferirItemRepository().insertAll(newItensConferir);
     } catch (e) {
-      throw AppError(e.toString());
+      rethrow;
     }
   }
 
-  Future<List<ExpedicaoConferirItemSeparacaoConsultaModel>>
-      _findSeparacao() async {
-    final params = '''
+  Future<List<ExpedicaoSeparadoItemConsultaModel>> _findSeparado() async {
+    try {
+      final repository = ConferirItemConsultaSeparacaoRepository();
+
+      final params = '''
         CodEmpresa = ${carrinhoPercurso.codEmpresa}
       AND Origem = '${carrinhoPercurso.origem}'
       AND CodSepararEstoque = ${carrinhoPercurso.codOrigem}
       AND Situacao = '${ExpedicaoSituacaoModel.separado}' ''';
 
-    return await ConferirItemConsultaSeparacaoRepository().select(params);
+      final itens = await repository.select(params);
+      if (itens.isEmpty) throw AppError('Nenhum item encontrado');
+
+      return itens;
+    } catch (e) {
+      rethrow;
+    }
   }
 
   ExpedicaoConferirModel _createConferir(
-    ExpedicaoConferirItemSeparacaoConsultaModel item,
+    ExpedicaoSeparadoItemConsultaModel item,
   ) {
     return ExpedicaoConferirModel(
       codEmpresa: item.codEmpresa,
@@ -62,7 +70,7 @@ class ConferirSeparacaoAdicionarService {
 
   List<ExpedicaoConferirItemModel> _createItensConferir(
     ExpedicaoConferirModel conferir,
-    List<ExpedicaoConferirItemSeparacaoConsultaModel> itens,
+    List<ExpedicaoSeparadoItemConsultaModel> itens,
   ) {
     final newItens = <ExpedicaoConferirItemModel>[];
 

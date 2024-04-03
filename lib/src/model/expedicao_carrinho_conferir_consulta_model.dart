@@ -88,75 +88,79 @@ class ExpedicaoCarrinhoConferirConsultaModel {
     double? totalItemConferir,
     double? totalItemConferido,
   }) {
-    return ExpedicaoCarrinhoConferirConsultaModel(
-      codEmpresa: codEmpresa ?? this.codEmpresa,
-      codConferir: codConferir ?? this.codConferir,
-      origem: origem ?? this.origem,
-      codOrigem: codOrigem ?? this.codOrigem,
-      situacao: situacao ?? this.situacao,
-      codCarrinhoPercurso: codCarrinhoPercurso ?? this.codCarrinhoPercurso,
-      itemCarrinhoPercurso: itemCarrinhoPercurso ?? this.itemCarrinhoPercurso,
-      codPrioridade: codPrioridade ?? this.codPrioridade,
-      nomePrioridade: nomePrioridade ?? this.nomePrioridade,
-      codCarrinho: codCarrinho ?? this.codCarrinho,
-      nomeCarrinho: nomeCarrinho ?? this.nomeCarrinho,
-      codigoBarrasCarrinho: codigoBarrasCarrinho ?? this.codigoBarrasCarrinho,
-      situacaoCarrinhoConferencia:
-          situacaoCarrinhoConferencia ?? this.situacaoCarrinhoConferencia,
-      dataInicioPercurso: dataInicioPercurso ?? this.dataInicioPercurso,
-      horaInicioPercurso: horaInicioPercurso ?? this.horaInicioPercurso,
-      codPercursoEstagio: codPercursoEstagio ?? this.codPercursoEstagio,
-      nomePercursoEstagio: nomePercursoEstagio ?? this.nomePercursoEstagio,
-      codUsuarioInicioEstagio:
-          codUsuarioInicioEstagio ?? this.codUsuarioInicioEstagio,
-      nomeUsuarioInicioEstagio:
-          nomeUsuarioInicioEstagio ?? this.nomeUsuarioInicioEstagio,
-      dataInicioEstagio: dataInicioEstagio ?? this.dataInicioEstagio,
-      horaInicioEstagio: horaInicioEstagio ?? this.horaInicioEstagio,
-      codUsuarioFinalizacaoEstagio:
-          codUsuarioFinalizacaoEstagio ?? this.codUsuarioFinalizacaoEstagio,
-      nomeUsuarioFinalizacaoEstagio:
-          nomeUsuarioFinalizacaoEstagio ?? this.nomeUsuarioFinalizacaoEstagio,
-      dataFinalizacaoEstagio:
-          dataFinalizacaoEstagio ?? this.dataFinalizacaoEstagio,
-      horaFinalizacaoEstagio:
-          horaFinalizacaoEstagio ?? this.horaFinalizacaoEstagio,
-      totalItemConferir: totalItemConferir ?? this.totalItemConferir,
-      totalItemConferido: totalItemConferido ?? this.totalItemConferido,
-    );
+    try {
+      return ExpedicaoCarrinhoConferirConsultaModel(
+        codEmpresa: codEmpresa ?? this.codEmpresa,
+        codConferir: codConferir ?? this.codConferir,
+        origem: origem ?? this.origem,
+        codOrigem: codOrigem ?? this.codOrigem,
+        situacao: situacao ?? this.situacao,
+        codCarrinhoPercurso: codCarrinhoPercurso ?? this.codCarrinhoPercurso,
+        itemCarrinhoPercurso: itemCarrinhoPercurso ?? this.itemCarrinhoPercurso,
+        codPrioridade: codPrioridade ?? this.codPrioridade,
+        nomePrioridade: nomePrioridade ?? this.nomePrioridade,
+        codCarrinho: codCarrinho ?? this.codCarrinho,
+        nomeCarrinho: nomeCarrinho ?? this.nomeCarrinho,
+        codigoBarrasCarrinho: codigoBarrasCarrinho ?? this.codigoBarrasCarrinho,
+        situacaoCarrinhoConferencia:
+            situacaoCarrinhoConferencia ?? this.situacaoCarrinhoConferencia,
+        dataInicioPercurso: dataInicioPercurso ?? this.dataInicioPercurso,
+        horaInicioPercurso: horaInicioPercurso ?? this.horaInicioPercurso,
+        codPercursoEstagio: codPercursoEstagio ?? this.codPercursoEstagio,
+        nomePercursoEstagio: nomePercursoEstagio ?? this.nomePercursoEstagio,
+        codUsuarioInicioEstagio:
+            codUsuarioInicioEstagio ?? this.codUsuarioInicioEstagio,
+        nomeUsuarioInicioEstagio:
+            nomeUsuarioInicioEstagio ?? this.nomeUsuarioInicioEstagio,
+        dataInicioEstagio: dataInicioEstagio ?? this.dataInicioEstagio,
+        horaInicioEstagio: horaInicioEstagio ?? this.horaInicioEstagio,
+        codUsuarioFinalizacaoEstagio:
+            codUsuarioFinalizacaoEstagio ?? this.codUsuarioFinalizacaoEstagio,
+        nomeUsuarioFinalizacaoEstagio:
+            nomeUsuarioFinalizacaoEstagio ?? this.nomeUsuarioFinalizacaoEstagio,
+        dataFinalizacaoEstagio:
+            dataFinalizacaoEstagio ?? this.dataFinalizacaoEstagio,
+        horaFinalizacaoEstagio:
+            horaFinalizacaoEstagio ?? this.horaFinalizacaoEstagio,
+        totalItemConferir: totalItemConferir ?? this.totalItemConferir,
+        totalItemConferido: totalItemConferido ?? this.totalItemConferido,
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   factory ExpedicaoCarrinhoConferirConsultaModel.fromJson(
-      Map<String, dynamic> map) {
+      Map<String, dynamic> json) {
     return ExpedicaoCarrinhoConferirConsultaModel(
-      codEmpresa: map['CodEmpresa'],
-      codConferir: map['CodConferir'],
-      origem: map['Origem'],
-      codOrigem: map['CodOrigem'],
-      situacao: map['Situacao'],
-      codCarrinhoPercurso: map['CodCarrinhoPercurso'],
-      itemCarrinhoPercurso: map['ItemCarrinhoPercurso'],
-      codPrioridade: map['CodPrioridade'],
-      nomePrioridade: map['NomePrioridade'],
-      codCarrinho: map['CodCarrinho'],
-      nomeCarrinho: map['NomeCarrinho'],
-      codigoBarrasCarrinho: map['CodigoBarrasCarrinho'],
-      situacaoCarrinhoConferencia: map['SituacaoCarrinhoConferencia'],
-      dataInicioPercurso: AppHelper.tryStringToDate(map['DataInicioPercurso']),
-      horaInicioPercurso: map['HoraInicioPercurso'],
-      codPercursoEstagio: map['CodPercursoEstagio'],
-      nomePercursoEstagio: map['NomePercursoEstagio'],
-      codUsuarioInicioEstagio: map['CodUsuarioInicioEstagio'],
-      nomeUsuarioInicioEstagio: map['NomeUsuarioInicioEstagio'],
-      dataInicioEstagio: AppHelper.tryStringToDate(map['DataInicioEstagio']),
-      horaInicioEstagio: map['HoraInicioEstagio'],
-      codUsuarioFinalizacaoEstagio: map['CodUsuarioFinalizacaoEstagio'],
-      nomeUsuarioFinalizacaoEstagio: map['NomeUsuarioFinalizacaoEstagio'],
+      codEmpresa: json['CodEmpresa'],
+      codConferir: json['CodConferir'],
+      origem: json['Origem'],
+      codOrigem: json['CodOrigem'],
+      situacao: json['Situacao'],
+      codCarrinhoPercurso: json['CodCarrinhoPercurso'],
+      itemCarrinhoPercurso: json['ItemCarrinhoPercurso'],
+      codPrioridade: json['CodPrioridade'],
+      nomePrioridade: json['NomePrioridade'],
+      codCarrinho: json['CodCarrinho'],
+      nomeCarrinho: json['NomeCarrinho'],
+      codigoBarrasCarrinho: json['CodigoBarrasCarrinho'],
+      situacaoCarrinhoConferencia: json['SituacaoCarrinhoConferencia'],
+      dataInicioPercurso: AppHelper.tryStringToDate(json['DataInicioPercurso']),
+      horaInicioPercurso: json['HoraInicioPercurso'],
+      codPercursoEstagio: json['CodPercursoEstagio'],
+      nomePercursoEstagio: json['NomePercursoEstagio'],
+      codUsuarioInicioEstagio: json['CodUsuarioInicioEstagio'],
+      nomeUsuarioInicioEstagio: json['NomeUsuarioInicioEstagio'],
+      dataInicioEstagio: AppHelper.tryStringToDate(json['DataInicioEstagio']),
+      horaInicioEstagio: json['HoraInicioEstagio'],
+      codUsuarioFinalizacaoEstagio: json['CodUsuarioFinalizacaoEstagio'],
+      nomeUsuarioFinalizacaoEstagio: json['NomeUsuarioFinalizacaoEstagio'],
       dataFinalizacaoEstagio:
-          AppHelper.tryStringToDate(map['DataFinalizacaoEstagio']),
-      horaFinalizacaoEstagio: map['HoraFinalizacaoEstagio'],
-      totalItemConferir: AppHelper.stringToDouble(map['TotalItemConferir']),
-      totalItemConferido: AppHelper.stringToDouble(map['TotalItemConferido']),
+          AppHelper.tryStringToDate(json['DataFinalizacaoEstagio']),
+      horaFinalizacaoEstagio: json['HoraFinalizacaoEstagio'],
+      totalItemConferir: AppHelper.stringToDouble(json['TotalItemConferir']),
+      totalItemConferido: AppHelper.stringToDouble(json['TotalItemConferido']),
     );
   }
 
@@ -222,7 +226,7 @@ class ExpedicaoCarrinhoConferirConsultaModel {
         dataFinalizacaoEstagio: $dataFinalizacaoEstagio, 
         horaFinalizacaoEstagio: $horaFinalizacaoEstagio, 
         totalItemConferir: $totalItemConferir, 
-        totalItemConferido: $totalItemConferido)    
-    ''';
+        totalItemConferido: $totalItemConferido
+    )''';
   }
 }

@@ -25,29 +25,28 @@ class ConferirItemConsultaRepository {
       where: params,
     );
 
-    try {
-      socket.emit(event, jsonEncode(send.toJson()));
-      socket.on(resposeIn, (receiver) {
-        final data = jsonDecode(receiver);
-        socket.off(resposeIn);
+    socket.emit(event, jsonEncode(send.toJson()));
+    socket.on(resposeIn, (receiver) {
+      try {
+        final respose = jsonDecode(receiver);
+        final error = respose?['Error'] ?? null;
+        final data = respose?['Data'] ?? [];
 
-        if (data.isEmpty) {
-          completer.complete([]);
-          return;
-        }
+        if (error != null) throw error;
 
         final list = data.map<ExpedicaoConferirItemConsultaModel>((json) {
           return ExpedicaoConferirItemConsultaModel.fromJson(json);
         }).toList();
 
         completer.complete(list);
-      });
+      } catch (e) {
+        completer.completeError(AppError(e.toString()));
+        return completer.future;
+      } finally {
+        socket.off(resposeIn);
+      }
+    });
 
-      return completer.future;
-    } catch (e) {
-      socket.off(resposeIn);
-      completer.completeError(AppError(e.toString()));
-      return completer.future;
-    }
+    return completer.future;
   }
 }

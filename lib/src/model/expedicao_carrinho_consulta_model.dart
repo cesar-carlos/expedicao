@@ -39,26 +39,30 @@ class ExpedicaoCarrinhoConsultaModel {
     this.nomeSetorEstoque,
   });
 
-  factory ExpedicaoCarrinhoConsultaModel.fromJson(Map<String, dynamic> map) {
-    return ExpedicaoCarrinhoConsultaModel(
-      codEmpresa: map['CodEmpresa'],
-      codCarrinho: map['CodCarrinho'],
-      descricaoCarrinho: map['Descricao'],
-      ativo: map['Ativo'],
-      situacao: map['Situacao'] ?? '',
-      codigoBarras: map['CodigoBarras'],
-      codCarrinhoPercurso: map['CodCarrinhoPercurso'],
-      codPercursoEstagio: map['CodPercursoEstagio'],
-      descricaoPercursoEstagio: map['DescricaoPercursoEstagio'],
-      origem: map['Origem'] ?? '',
-      codOrigem: map['CodOrigem'],
-      dataInicio: AppHelper.tryStringToDateOrNull(map['DataInicio']),
-      horaInicio: map['HoraInicio'],
-      codUsuarioInicio: map['CodUsuarioInicio'],
-      nomeUsuarioInicio: map['NomeUsuarioInicio'],
-      codSetorEstoque: map['CodSetorEstoque'],
-      nomeSetorEstoque: map['NomeSetorEstoque'],
-    );
+  factory ExpedicaoCarrinhoConsultaModel.fromJson(Map<String, dynamic> json) {
+    try {
+      return ExpedicaoCarrinhoConsultaModel(
+        codEmpresa: json['CodEmpresa'],
+        codCarrinho: json['CodCarrinho'],
+        descricaoCarrinho: json['Descricao'],
+        ativo: json['Ativo'],
+        situacao: json['Situacao'] ?? '',
+        codigoBarras: json['CodigoBarras'],
+        codCarrinhoPercurso: json['CodCarrinhoPercurso'],
+        codPercursoEstagio: json['CodPercursoEstagio'],
+        descricaoPercursoEstagio: json['DescricaoPercursoEstagio'],
+        origem: json['Origem'] ?? '',
+        codOrigem: json['CodOrigem'],
+        dataInicio: AppHelper.tryStringToDateOrNull(json['DataInicio']),
+        horaInicio: json['HoraInicio'],
+        codUsuarioInicio: json['CodUsuarioInicio'],
+        nomeUsuarioInicio: json['NomeUsuarioInicio'],
+        codSetorEstoque: json['CodSetorEstoque'],
+        nomeSetorEstoque: json['NomeSetorEstoque'],
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -103,7 +107,7 @@ class ExpedicaoCarrinhoConsultaModel {
         codUsuarioInicio: $codUsuarioInicio, 
         nomeUsuarioInicio: $nomeUsuarioInicio, 
         codSetorEstoque: $codSetorEstoque, 
-        nomeSetorEstoque: $nomeSetorEstoque)
-    ''';
+        nomeSetorEstoque: $nomeSetorEstoque
+    )''';
   }
 }

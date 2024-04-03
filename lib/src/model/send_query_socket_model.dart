@@ -23,7 +23,7 @@ class SendQuerySocketModel {
       SendQuerySocketModel(
         session: $session, 
         resposeIn: $resposeIn, 
-        where: $where)
-      ''';
+        where: $where
+    )''';
   }
 }

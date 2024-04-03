@@ -6,6 +6,10 @@ class AppError extends Error {
 
   @override
   String toString() {
-    return 'AppError{ message: $message, details: $details}';
+    return '''
+      AppError(
+        message: $message, 
+        details: $details
+    )''';
   }
 }

@@ -61,21 +61,25 @@ class ExpedicaoConferirItemUnidadeMedidaConsultaModel {
   }
 
   factory ExpedicaoConferirItemUnidadeMedidaConsultaModel.fromJson(
-      Map<String, dynamic> map) {
-    return ExpedicaoConferirItemUnidadeMedidaConsultaModel(
-      codEmpresa: map['CodEmpresa'],
-      codConferir: map['CodConferir'],
-      item: map['Item'],
-      codProduto: map['CodProduto'],
-      itemUnidadeMedida: map['ItemUnidadeMedida'],
-      codUnidadeMedida: map['CodUnidadeMedida'],
-      unidadeMedidaDescricao: map['UnidadeMedidaDescricao'],
-      unidadeMedidaPadrao: map['UnidadeMedidaPadrao'] ?? 'S',
-      tipoFatorConversao: map['TipoFatorConversao'] ?? 'M',
-      fatorConversao: AppHelper.stringToDouble(map['FatorConversao']),
-      codigoBarras: map['CodigoBarras'],
-      observacao: map['Observacao'],
-    );
+      Map<String, dynamic> json) {
+    try {
+      return ExpedicaoConferirItemUnidadeMedidaConsultaModel(
+        codEmpresa: json['CodEmpresa'],
+        codConferir: json['CodConferir'],
+        item: json['Item'],
+        codProduto: json['CodProduto'],
+        itemUnidadeMedida: json['ItemUnidadeMedida'],
+        codUnidadeMedida: json['CodUnidadeMedida'],
+        unidadeMedidaDescricao: json['UnidadeMedidaDescricao'],
+        unidadeMedidaPadrao: json['UnidadeMedidaPadrao'] ?? 'S',
+        tipoFatorConversao: json['TipoFatorConversao'] ?? 'M',
+        fatorConversao: AppHelper.stringToDouble(json['FatorConversao']),
+        codigoBarras: json['CodigoBarras'],
+        observacao: json['Observacao'],
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -110,7 +114,7 @@ class ExpedicaoConferirItemUnidadeMedidaConsultaModel {
         tipoFatorConversao: $tipoFatorConversao, 
         fatorConversao: $fatorConversao, 
         codigoBarras: $codigoBarras, 
-        observacao: $observacao)
-    ''';
+        observacao: $observacao
+    )''';
   }
 }
