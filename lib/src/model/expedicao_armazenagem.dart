@@ -79,7 +79,7 @@ class ExpedicaoArmazenagem {
         estacaoLancamento: json['EstacaoLancamento'],
         observacao: json['Observacao'],
       );
-    } catch (e) {
+    } catch (_) {
       rethrow;
     }
   }

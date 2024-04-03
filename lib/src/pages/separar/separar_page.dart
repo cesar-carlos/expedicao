@@ -95,10 +95,16 @@ class SepararPage extends StatelessWidget {
                     ],
                   ),
                   SepararItensWidget(
-                    size: Size(size.width, ((size.height - 81) * .6)),
+                    size: Size(
+                      size.width,
+                      ((size.height - 81) * .6),
+                    ),
                   ),
                   SeparadoCarrinhoPage(
-                    size: Size(size.width, (size.height - 81) * .4),
+                    size: Size(
+                      size.width,
+                      ((size.height - 81) * .4),
+                    ),
                   ),
                   const FooterPage()
                 ],

@@ -77,7 +77,7 @@ class ExpedicaoSepararItemUnidadeMedidaConsultaModel {
         codigoBarras: json['CodigoBarras'],
         observacao: json['Observacao'],
       );
-    } catch (e) {
+    } catch (_) {
       rethrow;
     }
   }

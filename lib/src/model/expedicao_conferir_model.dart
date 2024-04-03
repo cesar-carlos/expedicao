@@ -117,7 +117,7 @@ class ExpedicaoConferirModel {
         nomeUsuarioCancelamento: json['NomeUsuarioCancelamento'],
         observacaoCancelamento: json['ObservacaoCancelamento'],
       );
-    } catch (e) {
+    } catch (_) {
       rethrow;
     }
   }

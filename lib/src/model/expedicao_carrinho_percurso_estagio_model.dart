@@ -99,7 +99,7 @@ class ExpedicaoCarrinhoPercursoEstagioModel {
         codUsuarioFinalizacao: json['CodUsuarioFinalizacao'],
         nomeUsuarioFinalizacao: json['NomeUsuarioFinalizacao'],
       );
-    } catch (e) {
+    } catch (_) {
       rethrow;
     }
   }

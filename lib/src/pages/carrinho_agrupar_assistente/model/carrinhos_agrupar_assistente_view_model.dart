@@ -15,7 +15,7 @@ class CarrinhosAgruparAssistenteViewModel {
       CarrinhosAgruparAssistenteViewModel(
         codEmpresa: $codEmpresa, 
         origem: $origem, 
-        codOrigem: $codOrigem)
-      ''';
+        codOrigem: $codOrigem
+    )''';
   }
 }

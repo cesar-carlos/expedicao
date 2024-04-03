@@ -18,12 +18,45 @@ class BasicEventModel {
     );
   }
 
-  factory BasicEventModel.fromJson(Map<String, dynamic> json) {
-    final mutation = json['mutation'] as List;
+  BasicEventModel copyWith({
+    String? session,
+    String? resposeIn,
+    List<Map<String, dynamic>>? mutation,
+  }) {
     return BasicEventModel(
-      session: json['session'],
-      resposeIn: json['resposeIn'],
-      mutation: mutation.map((el) => el as Map<String, dynamic>).toList(),
+      session: session ?? this.session,
+      resposeIn: resposeIn ?? this.resposeIn,
+      mutation: mutation ?? this.mutation,
     );
+  }
+
+  factory BasicEventModel.fromJson(Map<String, dynamic> json) {
+    try {
+      return BasicEventModel(
+        session: json['Session'],
+        resposeIn: json['ResposeIn'],
+        mutation: List<Map<String, dynamic>>.from(json['Mutation']),
+      );
+    } catch (_) {
+      rethrow;
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'Session': session,
+      'ResposeIn': resposeIn,
+      'Mutation': mutation,
+    };
+  }
+
+  @override
+  String toString() {
+    return '''
+      BasicEventModel(
+        session: $session, 
+        resposeIn: $resposeIn, 
+        mutation: $mutation
+      )''';
   }
 }

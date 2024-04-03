@@ -17,9 +17,7 @@ class FooterPageFormElement extends StatelessWidget {
       width: double.infinity,
       height: 21,
       child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: Color.fromARGB(255, 40, 100, 130),
-        ),
+        decoration: BoxDecoration(color: Color.fromARGB(255, 40, 100, 130)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,

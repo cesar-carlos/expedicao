@@ -22,19 +22,21 @@ class SpaceButtonsHeadFormElement extends StatelessWidget {
       child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
-          children: children.map((widget) {
-            return Row(
-              children: [
-                widget,
-                const VerticalDivider(
-                  color: Colors.blueGrey,
-                  indent: 3,
-                  endIndent: 2,
-                  thickness: 1,
-                ),
-              ],
-            );
-          }).toList()),
+          children: children.map(
+            (widget) {
+              return Row(
+                children: [
+                  widget,
+                  const VerticalDivider(
+                    color: Colors.blueGrey,
+                    indent: 3,
+                    endIndent: 2,
+                    thickness: 1,
+                  ),
+                ],
+              );
+            },
+          ).toList()),
     );
   }
 }

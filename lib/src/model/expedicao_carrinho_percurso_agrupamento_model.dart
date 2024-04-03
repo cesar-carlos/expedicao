@@ -69,7 +69,7 @@ class ExpedicaoCarrinhoPercursoAgrupamentoModel {
         codUsuarioLancamento: json['CodUsuarioLancamento'],
         nomeUsuarioLancamento: json['NomeUsuarioLancamento'],
       );
-    } catch (e) {
+    } catch (_) {
       rethrow;
     }
   }

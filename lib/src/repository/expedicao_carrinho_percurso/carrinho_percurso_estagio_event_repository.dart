@@ -105,8 +105,9 @@ class CarrinhoPercursoEstagioEventRepository implements EventContract {
   BasicEventModel _convert(String data) {
     try {
       var deconde = jsonDecode(data);
+
       return BasicEventModel.fromJson(deconde);
-    } catch (e) {
+    } catch (_) {
       return BasicEventModel.empty();
     }
   }

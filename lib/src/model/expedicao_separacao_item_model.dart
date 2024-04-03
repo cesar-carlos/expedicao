@@ -106,7 +106,7 @@ class ExpedicaoSeparacaoItemModel {
         codUnidadeMedida: json['CodUnidadeMedida'],
         quantidade: AppHelper.stringToDouble(json['Quantidade']),
       );
-    } catch (e) {
+    } catch (_) {
       rethrow;
     }
   }

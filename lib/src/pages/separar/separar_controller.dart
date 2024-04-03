@@ -345,6 +345,7 @@ class SepararController extends GetxController {
 
       _separarConsulta.situacao = ExpedicaoSituacaoModel.separado;
       _expedicaoSituacao = ExpedicaoSituacaoModel.separado;
+      update();
     } catch (e) {
       await MessageDialogView.show(
         context: Get.context!,

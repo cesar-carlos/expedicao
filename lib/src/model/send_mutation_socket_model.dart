@@ -11,9 +11,9 @@ class SendMutationSocketModel {
 
   Map<String, dynamic> toJson() {
     return {
-      "session": session,
-      "resposeIn": resposeIn,
-      "mutation": mutation,
+      "Session": session,
+      "ResposeIn": resposeIn,
+      "Mutation": mutation,
     };
   }
 }

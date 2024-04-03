@@ -50,9 +50,18 @@ class CarrinhosAgruparAssistenteController extends GetxController {
   }
 
   KeyEventResult handleKeyEvent(RawKeyEvent event) {
+    final appEventState = Get.find<AppEventState>();
+
     if (event is RawKeyDownEvent) {
       if (event.logicalKey == LogicalKeyboardKey.escape) {
-        Get.find<AppEventState>()..canCloseWindow = true;
+        appEventState.canCloseWindow = true;
+        Get.back();
+
+        return KeyEventResult.handled;
+      }
+
+      if (event.logicalKey == LogicalKeyboardKey.f12) {
+        appEventState.canCloseWindow = true;
         Get.back();
 
         return KeyEventResult.handled;
@@ -97,7 +106,8 @@ class CarrinhosAgruparAssistenteController extends GetxController {
             CodEmpresa = ${input.codEmpresa}
               AND Origem = '${input.origem}'
               AND CodOrigem = ${input.codOrigem} 
-              AND CodigoBarrasCarrinho LIKE '${codigoCarrinho.trim()}' ''';
+              AND CodigoBarrasCarrinho LIKE '${codigoCarrinho.trim()}' 
+              AND Situacao <> '${ExpedicaoSituacaoModel.cancelada}' ''';
 
           final result =
               await CarrinhoPercursoEstagioAgruparService.consulta(params);
@@ -117,8 +127,7 @@ class CarrinhosAgruparAssistenteController extends GetxController {
       await MessageDialogView.show(
         context: Get.context!,
         message: 'Carrinho não encontrado.',
-        detail:
-            'Carrinho não encontrado. Verifique o código do carrinho e tente novamente.',
+        detail: 'Carrinho não encontrado. Verifique o código do carrinho.',
       );
 
       return false;
@@ -167,8 +176,7 @@ class CarrinhosAgruparAssistenteController extends GetxController {
       MessageDialogView.show(
         context: Get.context!,
         message: 'Carrinho não encontrado.',
-        detail:
-            'Carrinho não encontrado. Verifique o código do carrinho e tente novamente.',
+        detail: 'Carrinho não encontrado. Verifique o código do carrinho.',
       );
 
       return;

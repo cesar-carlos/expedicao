@@ -46,7 +46,7 @@ class ExpedicaoSepararCarrinhoConsultaModel {
         codUsuario: json['CodUsuario'],
         nomeUsuario: json['NomeUsuario'],
       );
-    } catch (e) {
+    } catch (_) {
       rethrow;
     }
   }

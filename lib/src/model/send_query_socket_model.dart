@@ -11,9 +11,9 @@ class SendQuerySocketModel {
 
   Map<String, dynamic> toJson() {
     return {
-      "session": session,
-      "resposeIn": resposeIn,
-      "where": where,
+      "Session": session,
+      "ResposeIn": resposeIn,
+      "Where": where,
     };
   }
 

@@ -97,7 +97,7 @@ class ConferenciaItemRepository {
     final send = SendMutationsSocketModel(
       session: socket.id!,
       resposeIn: resposeIn,
-      mutations: entity.map((el) => el.toJson()).toList(),
+      mutation: entity.map((el) => el.toJson()).toList(),
     );
 
     socket.emit(event, jsonEncode(send.toJson()));
@@ -171,7 +171,7 @@ class ConferenciaItemRepository {
     final send = SendMutationsSocketModel(
       session: socket.id!,
       resposeIn: resposeIn,
-      mutations: entity.map((el) => el.toJson()).toList(),
+      mutation: entity.map((el) => el.toJson()).toList(),
     );
 
     socket.emit(event, jsonEncode(send.toJson()));
@@ -244,7 +244,7 @@ class ConferenciaItemRepository {
     final send = SendMutationsSocketModel(
       session: socket.id!,
       resposeIn: resposeIn,
-      mutations: entity.map((el) => el.toJson()).toList(),
+      mutation: entity.map((el) => el.toJson()).toList(),
     );
 
     socket.emit(event, jsonEncode(send.toJson()));

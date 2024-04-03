@@ -65,7 +65,6 @@ class AppPageRouter {
         ExpedicaoSepararConsultaModel separarConsulta = Get.arguments;
 
         Get.put(separarConsulta);
-        //Get.put(FooterPageController());
         return SepararPage(separarConsulta: separarConsulta);
       },
     ),
@@ -76,7 +75,6 @@ class AppPageRouter {
       page: () {
         ExpedicaoConferirConsultaModel conferirConsulta = Get.arguments;
 
-        //Get.put(FooterPageController());
         Get.put(conferirConsulta);
         return const ConferirPage();
       },

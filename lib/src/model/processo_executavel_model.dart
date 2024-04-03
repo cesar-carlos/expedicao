@@ -158,7 +158,7 @@ class ProcessoExecutavelModel {
         nomeComputador: json['NomeComputador'],
         bancoDados: json['BancoDados'],
       );
-    } catch (e) {
+    } catch (_) {
       rethrow;
     }
   }

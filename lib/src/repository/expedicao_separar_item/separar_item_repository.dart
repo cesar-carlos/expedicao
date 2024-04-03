@@ -97,7 +97,7 @@ class SepararItemRepository {
     final send = SendMutationsSocketModel(
       session: socket.id!,
       resposeIn: resposeIn,
-      mutations: entitys.map((el) => el.toJson()).toList(),
+      mutation: entitys.map((el) => el.toJson()).toList(),
     );
 
     socket.emit(event, jsonEncode(send.toJson()));
@@ -171,7 +171,7 @@ class SepararItemRepository {
     final send = SendMutationsSocketModel(
       session: socket.id!,
       resposeIn: resposeIn,
-      mutations: entitys.map((el) => el.toJson()).toList(),
+      mutation: entitys.map((el) => el.toJson()).toList(),
     );
 
     socket.emit(event, jsonEncode(send.toJson()));
@@ -245,7 +245,7 @@ class SepararItemRepository {
     final send = SendMutationsSocketModel(
       session: socket.id!,
       resposeIn: resposeIn,
-      mutations: entitys.map((el) => el.toJson()).toList(),
+      mutation: entitys.map((el) => el.toJson()).toList(),
     );
 
     socket.emit(event, jsonEncode(send.toJson()));

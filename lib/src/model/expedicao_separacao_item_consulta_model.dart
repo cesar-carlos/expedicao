@@ -186,7 +186,7 @@ class ExpedicaSeparacaoItemConsultaModel {
         horaSeparacao: json['HoraSeparacao'],
         quantidade: AppHelper.stringToDouble(json['Quantidade']),
       );
-    } catch (e) {
+    } catch (_) {
       rethrow;
     }
   }

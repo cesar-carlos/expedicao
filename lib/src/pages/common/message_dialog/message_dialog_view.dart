@@ -7,8 +7,8 @@ import 'package:app_expedicao/src/pages/common/message_dialog/message_dialog_con
 import 'package:app_expedicao/src/app/app_event_state.dart';
 
 class MessageDialogView {
-  static const double _widthForm = 380;
-  static const double _heightForm = 230;
+  static const double _widthForm = 370;
+  static const double _heightForm = 220;
 
   static Future<bool?> show({
     required BuildContext context,

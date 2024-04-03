@@ -38,7 +38,7 @@ class ExpedicaoEstagioModel {
         origem: json['Origem'],
         sequencia: json['Sequencia'],
       );
-    } catch (e) {
+    } catch (_) {
       rethrow;
     }
   }

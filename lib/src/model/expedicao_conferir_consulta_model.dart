@@ -90,7 +90,7 @@ class ExpedicaoConferirConsultaModel {
         historico: json['Historico'],
         observacao: json['Observacao'],
       );
-    } catch (e) {
+    } catch (_) {
       rethrow;
     }
   }

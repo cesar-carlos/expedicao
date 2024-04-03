@@ -125,7 +125,7 @@ class ExpedicaoCarrinhoConferirConsultaModel {
         totalItemConferir: totalItemConferir ?? this.totalItemConferir,
         totalItemConferido: totalItemConferido ?? this.totalItemConferido,
       );
-    } catch (e) {
+    } catch (_) {
       rethrow;
     }
   }

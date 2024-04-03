@@ -70,7 +70,7 @@ class ExpedicaoTipoOperacaoArmazenagem {
         controlaLote: json['controlaLote'],
         controlaSerie: json['controlaSerie'],
       );
-    } catch (e) {
+    } catch (_) {
       rethrow;
     }
   }

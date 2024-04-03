@@ -67,7 +67,7 @@ class EstoqueProdutoConsultaModel {
         endereco: json['Endereco'],
         enderecoDescricao: json['EnderecoDescricao'],
       );
-    } catch (e) {
+    } catch (_) {
       rethrow;
     }
   }

@@ -86,7 +86,7 @@ class ExpedicaoArmazenagemItem {
         quantidadeArmazenada:
             AppHelper.stringToDouble(json['QuantidadeArmazenada']),
       );
-    } catch (e) {
+    } catch (_) {
       rethrow;
     }
   }

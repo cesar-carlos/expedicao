@@ -171,7 +171,7 @@ class ExpedicaConferenciaItemConsultaModel {
         horaConferencia: json['HoraConferencia'] ?? '00:00:00',
         quantidade: AppHelper.stringToDouble(json['Quantidade']),
       );
-    } catch (e) {
+    } catch (_) {
       rethrow;
     }
   }

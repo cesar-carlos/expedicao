@@ -57,7 +57,7 @@ class ExpedicaoCarrinhoModel {
         codigoBarras: json['CodigoBarras'],
         situacao: json['Situacao'],
       );
-    } catch (e) {
+    } catch (_) {
       rethrow;
     }
   }

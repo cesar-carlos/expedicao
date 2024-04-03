@@ -199,14 +199,14 @@ class ConferenciaPage {
                                 ),
                                 FooterDialog(
                                   leftWidgets: [
-                                    Text(
-                                      controller.fullCartName,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 9,
-                                      ),
-                                    ),
+                                    // Text(
+                                    //   controller.fullCartName,
+                                    //   style: TextStyle(
+                                    //     color: Colors.white,
+                                    //     fontWeight: FontWeight.bold,
+                                    //     fontSize: 9,
+                                    //   ),
+                                    // ),
 
                                     // Container(
                                     //   height: 12,

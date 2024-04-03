@@ -92,7 +92,7 @@ class EstoqueProdutoConversaoUnidadeConsultaModel {
         precoVenda5: AppHelper.stringToDouble(json['PrecoVenda5']),
         observacao: json['Observacao'],
       );
-    } catch (e) {
+    } catch (_) {
       rethrow;
     }
   }

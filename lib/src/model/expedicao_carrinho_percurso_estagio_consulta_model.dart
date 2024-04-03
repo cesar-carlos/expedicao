@@ -134,7 +134,7 @@ class ExpedicaoCarrinhoPercursoEstagioConsultaModel {
         codSetorEstoque: json['CodSetorEstoque'],
         nomeSetorEstoque: json['NomeSetorEstoque'],
       );
-    } catch (e) {
+    } catch (_) {
       rethrow;
     }
   }

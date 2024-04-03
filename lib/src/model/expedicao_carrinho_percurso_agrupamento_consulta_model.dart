@@ -115,7 +115,7 @@ class ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel {
         codUsuarioInicio: json['CodUsuarioInicio'],
         nomeUsuarioInicio: json['NomeUsuarioInicio'],
       );
-    } catch (e) {
+    } catch (_) {
       rethrow;
     }
   }

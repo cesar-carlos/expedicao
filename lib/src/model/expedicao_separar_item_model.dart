@@ -86,7 +86,7 @@ class ExpedicaoSepararItemModel {
         quantidadeSeparacao:
             AppHelper.stringToDouble(json['QuantidadeSeparacao']),
       );
-    } catch (e) {
+    } catch (_) {
       rethrow;
     }
   }

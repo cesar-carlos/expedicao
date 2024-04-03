@@ -77,7 +77,7 @@ class ExpedicaoConferirItemModel {
         quantidadeConferida:
             AppHelper.stringToDouble(json['QuantidadeConferida']),
       );
-    } catch (e) {
+    } catch (_) {
       rethrow;
     }
   }

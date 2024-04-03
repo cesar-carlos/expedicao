@@ -78,7 +78,7 @@ class ExpedicaoCarrinhoPercursoModel {
             AppHelper.tryStringToDateOrNull(json['DataFinalizacao']),
         horaFinalizacao: json['HoraFinalizacao'],
       );
-    } catch (e) {
+    } catch (_) {
       rethrow;
     }
   }

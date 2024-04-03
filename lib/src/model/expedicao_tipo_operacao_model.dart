@@ -90,7 +90,7 @@ class ExpedicaoTipoOperacaoModel {
         controlaLote: json['ControlaLote'],
         controlaNumeroSerie: json['ControlaNumeroSerie'],
       );
-    } catch (e) {
+    } catch (_) {
       rethrow;
     }
   }
