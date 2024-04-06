@@ -6,8 +6,8 @@ import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
 import 'package:app_expedicao/src/model/basic_event_model.dart';
 import 'package:app_expedicao/src/app/app_socket_config.dart';
 
-class ArmazenagemEventRepository implements EventContract {
-  static ArmazenagemEventRepository? _instancia;
+class ArmazenarItemEventRepository implements EventContract {
+  static ArmazenarItemEventRepository? _instancia;
   final List<RepositoryEventListenerModel> _listener = [];
 
   @override
@@ -15,14 +15,14 @@ class ArmazenagemEventRepository implements EventContract {
 
   final _appSocket = Get.find<AppSocketConfig>();
 
-  ArmazenagemEventRepository._() {
+  ArmazenarItemEventRepository._() {
     _onInsert();
     _onUpdate();
     _onDelete();
   }
 
-  static ArmazenagemEventRepository get instancia {
-    _instancia ??= ArmazenagemEventRepository._();
+  static ArmazenarItemEventRepository get instancia {
+    _instancia ??= ArmazenarItemEventRepository._();
     return _instancia!;
   }
 
@@ -52,7 +52,7 @@ class ArmazenagemEventRepository implements EventContract {
   }
 
   void _onInsert() {
-    const event = 'armazenagem.insert.listen';
+    const event = 'armazenar.item.insert.listen';
     _appSocket.socket.on(event, (data) {
       _listener
           .where((element) => element.event == Event.insert)
@@ -69,7 +69,7 @@ class ArmazenagemEventRepository implements EventContract {
   }
 
   void _onUpdate() {
-    const event = 'armazenagem.update.listen';
+    const event = 'armazenar.item.update.listen';
     _appSocket.socket.on(event, (data) {
       _listener
           .where((element) => element.event == Event.update)
@@ -86,7 +86,7 @@ class ArmazenagemEventRepository implements EventContract {
   }
 
   void _onDelete() {
-    const event = 'armazenagem.delete.listen';
+    const event = 'armazenar.item.delete.listen';
     _appSocket.socket.on(event, (data) {
       _listener
           .where((element) => element.event == Event.delete)

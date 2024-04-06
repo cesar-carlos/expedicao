@@ -1,8 +1,8 @@
+import 'package:app_expedicao/src/model/expedicao_conferir_item_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_conferir_item/conferir_item_consulta_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_conferencia_item/conferencia_item_repository.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferencia_item_model.dart';
-import 'package:app_expedicao/src/model/expedicao_conferir_item_model.dart';
 
 class ConferenciaRemoverItemService {
   final ExpedicaoCarrinhoPercursoEstagioConsultaModel percursoEstagioConsulta;
@@ -12,12 +12,10 @@ class ConferenciaRemoverItemService {
   });
 
   Future<void> remove({required String item}) async {
-    final params = ''' 
+    final params = '''
         CodEmpresa = ${percursoEstagioConsulta.codEmpresa}
       AND CodConferir = ${percursoEstagioConsulta.codOrigem}
-      AND Item = '$item'
-
-    ''';
+      AND Item = '$item' ''';
 
     final repository = ConferenciaItemRepository();
     final response = await repository.select(params);
@@ -41,9 +39,7 @@ class ConferenciaRemoverItemService {
     final params = '''
         CodEmpresa = ${percursoEstagioConsulta.codEmpresa}
       AND CodConferir = ${percursoEstagioConsulta.codOrigem}
-      AND CodCarrinho = '${percursoEstagioConsulta.codCarrinho}'
-
-    ''';
+      AND CodCarrinho = '${percursoEstagioConsulta.codCarrinho}' ''';
 
     final itens = await ConferirItemConsultaRepository().select(params);
     return itens
@@ -57,9 +53,7 @@ class ConferenciaRemoverItemService {
         CodEmpresa = ${percursoEstagioConsulta.codEmpresa}
       AND CodConferir = ${percursoEstagioConsulta.codOrigem}
       AND CodCarrinhoPercurso = ${percursoEstagioConsulta.codCarrinhoPercurso}  
-      AND ItemCarrinhoPercurso = '${percursoEstagioConsulta.item}'
-
-    ''';
+      AND ItemCarrinhoPercurso = '${percursoEstagioConsulta.item}' ''';
 
     return await ConferenciaItemRepository().select(params);
   }
@@ -67,9 +61,7 @@ class ConferenciaRemoverItemService {
   Future<List<ExpedicaoConferenciaItemModel>> _getConferenciaItens() async {
     final params = '''
         CodEmpresa = ${percursoEstagioConsulta.codEmpresa}
-      AND CodConferir = ${percursoEstagioConsulta.codOrigem}
-
-    ''';
+      AND CodConferir = ${percursoEstagioConsulta.codOrigem} ''';
 
     return await ConferenciaItemRepository().select(params);
   }

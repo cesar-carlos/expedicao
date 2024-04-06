@@ -65,9 +65,7 @@ class SeparacaoAdicionarItemService {
   Future<List<ExpedicaSeparacaoItemConsultaModel>> addAll() async {
     final params = '''
         CodEmpresa = ${percursoEstagioConsulta.codEmpresa}
-      AND CodSepararEstoque = ${percursoEstagioConsulta.codOrigem}
-
-    ''';
+      AND CodSepararEstoque = ${percursoEstagioConsulta.codOrigem} ''';
 
     final separarItens = await SepararItemRepository().select(params);
     final separacaoItens = await SeparacaoItemRepository().select(params);
@@ -115,9 +113,7 @@ class SeparacaoAdicionarItemService {
       return '''
         (CodEmpresa = ${el.codEmpresa} 
       AND CodSepararEstoque = ${el.codSepararEstoque}
-      AND Item = '${el.item}')
-
-      ''';
+      AND Item = '${el.item}') ''';
     }).join(' OR ');
 
     return await SeparacaoItemConsultaRepository().select(paramsConsulta);

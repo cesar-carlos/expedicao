@@ -8,16 +8,16 @@ import 'package:app_expedicao/src/app/app_error.dart';
 import 'package:app_expedicao/src/app/app_socket_config.dart';
 import 'package:app_expedicao/src/model/send_mutation_socket_model.dart';
 import 'package:app_expedicao/src/model/send_mutations_socket_model.dart';
-import 'package:app_expedicao/src/model/expedicao_armazenagem_item.dart';
+import 'package:app_expedicao/src/model/expedicao_armazenar_item.dart';
 import 'package:app_expedicao/src/model/send_query_socket_model.dart';
 
-class ArmazenagemItemRepository {
+class ArmazenarItemRepository {
   final uuid = const Uuid();
   var socket = Get.find<AppSocketConfig>().socket;
 
-  Future<List<ExpedicaoArmazenagemItem>> select([String params = '']) {
-    final event = '${socket.id} armazenagem.item.select';
-    final completer = Completer<List<ExpedicaoArmazenagemItem>>();
+  Future<List<ExpedicaoArmazenarItem>> select([String params = '']) {
+    final event = '${socket.id} armazenar.item.select';
+    final completer = Completer<List<ExpedicaoArmazenarItem>>();
     final resposeIn = uuid.v4();
 
     final send = SendQuerySocketModel(
@@ -35,8 +35,8 @@ class ArmazenagemItemRepository {
 
         if (error != null) throw error;
 
-        final list = data.map<ExpedicaoArmazenagemItem>((json) {
-          return ExpedicaoArmazenagemItem.fromJson(json);
+        final list = data.map<ExpedicaoArmazenarItem>((json) {
+          return ExpedicaoArmazenarItem.fromJson(json);
         }).toList();
 
         completer.complete(list);
@@ -51,10 +51,9 @@ class ArmazenagemItemRepository {
     return completer.future;
   }
 
-  Future<List<ExpedicaoArmazenagemItem>> insert(
-      ExpedicaoArmazenagemItem entity) {
-    final event = '${socket.id} armazenagem.item.insert';
-    final completer = Completer<List<ExpedicaoArmazenagemItem>>();
+  Future<List<ExpedicaoArmazenarItem>> insert(ExpedicaoArmazenarItem entity) {
+    final event = '${socket.id} armazenar.item.insert';
+    final completer = Completer<List<ExpedicaoArmazenarItem>>();
     final resposeIn = uuid.v4();
 
     final send = SendMutationSocketModel(
@@ -72,8 +71,8 @@ class ArmazenagemItemRepository {
 
         if (error != null) throw error;
 
-        final list = mutation.map<ExpedicaoArmazenagemItem>((json) {
-          return ExpedicaoArmazenagemItem.fromJson(json);
+        final list = mutation.map<ExpedicaoArmazenarItem>((json) {
+          return ExpedicaoArmazenarItem.fromJson(json);
         }).toList();
 
         completer.complete(list);
@@ -88,10 +87,10 @@ class ArmazenagemItemRepository {
     return completer.future;
   }
 
-  Future<List<ExpedicaoArmazenagemItem>> insertAll(
-      List<ExpedicaoArmazenagemItem> entitys) {
-    final event = '${socket.id} armazenagem.item.insert';
-    final completer = Completer<List<ExpedicaoArmazenagemItem>>();
+  Future<List<ExpedicaoArmazenarItem>> insertAll(
+      List<ExpedicaoArmazenarItem> entitys) {
+    final event = '${socket.id} armazenar.item.insert';
+    final completer = Completer<List<ExpedicaoArmazenarItem>>();
     final resposeIn = uuid.v4();
 
     final send = SendMutationsSocketModel(
@@ -110,8 +109,8 @@ class ArmazenagemItemRepository {
 
         if (error != null) throw error;
 
-        final list = mutation.map<ExpedicaoArmazenagemItem>((json) {
-          return ExpedicaoArmazenagemItem.fromJson(json);
+        final list = mutation.map<ExpedicaoArmazenarItem>((json) {
+          return ExpedicaoArmazenarItem.fromJson(json);
         }).toList();
 
         completer.complete(list);
@@ -126,10 +125,9 @@ class ArmazenagemItemRepository {
     return completer.future;
   }
 
-  Future<List<ExpedicaoArmazenagemItem>> update(
-      ExpedicaoArmazenagemItem entity) {
-    final event = '${socket.id} armazenagem.item.update';
-    final completer = Completer<List<ExpedicaoArmazenagemItem>>();
+  Future<List<ExpedicaoArmazenarItem>> update(ExpedicaoArmazenarItem entity) {
+    final event = '${socket.id} armazenar.item.update';
+    final completer = Completer<List<ExpedicaoArmazenarItem>>();
     final resposeIn = uuid.v4();
 
     final send = SendMutationSocketModel(
@@ -147,8 +145,8 @@ class ArmazenagemItemRepository {
 
         if (error != null) throw error;
 
-        final list = mutation.map<ExpedicaoArmazenagemItem>((json) {
-          return ExpedicaoArmazenagemItem.fromJson(json);
+        final list = mutation.map<ExpedicaoArmazenarItem>((json) {
+          return ExpedicaoArmazenarItem.fromJson(json);
         }).toList();
 
         completer.complete(list);
@@ -163,10 +161,10 @@ class ArmazenagemItemRepository {
     return completer.future;
   }
 
-  Future<List<ExpedicaoArmazenagemItem>> updateAll(
-      List<ExpedicaoArmazenagemItem> entitys) {
-    final event = '${socket.id} armazenagem.item.update';
-    final completer = Completer<List<ExpedicaoArmazenagemItem>>();
+  Future<List<ExpedicaoArmazenarItem>> updateAll(
+      List<ExpedicaoArmazenarItem> entitys) {
+    final event = '${socket.id} armazenar.item.update';
+    final completer = Completer<List<ExpedicaoArmazenarItem>>();
     final resposeIn = uuid.v4();
 
     final send = SendMutationsSocketModel(
@@ -184,8 +182,8 @@ class ArmazenagemItemRepository {
 
         if (error != null) throw error;
 
-        final list = mutation.map<ExpedicaoArmazenagemItem>((json) {
-          return ExpedicaoArmazenagemItem.fromJson(json);
+        final list = mutation.map<ExpedicaoArmazenarItem>((json) {
+          return ExpedicaoArmazenarItem.fromJson(json);
         }).toList();
 
         completer.complete(list);
@@ -200,10 +198,9 @@ class ArmazenagemItemRepository {
     return completer.future;
   }
 
-  Future<List<ExpedicaoArmazenagemItem>> delete(
-      ExpedicaoArmazenagemItem entity) {
-    final event = '${socket.id} armazenagem.item.delete';
-    final completer = Completer<List<ExpedicaoArmazenagemItem>>();
+  Future<List<ExpedicaoArmazenarItem>> delete(ExpedicaoArmazenarItem entity) {
+    final event = '${socket.id} armazenar.item.delete';
+    final completer = Completer<List<ExpedicaoArmazenarItem>>();
     final resposeIn = uuid.v4();
 
     final send = SendMutationSocketModel(
@@ -221,8 +218,8 @@ class ArmazenagemItemRepository {
 
         if (error != null) throw error;
 
-        final list = mutation.map<ExpedicaoArmazenagemItem>((json) {
-          return ExpedicaoArmazenagemItem.fromJson(json);
+        final list = mutation.map<ExpedicaoArmazenarItem>((json) {
+          return ExpedicaoArmazenarItem.fromJson(json);
         }).toList();
 
         completer.complete(list);

@@ -11,11 +11,10 @@ class SeparacaoRemoverItemService {
   });
 
   Future<void> remove({required item}) async {
-    final params = ''' 
+    final params = '''
         CodEmpresa = ${percursoEstagioConsulta.codEmpresa}
       AND CodSepararEstoque = ${percursoEstagioConsulta.codOrigem}
-      AND Item = '$item'
-    ''';
+      AND Item = '$item' ''';
 
     final repository = SeparacaoItemRepository();
     final response = await repository.select(params);
@@ -26,10 +25,9 @@ class SeparacaoRemoverItemService {
   }
 
   Future<void> removeAll() async {
-    final params = ''' 
+    final params = '''
         CodEmpresa = ${percursoEstagioConsulta.codEmpresa}
-      AND CodSepararEstoque = ${percursoEstagioConsulta.codOrigem}
-      ''';
+      AND CodSepararEstoque = ${percursoEstagioConsulta.codOrigem} ''';
 
     final repository = SeparacaoItemRepository();
     final response = await repository.select(params);
@@ -37,13 +35,11 @@ class SeparacaoRemoverItemService {
   }
 
   Future<void> removeAllItensCart() async {
-    final params = ''' 
+    final params = '''
         CodEmpresa = ${percursoEstagioConsulta.codEmpresa}
       AND CodSepararEstoque = ${percursoEstagioConsulta.codOrigem}
       AND CodCarrinhoPercurso = ${percursoEstagioConsulta.codCarrinhoPercurso}  
-      AND ItemCarrinhoPercurso = '${percursoEstagioConsulta.item}'
-
-      ''';
+      AND ItemCarrinhoPercurso = '${percursoEstagioConsulta.item}' ''';
 
     final separacaoItensConsulta =
         await SeparacaoItemConsultaRepository().select(params);

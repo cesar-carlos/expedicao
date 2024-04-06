@@ -16,9 +16,9 @@ class CancelamentoService {
   }) async {
     final params = '''
         CodEmpresa = $codEmpresa
-        AND Origem = '$origem'
-        AND CodOrigem = $codOrigem
-        ${itemOrigem != null ? 'AND ItemOrigem = $itemOrigem' : ''} ''';
+      AND Origem = '$origem'
+      AND CodOrigem = $codOrigem
+      ${itemOrigem != null ? 'AND ItemOrigem = $itemOrigem' : ''} ''';
 
     final result = await _cancelamentoRepository.select(params);
     return result;
@@ -32,9 +32,9 @@ class CancelamentoService {
   }) async {
     final params = '''
         CodEmpresa = $codEmpresa
-        AND Origem = '$origem'
-        AND CodOrigem = $codOrigem
-        AND ItemOrigem = $itemOrigem ''';
+      AND Origem = '$origem'
+      AND CodOrigem = $codOrigem
+      AND ItemOrigem = $itemOrigem ''';
 
     final result = await _cancelamentoRepository.select(params);
     if (result.isEmpty) return null;

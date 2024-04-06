@@ -6,6 +6,7 @@ class ExpedicaoTipoOperacaoArmazenagem {
   int codPrioridade;
   int codRelatorio;
   int codLocalArmazenagem;
+  int? codSetorArmazenagem;
   String movimentaEstoque;
   int codTipoMovimentoEstoque;
   int controlaLote;
@@ -19,6 +20,7 @@ class ExpedicaoTipoOperacaoArmazenagem {
     required this.codPrioridade,
     required this.codRelatorio,
     required this.codLocalArmazenagem,
+    this.codSetorArmazenagem,
     required this.movimentaEstoque,
     required this.codTipoMovimentoEstoque,
     required this.controlaLote,
@@ -33,6 +35,7 @@ class ExpedicaoTipoOperacaoArmazenagem {
     int? codPrioridade,
     int? codRelatorio,
     int? codLocalArmazenagem,
+    int? codSetorArmazenagem,
     String? movimentaEstoque,
     int? codTipoMovimentoEstoque,
     int? controlaLote,
@@ -47,6 +50,7 @@ class ExpedicaoTipoOperacaoArmazenagem {
       codPrioridade: codPrioridade ?? this.codPrioridade,
       codRelatorio: codRelatorio ?? this.codRelatorio,
       codLocalArmazenagem: codLocalArmazenagem ?? this.codLocalArmazenagem,
+      codSetorArmazenagem: codSetorArmazenagem ?? this.codSetorArmazenagem,
       movimentaEstoque: movimentaEstoque ?? this.movimentaEstoque,
       codTipoMovimentoEstoque:
           codTipoMovimentoEstoque ?? this.codTipoMovimentoEstoque,
@@ -65,6 +69,7 @@ class ExpedicaoTipoOperacaoArmazenagem {
         codPrioridade: json['CodPrioridade'],
         codRelatorio: json['CodRelatorio'],
         codLocalArmazenagem: json['CodLocalArmazenagem'],
+        codSetorArmazenagem: json['CodSetorArmazenagem'],
         movimentaEstoque: json['movimentaEstoque'],
         codTipoMovimentoEstoque: json['codTipoMovimentoEstoque'],
         controlaLote: json['controlaLote'],
@@ -84,6 +89,7 @@ class ExpedicaoTipoOperacaoArmazenagem {
       'CodPrioridade': codPrioridade,
       'CodRelatorio': codRelatorio,
       'CodLocalArmazenagem': codLocalArmazenagem,
+      'CodSetorArmazenagem': codSetorArmazenagem,
       'MovimentaEstoque': movimentaEstoque,
       'CodTipoMovimentoEstoque': codTipoMovimentoEstoque,
       'ControlaLote': controlaLote,
@@ -102,6 +108,7 @@ class ExpedicaoTipoOperacaoArmazenagem {
         codPrioridade: $codPrioridade, 
         codRelatorio: $codRelatorio, 
         codLocalArmazenagem: $codLocalArmazenagem, 
+        codSetorArmazenagem: $codSetorArmazenagem, 
         movimentaEstoque: $movimentaEstoque, 
         codTipoMovimentoEstoque: $codTipoMovimentoEstoque, 
         controlaLote: $controlaLote, 

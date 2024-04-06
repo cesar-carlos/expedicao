@@ -4,13 +4,13 @@ import 'package:app_expedicao/src/app/app_error.dart';
 import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
-import 'package:app_expedicao/src/repository/expedicao_armazenagem/armazenagem_repository.dart';
+import 'package:app_expedicao/src/repository/expedicao_armazenar/armazenar_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_conferir_item/conferir_item_consulta_separacao_repository.dart';
-import 'package:app_expedicao/src/repository/expedicao_armazenagem_item/armazenagem_item_repository.dart';
+import 'package:app_expedicao/src/repository/expedicao_armazenar_item/armazenar_item_repository.dart';
 import 'package:app_expedicao/src/model/expedicao_separado_item_consulta_model.dart';
-import 'package:app_expedicao/src/model/expedicao_armazenagem_item.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
-import 'package:app_expedicao/src/model/expedicao_armazenagem.dart';
+import 'package:app_expedicao/src/model/expedicao_armazenar_item.dart';
+import 'package:app_expedicao/src/model/expedicao_armazenar.dart';
 
 class ArmazenarSeparacaoAdicionarService {
   final ExpedicaoCarrinhoPercursoModel carrinhoPercurso;
@@ -20,22 +20,22 @@ class ArmazenarSeparacaoAdicionarService {
 
   Future<void> execute() async {
     try {
-      final itensSeparacaoConsulta = await _findSeparado();
+      final itensSeparacaoConsulta = await _findItensSeparado();
       final armazenar = _createArmazenar(itensSeparacaoConsulta.first);
-      final result = await ArmazenagemRepository().insert(armazenar);
+      final result = await ArmazenarRepository().insert(armazenar);
 
-      final newItens = _createItensArmazenar(
-        result.first,
-        itensSeparacaoConsulta,
-      );
+      if (result.isEmpty) throw AppError('Erro ao armazenar');
 
-      await ArmazenagemItemRepository().insertAll(newItens);
+      final newItens =
+          _createItensArmazenar(result.first, itensSeparacaoConsulta);
+
+      await ArmazenarItemRepository().insertAll(newItens);
     } catch (e) {
       rethrow;
     }
   }
 
-  Future<List<ExpedicaoSeparadoItemConsultaModel>> _findSeparado() async {
+  Future<List<ExpedicaoSeparadoItemConsultaModel>> _findItensSeparado() async {
     try {
       final repository = ConferirItemConsultaSeparacaoRepository();
 
@@ -54,12 +54,12 @@ class ArmazenarSeparacaoAdicionarService {
     }
   }
 
-  ExpedicaoArmazenagem _createArmazenar(
+  ExpedicaoArmazenar _createArmazenar(
     ExpedicaoSeparadoItemConsultaModel item,
   ) {
-    return ExpedicaoArmazenagem(
+    return ExpedicaoArmazenar(
       codEmpresa: item.codEmpresa,
-      codArmazenagem: 0,
+      codArmazenar: 0,
       numeroDocumento: null,
       situacao: ExpedicaoSituacaoModel.aguardando,
       origem: ExpedicaoOrigemModel.separacao,
@@ -74,28 +74,23 @@ class ArmazenarSeparacaoAdicionarService {
     );
   }
 
-  List<ExpedicaoArmazenagemItem> _createItensArmazenar(
-    ExpedicaoArmazenagem armazenar,
+  List<ExpedicaoArmazenarItem> _createItensArmazenar(
+    ExpedicaoArmazenar armazenar,
     List<ExpedicaoSeparadoItemConsultaModel> itens,
   ) {
-    final newItens = <ExpedicaoArmazenagemItem>[];
+    final newItens = <ExpedicaoArmazenarItem>[];
 
     for (var el in itens) {
-      newItens.add(ExpedicaoArmazenagemItem(
+      newItens.add(ExpedicaoArmazenarItem(
         codEmpresa: armazenar.codEmpresa,
-        codArmazenagem: armazenar.codArmazenagem,
+        codArmazenar: armazenar.codArmazenar,
         item: '00000',
-        codCarrinhoPercurso: el.codCarrinhoPercurso,
-        itemCarrinhoPercurso: el.itemCarrinhoPercurso,
-        codLocalArmazenagem: el.codLocalArmazenagem,
-        codSetorEstoque: el.codSetorEstoque,
         codProduto: el.codProduto,
         nomeProduto: el.nomeProduto,
         codUnidadeMedida: el.codUnidadeMedida,
-        codigoBarras: el.codigoBarras,
         codProdutoEndereco: el.endereco.toString(),
+        codigoBarras: el.codigoBarras,
         quantidade: el.quantidadeSeparacao,
-        quantidadeArmazenada: 0.00,
       ));
     }
 

@@ -5,18 +5,18 @@ import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:app_expedicao/src/app/app_error.dart';
-import 'package:app_expedicao/src/model/expedicao_armazenagem.dart';
+import 'package:app_expedicao/src/model/expedicao_armazenar.dart';
 import 'package:app_expedicao/src/model/send_mutation_socket_model.dart';
 import 'package:app_expedicao/src/model/send_query_socket_model.dart';
 import 'package:app_expedicao/src/app/app_socket_config.dart';
 
-class ArmazenagemRepository {
+class ArmazenarRepository {
   final uuid = const Uuid();
   var socket = Get.find<AppSocketConfig>().socket;
 
-  Future<List<ExpedicaoArmazenagem>> select([String params = '']) {
-    final event = '${socket.id} armazenagem.select';
-    final completer = Completer<List<ExpedicaoArmazenagem>>();
+  Future<List<ExpedicaoArmazenar>> select([String params = '']) {
+    final event = '${socket.id} armazenar.select';
+    final completer = Completer<List<ExpedicaoArmazenar>>();
     final resposeIn = uuid.v4();
 
     final send = SendQuerySocketModel(
@@ -34,8 +34,8 @@ class ArmazenagemRepository {
 
         if (error != null) throw error;
 
-        final list = data.map<ExpedicaoArmazenagem>((json) {
-          return ExpedicaoArmazenagem.fromJson(json);
+        final list = data.map<ExpedicaoArmazenar>((json) {
+          return ExpedicaoArmazenar.fromJson(json);
         }).toList();
 
         completer.complete(list);
@@ -50,9 +50,9 @@ class ArmazenagemRepository {
     return completer.future;
   }
 
-  Future<List<ExpedicaoArmazenagem>> insert(ExpedicaoArmazenagem entity) {
-    final event = '${socket.id} armazenagem.insert';
-    final completer = Completer<List<ExpedicaoArmazenagem>>();
+  Future<List<ExpedicaoArmazenar>> insert(ExpedicaoArmazenar entity) {
+    final event = '${socket.id} armazenar.insert';
+    final completer = Completer<List<ExpedicaoArmazenar>>();
     final resposeIn = uuid.v4();
 
     final send = SendMutationSocketModel(
@@ -70,8 +70,8 @@ class ArmazenagemRepository {
 
         if (error != null) throw error;
 
-        final list = mutation.map<ExpedicaoArmazenagem>((json) {
-          return ExpedicaoArmazenagem.fromJson(json);
+        final list = mutation.map<ExpedicaoArmazenar>((json) {
+          return ExpedicaoArmazenar.fromJson(json);
         }).toList();
 
         completer.complete(list);
@@ -86,9 +86,9 @@ class ArmazenagemRepository {
     return completer.future;
   }
 
-  Future<List<ExpedicaoArmazenagem>> update(ExpedicaoArmazenagem entity) {
-    final event = '${socket.id} armazenagem.update';
-    final completer = Completer<List<ExpedicaoArmazenagem>>();
+  Future<List<ExpedicaoArmazenar>> update(ExpedicaoArmazenar entity) {
+    final event = '${socket.id} armazenar.update';
+    final completer = Completer<List<ExpedicaoArmazenar>>();
     final resposeIn = uuid.v4();
 
     final send = SendMutationSocketModel(
@@ -106,8 +106,8 @@ class ArmazenagemRepository {
 
         if (error != null) throw error;
 
-        final list = mutation.map<ExpedicaoArmazenagem>((json) {
-          return ExpedicaoArmazenagem.fromJson(json);
+        final list = mutation.map<ExpedicaoArmazenar>((json) {
+          return ExpedicaoArmazenar.fromJson(json);
         }).toList();
 
         completer.complete(list);
@@ -122,9 +122,9 @@ class ArmazenagemRepository {
     return completer.future;
   }
 
-  Future<List<ExpedicaoArmazenagem>> delete(ExpedicaoArmazenagem entity) {
-    final event = '${socket.id} armazenagem.delete';
-    final completer = Completer<List<ExpedicaoArmazenagem>>();
+  Future<List<ExpedicaoArmazenar>> delete(ExpedicaoArmazenar entity) {
+    final event = '${socket.id} armazenar.delete';
+    final completer = Completer<List<ExpedicaoArmazenar>>();
     final resposeIn = uuid.v4();
 
     final send = SendMutationSocketModel(
@@ -142,8 +142,8 @@ class ArmazenagemRepository {
 
         if (error != null) throw error;
 
-        final list = mutation.map<ExpedicaoArmazenagem>((json) {
-          return ExpedicaoArmazenagem.fromJson(json);
+        final list = mutation.map<ExpedicaoArmazenar>((json) {
+          return ExpedicaoArmazenar.fromJson(json);
         }).toList();
 
         completer.complete(list);

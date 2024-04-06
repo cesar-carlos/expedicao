@@ -49,11 +49,9 @@ class ConferenciaAdicionarItemService {
     if (newConferenciaItem.isEmpty) return null;
 
     final params = '''
-        CodEmpresa = ${newConferenciaItem.last.codEmpresa} 
-      AND CodConferir = ${newConferenciaItem.last.codConferir}
-      AND Item = '${newConferenciaItem.last.item}'
-
-    ''';
+      CodEmpresa = ${newConferenciaItem.last.codEmpresa} 
+        AND CodConferir = ${newConferenciaItem.last.codConferir}
+        AND Item = '${newConferenciaItem.last.item}' ''';
 
     final list = await ConferenciaItemConsultaRepository().select(params);
     if (list.isEmpty) return null;
@@ -105,10 +103,8 @@ class ConferenciaAdicionarItemService {
     String paramsConsulta = conferenciaItensResponse.map((el) {
       return '''
         (CodEmpresa = ${el.codEmpresa} 
-      AND CodConferir = ${el.codConferir}
-      AND Item = '${el.item}')
-
-      ''';
+          AND CodConferir = ${el.codConferir}
+          AND Item = '${el.item}') ''';
     }).join(' OR ');
 
     return await ConferenciaItemConsultaRepository().select(paramsConsulta);
@@ -116,11 +112,9 @@ class ConferenciaAdicionarItemService {
 
   Future<List<ExpedicaoConferirItemModel>> _getConferirItensCarrinho() async {
     final params = '''
-        CodEmpresa = ${percursoEstagioConsulta.codEmpresa}
-      AND CodConferir = ${percursoEstagioConsulta.codOrigem}
-      AND CodCarrinho = '${percursoEstagioConsulta.codCarrinho}'
-
-    ''';
+      CodEmpresa = ${percursoEstagioConsulta.codEmpresa}
+        AND CodConferir = ${percursoEstagioConsulta.codOrigem}
+        AND CodCarrinho = '${percursoEstagioConsulta.codCarrinho}' ''';
 
     final itens = await ConferirItemConsultaRepository().select(params);
     return itens
@@ -131,12 +125,10 @@ class ConferenciaAdicionarItemService {
   Future<List<ExpedicaoConferenciaItemModel>>
       _getConferenciaItensCarrinho() async {
     final params = '''
-        CodEmpresa = ${percursoEstagioConsulta.codEmpresa}
-      AND CodConferir = ${percursoEstagioConsulta.codOrigem}
-      AND CodCarrinhoPercurso = ${percursoEstagioConsulta.codCarrinhoPercurso}  
-      AND ItemCarrinhoPercurso = '${percursoEstagioConsulta.item}'
-
-    ''';
+      CodEmpresa = ${percursoEstagioConsulta.codEmpresa}
+        AND CodConferir = ${percursoEstagioConsulta.codOrigem}
+        AND CodCarrinhoPercurso = ${percursoEstagioConsulta.codCarrinhoPercurso}  
+        AND ItemCarrinhoPercurso = '${percursoEstagioConsulta.item}' ''';
 
     return await ConferenciaItemRepository().select(params);
   }

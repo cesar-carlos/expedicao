@@ -17,9 +17,7 @@ class ExpedicaoEstagioService {
   Future<ExpedicaoEstagioModel> conferencia() async {
     const params = '''
         Origem = '${ExpedicaoOrigemModel.conferencia}' 
-      AND Ativo = 'S'
-
-    ''';
+      AND Ativo = 'S' ''';
 
     final estagio = await ExpedicaoEstagioRepository().select(params);
     return estagio.last;

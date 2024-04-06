@@ -1,6 +1,6 @@
-class ExpedicaoArmazenagem {
+class ExpedicaoArmazenar {
   int codEmpresa;
-  int codArmazenagem;
+  int codArmazenar;
   String? numeroDocumento;
   String situacao;
   String origem;
@@ -13,9 +13,9 @@ class ExpedicaoArmazenagem {
   String estacaoLancamento;
   String? observacao;
 
-  ExpedicaoArmazenagem({
+  ExpedicaoArmazenar({
     required this.codEmpresa,
-    required this.codArmazenagem,
+    required this.codArmazenar,
     this.numeroDocumento,
     required this.situacao,
     required this.origem,
@@ -29,9 +29,9 @@ class ExpedicaoArmazenagem {
     this.observacao,
   });
 
-  ExpedicaoArmazenagem copyWith({
+  ExpedicaoArmazenar copyWith({
     int? codEmpresa,
-    int? codArmazenagem,
+    int? codArmazenar,
     String? numeroDocumento,
     String? situacao,
     String? origem,
@@ -44,9 +44,9 @@ class ExpedicaoArmazenagem {
     String? estacaoLancamento,
     String? observacao,
   }) {
-    return ExpedicaoArmazenagem(
+    return ExpedicaoArmazenar(
       codEmpresa: codEmpresa ?? this.codEmpresa,
-      codArmazenagem: codArmazenagem ?? this.codArmazenagem,
+      codArmazenar: codArmazenar ?? this.codArmazenar,
       numeroDocumento: numeroDocumento ?? this.numeroDocumento,
       situacao: situacao ?? this.situacao,
       origem: origem ?? this.origem,
@@ -62,11 +62,11 @@ class ExpedicaoArmazenagem {
     );
   }
 
-  factory ExpedicaoArmazenagem.fromJson(Map<String, dynamic> json) {
+  factory ExpedicaoArmazenar.fromJson(Map<String, dynamic> json) {
     try {
-      return ExpedicaoArmazenagem(
+      return ExpedicaoArmazenar(
         codEmpresa: json['CodEmpresa'],
-        codArmazenagem: json['CodArmazenagem'],
+        codArmazenar: json['CodArmazenar'],
         numeroDocumento: json['NumeroDocumento'],
         situacao: json['Situacao'],
         origem: json['Origem'],
@@ -87,7 +87,7 @@ class ExpedicaoArmazenagem {
   Map<String, dynamic> toJson() {
     return {
       'CodEmpresa': codEmpresa,
-      'CodArmazenagem': codArmazenagem,
+      'CodArmazenar': codArmazenar,
       'NumeroDocumento': numeroDocumento,
       'Situacao': situacao,
       'Origem': origem,
@@ -105,9 +105,9 @@ class ExpedicaoArmazenagem {
   @override
   String toString() {
     return '''
-      ExpedicaoArmazenagem(
+      ExpedicaoArmazenar(
         codEmpresa: $codEmpresa, 
-        codArmazenagem: $codArmazenagem, 
+        codArmazenar: $codArmazenar, 
         numeroDocumento: $numeroDocumento, 
         situacao: $situacao, 
         origem: $origem, 

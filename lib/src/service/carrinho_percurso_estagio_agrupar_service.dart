@@ -128,12 +128,12 @@ class CarrinhoPercursoEstagioAgruparService {
     ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel carrinhoAgrupador,
   ) async {
     final params = '''
-        CodEmpresa = ${carrinhoAgrupador.codEmpresa}
-          AND CodCarrinhoPercurso = ${carrinhoAgrupador.codCarrinhoPercurso}
-          AND Origem = '${carrinhoAgrupador.origem}' 
-          AND CodCarrinho <> ${carrinhoAgrupador.codCarrinho} 
-          AND CarrinhoAgrupador = 'N' 
-          AND Situacao = '${ExpedicaoSituacaoModel.conferido}' ''';
+      CodEmpresa = ${carrinhoAgrupador.codEmpresa}
+        AND CodCarrinhoPercurso = ${carrinhoAgrupador.codCarrinhoPercurso}
+        AND Origem = '${carrinhoAgrupador.origem}' 
+        AND CodCarrinho <> ${carrinhoAgrupador.codCarrinho} 
+        AND CarrinhoAgrupador = 'N' 
+        AND Situacao = '${ExpedicaoSituacaoModel.conferido}' ''';
 
     final carrinhoPercursoAgrupamentoConsulta =
         await CarrinhoPercursoAgrupamentoConsultaRepository().select(params);

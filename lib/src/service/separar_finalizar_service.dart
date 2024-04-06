@@ -3,7 +3,7 @@ import 'package:app_expedicao/src/model/expedicao_tipo_operacao_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_separar/separar_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_tipo_operacao/tipo_operacao_repository.dart';
-import 'package:app_expedicao/src/service/armazenagem_separacao_adicionar_service.dart';
+import 'package:app_expedicao/src/service/armazenar_separacao_adicionar_service.dart';
 import 'package:app_expedicao/src/service/conferir_separacao_adicionar_service.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';

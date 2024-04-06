@@ -22,7 +22,7 @@ class SepararConsultaServices {
   });
 
   Future<ExpedicaoSepararConsultaModel?> separar() async {
-    final params = ''' 
+    final params = '''
         CodEmpresa = $codEmpresa 
       AND CodSepararEstoque = $codSepararEstoque ''';
 
@@ -35,7 +35,7 @@ class SepararConsultaServices {
   }
 
   Future<List<ExpedicaoSepararItemConsultaModel>> itensSaparar() async {
-    final params = ''' 
+    final params = '''
         CodEmpresa = $codEmpresa 
       AND CodSepararEstoque = $codSepararEstoque ''';
 
@@ -44,7 +44,7 @@ class SepararConsultaServices {
 
   Future<List<ExpedicaoSepararItemUnidadeMedidaConsultaModel>>
       itensSapararUnidades() async {
-    final params = ''' 
+    final params = '''
         CodEmpresa = $codEmpresa 
       AND CodSepararEstoque = $codSepararEstoque ''';
 
@@ -52,7 +52,7 @@ class SepararConsultaServices {
   }
 
   Future<List<ExpedicaSeparacaoItemConsultaModel>> itensSeparacao() async {
-    final params = ''' 
+    final params = '''
         CodEmpresa = $codEmpresa 
       AND CodSepararEstoque = $codSepararEstoque ''';
 
@@ -70,7 +70,7 @@ class SepararConsultaServices {
 
   Future<List<ExpedicaoCarrinhoPercursoEstagioConsultaModel>>
       carrinhosPercurso() async {
-    final params = ''' 
+    final params = '''
       CodEmpresa = $codEmpresa 
         AND Origem = '${ExpedicaoOrigemModel.separacao}' 
         AND CodOrigem = $codSepararEstoque  ''';

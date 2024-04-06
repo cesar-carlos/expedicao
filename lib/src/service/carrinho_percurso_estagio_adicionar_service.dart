@@ -72,8 +72,8 @@ class CarrinhoPercursoEstagioAdicionarService {
   Future<ExpedicaoEstagioModel?> _findcodPercursoEstagio() async {
     final repository = ExpedicaoEstagioRepository();
     final params = '''
-        Origem LIKE '${_processo.origem}'  
-      AND Ativo = 'S' ''';
+      Origem LIKE '${_processo.origem}'  
+        AND Ativo = 'S' ''';
 
     final estagios = await repository.select(params);
     if (estagios.isEmpty) return null;

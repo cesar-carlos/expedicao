@@ -11,12 +11,10 @@ class ConferenciaCancelarItemService {
   });
 
   Future<void> cancelar({required String item}) async {
-    final params = ''' 
+    final params = '''
         CodEmpresa = ${percursoEstagioConsulta.codEmpresa}
       AND CodConferir = ${percursoEstagioConsulta.codOrigem}
-      AND Item = '$item'
-
-    ''';
+      AND Item = '$item' ''';
 
     final repository = ConferenciaItemRepository();
     final response = await repository.select(params);
@@ -58,9 +56,7 @@ class ConferenciaCancelarItemService {
         CodEmpresa = ${percursoEstagioConsulta.codEmpresa}
       AND CodConferir = ${percursoEstagioConsulta.codOrigem}
       AND CodCarrinhoPercurso = ${percursoEstagioConsulta.codCarrinhoPercurso}  
-      AND ItemCarrinhoPercurso = '${percursoEstagioConsulta.item}'
-
-    ''';
+      AND ItemCarrinhoPercurso = '${percursoEstagioConsulta.item}' ''';
 
     return await ConferenciaItemRepository().select(params);
   }
@@ -68,9 +64,7 @@ class ConferenciaCancelarItemService {
   Future<List<ExpedicaoConferenciaItemModel>> _getConferenciaItens() async {
     final params = '''
         CodEmpresa = ${percursoEstagioConsulta.codEmpresa}
-      AND CodConferir = ${percursoEstagioConsulta.codOrigem}
-
-    ''';
+      AND CodConferir = ${percursoEstagioConsulta.codOrigem} ''';
 
     return await ConferenciaItemRepository().select(params);
   }
