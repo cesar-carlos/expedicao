@@ -15,10 +15,9 @@ class ConferirSeparacaoAdicionarService {
   ConferirSeparacaoAdicionarService(this.carrinhoPercurso);
 
   Future<void> execute() async {
-    final itensSeparacaoConsulta = await _findSeparado();
-    final conferir = _createConferir(itensSeparacaoConsulta.first);
-
     try {
+      final itensSeparacaoConsulta = await _findSeparado();
+      final conferir = _createConferir(itensSeparacaoConsulta.first);
       final result = await ConferirRepository().insert(conferir);
 
       final newItensConferir = _createItensConferir(

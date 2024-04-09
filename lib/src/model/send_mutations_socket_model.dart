@@ -16,4 +16,14 @@ class SendMutationsSocketModel {
       "Mutation": mutation,
     };
   }
+
+  @override
+  String toString() {
+    return '''
+      SendMutationsSocketModel(
+        session: $session, 
+        resposeIn: $resposeIn, 
+        mutation: $mutation
+    )''';
+  }
 }

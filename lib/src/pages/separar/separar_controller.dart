@@ -349,7 +349,7 @@ class SepararController extends GetxController {
     } catch (e) {
       await MessageDialogView.show(
         context: Get.context!,
-        message: 'Erro ao adicionar conferência!',
+        message: 'Erro ao finalizar separação!',
         detail: e.toString(),
       );
     }

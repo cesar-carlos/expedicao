@@ -38,9 +38,9 @@ class SepararFinalizarService {
         situacao: ExpedicaoSituacaoModel.separado,
       );
 
-      final newCarrinhoPercurso = this
-          .carrinhoPercurso
-          .copyWith(situacao: ExpedicaoSituacaoModel.separado);
+      final newCarrinhoPercurso = this.carrinhoPercurso.copyWith(
+            situacao: ExpedicaoSituacaoModel.separado,
+          );
 
       await separarRepository.update(newSeparar);
       await carrinhoPercursoRepository.update(newCarrinhoPercurso);
@@ -51,7 +51,7 @@ class SepararFinalizarService {
 
       if (tipoOperacao.fazerConferencia == 'N' &&
           tipoOperacao.fazerArmazenamento == 'S') {
-        _addArmazenar(newCarrinhoPercurso);
+        await _addArmazenar(newCarrinhoPercurso);
       }
     } catch (e) {
       rethrow;
@@ -77,8 +77,8 @@ class SepararFinalizarService {
     try {
       final repository = TipoOperacaoRepository();
       final models = await repository.select('''
-            CodEmpresa = $codEmpresa
-          AND CodTipoOperacaoExpedicao = $codTipoOperacaoExpedicao ''');
+          CodEmpresa = $codEmpresa
+            AND CodTipoOperacaoExpedicao = $codTipoOperacaoExpedicao ''');
 
       if (models.isEmpty) throw AppError('Tipo de operação não encontrado');
 

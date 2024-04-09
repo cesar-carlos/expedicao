@@ -4,7 +4,6 @@ abstract class ExpedicaoSituacaoModel {
   static const emAndamento = 'EM ANDAMENTO';
   static const emSeparacao = 'EM SEPARACAO';
   static const emConverencia = 'EM CONFERENCIA';
-
   static const separando = 'SEPARANDO';
   static const separado = 'SEPARADO';
   static const conferindo = 'CONFERINDO';
