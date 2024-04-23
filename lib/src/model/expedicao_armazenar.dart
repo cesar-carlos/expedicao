@@ -2,7 +2,6 @@ class ExpedicaoArmazenar {
   int codEmpresa;
   int codArmazenar;
   String? numeroDocumento;
-  String situacao;
   String origem;
   int codOrigem;
   int codPrioridade;
@@ -17,7 +16,6 @@ class ExpedicaoArmazenar {
     required this.codEmpresa,
     required this.codArmazenar,
     this.numeroDocumento,
-    required this.situacao,
     required this.origem,
     required this.codOrigem,
     required this.codPrioridade,
@@ -33,7 +31,6 @@ class ExpedicaoArmazenar {
     int? codEmpresa,
     int? codArmazenar,
     String? numeroDocumento,
-    String? situacao,
     String? origem,
     int? codOrigem,
     int? codPrioridade,
@@ -48,7 +45,6 @@ class ExpedicaoArmazenar {
       codEmpresa: codEmpresa ?? this.codEmpresa,
       codArmazenar: codArmazenar ?? this.codArmazenar,
       numeroDocumento: numeroDocumento ?? this.numeroDocumento,
-      situacao: situacao ?? this.situacao,
       origem: origem ?? this.origem,
       codOrigem: codOrigem ?? this.codOrigem,
       codPrioridade: codPrioridade ?? this.codPrioridade,
@@ -68,7 +64,6 @@ class ExpedicaoArmazenar {
         codEmpresa: json['CodEmpresa'],
         codArmazenar: json['CodArmazenar'],
         numeroDocumento: json['NumeroDocumento'],
-        situacao: json['Situacao'],
         origem: json['Origem'],
         codOrigem: json['CodOrigem'],
         codPrioridade: json['CodPrioridade'],
@@ -89,7 +84,6 @@ class ExpedicaoArmazenar {
       'CodEmpresa': codEmpresa,
       'CodArmazenar': codArmazenar,
       'NumeroDocumento': numeroDocumento,
-      'Situacao': situacao,
       'Origem': origem,
       'CodOrigem': codOrigem,
       'CodPrioridade': codPrioridade,
@@ -108,8 +102,7 @@ class ExpedicaoArmazenar {
       ExpedicaoArmazenar(
         codEmpresa: $codEmpresa, 
         codArmazenar: $codArmazenar, 
-        numeroDocumento: $numeroDocumento, 
-        situacao: $situacao, 
+        numeroDocumento: $numeroDocumento,
         origem: $origem, 
         codOrigem: $codOrigem, 
         codPrioridade: $codPrioridade, 

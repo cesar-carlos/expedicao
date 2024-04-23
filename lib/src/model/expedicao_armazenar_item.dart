@@ -4,6 +4,7 @@ class ExpedicaoArmazenarItem {
   int codEmpresa;
   int codArmazenar;
   String item;
+  String situacao;
   int? codcarrinhoPercurso;
   String? itemcarrinhoPercurso;
   int codProduto;
@@ -17,6 +18,7 @@ class ExpedicaoArmazenarItem {
     required this.codEmpresa,
     required this.codArmazenar,
     required this.item,
+    required this.situacao,
     this.codcarrinhoPercurso,
     this.itemcarrinhoPercurso,
     required this.codProduto,
@@ -31,6 +33,7 @@ class ExpedicaoArmazenarItem {
     int? codEmpresa,
     int? codArmazenar,
     String? item,
+    String? situacao,
     int? codcarrinhoPercurso,
     String? itemcarrinhoPercurso,
     int? codProduto,
@@ -44,6 +47,7 @@ class ExpedicaoArmazenarItem {
       codEmpresa: codEmpresa ?? this.codEmpresa,
       codArmazenar: codArmazenar ?? this.codArmazenar,
       item: item ?? this.item,
+      situacao: situacao ?? this.situacao,
       codcarrinhoPercurso: codcarrinhoPercurso ?? this.codcarrinhoPercurso,
       itemcarrinhoPercurso: itemcarrinhoPercurso ?? this.itemcarrinhoPercurso,
       codProduto: codProduto ?? this.codProduto,
@@ -61,6 +65,7 @@ class ExpedicaoArmazenarItem {
         codEmpresa: json['CodEmpresa'],
         codArmazenar: json['CodArmazenar'],
         item: json['Item'],
+        situacao: json['Situacao'],
         codcarrinhoPercurso: json['CodcarrinhoPercurso'],
         itemcarrinhoPercurso: json['ItemcarrinhoPercurso'],
         codProduto: json['CodProduto'],
@@ -80,6 +85,7 @@ class ExpedicaoArmazenarItem {
       'CodEmpresa': codEmpresa,
       'CodArmazenar': codArmazenar,
       'Item': item,
+      'Situacao': situacao,
       'CodCarrinhoPercurso': codcarrinhoPercurso,
       'ItemCarrinhoPercurso': itemcarrinhoPercurso,
       'CodProduto': codProduto,
@@ -98,6 +104,7 @@ class ExpedicaoArmazenarItem {
         codEmpresa: $codEmpresa, 
         codArmazenar: $codArmazenar, 
         item: $item, 
+        situacao: $situacao,
         codcarrinhoPercurso: $codcarrinhoPercurso,
         itemcarrinhoPercurso: $itemcarrinhoPercurso,
         codProduto: $codProduto, 
