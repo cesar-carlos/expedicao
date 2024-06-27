@@ -146,7 +146,7 @@ class ConferenciaPage {
                                   child: TabBar(
                                       enableFeedback: true,
                                       indicatorColor: controller.colorIndicator,
-                                      overlayColor: MaterialStateProperty.all(
+                                      overlayColor: WidgetStateProperty.all(
                                         Colors.black12,
                                       ),
                                       indicatorPadding: EdgeInsets.zero,

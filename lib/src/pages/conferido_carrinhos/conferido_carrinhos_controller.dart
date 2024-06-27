@@ -190,9 +190,11 @@ class ConferidoCarrinhosController extends GetxController {
     ExpedicaoCarrinhoPercursoEstagioConsultaModel item,
   ) async {
     bool _viewMode = [
-      ExpedicaoSituacaoModel.cancelada,
       ExpedicaoSituacaoModel.conferido,
-      ExpedicaoSituacaoModel.agrupado
+      ExpedicaoSituacaoModel.cancelada,
+      ExpedicaoSituacaoModel.agrupado,
+      ExpedicaoSituacaoModel.emEntrega,
+      ExpedicaoSituacaoModel.embalando
     ].contains(item.situacao);
 
     final carrinho = await CarrinhoServices().select('''
@@ -298,6 +300,10 @@ class ConferidoCarrinhosController extends GetxController {
         ].contains(conferirConsulta.situacao) ||
         ![
           ExpedicaoSituacaoModel.conferido,
+          ExpedicaoSituacaoModel.cancelada,
+          ExpedicaoSituacaoModel.cancelada,
+          ExpedicaoSituacaoModel.emEntrega,
+          ExpedicaoSituacaoModel.embalando
         ].contains(item.situacao);
 
     await CarrinhosAgruparPage.show(

@@ -129,12 +129,12 @@ class SepararGridColumns {
     _columns.add(
       GridColumn(
         visible: false,
-        columnName: 'codLocaArmazenagem',
+        columnName: 'codLocalArmazenagem',
         label: Container(
           padding: padding,
           alignment: Alignment.center,
           child: const Text(
-            'codLocaArmazenagem',
+            'codLocalArmazenagem',
           ),
         ),
       ),

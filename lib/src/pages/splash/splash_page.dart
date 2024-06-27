@@ -14,9 +14,7 @@ class SplashPage extends StatelessWidget {
         child: ListenableBuilder(
           listenable: controller,
           builder: (BuildContext context, Widget? child) {
-            if (controller.isLoad) {
-              return const CarregandoWidget();
-            }
+            if (controller.isLoad) return const CarregandoWidget();
 
             return const Scaffold(
               body: Center(

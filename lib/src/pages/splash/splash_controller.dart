@@ -84,7 +84,6 @@ class SplashController extends GetxController {
 
     Get.put<UsuarioConsultaMoldel>(_usuarioLogado!);
 
-    //SEPARAR
     if (_processoExecutavel!.origem == ExpedicaoOrigemModel.separacao) {
       final separarConsultaServices = SepararConsultaServices(
         codEmpresa: _processoExecutavel!.codEmpresa,

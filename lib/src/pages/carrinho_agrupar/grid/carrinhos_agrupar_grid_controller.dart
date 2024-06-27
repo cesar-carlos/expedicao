@@ -99,9 +99,14 @@ class CarrinhosAgruparGridController extends GetxController {
 
     switch (item.situacao) {
       case ExpedicaoSituacaoModel.conferido:
+      case ExpedicaoSituacaoModel.cancelada:
+      case ExpedicaoSituacaoModel.emEntrega:
+      case ExpedicaoSituacaoModel.embalando:
         color = Colors.grey;
+        break;
       case ExpedicaoSituacaoModel.agrupado:
         color = Colors.red;
+        break;
     }
 
     return Icon(
@@ -117,8 +122,12 @@ class CarrinhosAgruparGridController extends GetxController {
     switch (item.situacao) {
       case ExpedicaoSituacaoModel.agrupado:
         color = Colors.grey;
+        break;
       case ExpedicaoSituacaoModel.conferido:
+      case ExpedicaoSituacaoModel.emEntrega:
+      case ExpedicaoSituacaoModel.embalando:
         color = Colors.green;
+        break;
     }
 
     return Icon(
@@ -138,12 +147,16 @@ class CarrinhosAgruparGridController extends GetxController {
           BootstrapIcons.cart_x_fill,
           color: color,
         );
+
       case ExpedicaoSituacaoModel.conferido:
+      case ExpedicaoSituacaoModel.emEntrega:
+      case ExpedicaoSituacaoModel.embalando:
         return Icon(
           size: iconSize,
           BootstrapIcons.cart_check_fill,
           color: color,
         );
+
       case ExpedicaoSituacaoModel.conferindo:
         return Icon(
           size: iconSize,

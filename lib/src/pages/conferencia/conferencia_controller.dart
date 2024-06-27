@@ -67,35 +67,21 @@ class ConferenciaController extends GetxController {
   }
 
   String get displaySituacao {
-    if (percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.cancelada)
-      return 'CANCELADO';
-
-    if (percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.conferindo &&
-        isComplitCart) return 'CONFERIDO';
-
-    if (percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.conferido)
-      return 'CONFERIDO';
-
-    if (percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.agrupado)
-      return 'AGRUPADO';
-
     return percursoEstagioConsulta.situacao;
   }
 
   Color get colorIndicator {
-    if (percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.cancelada)
-      return Colors.red;
-
-    if (percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.conferindo &&
-        isComplitCart) return Colors.green;
-
-    if (percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.conferido)
-      return Colors.green;
-
-    if (percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.agrupado)
-      return Colors.green;
-
-    return Colors.orange;
+    switch (percursoEstagioConsulta.situacao) {
+      case ExpedicaoSituacaoModel.cancelada:
+        return Colors.red;
+      case ExpedicaoSituacaoModel.conferindo:
+        return isComplitCart ? Colors.green : Colors.orange;
+      case ExpedicaoSituacaoModel.conferido:
+      case ExpedicaoSituacaoModel.agrupado:
+        return Colors.green;
+      default:
+        return Colors.orange;
+    }
   }
 
   bool get isComplitCart {

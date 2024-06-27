@@ -8,7 +8,7 @@ class ExpedicaoSepararItemModel {
   final String origem;
   final int codOrigem;
   final String? itemOrigem;
-  final int codLocaArmazenagem;
+  final int codLocalArmazenagem;
   final int codProduto;
   final String codUnidadeMedida;
   final double quantidade;
@@ -24,7 +24,7 @@ class ExpedicaoSepararItemModel {
     required this.origem,
     required this.codOrigem,
     this.itemOrigem,
-    required this.codLocaArmazenagem,
+    required this.codLocalArmazenagem,
     required this.codProduto,
     required this.codUnidadeMedida,
     required this.quantidade,
@@ -41,7 +41,7 @@ class ExpedicaoSepararItemModel {
     String? origem,
     int? codOrigem,
     String? itemOrigem,
-    int? codLocaArmazenagem,
+    int? codLocalArmazenagem,
     int? codProduto,
     String? codUnidadeMedida,
     double? quantidade,
@@ -57,7 +57,7 @@ class ExpedicaoSepararItemModel {
       origem: origem ?? this.origem,
       codOrigem: codOrigem ?? this.codOrigem,
       itemOrigem: itemOrigem ?? this.itemOrigem,
-      codLocaArmazenagem: codLocaArmazenagem ?? this.codLocaArmazenagem,
+      codLocalArmazenagem: codLocalArmazenagem ?? this.codLocalArmazenagem,
       codProduto: codProduto ?? this.codProduto,
       codUnidadeMedida: codUnidadeMedida ?? this.codUnidadeMedida,
       quantidade: quantidade ?? this.quantidade,
@@ -77,7 +77,7 @@ class ExpedicaoSepararItemModel {
         origem: json['Origem'],
         codOrigem: json['CodOrigem'],
         itemOrigem: json['ItemOrigem'],
-        codLocaArmazenagem: json['CodLocaArmazenagem'],
+        codLocalArmazenagem: json['CodLocalArmazenagem'],
         codProduto: json['CodProduto'],
         codUnidadeMedida: json['CodUnidadeMedida'],
         quantidade: AppHelper.stringToDouble(json['Quantidade']),
@@ -100,7 +100,7 @@ class ExpedicaoSepararItemModel {
     data['Origem'] = origem;
     data['CodOrigem'] = codOrigem;
     data['ItemOrigem'] = itemOrigem;
-    data['CodLocaArmazenagem'] = codLocaArmazenagem;
+    data['CodLocalArmazenagem'] = codLocalArmazenagem;
     data['CodProduto'] = codProduto;
     data['CodUnidadeMedida'] = codUnidadeMedida;
     data['Quantidade'] = quantidade.toStringAsFixed(4);
@@ -121,7 +121,7 @@ class ExpedicaoSepararItemModel {
         origem: $origem, 
         codOrigem: $codOrigem, 
         itemOrigem: $itemOrigem, 
-        codLocaArmazenagem: $codLocaArmazenagem, 
+        codLocalArmazenagem: $codLocalArmazenagem, 
         codProduto: $codProduto, 
         codUnidadeMedida: $codUnidadeMedida, 
         quantidade: $quantidade, 

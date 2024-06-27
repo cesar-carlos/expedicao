@@ -43,6 +43,7 @@ class SeparacaoController extends GetxController {
   late SeparadoCarrinhosController _separadoCarrinhosController;
   late SeparacaoCarrinhoGridController _separacaoGridController;
   late SepararConsultaServices _separarConsultasServices;
+  Rx<Color> indicator = Colors.orange.obs;
 
   late TextEditingController quantidadeController;
   late TextEditingController displayController;
@@ -52,6 +53,9 @@ class SeparacaoController extends GetxController {
   late FocusNode quantidadeFocusNode;
   late FocusNode displayFocusNode;
   late FocusNode scanFocusNode;
+
+  bool _isComplit = false;
+  get isComplit => _isComplit;
 
   SeparacaoController(this.percursoEstagioConsulta);
 
@@ -68,13 +72,18 @@ class SeparacaoController extends GetxController {
   }
 
   Color get colorIndicator {
-    if (percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.cancelada)
-      return Colors.red;
-
-    if (percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.separado)
+    if (_isComplit) {
       return Colors.green;
+    }
 
-    return Colors.orange;
+    switch (percursoEstagioConsulta.situacao) {
+      case ExpedicaoSituacaoModel.cancelada:
+        return Colors.red;
+      case ExpedicaoSituacaoModel.separado:
+        return Colors.green;
+      default:
+        return Colors.orange;
+    }
   }
 
   @override
@@ -129,6 +138,8 @@ class SeparacaoController extends GetxController {
     displayFocusNode.dispose();
     scanFocusNode.dispose();
     _removeliteners();
+
+    indicator.close();
     super.onClose();
   }
 
@@ -204,7 +215,17 @@ class SeparacaoController extends GetxController {
 
     _separacaoGridController.removeAllGrid();
     _separacaoGridController.addAllGrid(separacaoItensFiltrados);
-    _separacaoGridController.update();
+    _isComplit = _separarGridController.isComplit();
+
+    indicator.value = colorIndicator;
+
+    //register listener on complete
+    _separarGridController.isComplitListiner.listen((value) {
+      if (_isComplit != value) {
+        _isComplit = value;
+        indicator.value = colorIndicator;
+      }
+    });
   }
 
   bool get viewMode {
@@ -380,15 +401,17 @@ class SeparacaoController extends GetxController {
       displayController.text = itemSepararConsulta.nomeProduto;
       _separacaoGridController.addGrid(separacaoItemConsulta);
 
-      final indexAdd = _separarGridController
-          .findIndexCodProduto(separacaoItemConsulta.codProduto);
+      final indexAdd = _separarGridController.findIndexCodProduto(
+        separacaoItemConsulta.codProduto,
+      );
 
       _separarGridController.setSelectedRow(indexAdd);
       _separacaoGridController.update();
       _separarGridController.update();
 
-      final itemSeparar =
-          _findItemSepararGrid(separacaoItemConsulta.codProduto)!;
+      final itemSeparar = _findItemSepararGrid(
+        separacaoItemConsulta.codProduto,
+      )!;
 
       _separarGridController.updateGrid(itemSeparar.copyWith(
         quantidadeSeparacao:
@@ -401,7 +424,6 @@ class SeparacaoController extends GetxController {
 
       AppAudioHelper().play('/success.wav');
     } catch (e) {
-      //ERROR ADD ITEM
       AppAudioHelper().play('/success.wav');
       await MessageDialogView.show(
         context: Get.context!,

@@ -212,6 +212,16 @@ class ConferirController extends GetxController {
       return;
     }
 
+    if (_expedicaoSituacao == ExpedicaoSituacaoModel.emEntrega) {
+      await MessageDialogView.show(
+        context: Get.context!,
+        message: 'Conferencia em entrega!',
+        detail: 'Conferencia em entrega, não é possível adicionar carrinhos.',
+      );
+
+      return;
+    }
+
     if (_expedicaoSituacao == ExpedicaoSituacaoModel.cancelada) {
       await MessageDialogView.show(
         context: Get.context!,
@@ -314,9 +324,11 @@ class ConferirController extends GetxController {
 
   Future<void> btnAssistenteAgrupamento() async {
     bool _isNotValidGroupCart = [
-      ExpedicaoSituacaoModel.cancelada,
       ExpedicaoSituacaoModel.conferido,
+      ExpedicaoSituacaoModel.cancelada,
       ExpedicaoSituacaoModel.embalado,
+      ExpedicaoSituacaoModel.embalando,
+      ExpedicaoSituacaoModel.emEntrega,
       ExpedicaoSituacaoModel.entregue,
     ].contains(conferirConsulta.situacao);
 
@@ -354,10 +366,11 @@ class ConferirController extends GetxController {
     final existsOpenCart = await _conferirConsultaServices.existsOpenCart();
 
     final notValidFinalize = [
+      ExpedicaoSituacaoModel.conferido,
       ExpedicaoSituacaoModel.cancelada,
       ExpedicaoSituacaoModel.embalando,
-      ExpedicaoSituacaoModel.conferido,
       ExpedicaoSituacaoModel.embalado,
+      ExpedicaoSituacaoModel.emEntrega,
       ExpedicaoSituacaoModel.entregue
     ].contains(_expedicaoSituacao);
 

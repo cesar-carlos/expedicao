@@ -171,7 +171,6 @@ class ConferirCarrinhoGridController extends GetxController {
 
     switch (item.situacao) {
       case ExpedicaoSituacaoModel.cancelada:
-        color = Colors.grey;
       case ExpedicaoSituacaoModel.separando:
         color = Colors.grey;
     }

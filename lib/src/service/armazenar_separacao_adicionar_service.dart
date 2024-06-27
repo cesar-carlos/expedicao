@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:get/get.dart';
 
+import 'package:app_expedicao/src/app/app_error.dart';
 import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
 import 'package:app_expedicao/src/model/expedicao_armazenar_item.dart';
 import 'package:app_expedicao/src/repository/expedicao_armazenar/armazenar_repository.dart';
@@ -18,7 +19,6 @@ import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_armazenar.dart';
-import 'package:app_expedicao/src/app/app_error.dart';
 
 class ArmazenarSeparacaoAdicionarService {
   final ExpedicaoCarrinhoPercursoModel carrinhoPercurso;
@@ -43,6 +43,7 @@ class ArmazenarSeparacaoAdicionarService {
       final newItens = _createItensArmazenar(result.first, itensSeparacao);
 
       await ArmazenarItemRepository().insertAll(newItens);
+
       await _finalizarCarrinhoPercurso(carrinhoPercurso);
       await _liberarCarrinhos(carrinhoPercurso);
     } catch (e) {
@@ -78,6 +79,7 @@ class ArmazenarSeparacaoAdicionarService {
         AND Situacao = '${ExpedicaoSituacaoModel.separado}' ''';
 
       final result = await repository.select(params);
+
       if (result.isEmpty) throw AppError('Nenhum item Separacao encontrado');
 
       return result;
@@ -92,9 +94,9 @@ class ArmazenarSeparacaoAdicionarService {
     return ExpedicaoArmazenar(
       codEmpresa: item.codEmpresa,
       codArmazenar: 0,
-      numeroDocumento: null,
       origem: ExpedicaoOrigemModel.separacao,
       codOrigem: item.codSepararEstoque,
+      numeroDocumento: null,
       codPrioridade: item.codPrioridade,
       dataLancamento: DateTime.now(),
       horaLancamento: DateTime.now().toString().substring(11, 19),
@@ -119,6 +121,7 @@ class ArmazenarSeparacaoAdicionarService {
         situacao: ExpedicaoSituacaoModel.aguardando,
         codcarrinhoPercurso: el.codCarrinhoPercurso,
         itemcarrinhoPercurso: el.itemCarrinhoPercurso,
+        codLocalArmazenagem: el.codLocalArmazenagem,
         codProduto: el.codProduto,
         nomeProduto: el.nomeProduto,
         codUnidadeMedida: el.codUnidadeMedida,

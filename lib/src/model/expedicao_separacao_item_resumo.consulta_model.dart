@@ -10,13 +10,14 @@ class ExpedicaSeparacaoItemResumoConsultaModel {
   final String itemCarrinhoPercurso;
   final int codCarrinho;
   final String descricaoCarrinho;
+  final int codLocalArmazenagem;
   final int codProduto;
   final String nomeProduto;
   final String codUnidadeMedida;
   final String descricaoUnidadeMedida;
   final String? codigoBarras;
-  final String codProdutoEndereco;
-  final String descricaoProdutoEndereco;
+  final String? codProdutoEndereco;
+  final String? descricaoProdutoEndereco;
   final double quantidade;
 
   ExpedicaSeparacaoItemResumoConsultaModel({
@@ -29,13 +30,14 @@ class ExpedicaSeparacaoItemResumoConsultaModel {
     required this.itemCarrinhoPercurso,
     required this.codCarrinho,
     required this.descricaoCarrinho,
+    required this.codLocalArmazenagem,
     required this.codProduto,
     required this.nomeProduto,
     required this.codUnidadeMedida,
     required this.descricaoUnidadeMedida,
     this.codigoBarras,
-    required this.codProdutoEndereco,
-    required this.descricaoProdutoEndereco,
+    this.codProdutoEndereco,
+    this.descricaoProdutoEndereco,
     required this.quantidade,
   });
 
@@ -49,6 +51,7 @@ class ExpedicaSeparacaoItemResumoConsultaModel {
     String? itemCarrinhoPercurso,
     int? codCarrinho,
     String? descricaoCarrinho,
+    int? codLocalArmazenagem,
     int? codProduto,
     String? nomeProduto,
     String? codUnidadeMedida,
@@ -68,6 +71,7 @@ class ExpedicaSeparacaoItemResumoConsultaModel {
       itemCarrinhoPercurso: itemCarrinhoPercurso ?? this.itemCarrinhoPercurso,
       codCarrinho: codCarrinho ?? this.codCarrinho,
       descricaoCarrinho: descricaoCarrinho ?? this.descricaoCarrinho,
+      codLocalArmazenagem: codLocalArmazenagem ?? this.codLocalArmazenagem,
       codProduto: codProduto ?? this.codProduto,
       nomeProduto: nomeProduto ?? this.nomeProduto,
       codUnidadeMedida: codUnidadeMedida ?? this.codUnidadeMedida,
@@ -94,6 +98,7 @@ class ExpedicaSeparacaoItemResumoConsultaModel {
         itemCarrinhoPercurso: json['ItemCarrinhoPercurso'],
         codCarrinho: json['CodCarrinho'],
         descricaoCarrinho: json['DescricaoCarrinho'],
+        codLocalArmazenagem: json['CodLocalArmazenagem'],
         codProduto: json['CodProduto'],
         nomeProduto: json['NomeProduto'],
         codUnidadeMedida: json['CodUnidadeMedida'],
@@ -119,6 +124,7 @@ class ExpedicaSeparacaoItemResumoConsultaModel {
       'ItemCarrinhoPercurso': itemCarrinhoPercurso,
       'CodCarrinho': codCarrinho,
       'DescricaoCarrinho': descricaoCarrinho,
+      'CodLocalArmazenagem': codLocalArmazenagem,
       'CodProduto': codProduto,
       'NomeProduto': nomeProduto,
       'CodUnidadeMedida': codUnidadeMedida,

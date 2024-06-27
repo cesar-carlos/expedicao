@@ -107,6 +107,7 @@ class ArmazenarItemRepository {
         final error = respose?['Error'] ?? null;
         socket.off(resposeIn);
 
+        print(error);
         if (error != null) throw error;
 
         final list = mutation.map<ExpedicaoArmazenarItem>((json) {

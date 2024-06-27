@@ -15,11 +15,12 @@ class SepararGridController extends GetxController {
 
   final iconSize = 19.0;
 
-  bool _selectionMode = true;
+  final isComplitListiner = false.obs;
   Color _selectedRowColor = AppColor.gridRowSelectedRowColor;
 
   final List<ExpedicaoSepararItemConsultaModel> _itens = [];
   final List<ExpedicaoSepararItemUnidadeMedidaConsultaModel> _itemUnids = [];
+
   final _processoExecutavel = Get.find<ProcessoExecutavelModel>();
   final dataGridController = DataGridController();
 
@@ -28,8 +29,6 @@ class SepararGridController extends GetxController {
   set selectedRowColor(Color value) {
     _selectedRowColor = value;
   }
-
-  bool get selectionMode => _selectionMode;
 
   List<DataGridRow> get selectedoRows => dataGridController.selectedRows;
   int get selectedIndex => dataGridController.selectedIndex;
@@ -41,6 +40,12 @@ class SepararGridController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+  }
+
+  @override
+  void onClose() {
+    isComplitListiner.close();
+    super.onClose();
   }
 
   getItensSort(int? codSetorEstoque) {
@@ -60,15 +65,18 @@ class SepararGridController extends GetxController {
 
   void addGrid(ExpedicaoSepararItemConsultaModel item) {
     _itens.add(item);
+    isComplitListiner.value = isComplit();
   }
 
   void addAllGrid(List<ExpedicaoSepararItemConsultaModel> itens) {
     _itens.addAll(itens);
+    isComplitListiner.value = isComplit();
   }
 
   void updateGrid(ExpedicaoSepararItemConsultaModel item) {
     final index = _itens.indexWhere((el) => el.item == item.item);
     _itens[index] = item;
+    isComplitListiner.value = isComplit();
   }
 
   void updateAllGrid(List<ExpedicaoSepararItemConsultaModel> itens) {
@@ -76,6 +84,8 @@ class SepararGridController extends GetxController {
       final index = _itens.indexWhere((i) => i.item == el.item);
       _itens[index] = el;
     }
+
+    isComplitListiner.value = isComplit();
   }
 
   void removeGrid(ExpedicaoSepararItemConsultaModel item) {
@@ -83,10 +93,14 @@ class SepararGridController extends GetxController {
         el.codEmpresa == item.codEmpresa &&
         el.codSepararEstoque == item.codSepararEstoque &&
         el.item == item.item);
+
+    isComplitListiner.value = isComplit();
   }
 
   void removeAllGrid() {
     _itens.clear();
+
+    isComplitListiner.value = false;
   }
 
   void addUnidade(ExpedicaoSepararItemUnidadeMedidaConsultaModel item) {
@@ -161,7 +175,6 @@ class SepararGridController extends GetxController {
         .fold<double>(0.00, (acm, el) => acm + el.quantidadeSeparacao);
   }
 
-  //LOCALIZACAO
   ExpedicaoSepararItemConsultaModel findItem(String Item) {
     final el = _itens.where((el) => el.item == Item).toList();
     return el.first;
@@ -242,6 +255,14 @@ class SepararGridController extends GetxController {
     }
   }
 
+  bool isComplit() {
+    for (var el in _itens) {
+      if (el.quantidade != el.quantidadeSeparacao) return false;
+    }
+
+    return true;
+  }
+
   Color rowColor(
     DataGridRow dataGridRow,
     ExpedicaoSepararItemConsultaModel el,
@@ -251,14 +272,6 @@ class SepararGridController extends GetxController {
     }
 
     return Colors.white;
-  }
-
-  void disableSelectionMode() {
-    _selectionMode = false;
-  }
-
-  void enableSelectionMode() {
-    _selectionMode = true;
   }
 
   iconIndicator(ExpedicaoSepararItemConsultaModel item) {

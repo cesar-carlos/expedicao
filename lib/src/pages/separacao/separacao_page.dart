@@ -4,6 +4,7 @@ import 'package:bootstrap_icons/bootstrap_icons.dart';
 
 import 'package:app_expedicao/src/app/app_event_state.dart';
 import 'package:app_expedicao/src/pages/separacao/separacao_controller.dart';
+import 'package:app_expedicao/src/pages/separacao/widget/indicator_widget.dart';
 import 'package:app_expedicao/src/pages/common/footer_dialog/footer_dialog.dart';
 import 'package:app_expedicao/src/pages/common/form_element/button_head_form_element.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
@@ -39,7 +40,8 @@ class SeparacaoPage {
               onKey: controller.handleKeyEvent,
               child: Dialog(
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
+                  borderRadius: BorderRadius.circular(10),
+                ),
                 child: SizedBox(
                   width: size.width * 0.95,
                   height: size.height * 0.80,
@@ -91,24 +93,17 @@ class SeparacaoPage {
                             ),
                           ],
                         ),
+
                         ScanSeparacaoItemWidget(
                           percursoEstagioConsulta,
                           size: size,
                         ),
 
-                        SizedBox(
-                          height: 25,
-                          width: size.width,
-                          child: Container(
-                            alignment: Alignment.center,
-                            color: controller.colorIndicator,
-                            child: Text(
-                              controller.displaySituacao,
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.white,
-                              ),
-                            ),
+                        Obx(
+                          () => IndicatorWidget(
+                            size: size,
+                            indicatorColor: controller.indicator.value,
+                            indicatorText: controller.displaySituacao,
                           ),
                         ),
 
@@ -133,8 +128,8 @@ class SeparacaoPage {
                                       const EdgeInsets.symmetric(horizontal: 5),
                                   child: TabBar(
                                     indicatorColor: Colors.black45,
-                                    overlayColor: MaterialStateProperty.all(
-                                        Colors.black12),
+                                    overlayColor:
+                                        WidgetStateProperty.all(Colors.black12),
                                     indicatorPadding: EdgeInsets.zero,
                                     tabs: [
                                       Row(children: [

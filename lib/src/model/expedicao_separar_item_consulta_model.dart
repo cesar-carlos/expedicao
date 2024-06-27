@@ -28,7 +28,7 @@ class ExpedicaoSepararItemConsultaModel {
   final String? codigoOriginal;
   final String? endereco;
   final String? enderecoDescricao;
-  final int codLocaArmazenagem;
+  final int codLocalArmazenagem;
   final String nomeLocaArmazenagem;
   final double quantidade;
   final double quantidadeInterna;
@@ -63,7 +63,7 @@ class ExpedicaoSepararItemConsultaModel {
     this.codigoOriginal,
     this.endereco,
     this.enderecoDescricao,
-    required this.codLocaArmazenagem,
+    required this.codLocalArmazenagem,
     required this.nomeLocaArmazenagem,
     required this.quantidade,
     required this.quantidadeInterna,
@@ -99,7 +99,7 @@ class ExpedicaoSepararItemConsultaModel {
     String? codigoOriginal,
     String? endereco,
     String? enderecoDescricao,
-    int? codLocaArmazenagem,
+    int? codLocalArmazenagem,
     String? nomeLocaArmazenagem,
     double? quantidade,
     double? quantidadeInterna,
@@ -134,7 +134,7 @@ class ExpedicaoSepararItemConsultaModel {
       codigoOriginal: codigoOriginal ?? this.codigoOriginal,
       endereco: endereco ?? this.endereco,
       enderecoDescricao: enderecoDescricao ?? this.enderecoDescricao,
-      codLocaArmazenagem: codLocaArmazenagem ?? this.codLocaArmazenagem,
+      codLocalArmazenagem: codLocalArmazenagem ?? this.codLocalArmazenagem,
       nomeLocaArmazenagem: nomeLocaArmazenagem ?? this.nomeLocaArmazenagem,
       quantidade: quantidade ?? this.quantidade,
       quantidadeInterna: quantidadeInterna ?? this.quantidadeInterna,
@@ -174,7 +174,7 @@ class ExpedicaoSepararItemConsultaModel {
         codigoOriginal: json['CodigoOriginal'],
         endereco: json['Endereco'],
         enderecoDescricao: json['EnderecoDescricao'],
-        codLocaArmazenagem: json['CodLocaArmazenagem'],
+        codLocalArmazenagem: json['CodLocalArmazenagem'],
         nomeLocaArmazenagem: json['NomeLocaArmazenagem'],
         quantidade: AppHelper.stringToDouble(json['Quantidade']),
         quantidadeInterna: AppHelper.stringToDouble(json['QuantidadeInterna']),
@@ -216,7 +216,7 @@ class ExpedicaoSepararItemConsultaModel {
       'CodigoOriginal': codigoOriginal,
       'Endereco': endereco,
       'EnderecoDescricao': enderecoDescricao,
-      'CodLocaArmazenagem': codLocaArmazenagem,
+      'CodLocalArmazenagem': codLocalArmazenagem,
       'NomeLocaArmazenagem': nomeLocaArmazenagem,
       'Quantidade': quantidade.toStringAsFixed(4),
       'QuantidadeInterna': quantidadeInterna.toStringAsFixed(4),
@@ -256,7 +256,7 @@ class ExpedicaoSepararItemConsultaModel {
         codigoOriginal: $codigoOriginal, 
         endereco: $endereco, 
         enderecoDescricao: $enderecoDescricao, 
-        codLocaArmazenagem: $codLocaArmazenagem, 
+        codLocalArmazenagem: $codLocalArmazenagem, 
         nomeLocaArmazenagem: $nomeLocaArmazenagem, 
         quantidade: $quantidade, 
         quantidadeInterna: $quantidadeInterna, 

@@ -27,9 +27,7 @@ class SepararGrid extends StatelessWidget {
             onCellDoubleTap: SepararGridEvent().onCellDoubleTap,
             onSelectionChanged: SepararGridEvent().onSelectionChanged,
             columns: SepararGridColumns().columns,
-            selectionMode: controller.selectionMode
-                ? SelectionMode.single
-                : SelectionMode.none,
+            selectionMode: SelectionMode.single,
             footer: const SepararGridFooter(),
             showColumnHeaderIconOnHover: true,
             isScrollbarAlwaysShown: true,

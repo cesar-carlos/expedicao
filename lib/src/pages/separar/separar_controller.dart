@@ -7,13 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:app_expedicao/src/routes/app_router.dart';
-import 'package:app_expedicao/src/app/app_socket_config.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_model.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
 import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';
-import 'package:app_expedicao/src/pages/common/widget/loading_sever_dialog_widget.dart';
 import 'package:app_expedicao/src/pages/common/carrinho_dialog/carrinho_dialog_view.dart';
 import 'package:app_expedicao/src/pages/common/confirmation_dialog/confirmation_dialog_view.dart';
 import 'package:app_expedicao/src/pages/separarado_carrinhos/separarado_carrinhos_controller.dart';
@@ -46,7 +44,6 @@ class SepararController extends GetxController {
   final List<RepositoryEventListenerModel> _pageListerner = [];
   late ExpedicaoSepararConsultaModel _separarConsulta;
   late ProcessoExecutavelModel _processoExecutavel;
-  late AppSocketConfig _socketClient;
   late FocusNode formFocusNode;
 
   ExpedicaoCarrinhoPercursoModel? _carrinhoPercurso;
@@ -72,19 +69,22 @@ class SepararController extends GetxController {
   }
 
   Color get colorIndicator {
-    if (_separarConsulta.situacao == ExpedicaoSituacaoModel.cancelada)
-      return Colors.red;
+    //final isComplit = _separarGridController.isComplit();
+    //if (isComplit) return Color.fromARGB(255, 4, 178, 184);
 
-    if (_separarConsulta.situacao == ExpedicaoSituacaoModel.separado)
-      return Colors.green;
-
-    return Colors.orange;
+    switch (_expedicaoSituacao) {
+      case ExpedicaoSituacaoModel.cancelada:
+        return Colors.red;
+      case ExpedicaoSituacaoModel.separado:
+        return Colors.green;
+      default:
+        return Colors.orange;
+    }
   }
 
   @override
   onInit() async {
     super.onInit();
-    _socketClient = Get.find<AppSocketConfig>();
     _processoExecutavel = Get.find<ProcessoExecutavelModel>();
     _separarConsulta = Get.find<ExpedicaoSepararConsultaModel>();
     _separarCarrinhosController = Get.find<SeparadoCarrinhosController>();
@@ -101,9 +101,8 @@ class SepararController extends GetxController {
   @override
   onReady() async {
     super.onReady();
-    await _fillGridSepararItens();
-    await _fillCarrinhoPercurso();
-
+    _fillGridSepararItens();
+    _fillCarrinhoPercurso();
     _liteners();
   }
 
@@ -378,14 +377,6 @@ class SepararController extends GetxController {
     const uuid = Uuid();
     final separarEvent = SepararEventRepository.instancia;
     final carrinhoPercursoEvent = SepararItemEventRepository.instancia;
-
-    _socketClient.isConnect.listen((event) {
-      if (event) return;
-      LoadingSeverDialogWidget.show(
-        canCloseWindow: false,
-        context: Get.context!,
-      );
-    });
 
     final separarItemConsulta = RepositoryEventListenerModel(
       id: uuid.v4(),

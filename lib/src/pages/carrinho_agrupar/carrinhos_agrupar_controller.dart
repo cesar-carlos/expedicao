@@ -112,6 +112,8 @@ class CarrinhosAgruparController extends GetxController {
     }).where((el) {
       if (el.situacao == ExpedicaoSituacaoModel.agrupado) return true;
       if (el.situacao == ExpedicaoSituacaoModel.conferido) return true;
+      if (el.situacao == ExpedicaoSituacaoModel.embalando) return true;
+      if (el.situacao == ExpedicaoSituacaoModel.emEntrega) return true;
       return false;
     }).where((el) {
       if (el.carrinhoAgrupador == 'S') return false;

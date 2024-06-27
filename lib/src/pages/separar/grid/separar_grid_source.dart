@@ -49,8 +49,8 @@ class SepararSource extends DataGridSource {
                   value: i.itemOrigem,
                 ),
                 DataGridCell<int>(
-                  columnName: 'codLocaArmazenagem',
-                  value: i.codLocaArmazenagem,
+                  columnName: 'codLocalArmazenagem',
+                  value: i.codLocalArmazenagem,
                 ),
                 DataGridCell<String>(
                   columnName: 'nomeLocaArmazenagem',

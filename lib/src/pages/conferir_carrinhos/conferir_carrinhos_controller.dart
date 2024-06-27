@@ -34,19 +34,18 @@ class ConferirCarrinhosController extends GetxController {
   }
 
   Color get colorIndicator {
-    if (_conferirConsulta.situacao == ExpedicaoSituacaoModel.cancelada)
-      return Colors.red;
-
-    if (_conferirConsulta.situacao == ExpedicaoSituacaoModel.conferido)
-      return Colors.green;
-
-    if (_conferirConsulta.situacao == ExpedicaoSituacaoModel.embalado)
-      return Colors.blue;
-
-    if (_conferirConsulta.situacao == ExpedicaoSituacaoModel.entregue)
-      return Colors.blue;
-
-    return Colors.orange;
+    switch (_expedicaoSituacao) {
+      case ExpedicaoSituacaoModel.cancelada:
+        return Colors.red;
+      case ExpedicaoSituacaoModel.conferido:
+        return Colors.green;
+      case ExpedicaoSituacaoModel.embalando:
+      case ExpedicaoSituacaoModel.entregue:
+      case ExpedicaoSituacaoModel.emEntrega:
+        return Colors.blue;
+      default:
+        return Colors.orange;
+    }
   }
 
   @override

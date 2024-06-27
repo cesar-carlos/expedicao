@@ -11,11 +11,15 @@ class WindowManagerConfig {
       windowManager.waitUntilReadyToShow(_windowOptions(), () async {
         await windowManager.show();
         await windowManager.focus();
+        //await windowManager.minimize();
+        //await windowManager.setOpacity(0);
       });
 
       windowManager.addListener(WindowEvent());
-      await windowManager.setPreventClose(true);
       await windowManager.ensureInitialized();
+      await windowManager.setPreventClose(true);
+      await windowManager.setMaximizable(false);
+      await windowManager.setMinimizable(false);
     }
   }
 
@@ -27,6 +31,7 @@ class WindowManagerConfig {
       minimumSize: ui.Size(1250, 720),
       backgroundColor: Colors.transparent,
       titleBarStyle: TitleBarStyle.normal,
+      skipTaskbar: false,
     );
   }
 }

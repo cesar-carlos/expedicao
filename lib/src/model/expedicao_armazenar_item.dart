@@ -7,10 +7,11 @@ class ExpedicaoArmazenarItem {
   String situacao;
   int? codcarrinhoPercurso;
   String? itemcarrinhoPercurso;
+  int codLocalArmazenagem;
   int codProduto;
   String nomeProduto;
   String codUnidadeMedida;
-  String codProdutoEndereco;
+  String? codProdutoEndereco;
   String? codigoBarras;
   double quantidade;
 
@@ -21,10 +22,11 @@ class ExpedicaoArmazenarItem {
     required this.situacao,
     this.codcarrinhoPercurso,
     this.itemcarrinhoPercurso,
+    required this.codLocalArmazenagem,
     required this.codProduto,
     required this.nomeProduto,
     required this.codUnidadeMedida,
-    required this.codProdutoEndereco,
+    this.codProdutoEndereco,
     this.codigoBarras,
     required this.quantidade,
   });
@@ -36,6 +38,7 @@ class ExpedicaoArmazenarItem {
     String? situacao,
     int? codcarrinhoPercurso,
     String? itemcarrinhoPercurso,
+    int? codLocalArmazenagem,
     int? codProduto,
     String? nomeProduto,
     String? codUnidadeMedida,
@@ -50,6 +53,7 @@ class ExpedicaoArmazenarItem {
       situacao: situacao ?? this.situacao,
       codcarrinhoPercurso: codcarrinhoPercurso ?? this.codcarrinhoPercurso,
       itemcarrinhoPercurso: itemcarrinhoPercurso ?? this.itemcarrinhoPercurso,
+      codLocalArmazenagem: codLocalArmazenagem ?? this.codLocalArmazenagem,
       codProduto: codProduto ?? this.codProduto,
       nomeProduto: nomeProduto ?? this.nomeProduto,
       codUnidadeMedida: codUnidadeMedida ?? this.codUnidadeMedida,
@@ -68,6 +72,7 @@ class ExpedicaoArmazenarItem {
         situacao: json['Situacao'],
         codcarrinhoPercurso: json['CodcarrinhoPercurso'],
         itemcarrinhoPercurso: json['ItemcarrinhoPercurso'],
+        codLocalArmazenagem: json['CodLocalArmazenagem'],
         codProduto: json['CodProduto'],
         nomeProduto: json['NomeProduto'],
         codUnidadeMedida: json['CodUnidadeMedida'],
@@ -88,6 +93,7 @@ class ExpedicaoArmazenarItem {
       'Situacao': situacao,
       'CodCarrinhoPercurso': codcarrinhoPercurso,
       'ItemCarrinhoPercurso': itemcarrinhoPercurso,
+      'CodLocalArmazenagem': codLocalArmazenagem,
       'CodProduto': codProduto,
       'NomeProduto': nomeProduto,
       'CodUnidadeMedida': codUnidadeMedida,
@@ -107,6 +113,7 @@ class ExpedicaoArmazenarItem {
         situacao: $situacao,
         codcarrinhoPercurso: $codcarrinhoPercurso,
         itemcarrinhoPercurso: $itemcarrinhoPercurso,
+        codLocalArmazenagem: $codLocalArmazenagem,
         codProduto: $codProduto, 
         nomeProduto: $nomeProduto, 
         codUnidadeMedida: $codUnidadeMedida, 

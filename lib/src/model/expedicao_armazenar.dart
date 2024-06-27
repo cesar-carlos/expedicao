@@ -1,9 +1,9 @@
 class ExpedicaoArmazenar {
   int codEmpresa;
   int codArmazenar;
-  String? numeroDocumento;
   String origem;
   int codOrigem;
+  String? numeroDocumento;
   int codPrioridade;
   DateTime dataLancamento;
   String horaLancamento;
@@ -15,9 +15,9 @@ class ExpedicaoArmazenar {
   ExpedicaoArmazenar({
     required this.codEmpresa,
     required this.codArmazenar,
-    this.numeroDocumento,
     required this.origem,
     required this.codOrigem,
+    this.numeroDocumento,
     required this.codPrioridade,
     required this.dataLancamento,
     required this.horaLancamento,
@@ -30,9 +30,9 @@ class ExpedicaoArmazenar {
   ExpedicaoArmazenar copyWith({
     int? codEmpresa,
     int? codArmazenar,
-    String? numeroDocumento,
     String? origem,
     int? codOrigem,
+    String? numeroDocumento,
     int? codPrioridade,
     DateTime? dataLancamento,
     String? horaLancamento,
@@ -44,9 +44,9 @@ class ExpedicaoArmazenar {
     return ExpedicaoArmazenar(
       codEmpresa: codEmpresa ?? this.codEmpresa,
       codArmazenar: codArmazenar ?? this.codArmazenar,
-      numeroDocumento: numeroDocumento ?? this.numeroDocumento,
       origem: origem ?? this.origem,
       codOrigem: codOrigem ?? this.codOrigem,
+      numeroDocumento: numeroDocumento ?? this.numeroDocumento,
       codPrioridade: codPrioridade ?? this.codPrioridade,
       dataLancamento: dataLancamento ?? this.dataLancamento,
       horaLancamento: horaLancamento ?? this.horaLancamento,
@@ -63,9 +63,9 @@ class ExpedicaoArmazenar {
       return ExpedicaoArmazenar(
         codEmpresa: json['CodEmpresa'],
         codArmazenar: json['CodArmazenar'],
-        numeroDocumento: json['NumeroDocumento'],
         origem: json['Origem'],
         codOrigem: json['CodOrigem'],
+        numeroDocumento: json['NumeroDocumento'],
         codPrioridade: json['CodPrioridade'],
         dataLancamento: DateTime.parse(json['DataLancamento']),
         horaLancamento: json['HoraLancamento'],
@@ -83,9 +83,9 @@ class ExpedicaoArmazenar {
     return {
       'CodEmpresa': codEmpresa,
       'CodArmazenar': codArmazenar,
-      'NumeroDocumento': numeroDocumento,
       'Origem': origem,
       'CodOrigem': codOrigem,
+      'NumeroDocumento': numeroDocumento,
       'CodPrioridade': codPrioridade,
       'DataLancamento': dataLancamento.toIso8601String(),
       'HoraLancamento': horaLancamento,
@@ -102,9 +102,9 @@ class ExpedicaoArmazenar {
       ExpedicaoArmazenar(
         codEmpresa: $codEmpresa, 
         codArmazenar: $codArmazenar, 
-        numeroDocumento: $numeroDocumento,
         origem: $origem, 
         codOrigem: $codOrigem, 
+        numeroDocumento: $numeroDocumento,
         codPrioridade: $codPrioridade, 
         dataLancamento: $dataLancamento, 
         horaLancamento: $horaLancamento, 
