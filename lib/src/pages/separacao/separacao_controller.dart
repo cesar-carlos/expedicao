@@ -226,6 +226,8 @@ class SeparacaoController extends GetxController {
         indicator.value = colorIndicator;
       }
     });
+
+    update();
   }
 
   bool get viewMode {

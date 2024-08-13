@@ -207,14 +207,6 @@ class SeparacaoPage {
                                         fontSize: 9,
                                       ),
                                     ),
-                                    // Container(
-                                    //   height: 12,
-                                    //   child: VerticalDivider(
-                                    //     color: Colors.white,
-                                    //     thickness: 2,
-                                    //     width: 20,
-                                    //   ),
-                                    // ),
                                   ],
                                 ),
                               ]),
