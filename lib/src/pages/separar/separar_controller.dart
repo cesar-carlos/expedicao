@@ -411,10 +411,10 @@ class SepararController extends GetxController {
       },
     );
 
-    _pageListerner.add(separar);
-    _pageListerner.add(separarItemConsulta);
-
     carrinhoPercursoEvent.addListener(separarItemConsulta);
     separarEvent.addListener(separar);
+
+    _pageListerner.add(separar);
+    _pageListerner.add(separarItemConsulta);
   }
 }

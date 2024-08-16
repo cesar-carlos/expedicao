@@ -79,6 +79,16 @@ class SeparadoCarrinhosController extends GetxController {
   Future<void> removeCart(
     ExpedicaoCarrinhoPercursoEstagioConsultaModel item,
   ) async {
+    if (_separarConsulta.situacao == ExpedicaoSituacaoModel.cancelada) {
+      await MessageDialogView.show(
+        context: Get.context!,
+        message: 'Separação cancelada!',
+        detail: 'Não é possível remover um carrinho já cancelada!',
+      );
+
+      return;
+    }
+
     if (item.situacao == ExpedicaoSituacaoModel.cancelada) {
       await MessageDialogView.show(
         context: Get.context!,
@@ -187,9 +197,10 @@ class SeparadoCarrinhosController extends GetxController {
     ExpedicaoCarrinhoPercursoEstagioConsultaModel item,
   ) async {
     bool _viewMode = [
-      ExpedicaoSituacaoModel.cancelada,
-      ExpedicaoSituacaoModel.separado,
-    ].contains(item.situacao);
+          ExpedicaoSituacaoModel.cancelada,
+          ExpedicaoSituacaoModel.separado,
+        ].contains(item.situacao) ||
+        _separarConsulta.situacao == ExpedicaoSituacaoModel.cancelada;
 
     final carrinho = await CarrinhoServices().select('''
             CodEmpresa = ${item.codEmpresa} 
@@ -243,6 +254,16 @@ class SeparadoCarrinhosController extends GetxController {
   FutureOr<bool> saveCart(
     ExpedicaoCarrinhoPercursoEstagioConsultaModel item,
   ) async {
+    if (_separarConsulta.situacao == ExpedicaoSituacaoModel.cancelada) {
+      await MessageDialogView.show(
+        context: Get.context!,
+        message: 'Separação cancelada!',
+        detail: 'Não é possível salvar um carrinho já cancelada!',
+      );
+
+      return false;
+    }
+
     if (item.situacao == ExpedicaoSituacaoModel.separado) {
       await MessageDialogView.show(
         canCloseWindow: false,

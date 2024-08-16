@@ -94,6 +94,11 @@ class ScanSeparacaoItemWidget extends StatelessWidget {
                               color: Colors.black12,
                             ),
                           ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.black12,
+                            ),
+                          ),
                           labelText: '',
                           labelStyle: TextStyle(
                             fontSize: 12,

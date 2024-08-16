@@ -1,3 +1,5 @@
+import 'package:app_expedicao/src/model/expedicao_separar_model.dart';
+import 'package:app_expedicao/src/repository/expedicao_separar/separar_event_repository.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +34,11 @@ import 'package:app_expedicao/src/app/app_audio_helper.dart';
 
 class SeparacaoController extends GetxController {
   final RxBool _viewMode = false.obs;
+
+  void setViewMode({bool value = true}) {
+    _viewMode.value = value;
+    indicator.value = colorIndicator;
+  }
 
   // ignore: unused_field
   ExpedicaoCarrinhoPercursoModel? _carrinhoPercurso;
@@ -74,6 +81,10 @@ class SeparacaoController extends GetxController {
   Color get colorIndicator {
     if (_isComplit) {
       return Colors.green;
+    }
+
+    if (_viewMode.value) {
+      return Colors.red;
     }
 
     switch (percursoEstagioConsulta.situacao) {
@@ -204,6 +215,7 @@ class SeparacaoController extends GetxController {
   }
 
   Future<void> _fillGridSeparacaoItens() async {
+    final separar = await _separarConsultasServices.separar();
     final separacaoItens = await _separarConsultasServices.itensSeparacao();
 
     final separacaoItensFiltrados = separacaoItens.where((el) {
@@ -226,6 +238,11 @@ class SeparacaoController extends GetxController {
         indicator.value = colorIndicator;
       }
     });
+
+    if (separar != null &&
+        separar.situacao == ExpedicaoSituacaoModel.cancelada) {
+      _viewMode.value = true;
+    }
 
     update();
   }
@@ -653,6 +670,7 @@ class SeparacaoController extends GetxController {
     final carrinhoPercursoEvent =
         CarrinhoPercursoEstagioEventRepository.instancia;
     final separacaoItemEvent = SeparacaoItemEventRepository.instancia;
+    final separarEvent = SepararEventRepository.instancia;
 
     final updateCarrinhoPercurso = RepositoryEventListenerModel(
       id: uuid.v4(),
@@ -663,48 +681,49 @@ class SeparacaoController extends GetxController {
               ExpedicaoCarrinhoPercursoEstagioConsultaModel.fromJson(el);
 
           if (itemConsulta.codEmpresa == percursoEstagioConsulta.codEmpresa &&
-              itemConsulta.codCarrinho == percursoEstagioConsulta.codCarrinho &&
-              itemConsulta.situacao == ExpedicaoSituacaoModel.cancelada) {
-            _viewMode.value = true;
-            update();
-
-            final cancelamentos =
-                await CancelamentoService().selectOrigemWithItem(
-              codEmpresa: itemConsulta.codEmpresa,
-              origem: ExpedicaoOrigemModel.carrinhoPercurso,
-              codOrigem: itemConsulta.codCarrinhoPercurso,
-              itemOrigem: itemConsulta.item,
-            );
-
-            if (cancelamentos != null) {
+              itemConsulta.codCarrinhoPercurso ==
+                  percursoEstagioConsulta.codCarrinhoPercurso &&
+              itemConsulta.item == percursoEstagioConsulta.item) {
+            if (itemConsulta.situacao == ExpedicaoSituacaoModel.separando) {
               await MessageDialogView.show(
                 context: Get.context!,
-                message: 'Carrinho cancelado!',
+                message: 'Carrinho finalizado!',
                 detail:
-                    'Cancelado pelo usuario: ${cancelamentos.nomeUsuarioCancelamento}!',
+                    'Carrinho finalizado pelo usuario ${itemConsulta.nomeUsuarioFinalizacao}!',
               );
-            } else {
-              await MessageDialogView.show(
-                context: Get.context!,
-                message: 'Carrinho cancelado!',
-                detail:
-                    'O carrinho foi cancelado. Não possivel identificar usuario cancelamento!',
-              );
+
+              _viewMode.value = true;
             }
-          }
 
-          if (itemConsulta.codEmpresa == percursoEstagioConsulta.codEmpresa &&
-              itemConsulta.codCarrinho == percursoEstagioConsulta.codCarrinho &&
-              itemConsulta.situacao == ExpedicaoSituacaoModel.separando) {
-            _viewMode.value = true;
+            if (itemConsulta.situacao == ExpedicaoSituacaoModel.cancelada) {
+              final cancelamentos =
+                  await CancelamentoService().selectOrigemWithItem(
+                codEmpresa: itemConsulta.codEmpresa,
+                origem: ExpedicaoOrigemModel.carrinhoPercurso,
+                codOrigem: itemConsulta.codCarrinhoPercurso,
+                itemOrigem: itemConsulta.item,
+              );
+
+              if (cancelamentos != null) {
+                await MessageDialogView.show(
+                  context: Get.context!,
+                  message: 'Carrinho cancelado!',
+                  detail:
+                      'Cancelado pelo usuario: ${cancelamentos.nomeUsuarioCancelamento}!',
+                );
+              } else {
+                await MessageDialogView.show(
+                  context: Get.context!,
+                  message: 'Carrinho cancelado!',
+                  detail:
+                      'O carrinho cancelado. Não possivel identificar usuario cancelamento!',
+                );
+              }
+
+              _viewMode.value = true;
+            }
+
             update();
-
-            await MessageDialogView.show(
-              context: Get.context!,
-              message: 'Carrinho finalizado!',
-              detail:
-                  'O carrinho foi finalizado. pelo usuario ${itemConsulta.nomeUsuarioFinalizacao}!',
-            );
           }
         }
       },
@@ -715,13 +734,14 @@ class SeparacaoController extends GetxController {
       event: Event.insert,
       callback: (data) async {
         for (var el in data.mutation) {
-          final res = ExpedicaSeparacaoItemConsultaModel.fromJson(el);
-          if (res.codEmpresa == percursoEstagioConsulta.codEmpresa &&
+          final itemConsulta = ExpedicaSeparacaoItemConsultaModel.fromJson(el);
+          if (itemConsulta.codEmpresa == percursoEstagioConsulta.codEmpresa &&
               ExpedicaoOrigemModel.separacao ==
                   percursoEstagioConsulta.origem &&
-              res.codSepararEstoque == percursoEstagioConsulta.codOrigem &&
-              res.codCarrinho == percursoEstagioConsulta.codCarrinho) {
-            _separacaoGridController.addGrid(res);
+              itemConsulta.codSepararEstoque ==
+                  percursoEstagioConsulta.codOrigem &&
+              itemConsulta.codCarrinho == percursoEstagioConsulta.codCarrinho) {
+            _separacaoGridController.addGrid(itemConsulta);
             _separacaoGridController.update();
           }
         }
@@ -740,13 +760,36 @@ class SeparacaoController extends GetxController {
       },
     );
 
+    final separar = RepositoryEventListenerModel(
+      id: uuid.v4(),
+      event: Event.update,
+      callback: (data) async {
+        for (var el in data.mutation) {
+          final item = ExpedicaoSepararModel.fromJson(el);
+
+          if (item.codEmpresa == percursoEstagioConsulta.codEmpresa &&
+              item.codSepararEstoque == percursoEstagioConsulta.codOrigem &&
+              percursoEstagioConsulta.origem ==
+                  ExpedicaoOrigemModel.separacao) {
+            if (item.situacao == ExpedicaoSituacaoModel.cancelada) {
+              setViewMode();
+            }
+
+            update();
+          }
+        }
+      },
+    );
+
     carrinhoPercursoEvent.addListener(updateCarrinhoPercurso);
     separacaoItemEvent.addListener(insertSeparacaoItem);
     separacaoItemEvent.addListener(deleteSeparacaoItem);
+    separarEvent.addListener(separar);
 
     _pageListerner.add(updateCarrinhoPercurso);
     _pageListerner.add(insertSeparacaoItem);
     _pageListerner.add(deleteSeparacaoItem);
+    _pageListerner.add(separar);
   }
 
   void _removeliteners() {
