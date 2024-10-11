@@ -14,6 +14,7 @@ class CarrinhoDialogView {
 
   static Future<ExpedicaoCarrinhoConsultaModel?> show({
     required BuildContext context,
+    String title = 'Adicionar Carrinho',
     bool canCloseWindow = false,
   }) async {
     return await showDialog<ExpedicaoCarrinhoConsultaModel>(
@@ -39,7 +40,7 @@ class CarrinhoDialogView {
                     children: [
                       BarHeadFormElement(
                         widthBar: _widthForm + 80,
-                        title: 'Adicionar Carrinho',
+                        title: title,
                         onPressedCloseBar: () => Get.back(),
                       ),
                       Container(
@@ -64,7 +65,7 @@ class CarrinhoDialogView {
                                         Container(
                                           alignment: Alignment.center,
                                           child: Text(
-                                            'ADICIONAR CARRINHO',
+                                            title.toUpperCase(),
                                             style: TextStyle(
                                               fontSize: 20,
                                               fontWeight: FontWeight.bold,

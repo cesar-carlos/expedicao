@@ -51,7 +51,7 @@ class SepararPage extends StatelessWidget {
                         title: 'Adicionar Carrinho',
                         shortCut: 'F4',
                         shortCutActive: true,
-                        onPressed: controller.adicionarCarrinho,
+                        onPressed: controller.onAdicionarCarrinho,
                         icon: const Icon(
                           BootstrapIcons.cart4,
                           color: Colors.white,
@@ -66,6 +66,18 @@ class SepararPage extends StatelessWidget {
                         onPressed: controller.btnAdicionarObservacao,
                         icon: const Icon(
                           BootstrapIcons.file_text_fill,
+                          color: Colors.white,
+                          size: 33,
+                        ),
+                      ),
+
+                      ButtonHeadForm(
+                        title: 'Recuperar Carrinho',
+                        shortCut: 'F11',
+                        shortCutActive: true,
+                        onPressed: controller.recuperarCarrinho,
+                        icon: const Icon(
+                          BootstrapIcons.recycle,
                           color: Colors.white,
                           size: 33,
                         ),

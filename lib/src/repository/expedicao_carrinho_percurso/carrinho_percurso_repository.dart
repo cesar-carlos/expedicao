@@ -14,7 +14,8 @@ class CarrinhoPercursoRepository {
   final uuid = const Uuid();
   var socket = Get.find<AppSocketConfig>().socket;
 
-  Future<List<ExpedicaoCarrinhoPercursoModel>> select([String params = '']) {
+  Future<List<ExpedicaoCarrinhoPercursoModel>> select(
+      [String params = '', int limit = 0, OrderBy orderBy = OrderBy.ASC]) {
     final event = '${socket.id} carrinho.percurso.select';
     final completer = Completer<List<ExpedicaoCarrinhoPercursoModel>>();
     final resposeIn = uuid.v4();
@@ -23,6 +24,8 @@ class CarrinhoPercursoRepository {
       session: socket.id!,
       resposeIn: resposeIn,
       where: params,
+      limit: limit,
+      orderBy: orderBy,
     );
 
     socket.emit(event, jsonEncode(send.toJson()));

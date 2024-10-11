@@ -107,11 +107,11 @@ class ManagerPage extends StatelessWidget {
                                     'CERTIFICADO',
                                   ),
                                   style: ButtonStyle(
-                                    padding: MaterialStateProperty.all(
+                                    padding: WidgetStateProperty.all(
                                         const EdgeInsets.symmetric(
                                             horizontal: 30, vertical: 15)),
                                     backgroundColor:
-                                        MaterialStateProperty.all<Color>(
+                                        WidgetStateProperty.all<Color>(
                                       const Color.fromARGB(255, 70, 194, 74),
                                     ),
                                   ),
@@ -128,9 +128,9 @@ class ManagerPage extends StatelessWidget {
                                 ElevatedButton(
                                   style: ButtonStyle(
                                     backgroundColor:
-                                        MaterialStateProperty.all<Color>(
+                                        WidgetStateProperty.all<Color>(
                                             Colors.black),
-                                    shape: MaterialStateProperty.all<
+                                    shape: WidgetStateProperty.all<
                                         RoundedRectangleBorder>(
                                       RoundedRectangleBorder(
                                         borderRadius:
@@ -152,9 +152,9 @@ class ManagerPage extends StatelessWidget {
                                 ElevatedButton(
                                   style: ButtonStyle(
                                     backgroundColor:
-                                        MaterialStateProperty.all<Color>(
+                                        WidgetStateProperty.all<Color>(
                                             Colors.black),
-                                    shape: MaterialStateProperty.all<
+                                    shape: WidgetStateProperty.all<
                                         RoundedRectangleBorder>(
                                       RoundedRectangleBorder(
                                         borderRadius:

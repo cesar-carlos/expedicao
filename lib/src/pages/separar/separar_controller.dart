@@ -1,18 +1,28 @@
 import 'dart:async';
+
 import 'dart:io' as io;
 
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:app_expedicao/src/routes/app_router.dart';
+import 'package:app_expedicao/src/service/carrinho_service.dart';
+import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
+import 'package:app_expedicao/src/model/send_query_socket_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_model.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
+import 'package:app_expedicao/src/service/separacao_consulta_service.dart';
+import 'package:app_expedicao/src/model/expedicao_separacao_item_model.dart';
 import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
+import 'package:app_expedicao/src/service/separacao_adicionar_item_service.dart';
+import 'package:app_expedicao/src/service/carrinho_percurso_estagio_services.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';
 import 'package:app_expedicao/src/pages/common/carrinho_dialog/carrinho_dialog_view.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
 import 'package:app_expedicao/src/pages/common/confirmation_dialog/confirmation_dialog_view.dart';
 import 'package:app_expedicao/src/pages/separarado_carrinhos/separarado_carrinhos_controller.dart';
 import 'package:app_expedicao/src/pages/common/observacao_dialog/model/observacao_dialog_view_model.dart';
@@ -24,6 +34,7 @@ import 'package:app_expedicao/src/repository/expedicao_separar/separar_event_rep
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_adicionar_service.dart';
 import 'package:app_expedicao/src/pages/common/message_dialog/message_dialog_view.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
 import 'package:app_expedicao/src/service/separar_consultas_services.dart';
@@ -69,9 +80,6 @@ class SepararController extends GetxController {
   }
 
   Color get colorIndicator {
-    //final isComplit = _separarGridController.isComplit();
-    //if (isComplit) return Color.fromARGB(255, 4, 178, 184);
-
     switch (_expedicaoSituacao) {
       case ExpedicaoSituacaoModel.cancelada:
         return Colors.red;
@@ -116,7 +124,7 @@ class SepararController extends GetxController {
   KeyEventResult handleKeyEvent(RawKeyEvent event) {
     if (event is RawKeyDownEvent) {
       if (event.logicalKey == LogicalKeyboardKey.f4) {
-        adicionarCarrinho();
+        onAdicionarCarrinho();
         return KeyEventResult.handled;
       }
 
@@ -189,7 +197,7 @@ class SepararController extends GetxController {
     );
   }
 
-  FutureOr<void> adicionarCarrinho() async {
+  FutureOr<void> onAdicionarCarrinho() async {
     if (_expedicaoSituacao == ExpedicaoSituacaoModel.separado) {
       await MessageDialogView.show(
         context: Get.context!,
@@ -214,45 +222,213 @@ class SepararController extends GetxController {
         await CarrinhoDialogView.show(context: Get.context!);
 
     if (carrinhoConsulta != null) {
-      await LoadingProcessDialogGenericWidget.show<bool>(
-        context: Get.context!,
-        process: () async {
-          try {
-            await iniciarSeparacao();
-            await _fillCarrinhoPercurso();
+      final carrinhoPercursoEstagioConsulta =
+          await adicionarCarrinho(carrinhoConsulta);
 
-            final carrinho =
-                ExpedicaoCarrinhoModel.fromConsulta(carrinhoConsulta).copyWith(
-              situacao: ExpedicaoCarrinhoSituacaoModel.emSeparacao,
-            );
+      if (carrinhoPercursoEstagioConsulta != null) {
+        _separarCarrinhosController.editCart(carrinhoPercursoEstagioConsulta);
+      } else {
+        await MessageDialogView.show(
+          context: Get.context!,
+          message: 'Erro ao adicionar carrinho!',
+          detail: 'Erro ao adicionar carrinho, verifique.',
+        );
+      }
+    }
+  }
 
-            final percursoEstagio =
-                await CarrinhoPercursoEstagioAdicionarService(
-              carrinho: carrinho,
-              carrinhoPercurso: _carrinhoPercurso!,
-            ).execute();
+  Future<ExpedicaoCarrinhoPercursoEstagioConsultaModel?> adicionarCarrinho(
+    ExpedicaoCarrinhoConsultaModel carrinhoConsulta,
+  ) async {
+    return await LoadingProcessDialogGenericWidget.show<
+        ExpedicaoCarrinhoPercursoEstagioConsultaModel?>(
+      context: Get.context!,
+      process: () async {
+        try {
+          await iniciarSeparacao();
+          await _fillCarrinhoPercurso();
 
-            if (percursoEstagio != null) {
-              final percursoEstagioConsulta =
-                  (await _separarConsultaServices.carrinhosPercurso())
-                      .where((el) => el.item == percursoEstagio.item)
-                      .toList();
+          final carrinho =
+              ExpedicaoCarrinhoModel.fromConsulta(carrinhoConsulta).copyWith(
+            situacao: ExpedicaoCarrinhoSituacaoModel.emSeparacao,
+          );
 
-              _separarCarrinhosController
-                  .editCart(percursoEstagioConsulta.last);
+          final percursoEstagio = await CarrinhoPercursoEstagioAdicionarService(
+            carrinho: carrinho,
+            carrinhoPercurso: _carrinhoPercurso!,
+          ).execute();
 
-              _separarCarrinhosController.addCart(percursoEstagioConsulta.last);
-              _separarCarrinhosController.update();
-              update();
-            }
+          if (percursoEstagio != null) {
+            final percursoEstagioConsulta =
+                (await _separarConsultaServices.carrinhosPercurso())
+                    .where((el) => el.item == percursoEstagio.item)
+                    .toList();
 
-            return true;
-          } catch (err) {
-            return false;
+            _separarCarrinhosController.addCart(percursoEstagioConsulta.last);
+            _separarCarrinhosController.update();
+            update();
+
+            return percursoEstagioConsulta.last;
           }
-        },
+
+          return null;
+        } catch (err) {
+          return null;
+        }
+      },
+    );
+  }
+
+  FutureOr<void> recuperarCarrinho() async {
+    if (_expedicaoSituacao == ExpedicaoSituacaoModel.separado) {
+      await MessageDialogView.show(
+        context: Get.context!,
+        message: 'Separação já finalizada!',
+        detail: 'Separação já finalizada, não é possível finalizar novamente.',
+      );
+
+      return;
+    }
+
+    if (_expedicaoSituacao == ExpedicaoSituacaoModel.cancelada) {
+      await MessageDialogView.show(
+        context: Get.context!,
+        message: 'Separação cancelada!',
+        detail: 'Separação cancelada, não é possível adicionar carrinho.',
+      );
+
+      return;
+    }
+
+    final carrinhoConsulta = await CarrinhoDialogView.show(
+      context: Get.context!,
+      title: 'Recuperar Carrinho',
+    );
+
+    if (carrinhoConsulta != null) {
+      final carrinhoPercursoEstagioServices = CarrinhoPercursoEstagioServices();
+      final carrinhoService = CarrinhoService();
+
+      final params = '''
+          CodEmpresa = ${carrinhoConsulta.codEmpresa} 
+            AND CodCarrinho = ${carrinhoConsulta.codCarrinho} ''';
+
+      final carrnhos = await carrinhoService.select(params);
+
+      if (carrnhos.isEmpty) {
+        await MessageDialogView.show(
+          context: Get.context!,
+          message: 'Carrinho não encontrado!',
+          detail: 'Carrinho não encontrado, verifique.',
+        );
+
+        return;
+      }
+
+      if (carrnhos.first.situacao != ExpedicaoCarrinhoSituacaoModel.liberado) {
+        await MessageDialogView.show(
+          context: Get.context!,
+          message: 'Carrinho não liberado!',
+          detail: 'Carrinho não liberado, verifique.',
+        );
+
+        return;
+      }
+
+      final carrinhosPercurso =
+          await carrinhoPercursoEstagioServices.select(params, 1, OrderBy.DESC);
+
+      if (carrinhosPercurso.isEmpty) {
+        await MessageDialogView.show(
+          context: Get.context!,
+          message: 'Carrinho não encontrado.',
+          detail: 'Verifique. Carrinho nunca esteve em percurso!.',
+        );
+
+        return;
+      }
+
+      final carrinhoPercuro = carrinhosPercurso.first;
+
+      if (carrinhoPercuro.situacao != ExpedicaoSituacaoModel.cancelada &&
+          carrinhoPercuro.situacao != ExpedicaoOrigemModel.separacao) {
+        await MessageDialogView.show(
+          context: Get.context!,
+          message: 'Carrinho ${carrinhoPercuro.situacao.toLowerCase()}',
+          detail:
+              'Carrinho percurso com situação diferente de cancelado. Não é possível recuperar.',
+        );
+
+        return;
+      }
+
+      final separacaoItens =
+          await SeparacaoConsultaService.getSeparacaoItensCarrinho(
+        codEmpresa: carrinhoPercuro.codEmpresa,
+        codCarrinhoPercurso: carrinhoPercuro.codCarrinhoPercurso,
+        itemCarrinhoPercurso: carrinhoPercuro.item,
+      );
+
+      final carrinhoPercursoEstagioConsulta =
+          await adicionarCarrinho(carrinhoConsulta);
+
+      if (carrinhoPercursoEstagioConsulta == null) {
+        await MessageDialogView.show(
+          context: Get.context!,
+          message: 'Erro ao adicionar carrinho!',
+          detail: 'Erro ao adicionar carrinho recuperado, verifique.',
+        );
+
+        return;
+      }
+
+      await adicionarItensRecuperadoSeparacao(
+        carrinhoPercursoEstagioConsulta,
+        separacaoItens,
       );
     }
+  }
+
+  Future<bool> adicionarItensRecuperadoSeparacao(
+    ExpedicaoCarrinhoPercursoEstagioConsultaModel percursoEstagio,
+    List<ExpedicaoSeparacaoItemModel> separacaoItensRecuperado,
+  ) async {
+    return await LoadingProcessDialogGenericWidget.show<bool>(
+      context: Get.context!,
+      process: () async {
+        try {
+          final separarItens = await _separarConsultaServices.itensSeparacao();
+
+          final carrinhoPercursoAdicionarItemService =
+              SeparacaoAdicionarItemService(
+            percursoEstagioConsulta: percursoEstagio,
+          );
+
+          for (var item in separacaoItensRecuperado) {
+            final existsSepararItem = separarItens.any((el) {
+              return el.codProduto == item.codProduto &&
+                  el.codUnidadeMedida == item.codUnidadeMedida;
+            });
+
+            if (existsSepararItem) {
+              await carrinhoPercursoAdicionarItemService.add(
+                codProduto: item.codProduto,
+                codUnidadeMedida: item.codUnidadeMedida,
+                quantidade: item.quantidade,
+              );
+            }
+          }
+
+          final newSepararItens = await _separarConsultaServices.itensSaparar();
+          _separarGridController.updateAllGrid(newSepararItens);
+          _separarGridController.update();
+
+          return true;
+        } catch (err) {
+          return false;
+        }
+      },
+    );
   }
 
   Future<void> btnAdicionarObservacao() async {

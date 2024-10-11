@@ -228,7 +228,7 @@ class ServerConfigPage extends StatelessWidget {
                       const Spacer(),
                       ElevatedButton(
                         style: ButtonStyle(
-                          padding: MaterialStateProperty.all(
+                          padding: WidgetStateProperty.all(
                             const EdgeInsets.only(
                               left: 20,
                               right: 20,
@@ -237,8 +237,8 @@ class ServerConfigPage extends StatelessWidget {
                             ),
                           ),
                           backgroundColor:
-                              MaterialStateProperty.all(Colors.black),
-                          shape: MaterialStateProperty.all(
+                              WidgetStateProperty.all(Colors.black),
+                          shape: WidgetStateProperty.all(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5.0),
                             ),
@@ -255,7 +255,7 @@ class ServerConfigPage extends StatelessWidget {
                       const SizedBox(width: 10),
                       ElevatedButton(
                         style: ButtonStyle(
-                          padding: MaterialStateProperty.all(
+                          padding: WidgetStateProperty.all(
                             const EdgeInsets.only(
                               left: 20,
                               right: 20,
@@ -264,8 +264,8 @@ class ServerConfigPage extends StatelessWidget {
                             ),
                           ),
                           backgroundColor:
-                              MaterialStateProperty.all(Colors.black),
-                          shape: MaterialStateProperty.all(
+                              WidgetStateProperty.all(Colors.black),
+                          shape: WidgetStateProperty.all(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5.0),
                             ),

@@ -105,7 +105,7 @@ class ApiConfigPage extends StatelessWidget {
                       const Spacer(),
                       ElevatedButton(
                         style: ButtonStyle(
-                          padding: MaterialStateProperty.all(
+                          padding: WidgetStateProperty.all(
                             const EdgeInsets.only(
                               left: 20,
                               right: 20,
@@ -114,8 +114,8 @@ class ApiConfigPage extends StatelessWidget {
                             ),
                           ),
                           backgroundColor:
-                              MaterialStateProperty.all(Colors.black),
-                          shape: MaterialStateProperty.all(
+                              WidgetStateProperty.all(Colors.black),
+                          shape: WidgetStateProperty.all(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5.0),
                             ),
@@ -132,7 +132,7 @@ class ApiConfigPage extends StatelessWidget {
                       const SizedBox(width: 10),
                       ElevatedButton(
                         style: ButtonStyle(
-                          padding: MaterialStateProperty.all(
+                          padding: WidgetStateProperty.all(
                             const EdgeInsets.only(
                               left: 20,
                               right: 20,
@@ -141,8 +141,8 @@ class ApiConfigPage extends StatelessWidget {
                             ),
                           ),
                           backgroundColor:
-                              MaterialStateProperty.all(Colors.black),
-                          shape: MaterialStateProperty.all(
+                              WidgetStateProperty.all(Colors.black),
+                          shape: WidgetStateProperty.all(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5.0),
                             ),

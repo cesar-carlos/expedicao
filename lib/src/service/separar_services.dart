@@ -1,12 +1,16 @@
-import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
-import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
+import 'package:app_expedicao/src/model/expedicao_item_situacao_model.dart';
+import 'package:app_expedicao/src/model/expedicao_separacao_item_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_repository.dart';
+import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_separar/separar_repository.dart';
 import 'package:app_expedicao/src/service/expedicao_percurso_adicionar_service.dart';
+import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_model.dart';
+import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
 
 class SepararServices {
   final ExpedicaoSepararModel separar;
+  final separacaoItemRepository = SeparacaoItemRepository();
 
   SepararServices(this.separar);
 
@@ -19,6 +23,15 @@ class SepararServices {
     );
 
     await SepararRepository().update(newSeparar);
+  }
+
+  Future<List<ExpedicaoSeparacaoItemModel>> separacaoItem() async {
+    final params = '''
+        CodEmpresa = ${separar.codEmpresa} 
+      AND CodSepararEstoque = ${separar.codSepararEstoque} 
+      AND Situacao = '${ExpedicaoItemSituacaoModel.separado}' ''';
+
+    return await separacaoItemRepository.select(params);
   }
 
   Future<void> pausa() async {

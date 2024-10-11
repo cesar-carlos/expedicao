@@ -58,9 +58,9 @@ class LoginPage extends StatelessWidget {
                         child: ElevatedButton(
                           style: ButtonStyle(
                             backgroundColor:
-                                MaterialStateProperty.all<Color>(Colors.black),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
+                                WidgetStateProperty.all<Color>(Colors.black),
+                            shape:
+                                WidgetStateProperty.all<RoundedRectangleBorder>(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(5.0),
                               ),

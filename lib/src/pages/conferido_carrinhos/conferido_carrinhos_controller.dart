@@ -24,7 +24,7 @@ import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_item_situacao_model.dart';
 import 'package:app_expedicao/src/pages/conferencia/conferencia_page.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_model.dart';
-import 'package:app_expedicao/src/service/carrinho_services.dart';
+import 'package:app_expedicao/src/service/carrinho_service.dart';
 
 class ConferidoCarrinhosController extends GetxController {
   late ProcessoExecutavelModel _processoExecutavel;
@@ -114,7 +114,7 @@ class ConferidoCarrinhosController extends GetxController {
         context: Get.context!,
         process: () async {
           try {
-            final carrinho = await CarrinhoServices().select(
+            final carrinho = await CarrinhoService().select(
               '''CodEmpresa = ${item.codEmpresa} 
                   AND CodCarrinho = ${item.codCarrinho} ''',
             );
@@ -197,7 +197,7 @@ class ConferidoCarrinhosController extends GetxController {
       ExpedicaoSituacaoModel.embalando
     ].contains(item.situacao);
 
-    final carrinho = await CarrinhoServices().select('''
+    final carrinho = await CarrinhoService().select('''
             CodEmpresa = ${item.codEmpresa} 
           AND CodCarrinho = ${item.codCarrinho} ''');
 
@@ -372,7 +372,7 @@ class ConferidoCarrinhosController extends GetxController {
       return false;
     }
 
-    final carrinho = await CarrinhoServices().select('''
+    final carrinho = await CarrinhoService().select('''
             CodEmpresa = ${item.codEmpresa} 
           AND CodCarrinho = ${item.codCarrinho} ''');
 

@@ -1,5 +1,3 @@
-import 'package:app_expedicao/src/model/expedicao_separar_model.dart';
-import 'package:app_expedicao/src/repository/expedicao_separar/separar_event_repository.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
@@ -7,13 +5,16 @@ import 'package:flutter/services.dart';
 
 import 'package:app_expedicao/src/app/app_helper.dart';
 import 'package:app_expedicao/src/app/app_event_state.dart';
+
 import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
+import 'package:app_expedicao/src/model/expedicao_separar_model.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/service/separar_consultas_services.dart';
 import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
 import 'package:app_expedicao/src/service/separacao_remover_item_service.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dart';
 import 'package:app_expedicao/src/model/expedicao_separacao_item_consulta_model.dart';
+import 'package:app_expedicao/src/repository/expedicao_separar/separar_event_repository.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
 import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog_generic_widget.dart';
 import 'package:app_expedicao/src/pages/separarado_carrinhos/separarado_carrinhos_controller.dart';

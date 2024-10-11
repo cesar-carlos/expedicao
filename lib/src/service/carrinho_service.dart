@@ -3,7 +3,7 @@ import 'package:app_expedicao/src/repository/expedicao_carrinhos/carrinho_consul
 import 'package:app_expedicao/src/repository/expedicao_carrinhos/carrinho_repository.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_consulta_model.dart';
 
-class CarrinhoServices {
+class CarrinhoService {
   final repository = CarrinhoRepository();
   final repositoryConsulta = CarrinhoConsultaRepository();
 

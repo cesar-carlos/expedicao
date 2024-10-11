@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:app_expedicao/src/model/usuario_consulta.dart';
+import 'package:app_expedicao/src/service/carrinho_service.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_item_situacao_model.dart';
 import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
@@ -25,7 +26,6 @@ import 'package:app_expedicao/src/service/separar_consultas_services.dart';
 import 'package:app_expedicao/src/pages/separar/separar_controller.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/pages/separacao/separacao_page.dart';
-import 'package:app_expedicao/src/service/carrinho_services.dart';
 
 class SeparadoCarrinhosController extends GetxController {
   late ProcessoExecutavelModel _processoExecutavel;
@@ -120,7 +120,7 @@ class SeparadoCarrinhosController extends GetxController {
         context: Get.context!,
         process: () async {
           try {
-            final carrinho = await CarrinhoServices().select(
+            final carrinho = await CarrinhoService().select(
               '''CodEmpresa = ${item.codEmpresa} 
                   AND CodCarrinho = ${item.codCarrinho} ''',
             );
@@ -179,8 +179,10 @@ class SeparadoCarrinhosController extends GetxController {
 
             final newSepararItens =
                 await _separarConsultaServices.itensSaparar();
+
             _separadoCarrinhoGridController
                 .updateGrid(carrinhoPercursoConsulta);
+
             _separarGridController.updateAllGrid(newSepararItens);
             _separadoCarrinhoGridController.update();
             _separarGridController.update();
@@ -202,7 +204,7 @@ class SeparadoCarrinhosController extends GetxController {
         ].contains(item.situacao) ||
         _separarConsulta.situacao == ExpedicaoSituacaoModel.cancelada;
 
-    final carrinho = await CarrinhoServices().select('''
+    final carrinho = await CarrinhoService().select('''
             CodEmpresa = ${item.codEmpresa} 
           AND CodCarrinho = ${item.codCarrinho} ''');
 
@@ -331,7 +333,7 @@ class SeparadoCarrinhosController extends GetxController {
               return false;
             }
 
-            final carrinho = await CarrinhoServices().select('''
+            final carrinho = await CarrinhoService().select('''
                     CodEmpresa = ${item.codEmpresa} 
                   AND CodCarrinho = ${item.codCarrinho} ''');
 
