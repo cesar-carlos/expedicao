@@ -404,18 +404,22 @@ class ConferirController extends GetxController {
       return;
     }
 
-    final bool? confirmation = await ConfirmationDialogView.show(
+    final bool? confirmationFinish = await ConfirmationDialogView.show(
       context: Get.context!,
       message: 'Deseja realmente finalizar?',
       detail: 'Não será possível adicionar ou alterar mais os carrinhos.',
     );
 
-    if (confirmation != null && confirmation) await finalizarConferencia();
+    if (confirmationFinish != null && confirmationFinish) {
+      await finalizarConferencia();
+    }
+
+    await Future.delayed(Duration(milliseconds: 500));
 
     final bool? confirmationCloseForm = await ConfirmationDialogView.show(
       context: Get.context!,
       message: 'Fechar formulario?',
-      detail: '',
+      detail: 'Deseja fechar o formulario de conferencia?',
     );
 
     if (confirmationCloseForm != null && confirmationCloseForm) {
