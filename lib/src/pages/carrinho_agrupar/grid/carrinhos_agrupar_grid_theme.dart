@@ -1,13 +1,16 @@
-import 'package:app_expedicao/src/app/app_color.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
-// ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_core/theme.dart';
+import 'package:app_expedicao/src/app/app_color.dart';
 
 class CarrinhosAgruparGridTheme {
-  SfDataGridThemeData get theme => SfDataGridThemeData(
-        rowHoverColor: Theme.of(Get.context!).primaryColor.withOpacity(0.4),
-        headerColor: AppColor.gridRowSelectedRowColor,
-      );
+  SfDataGridThemeData get theme {
+    return SfDataGridThemeData.raw(
+      gridLineStrokeWidth: 1,
+      brightness: Brightness.dark,
+      rowHoverColor: Theme.of(Get.context!).primaryColor.withOpacity(0.3),
+      selectionColor: AppColor.gridRowSelectedRowColor,
+    );
+  }
 }

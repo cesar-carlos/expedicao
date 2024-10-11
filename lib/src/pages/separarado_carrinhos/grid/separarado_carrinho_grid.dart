@@ -16,7 +16,6 @@ class SeparadoCarrinhoGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<SeparadoCarrinhoGridController>(
-      //tag: SeparadoCarrinhoGridController.gridName,
       builder: (controller) {
         return SfDataGridTheme(
           data: SeparadoCarrinhoGridTheme().theme,

@@ -81,6 +81,17 @@ class SeparacaoPage {
                               ),
                             ),
                             ButtonHeadForm(
+                              title: 'Recuperar Carrinho',
+                              shortCut: 'F11',
+                              shortCutActive: true,
+                              onPressed: null,
+                              icon: const Icon(
+                                BootstrapIcons.recycle,
+                                color: Colors.white,
+                                size: 33,
+                              ),
+                            ),
+                            ButtonHeadForm(
                               title: 'Finalizar Carrinho',
                               onPressed: controller.onSaveCarrinho,
                               shortCut: 'F12',

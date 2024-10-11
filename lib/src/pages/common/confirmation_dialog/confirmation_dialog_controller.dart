@@ -37,6 +37,19 @@ class ConfirmationDialogController extends GetxController {
         Get.back(result: false);
       }
 
+      if (event.logicalKey == LogicalKeyboardKey.numpad1 ||
+          event.logicalKey == LogicalKeyboardKey.digit1 ||
+          event.logicalKey == LogicalKeyboardKey.enter) {
+        Get.find<AppEventState>()..canCloseWindow = true;
+        Get.back(result: true);
+      }
+
+      if (event.logicalKey == LogicalKeyboardKey.numpad0 ||
+          event.logicalKey == LogicalKeyboardKey.digit0) {
+        Get.find<AppEventState>()..canCloseWindow = false;
+        Get.back(result: false);
+      }
+
       return KeyEventResult.ignored;
     }
 

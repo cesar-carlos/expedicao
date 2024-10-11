@@ -411,6 +411,16 @@ class ConferirController extends GetxController {
     );
 
     if (confirmation != null && confirmation) await finalizarConferencia();
+
+    final bool? confirmationCloseForm = await ConfirmationDialogView.show(
+      context: Get.context!,
+      message: 'Fechar formulario?',
+      detail: '',
+    );
+
+    if (confirmationCloseForm != null && confirmationCloseForm) {
+      io.exit(0);
+    }
   }
 
   Future<void> finalizarConferencia() async {

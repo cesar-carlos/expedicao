@@ -55,13 +55,13 @@ class ConfirmationDialogView {
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               ButtonFormElement(
-                                name: 'Não',
+                                name: '0 - Não',
                                 padding: EdgeInsets.only(right: 5, bottom: 10),
                                 focusNode: controller.notConfirmationFocusNode,
                                 onPressed: controller.notConfirmationOnPressed,
                               ),
                               ButtonFormElement(
-                                name: 'Sim',
+                                name: '1 - Sim',
                                 padding: EdgeInsets.only(right: 5, bottom: 10),
                                 focusNode: controller.confirmationFocusNode,
                                 onPressed: controller.confirmationOnPressed,

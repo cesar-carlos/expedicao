@@ -75,14 +75,17 @@ class SeparadoCarrinhoGridSource extends DataGridSource {
                 columnName: 'actions',
                 value:
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  IconButton(
-                    icon: controller.iconRemove(i),
-                    onPressed: () {
-                      controller.onRemoveItem(this, i);
-                    },
+                  SizedBox(
+                    width: 37,
+                    child: IconButton(
+                      icon: controller.iconRemove(i),
+                      onPressed: () {
+                        controller.onRemoveItem(this, i);
+                      },
+                    ),
                   ),
                   const SizedBox(
-                    width: 10,
+                    width: 9,
                     child: VerticalDivider(
                       color: Colors.grey,
                       thickness: 0.5,
@@ -95,7 +98,7 @@ class SeparadoCarrinhoGridSource extends DataGridSource {
                     },
                   ),
                   const SizedBox(
-                    width: 10,
+                    width: 9,
                     child: VerticalDivider(
                       color: Colors.grey,
                       thickness: 0.5,

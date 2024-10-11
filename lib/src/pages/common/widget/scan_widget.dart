@@ -40,7 +40,27 @@ class ScanWidget extends StatelessWidget {
             color: Colors.black87,
           ),
         ),
-        border: const OutlineInputBorder(),
+        border: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(5)),
+          borderSide: BorderSide(
+            color: Colors.black87,
+            width: 1,
+          ),
+        ),
+        disabledBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(5)),
+          borderSide: BorderSide(
+            color: Colors.black87,
+            width: 1,
+          ),
+        ),
+        focusedErrorBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(5)),
+          borderSide: BorderSide(
+            color: Colors.red,
+            width: 1,
+          ),
+        ),
         labelText: 'Leitor código de barras',
         labelStyle: const TextStyle(
           fontSize: 12,
