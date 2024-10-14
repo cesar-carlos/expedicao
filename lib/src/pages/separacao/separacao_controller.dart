@@ -57,7 +57,7 @@ class SeparacaoController extends GetxController {
   late SeparadoCarrinhosController _separadoCarrinhosController;
   late SeparacaoCarrinhoGridController _separacaoGridController;
   late SepararConsultaServices _separarConsultaServices;
-  Rx<Color> indicator = Colors.orange.obs;
+  Rx<Color> indicator = Colors.white.obs;
 
   late TextEditingController quantidadeController;
   late TextEditingController displayController;
@@ -86,14 +86,6 @@ class SeparacaoController extends GetxController {
   }
 
   Color get colorIndicator {
-    if (_isComplit) {
-      return Colors.green;
-    }
-
-    if (_viewMode.value) {
-      return Colors.red;
-    }
-
     switch (percursoEstagioConsulta.situacao) {
       case ExpedicaoSituacaoModel.cancelada:
         return Colors.red;

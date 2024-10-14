@@ -386,6 +386,8 @@ class SepararController extends GetxController {
         carrinhoPercursoEstagioConsulta,
         separacaoItens,
       );
+
+      _separarCarrinhosController.editCart(carrinhoPercursoEstagioConsulta);
     }
   }
 
