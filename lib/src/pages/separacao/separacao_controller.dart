@@ -9,7 +9,9 @@ import 'package:app_expedicao/src/app/app_event_state.dart';
 import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_model.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
+import 'package:app_expedicao/src/service/separacao_consulta_service.dart';
 import 'package:app_expedicao/src/service/separar_consultas_services.dart';
+import 'package:app_expedicao/src/model/expedicao_separacao_item_model.dart';
 import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
 import 'package:app_expedicao/src/service/separacao_remover_item_service.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dart';
@@ -26,11 +28,15 @@ import 'package:app_expedicao/src/pages/common/confirmation_dialog/confirmation_
 import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog_widget.dart';
 import 'package:app_expedicao/src/pages/common/message_dialog/message_dialog_view.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';
+import 'package:app_expedicao/src/service/carrinho_percurso_estagio_services.dart';
 import 'package:app_expedicao/src/service/separacao_adicionar_item_service.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
+import 'package:app_expedicao/src/model/send_query_socket_model.dart';
 import 'package:app_expedicao/src/service/cancelamento_service.dart';
+import 'package:app_expedicao/src/service/carrinho_service.dart';
 import 'package:app_expedicao/src/app/app_audio_helper.dart';
 
 class SeparacaoController extends GetxController {
@@ -50,7 +56,7 @@ class SeparacaoController extends GetxController {
   late SepararGridController _separarGridController;
   late SeparadoCarrinhosController _separadoCarrinhosController;
   late SeparacaoCarrinhoGridController _separacaoGridController;
-  late SepararConsultaServices _separarConsultasServices;
+  late SepararConsultaServices _separarConsultaServices;
   Rx<Color> indicator = Colors.orange.obs;
 
   late TextEditingController quantidadeController;
@@ -117,13 +123,20 @@ class SeparacaoController extends GetxController {
     quantidadeFocusNode = FocusNode();
     displayFocusNode = FocusNode();
 
-    _separarConsultasServices = SepararConsultaServices(
+    _separarConsultaServices = SepararConsultaServices(
       codEmpresa: _processoExecutavel.codEmpresa,
       codSepararEstoque: _processoExecutavel.codOrigem,
     );
 
-    _fillGridSeparacaoItens();
     _fillCarrinhoPercurso();
+    _fillGridSeparacaoItens();
+
+    _separarGridController.isComplitListiner.listen((value) {
+      if (_isComplit != value) {
+        _isComplit = value;
+        indicator.value = colorIndicator;
+      }
+    });
   }
 
   @override
@@ -164,6 +177,11 @@ class SeparacaoController extends GetxController {
 
       if (event.logicalKey == LogicalKeyboardKey.f8) {
         onReconferirTudo();
+        return KeyEventResult.handled;
+      }
+
+      if (event.logicalKey == LogicalKeyboardKey.f11) {
+        onRecuperarItens();
         return KeyEventResult.handled;
       }
 
@@ -216,8 +234,8 @@ class SeparacaoController extends GetxController {
   }
 
   Future<void> _fillGridSeparacaoItens() async {
-    final separar = await _separarConsultasServices.separar();
-    final separacaoItens = await _separarConsultasServices.itensSeparacao();
+    final separar = await _separarConsultaServices.separar();
+    final separacaoItens = await _separarConsultaServices.itensSeparacao();
 
     final separacaoItensFiltrados = separacaoItens.where((el) {
       return (el.codEmpresa == percursoEstagioConsulta.codEmpresa &&
@@ -232,19 +250,12 @@ class SeparacaoController extends GetxController {
 
     indicator.value = colorIndicator;
 
-    //register listener on complete
-    _separarGridController.isComplitListiner.listen((value) {
-      if (_isComplit != value) {
-        _isComplit = value;
-        indicator.value = colorIndicator;
-      }
-    });
-
     if (separar != null &&
         separar.situacao == ExpedicaoSituacaoModel.cancelada) {
       _viewMode.value = true;
     }
 
+    _separarGridController.update();
     update();
   }
 
@@ -649,6 +660,155 @@ class SeparacaoController extends GetxController {
     }
 
     scanFocusNode.requestFocus();
+  }
+
+  Future<void> onRecuperarItens() async {
+    if (viewMode) {
+      await MessageDialogView.show(
+        context: Get.context!,
+        message: 'Não é possivel recuperar itens!',
+        detail: 'O carrinho esta em modo de visualização..',
+      );
+
+      return;
+    }
+
+    final confirmation = await ConfirmationDialogView.show(
+      context: Get.context!,
+      message: 'Deseja realmente recuperar?',
+      detail: 'O sistema localiza os itens do ultimo carrinho cancelado!',
+    );
+
+    if (confirmation != null && confirmation) {
+      final carrinhoPercursoEstagioServices = CarrinhoPercursoEstagioServices();
+      final carrinhoService = CarrinhoService();
+
+      final params = '''
+          CodEmpresa = ${percursoEstagioConsulta.codEmpresa} 
+            AND CodCarrinho = ${percursoEstagioConsulta.codCarrinho} ''';
+
+      final carrinhos = await carrinhoService.select(params);
+
+      if (carrinhos.isEmpty) {
+        await MessageDialogView.show(
+          context: Get.context!,
+          message: 'Carrinho não encontrado!',
+          detail: 'Carrinho não encontrado, verifique.',
+        );
+
+        return;
+      }
+
+      if (carrinhos.first.situacao !=
+          ExpedicaoCarrinhoSituacaoModel.emSeparacao) {
+        await MessageDialogView.show(
+          context: Get.context!,
+          message: 'Carrinho não esta em separação!',
+          detail: 'Carrinho não esta em separação, verifique.',
+        );
+
+        return;
+      }
+
+      final carrinhosPercurso =
+          await carrinhoPercursoEstagioServices.select(params, 2, OrderBy.DESC);
+
+      if (carrinhosPercurso.isEmpty || carrinhosPercurso.length == 1) {
+        await MessageDialogView.show(
+          context: Get.context!,
+          message: 'Carrinho não encontrado.',
+          detail: 'Verifique. Carrinho nunca esteve em percurso anteriores!.',
+        );
+
+        return;
+      }
+
+      final lastCarrinhosPercurso = carrinhosPercurso.last;
+
+      if (lastCarrinhosPercurso.situacao != ExpedicaoSituacaoModel.cancelada) {
+        await MessageDialogView.show(
+          context: Get.context!,
+          message: 'Carrinho não cancelado!',
+          detail: 'Carrinho não esta foi cancelado, na separação .',
+        );
+
+        return;
+      }
+
+      if (lastCarrinhosPercurso.origem != ExpedicaoOrigemModel.separacao) {
+        await MessageDialogView.show(
+          context: Get.context!,
+          message: 'Origem não é separação!',
+          detail: 'Origem do carrinho cancelado não é separação.',
+        );
+
+        return;
+      }
+
+      final separacaoItens =
+          await SeparacaoConsultaService.getSeparacaoItensCarrinho(
+        codEmpresa: lastCarrinhosPercurso.codEmpresa,
+        codCarrinhoPercurso: lastCarrinhosPercurso.codCarrinhoPercurso,
+        itemCarrinhoPercurso: lastCarrinhosPercurso.item,
+      );
+
+      if (separacaoItens.isEmpty) {
+        await MessageDialogView.show(
+          context: Get.context!,
+          message: 'Itens não encontrados!',
+          detail: 'Itens não encontrados no carrinho cancelado.',
+        );
+
+        return;
+      }
+
+      await adicionarItensRecuperadoSeparacao(
+        percursoEstagioConsulta,
+        separacaoItens,
+      );
+    }
+  }
+
+  Future<bool> adicionarItensRecuperadoSeparacao(
+    ExpedicaoCarrinhoPercursoEstagioConsultaModel percursoEstagio,
+    List<ExpedicaoSeparacaoItemModel> separacaoItensRecuperado,
+  ) async {
+    return await LoadingProcessDialogGenericWidget.show<bool>(
+      context: Get.context!,
+      process: () async {
+        try {
+          final separarItens = await _separarConsultaServices.itensSaparar();
+
+          final carrinhoPercursoAdicionarItemService =
+              SeparacaoAdicionarItemService(
+            percursoEstagioConsulta: percursoEstagio,
+          );
+
+          for (var item in separacaoItensRecuperado) {
+            final existsSepararItem = separarItens.any((el) {
+              return el.codProduto == item.codProduto &&
+                  el.codUnidadeMedida == item.codUnidadeMedida;
+            });
+
+            if (existsSepararItem) {
+              await carrinhoPercursoAdicionarItemService.add(
+                codProduto: item.codProduto,
+                codUnidadeMedida: item.codUnidadeMedida,
+                quantidade: item.quantidade,
+              );
+            }
+          }
+
+          final newSepararItens = await _separarConsultaServices.itensSaparar();
+          _separarGridController.updateAllGrid(newSepararItens);
+
+          await _fillGridSeparacaoItens();
+          return true;
+        } catch (err) {
+          return false;
+        }
+      },
+    );
   }
 
   Future<void> onSaveCarrinho() async {

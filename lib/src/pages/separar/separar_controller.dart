@@ -313,9 +313,9 @@ class SepararController extends GetxController {
           CodEmpresa = ${carrinhoConsulta.codEmpresa} 
             AND CodCarrinho = ${carrinhoConsulta.codCarrinho} ''';
 
-      final carrnhos = await carrinhoService.select(params);
+      final carrinhos = await carrinhoService.select(params);
 
-      if (carrnhos.isEmpty) {
+      if (carrinhos.isEmpty) {
         await MessageDialogView.show(
           context: Get.context!,
           message: 'Carrinho não encontrado!',
@@ -325,7 +325,7 @@ class SepararController extends GetxController {
         return;
       }
 
-      if (carrnhos.first.situacao != ExpedicaoCarrinhoSituacaoModel.liberado) {
+      if (carrinhos.first.situacao != ExpedicaoCarrinhoSituacaoModel.liberado) {
         await MessageDialogView.show(
           context: Get.context!,
           message: 'Carrinho não liberado!',
@@ -397,7 +397,7 @@ class SepararController extends GetxController {
       context: Get.context!,
       process: () async {
         try {
-          final separarItens = await _separarConsultaServices.itensSeparacao();
+          final separarItens = await _separarConsultaServices.itensSaparar();
 
           final carrinhoPercursoAdicionarItemService =
               SeparacaoAdicionarItemService(

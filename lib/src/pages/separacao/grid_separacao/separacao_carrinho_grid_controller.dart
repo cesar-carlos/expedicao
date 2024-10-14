@@ -8,7 +8,7 @@ class SeparacaoCarrinhoGridController extends GetxController {
   static const gridName = 'separacaoCarrinhoGrid';
 
   final List<ExpedicaSeparacaoItemConsultaModel> _itens = [];
-  final DataGridController dataGridController = DataGridController();
+  final dataGridController = DataGridController();
 
   List<ExpedicaSeparacaoItemConsultaModel> get itens => _itens;
   List<ExpedicaSeparacaoItemConsultaModel> get itensSort =>
