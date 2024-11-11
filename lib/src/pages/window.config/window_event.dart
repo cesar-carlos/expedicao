@@ -1,7 +1,8 @@
+import 'dart:io';
 import 'package:get/get.dart';
 
-import 'package:app_expedicao/src/app/app_event_state.dart';
 import 'package:window_manager/window_manager.dart';
+import 'package:app_expedicao/src/app/app_event_state.dart';
 
 class WindowEvent implements WindowListener {
   @override
@@ -12,7 +13,8 @@ class WindowEvent implements WindowListener {
     final appEventState = Get.find<AppEventState>();
 
     if (appEventState.canCloseWindow) {
-      await windowManager.destroy();
+      windowManager.destroy();
+      exit(0);
     }
   }
 

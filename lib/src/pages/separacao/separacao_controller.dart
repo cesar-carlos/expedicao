@@ -86,11 +86,16 @@ class SeparacaoController extends GetxController {
   }
 
   Color get colorIndicator {
+    final isComplit = _separarGridController.isComplit();
+    if (isComplit) return Colors.green;
+
     switch (percursoEstagioConsulta.situacao) {
       case ExpedicaoSituacaoModel.cancelada:
         return Colors.red;
       case ExpedicaoSituacaoModel.separado:
         return Colors.green;
+      case ExpedicaoSituacaoModel.separando:
+        return Colors.blueGrey;
       default:
         return Colors.orange;
     }
