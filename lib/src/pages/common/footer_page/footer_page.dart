@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:app_expedicao/src/app/app_helper.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
@@ -100,7 +101,7 @@ class FooterPage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Text(
-                          'Versão: 1.0.32',
+                          'Versão: ${dotenv.get('APP_VERSION')}',
                           style: TextStyle(
                             color: Theme.of(context).secondaryHeaderColor,
                             fontSize: 9,

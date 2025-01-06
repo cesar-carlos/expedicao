@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:app_expedicao/src/app/app_theme.dart';
 import 'package:app_expedicao/src/app/app_client_http.dart';
@@ -16,6 +17,7 @@ Future<void> main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
   await WindowManagerConfig().config();
   runApp(MyApp(args: args));
+  await dotenv.load();
 }
 
 class MyApp extends StatefulWidget {

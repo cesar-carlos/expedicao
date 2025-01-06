@@ -53,6 +53,7 @@ dependencies:
   http:
   media_kit:
   media_kit_libs_audio:
+  flutter_dotenv: ^5.2.1
 
 dev_dependencies:
   flutter_test:
