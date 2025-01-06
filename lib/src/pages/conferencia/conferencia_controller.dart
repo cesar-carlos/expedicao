@@ -319,11 +319,10 @@ class ConferenciaController extends GetxController {
       percursoEstagioConsulta: percursoEstagioConsulta,
     );
 
-    double qtdConfDigitada = AppHelper.qtdDisplayToDouble(
-      quantidadeController.text,
-    );
+    double qtdConfDigitada =
+        AppHelper.qtdDisplayToDouble(quantidadeController.text);
 
-    double qtdConferencia = qtdConfDigitada;
+    //double qtdConferencia = qtdConfDigitada;
     final unidadesProduto = _conferirGridController
         .findUnidadesProduto(itemConferirConsulta.codProduto);
 
@@ -335,9 +334,9 @@ class ConferenciaController extends GetxController {
 
       if (unidadeMedida != null) {
         if (unidadeMedida.tipoFatorConversao != 'M') {
-          qtdConferencia = qtdConfDigitada / unidadeMedida.fatorConversao;
+          qtdConfDigitada = qtdConfDigitada / unidadeMedida.fatorConversao;
         } else {
-          qtdConferencia = qtdConfDigitada * unidadeMedida.fatorConversao;
+          qtdConfDigitada = qtdConfDigitada * unidadeMedida.fatorConversao;
         }
       }
     }
@@ -346,7 +345,7 @@ class ConferenciaController extends GetxController {
         await carrinhoPercursoAdicionarItemService.add(
       codProduto: itemConferirConsulta.codProduto,
       codUnidadeMedida: itemConferirConsulta.codUnidadeMedida,
-      quantidade: qtdConferencia,
+      quantidade: qtdConfDigitada,
     );
 
     if (conferenciaItemConsulta == null) {
@@ -355,6 +354,27 @@ class ConferenciaController extends GetxController {
         context: Get.context!,
         message: 'Erro ao adicionar item!',
         detail: 'Não foi possivel conferir o item do carrinho!',
+      );
+
+      displayController.text = '';
+      scanFocusNode.requestFocus();
+      scanController.clear();
+      return;
+    }
+
+    double qtdProductConferirGrid = _conferirGridController
+        .totalQtdProduct(itemConferirConsulta.codProduto);
+
+    double qtdProductConferidaGrid = _conferirGridController
+            .totalQtdProductChecked(itemConferirConsulta.codProduto) +
+        qtdConfDigitada;
+
+    if (qtdProductConferidaGrid > qtdProductConferirGrid) {
+      AppAudioHelper().play('/error.wav');
+      await MessageDialogView.show(
+        context: Get.context!,
+        message: 'Quantidade excedida!',
+        detail: 'Quantidade excedida para o produto!',
       );
 
       displayController.text = '';
