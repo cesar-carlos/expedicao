@@ -314,17 +314,37 @@ class ConferenciaController extends GetxController {
       return;
     }
 
+    double qtdConfDigitada =
+        AppHelper.qtdDisplayToDouble(quantidadeController.text);
+
+    final unidadesProduto = _conferirGridController
+        .findUnidadesProduto(itemConferirConsulta.codProduto);
+
+    double qtdProductConferirGrid = _conferirGridController
+        .totalQtdProduct(itemConferirConsulta.codProduto);
+
+    double qtdProductConferidaGrid = _conferirGridController
+            .totalQtdProductChecked(itemConferirConsulta.codProduto) +
+        qtdConfDigitada;
+
     final carrinhoPercursoAdicionarItemService =
         ConferenciaAdicionarItemService(
       percursoEstagioConsulta: percursoEstagioConsulta,
     );
 
-    double qtdConfDigitada =
-        AppHelper.qtdDisplayToDouble(quantidadeController.text);
+    if (qtdProductConferidaGrid > qtdProductConferirGrid) {
+      AppAudioHelper().play('/error.wav');
+      await MessageDialogView.show(
+        context: Get.context!,
+        message: 'Quantidade excedida!',
+        detail: 'Quantidade excedida para o produto!',
+      );
 
-    //double qtdConferencia = qtdConfDigitada;
-    final unidadesProduto = _conferirGridController
-        .findUnidadesProduto(itemConferirConsulta.codProduto);
+      displayController.text = '';
+      scanFocusNode.requestFocus();
+      scanController.clear();
+      return;
+    }
 
     if (unidadesProduto != null) {
       final unidadeMedida = unidadesProduto
@@ -354,27 +374,6 @@ class ConferenciaController extends GetxController {
         context: Get.context!,
         message: 'Erro ao adicionar item!',
         detail: 'Não foi possivel conferir o item do carrinho!',
-      );
-
-      displayController.text = '';
-      scanFocusNode.requestFocus();
-      scanController.clear();
-      return;
-    }
-
-    double qtdProductConferirGrid = _conferirGridController
-        .totalQtdProduct(itemConferirConsulta.codProduto);
-
-    double qtdProductConferidaGrid = _conferirGridController
-            .totalQtdProductChecked(itemConferirConsulta.codProduto) +
-        qtdConfDigitada;
-
-    if (qtdProductConferidaGrid > qtdProductConferirGrid) {
-      AppAudioHelper().play('/error.wav');
-      await MessageDialogView.show(
-        context: Get.context!,
-        message: 'Quantidade excedida!',
-        detail: 'Quantidade excedida para o produto!',
       );
 
       displayController.text = '';
