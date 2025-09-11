@@ -17,16 +17,16 @@ class TipoOperacaoRepository {
   Future<List<ExpedicaoTipoOperacaoModel>> select([String params = '']) {
     final event = '${socket.id} tipo.operacao.expedicao.select';
     final completer = Completer<List<ExpedicaoTipoOperacaoModel>>();
-    final resposeIn = uuid.v4();
+    final responseIn = uuid.v4();
 
     final send = SendQuerySocketModel(
       session: socket.id!,
-      resposeIn: resposeIn,
+      responseIn: responseIn,
       where: params,
     );
 
     socket.emit(event, jsonEncode(send.toJson()));
-    socket.on(resposeIn, (receiver) {
+    socket.on(responseIn, (receiver) {
       try {
         final respose = jsonDecode(receiver);
         final error = respose?['Error'] ?? null;
@@ -47,7 +47,7 @@ class TipoOperacaoRepository {
 
         return completer.future;
       } finally {
-        socket.off(resposeIn);
+        socket.off(responseIn);
       }
     });
 
@@ -58,16 +58,16 @@ class TipoOperacaoRepository {
       ExpedicaoTipoOperacaoModel entity) {
     final event = '${socket.id} tipo.operacao.expedicao.insert';
     final completer = Completer<List<ExpedicaoTipoOperacaoModel>>();
-    final resposeIn = uuid.v4();
+    final responseIn = uuid.v4();
 
     final send = SendMutationSocketModel(
       session: socket.id!,
-      resposeIn: resposeIn,
+      responseIn: responseIn,
       mutation: entity.toJson(),
     );
 
     socket.emit(event, jsonEncode(send.toJson()));
-    socket.on(resposeIn, (receiver) {
+    socket.on(responseIn, (receiver) {
       try {
         final respose = jsonDecode(receiver);
         final mutation = respose?['Mutation'] ?? [];
@@ -88,7 +88,7 @@ class TipoOperacaoRepository {
 
         return completer.future;
       } finally {
-        socket.off(resposeIn);
+        socket.off(responseIn);
       }
     });
 
@@ -99,16 +99,16 @@ class TipoOperacaoRepository {
       ExpedicaoTipoOperacaoModel entity) {
     final event = '${socket.id} tipo.operacao.expedicao.update';
     final completer = Completer<List<ExpedicaoTipoOperacaoModel>>();
-    final resposeIn = uuid.v4();
+    final responseIn = uuid.v4();
 
     final send = SendMutationSocketModel(
       session: socket.id!,
-      resposeIn: resposeIn,
+      responseIn: responseIn,
       mutation: entity.toJson(),
     );
 
     socket.emit(event, jsonEncode(send.toJson()));
-    socket.on(resposeIn, (receiver) {
+    socket.on(responseIn, (receiver) {
       try {
         final respose = jsonDecode(receiver);
         final mutation = respose?['Mutation'] ?? [];
@@ -128,7 +128,7 @@ class TipoOperacaoRepository {
         ));
         return completer.future;
       } finally {
-        socket.off(resposeIn);
+        socket.off(responseIn);
       }
     });
 
@@ -139,16 +139,16 @@ class TipoOperacaoRepository {
       ExpedicaoTipoOperacaoModel entity) {
     final event = '${socket.id} tipo.operacao.expedicao.delete';
     final completer = Completer<List<ExpedicaoTipoOperacaoModel>>();
-    final resposeIn = uuid.v4();
+    final responseIn = uuid.v4();
 
     final send = SendMutationSocketModel(
       session: socket.id!,
-      resposeIn: resposeIn,
+      responseIn: responseIn,
       mutation: entity.toJson(),
     );
 
     socket.emit(event, jsonEncode(send.toJson()));
-    socket.on(resposeIn, (receiver) {
+    socket.on(responseIn, (receiver) {
       try {
         final respose = jsonDecode(receiver);
         final mutation = respose?['Mutation'] ?? [];
@@ -168,7 +168,7 @@ class TipoOperacaoRepository {
         ));
         return completer.future;
       } finally {
-        socket.off(resposeIn);
+        socket.off(responseIn);
       }
     });
 

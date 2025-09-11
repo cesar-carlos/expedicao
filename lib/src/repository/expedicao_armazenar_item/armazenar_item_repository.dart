@@ -18,16 +18,16 @@ class ArmazenarItemRepository {
   Future<List<ExpedicaoArmazenarItem>> select([String params = '']) {
     final event = '${socket.id} armazenar.item.select';
     final completer = Completer<List<ExpedicaoArmazenarItem>>();
-    final resposeIn = uuid.v4();
+    final responseIn = uuid.v4();
 
     final send = SendQuerySocketModel(
       session: socket.id!,
-      resposeIn: resposeIn,
+      responseIn: responseIn,
       where: params,
     );
 
     socket.emit(event, jsonEncode(send.toJson()));
-    socket.on(resposeIn, (receiver) {
+    socket.on(responseIn, (receiver) {
       try {
         final respose = jsonDecode(receiver);
         final error = respose?['Error'] ?? null;
@@ -44,7 +44,7 @@ class ArmazenarItemRepository {
         completer.completeError(AppError(e.toString()));
         return completer.future;
       } finally {
-        socket.off(resposeIn);
+        socket.off(responseIn);
       }
     });
 
@@ -54,16 +54,16 @@ class ArmazenarItemRepository {
   Future<List<ExpedicaoArmazenarItem>> insert(ExpedicaoArmazenarItem entity) {
     final event = '${socket.id} armazenar.item.insert';
     final completer = Completer<List<ExpedicaoArmazenarItem>>();
-    final resposeIn = uuid.v4();
+    final responseIn = uuid.v4();
 
     final send = SendMutationSocketModel(
       session: socket.id!,
-      resposeIn: resposeIn,
+      responseIn: responseIn,
       mutation: entity.toJson(),
     );
 
     socket.emit(event, jsonEncode(send.toJson()));
-    socket.on(resposeIn, (receiver) {
+    socket.on(responseIn, (receiver) {
       try {
         final respose = jsonDecode(receiver);
         final mutation = respose?['Mutation'] ?? [];
@@ -80,7 +80,7 @@ class ArmazenarItemRepository {
         completer.completeError(AppError(e.toString()));
         return completer.future;
       } finally {
-        socket.off(resposeIn);
+        socket.off(responseIn);
       }
     });
 
@@ -91,21 +91,21 @@ class ArmazenarItemRepository {
       List<ExpedicaoArmazenarItem> entitys) {
     final event = '${socket.id} armazenar.item.insert';
     final completer = Completer<List<ExpedicaoArmazenarItem>>();
-    final resposeIn = uuid.v4();
+    final responseIn = uuid.v4();
 
     final send = SendMutationsSocketModel(
       session: socket.id!,
-      resposeIn: resposeIn,
+      responseIn: responseIn,
       mutation: entitys.map((el) => el.toJson()).toList(),
     );
 
     socket.emit(event, jsonEncode(send.toJson()));
-    socket.on(resposeIn, (receiver) {
+    socket.on(responseIn, (receiver) {
       try {
         final respose = jsonDecode(receiver);
         final mutation = respose?['Mutation'] ?? [];
         final error = respose?['Error'] ?? null;
-        socket.off(resposeIn);
+        socket.off(responseIn);
 
         print(error);
         if (error != null) throw error;
@@ -119,7 +119,7 @@ class ArmazenarItemRepository {
         completer.completeError(AppError(e.toString()));
         return completer.future;
       } finally {
-        socket.off(resposeIn);
+        socket.off(responseIn);
       }
     });
 
@@ -129,16 +129,16 @@ class ArmazenarItemRepository {
   Future<List<ExpedicaoArmazenarItem>> update(ExpedicaoArmazenarItem entity) {
     final event = '${socket.id} armazenar.item.update';
     final completer = Completer<List<ExpedicaoArmazenarItem>>();
-    final resposeIn = uuid.v4();
+    final responseIn = uuid.v4();
 
     final send = SendMutationSocketModel(
       session: socket.id!,
-      resposeIn: resposeIn,
+      responseIn: responseIn,
       mutation: entity.toJson(),
     );
 
     socket.emit(event, jsonEncode(send.toJson()));
-    socket.on(resposeIn, (receiver) {
+    socket.on(responseIn, (receiver) {
       try {
         final respose = jsonDecode(receiver);
         final mutation = respose?['Mutation'] ?? [];
@@ -155,7 +155,7 @@ class ArmazenarItemRepository {
         completer.completeError(AppError(e.toString()));
         return completer.future;
       } finally {
-        socket.off(resposeIn);
+        socket.off(responseIn);
       }
     });
 
@@ -166,16 +166,16 @@ class ArmazenarItemRepository {
       List<ExpedicaoArmazenarItem> entitys) {
     final event = '${socket.id} armazenar.item.update';
     final completer = Completer<List<ExpedicaoArmazenarItem>>();
-    final resposeIn = uuid.v4();
+    final responseIn = uuid.v4();
 
     final send = SendMutationsSocketModel(
       session: socket.id!,
-      resposeIn: resposeIn,
+      responseIn: responseIn,
       mutation: entitys.map((el) => el.toJson()).toList(),
     );
 
     socket.emit(event, jsonEncode(send.toJson()));
-    socket.on(resposeIn, (receiver) {
+    socket.on(responseIn, (receiver) {
       try {
         final respose = jsonDecode(receiver);
         final mutation = respose?['Mutation'] ?? [];
@@ -192,7 +192,7 @@ class ArmazenarItemRepository {
         completer.completeError(AppError(e.toString()));
         return completer.future;
       } finally {
-        socket.off(resposeIn);
+        socket.off(responseIn);
       }
     });
 
@@ -202,16 +202,16 @@ class ArmazenarItemRepository {
   Future<List<ExpedicaoArmazenarItem>> delete(ExpedicaoArmazenarItem entity) {
     final event = '${socket.id} armazenar.item.delete';
     final completer = Completer<List<ExpedicaoArmazenarItem>>();
-    final resposeIn = uuid.v4();
+    final responseIn = uuid.v4();
 
     final send = SendMutationSocketModel(
       session: socket.id!,
-      resposeIn: resposeIn,
+      responseIn: responseIn,
       mutation: entity.toJson(),
     );
 
     socket.emit(event, jsonEncode(send.toJson()));
-    socket.on(resposeIn, (receiver) {
+    socket.on(responseIn, (receiver) {
       try {
         final respose = jsonDecode(receiver);
         final mutation = respose?['Mutation'] ?? [];
@@ -228,7 +228,7 @@ class ArmazenarItemRepository {
         completer.completeError(AppError(e.toString()));
         return completer.future;
       } finally {
-        socket.off(resposeIn);
+        socket.off(responseIn);
       }
     });
 

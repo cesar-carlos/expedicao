@@ -18,16 +18,16 @@ class CarrinhoPercursoAgrupamentoConsultaRepository {
     final event = '${socket.id} carrinho.percurso.agrupamento.consulta';
     final completer =
         Completer<List<ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel>>();
-    final resposeIn = uuid.v4();
+    final responseIn = uuid.v4();
 
     final send = SendQuerySocketModel(
       session: socket.id!,
-      resposeIn: resposeIn,
+      responseIn: responseIn,
       where: params,
     );
 
     socket.emit(event, jsonEncode(send.toJson()));
-    socket.on(resposeIn, (receiver) {
+    socket.on(responseIn, (receiver) {
       try {
         final respose = jsonDecode(receiver);
         final error = respose?['Error'] ?? null;
@@ -46,7 +46,7 @@ class CarrinhoPercursoAgrupamentoConsultaRepository {
         completer.completeError(AppError(e.toString()));
         return completer.future;
       } finally {
-        socket.off(resposeIn);
+        socket.off(responseIn);
       }
     });
 

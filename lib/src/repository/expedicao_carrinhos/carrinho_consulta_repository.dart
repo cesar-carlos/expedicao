@@ -16,16 +16,16 @@ class CarrinhoConsultaRepository {
   Future<List<ExpedicaoCarrinhoConsultaModel>> select([String params = '']) {
     final event = '${socket.id} carrinho.consulta';
     final completer = Completer<List<ExpedicaoCarrinhoConsultaModel>>();
-    final resposeIn = uuid.v4();
+    final responseIn = uuid.v4();
 
     final send = SendQuerySocketModel(
       session: socket.id!,
-      resposeIn: resposeIn,
+      responseIn: responseIn,
       where: params,
     );
 
     socket.emit(event, jsonEncode(send.toJson()));
-    socket.on(resposeIn, (receiver) {
+    socket.on(responseIn, (receiver) {
       try {
         final respose = jsonDecode(receiver);
         final error = respose?['Error'] ?? null;
@@ -42,7 +42,7 @@ class CarrinhoConsultaRepository {
         completer.completeError(AppError(e.toString()));
         return completer.future;
       } finally {
-        socket.off(resposeIn);
+        socket.off(responseIn);
       }
     });
 

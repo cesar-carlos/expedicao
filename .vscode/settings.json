@@ -15,5 +15,6 @@
     "statusBar.foreground": "#D0B49F",
     "statusBar.border": "#A47551"
   },
-  "debug.toolBarLocation": "commandCenter"
+  "debug.toolBarLocation": "commandCenter",
+  "cmake.sourceDirectory": "D:/Developer/Data7/Expedicao/Flutter/app_expedicao/linux"
 }

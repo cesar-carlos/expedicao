@@ -16,21 +16,21 @@ class EstoqueProdutoConsultaRepository {
   Future<List<EstoqueProdutoConsultaModel>> select([String params = '']) {
     final event = '${socket.id} estoque.produto.consulta';
     final completer = Completer<List<EstoqueProdutoConsultaModel>>();
-    final resposeIn = uuid.v4();
+    final responseIn = uuid.v4();
 
     final send = SendQuerySocketModel(
       session: socket.id!,
-      resposeIn: resposeIn,
+      responseIn: responseIn,
       where: params,
     );
 
     try {
       socket.emit(event, jsonEncode(send.toJson()));
-      socket.on(resposeIn, (receiver) {
+      socket.on(responseIn, (receiver) {
         final respose = jsonDecode(receiver);
         final error = respose?['Error'] ?? null;
         final data = respose?['Data'] ?? [];
-        socket.off(resposeIn);
+        socket.off(responseIn);
 
         if (error != null) {
           completer.completeError(error);
@@ -46,7 +46,7 @@ class EstoqueProdutoConsultaRepository {
 
       return completer.future;
     } catch (e) {
-      socket.off(resposeIn);
+      socket.off(responseIn);
       completer.completeError(AppError(e.toString()));
       return completer.future;
     }

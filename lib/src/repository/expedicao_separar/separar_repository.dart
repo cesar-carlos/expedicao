@@ -17,16 +17,16 @@ class SepararRepository {
   Future<List<ExpedicaoSepararModel>> select([String params = '']) {
     final event = '${socket.id} separar.select';
     final completer = Completer<List<ExpedicaoSepararModel>>();
-    final resposeIn = uuid.v4();
+    final responseIn = uuid.v4();
 
     final send = SendQuerySocketModel(
       session: socket.id!,
-      resposeIn: resposeIn,
+      responseIn: responseIn,
       where: params,
     );
 
     socket.emit(event, jsonEncode(send.toJson()));
-    socket.on(resposeIn, (receiver) {
+    socket.on(responseIn, (receiver) {
       try {
         final respose = jsonDecode(receiver);
         final error = respose?['Error'] ?? null;
@@ -43,7 +43,7 @@ class SepararRepository {
         completer.completeError(AppError(e.toString()));
         return completer.future;
       } finally {
-        socket.off(resposeIn);
+        socket.off(responseIn);
       }
     });
 
@@ -53,16 +53,16 @@ class SepararRepository {
   Future<List<ExpedicaoSepararModel>> insert(ExpedicaoSepararModel entity) {
     final event = '${socket.id} separar.insert';
     final completer = Completer<List<ExpedicaoSepararModel>>();
-    final resposeIn = uuid.v4();
+    final responseIn = uuid.v4();
 
     final send = SendMutationSocketModel(
       session: socket.id!,
-      resposeIn: resposeIn,
+      responseIn: responseIn,
       mutation: entity.toJson(),
     );
 
     socket.emit(event, jsonEncode(send.toJson()));
-    socket.on(resposeIn, (receiver) {
+    socket.on(responseIn, (receiver) {
       try {
         final respose = jsonDecode(receiver);
         final mutation = respose?['Mutation'] ?? [];
@@ -79,7 +79,7 @@ class SepararRepository {
         completer.completeError(AppError(e.toString()));
         return completer.future;
       } finally {
-        socket.off(resposeIn);
+        socket.off(responseIn);
       }
     });
 
@@ -89,16 +89,16 @@ class SepararRepository {
   Future<List<ExpedicaoSepararModel>> update(ExpedicaoSepararModel entity) {
     final event = '${socket.id} separar.update';
     final completer = Completer<List<ExpedicaoSepararModel>>();
-    final resposeIn = uuid.v4();
+    final responseIn = uuid.v4();
 
     final send = SendMutationSocketModel(
       session: socket.id!,
-      resposeIn: resposeIn,
+      responseIn: responseIn,
       mutation: entity.toJson(),
     );
 
     socket.emit(event, jsonEncode(send.toJson()));
-    socket.on(resposeIn, (receiver) {
+    socket.on(responseIn, (receiver) {
       try {
         final respose = jsonDecode(receiver);
         final mutation = respose?['Mutation'] ?? [];
@@ -115,7 +115,7 @@ class SepararRepository {
         completer.completeError(AppError(e.toString()));
         return completer.future;
       } finally {
-        socket.off(resposeIn);
+        socket.off(responseIn);
       }
     });
 
@@ -125,16 +125,16 @@ class SepararRepository {
   Future<List<ExpedicaoSepararModel>> delete(ExpedicaoSepararModel entity) {
     final event = '${socket.id} separar.delete';
     final completer = Completer<List<ExpedicaoSepararModel>>();
-    final resposeIn = uuid.v4();
+    final responseIn = uuid.v4();
 
     final send = SendMutationSocketModel(
       session: socket.id!,
-      resposeIn: resposeIn,
+      responseIn: responseIn,
       mutation: entity.toJson(),
     );
 
     socket.emit(event, jsonEncode(send.toJson()));
-    socket.on(resposeIn, (receiver) {
+    socket.on(responseIn, (receiver) {
       try {
         final respose = jsonDecode(receiver);
         final mutation = respose?['Mutation'] ?? [];
@@ -151,7 +151,7 @@ class SepararRepository {
         completer.completeError(AppError(e.toString()));
         return completer.future;
       } finally {
-        socket.off(resposeIn);
+        socket.off(responseIn);
       }
     });
 

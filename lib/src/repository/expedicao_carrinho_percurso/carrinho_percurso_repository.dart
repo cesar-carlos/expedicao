@@ -18,18 +18,18 @@ class CarrinhoPercursoRepository {
       [String params = '', int limit = 0, OrderBy orderBy = OrderBy.ASC]) {
     final event = '${socket.id} carrinho.percurso.select';
     final completer = Completer<List<ExpedicaoCarrinhoPercursoModel>>();
-    final resposeIn = uuid.v4();
+    final responseIn = uuid.v4();
 
     final send = SendQuerySocketModel(
       session: socket.id!,
-      resposeIn: resposeIn,
+      responseIn: responseIn,
       where: params,
       limit: limit,
       orderBy: orderBy,
     );
 
     socket.emit(event, jsonEncode(send.toJson()));
-    socket.on(resposeIn, (receiver) {
+    socket.on(responseIn, (receiver) {
       try {
         final respose = jsonDecode(receiver);
         final error = respose?['Error'] ?? null;
@@ -46,7 +46,7 @@ class CarrinhoPercursoRepository {
         completer.completeError(AppError(e.toString()));
         return completer.future;
       } finally {
-        socket.off(resposeIn);
+        socket.off(responseIn);
       }
     });
 
@@ -57,16 +57,16 @@ class CarrinhoPercursoRepository {
       ExpedicaoCarrinhoPercursoModel entity) {
     final event = '${socket.id} carrinho.percurso.insert';
     final completer = Completer<List<ExpedicaoCarrinhoPercursoModel>>();
-    final resposeIn = uuid.v4();
+    final responseIn = uuid.v4();
 
     final send = SendMutationSocketModel(
       session: socket.id!,
-      resposeIn: resposeIn,
+      responseIn: responseIn,
       mutation: entity.toJson(),
     );
 
     socket.emit(event, jsonEncode(send.toJson()));
-    socket.on(resposeIn, (receiver) {
+    socket.on(responseIn, (receiver) {
       try {
         final respose = jsonDecode(receiver);
         final mutation = respose?['Mutation'] ?? [];
@@ -83,7 +83,7 @@ class CarrinhoPercursoRepository {
         completer.completeError(AppError(e.toString()));
         return completer.future;
       } finally {
-        socket.off(resposeIn);
+        socket.off(responseIn);
       }
     });
 
@@ -94,16 +94,16 @@ class CarrinhoPercursoRepository {
       ExpedicaoCarrinhoPercursoModel entity) {
     final event = '${socket.id} carrinho.percurso.update';
     final completer = Completer<List<ExpedicaoCarrinhoPercursoModel>>();
-    final resposeIn = uuid.v4();
+    final responseIn = uuid.v4();
 
     final send = SendMutationSocketModel(
       session: socket.id!,
-      resposeIn: resposeIn,
+      responseIn: responseIn,
       mutation: entity.toJson(),
     );
 
     socket.emit(event, jsonEncode(send.toJson()));
-    socket.on(resposeIn, (receiver) {
+    socket.on(responseIn, (receiver) {
       try {
         final respose = jsonDecode(receiver);
         final mutation = respose?['Mutation'] ?? [];
@@ -120,7 +120,7 @@ class CarrinhoPercursoRepository {
         completer.completeError(AppError(e.toString()));
         return completer.future;
       } finally {
-        socket.off(resposeIn);
+        socket.off(responseIn);
       }
     });
 
@@ -131,16 +131,16 @@ class CarrinhoPercursoRepository {
       ExpedicaoCarrinhoPercursoModel entity) {
     final event = '${socket.id} carrinho.percurso.delete';
     final completer = Completer<List<ExpedicaoCarrinhoPercursoModel>>();
-    final resposeIn = uuid.v4();
+    final responseIn = uuid.v4();
 
     final send = SendMutationSocketModel(
       session: socket.id!,
-      resposeIn: resposeIn,
+      responseIn: responseIn,
       mutation: entity.toJson(),
     );
 
     socket.emit(event, jsonEncode(send.toJson()));
-    socket.on(resposeIn, (receiver) {
+    socket.on(responseIn, (receiver) {
       try {
         final respose = jsonDecode(receiver);
         final mutation = respose?['Mutation'] ?? [];
@@ -157,7 +157,7 @@ class CarrinhoPercursoRepository {
         completer.completeError(AppError(e.toString()));
         return completer.future;
       } finally {
-        socket.off(resposeIn);
+        socket.off(responseIn);
       }
     });
 

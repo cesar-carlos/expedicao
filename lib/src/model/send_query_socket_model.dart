@@ -2,14 +2,14 @@ enum OrderBy { ASC, DESC }
 
 class SendQuerySocketModel {
   String session;
-  String resposeIn;
+  String responseIn;
   String where;
   int limit;
   OrderBy orderBy;
 
   SendQuerySocketModel({
     required this.session,
-    required this.resposeIn,
+    required this.responseIn,
     required this.where,
     this.limit = 0,
     this.orderBy = OrderBy.ASC,
@@ -18,7 +18,7 @@ class SendQuerySocketModel {
   Map<String, dynamic> toJson() {
     return {
       "Session": session,
-      "ResposeIn": resposeIn,
+      "ResponseIn": responseIn,
       "Where": where,
       "Limit": limit,
       "OrderBy": orderBy.toString().split('.').last,
@@ -30,7 +30,7 @@ class SendQuerySocketModel {
     return '''
       SendQuerySocketModel(
         session: $session, 
-        resposeIn: $resposeIn, 
+        responseIn: $responseIn, 
         where: $where
         limit: $limit
         orderBy: $orderBy

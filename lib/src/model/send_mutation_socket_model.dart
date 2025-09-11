@@ -1,18 +1,18 @@
 class SendMutationSocketModel {
   final String session;
-  final String resposeIn;
+  final String responseIn;
   final Map<String, dynamic> mutation;
 
   SendMutationSocketModel({
     required this.session,
-    required this.resposeIn,
+    required this.responseIn,
     required this.mutation,
   });
 
   Map<String, dynamic> toJson() {
     return {
       "Session": session,
-      "ResposeIn": resposeIn,
+      "ResponseIn": responseIn,
       "Mutation": mutation,
     };
   }

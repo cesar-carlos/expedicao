@@ -1,31 +1,31 @@
 class BasicEventModel {
   String session;
-  String resposeIn;
+  String responseIn;
 
   List<Map<String, dynamic>> mutation;
 
   BasicEventModel({
     required this.session,
-    required this.resposeIn,
+    required this.responseIn,
     required this.mutation,
   });
 
   factory BasicEventModel.empty() {
     return BasicEventModel(
       session: '',
-      resposeIn: '',
+      responseIn: '',
       mutation: [],
     );
   }
 
   BasicEventModel copyWith({
     String? session,
-    String? resposeIn,
+    String? responseIn,
     List<Map<String, dynamic>>? mutation,
   }) {
     return BasicEventModel(
       session: session ?? this.session,
-      resposeIn: resposeIn ?? this.resposeIn,
+      responseIn: responseIn ?? this.responseIn,
       mutation: mutation ?? this.mutation,
     );
   }
@@ -34,7 +34,7 @@ class BasicEventModel {
     try {
       return BasicEventModel(
         session: json['Session'],
-        resposeIn: json['ResposeIn'],
+        responseIn: json['ResponseIn'],
         mutation: List<Map<String, dynamic>>.from(json['Mutation']),
       );
     } catch (_) {
@@ -45,7 +45,7 @@ class BasicEventModel {
   Map<String, dynamic> toJson() {
     return {
       'Session': session,
-      'ResposeIn': resposeIn,
+      'ResponseIn': responseIn,
       'Mutation': mutation,
     };
   }
@@ -55,7 +55,7 @@ class BasicEventModel {
     return '''
       BasicEventModel(
         session: $session, 
-        resposeIn: $resposeIn, 
+        responseIn: $responseIn, 
         mutation: $mutation
       )''';
   }
