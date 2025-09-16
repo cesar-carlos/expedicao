@@ -3,6 +3,8 @@ import 'package:app_expedicao/src/app/app_helper.dart';
 class ExpedicaoSepararConsultaModel {
   final int codEmpresa;
   final int codSepararEstoque;
+  final String origem;
+  final int codOrigem;
   final int codTipoOperacao;
   final String nomeTipoOperacao;
   String situacao;
@@ -19,6 +21,8 @@ class ExpedicaoSepararConsultaModel {
   ExpedicaoSepararConsultaModel({
     required this.codEmpresa,
     required this.codSepararEstoque,
+    required this.origem,
+    required this.codOrigem,
     required this.codTipoOperacao,
     required this.nomeTipoOperacao,
     required this.situacao,
@@ -36,6 +40,8 @@ class ExpedicaoSepararConsultaModel {
   ExpedicaoSepararConsultaModel copyWith({
     int? codEmpresa,
     int? codSepararEstoque,
+    String? origem,
+    int? codOrigem,
     int? codTipoOperacao,
     String? nomeTipoOperacao,
     String? situacao,
@@ -52,6 +58,8 @@ class ExpedicaoSepararConsultaModel {
     return ExpedicaoSepararConsultaModel(
       codEmpresa: codEmpresa ?? this.codEmpresa,
       codSepararEstoque: codSepararEstoque ?? this.codSepararEstoque,
+      origem: origem ?? this.origem,
+      codOrigem: codOrigem ?? this.codOrigem,
       codTipoOperacao: codTipoOperacao ?? this.codTipoOperacao,
       nomeTipoOperacao: nomeTipoOperacao ?? this.nomeTipoOperacao,
       situacao: situacao ?? this.situacao,
@@ -72,6 +80,8 @@ class ExpedicaoSepararConsultaModel {
       return ExpedicaoSepararConsultaModel(
         codEmpresa: json['CodEmpresa'],
         codSepararEstoque: json['CodSepararEstoque'],
+        origem: json['Origem'],
+        codOrigem: json['CodOrigem'],
         codTipoOperacao: json['CodTipoOperacaoExpedicao'],
         nomeTipoOperacao: json['NomeTipoOperacaoExpedicao'],
         situacao: json['Situacao'],
@@ -94,6 +104,8 @@ class ExpedicaoSepararConsultaModel {
     return {
       'CodEmpresa': codEmpresa,
       'CodSepararEstoque': codSepararEstoque,
+      'Origem': origem,
+      'CodOrigem': codOrigem,
       'CodTipoOperacaoExpedicao': codTipoOperacao,
       'NomeTipoOperacaoExpedicao': nomeTipoOperacao,
       'Situacao': situacao,
@@ -115,6 +127,8 @@ class ExpedicaoSepararConsultaModel {
       ExpedicaoSepararConsultaModel(
         codEmpresa: $codEmpresa, 
         codSepararEstoque: $codSepararEstoque, 
+        origem: $origem, 
+        codOrigem: $codOrigem, 
         codTipoOperacao: $codTipoOperacao, 
         nomeTipoOperacao: $nomeTipoOperacao, 
         situacao: $situacao, 

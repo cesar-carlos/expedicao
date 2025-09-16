@@ -9,6 +9,7 @@ import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.da
 import 'package:app_expedicao/src/model/expedicao_separar_item_unidade_medida_consulta_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_repository.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
+import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 
 class SepararGridController extends GetxController {
   static const gridName = 'separarGrid';
@@ -233,11 +234,13 @@ class SepararGridController extends GetxController {
     List<ExpedicaoSepararItemConsultaModel> separarItem = [];
 
     for (var el in _itens) {
-      final separacaoItens = await repository.select('''
-          CodEmpresa = ${el.codEmpresa}
-        AND CodSepararEstoque = ${el.codSepararEstoque}
-        AND CodProduto = ${el.codProduto}
-        AND Situacao <> ${ExpedicaoSituacaoModel.cancelada} ''');
+      final queryBuilder = QueryBuilder()
+          .equals('CodEmpresa', el.codEmpresa)
+          .equals('CodSepararEstoque', el.codSepararEstoque)
+          .equals('CodProduto', el.codProduto)
+          .notEquals('Situacao', ExpedicaoSituacaoModel.cancelada);
+
+      final separacaoItens = await repository.select(queryBuilder);
 
       if (separacaoItens.isEmpty) {
         separarItem.add(el.copyWith(quantidadeSeparacao: 0.00));

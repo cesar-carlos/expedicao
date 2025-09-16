@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:app_expedicao/src/app/app_error.dart';
+import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 import 'package:app_expedicao/src/model/send_query_socket_model.dart';
 import 'package:app_expedicao/src/model/send_mutation_socket_model.dart';
 import 'package:app_expedicao/src/model/expedicao_estagio_model.dart';
@@ -14,7 +15,7 @@ class ExpedicaoEstagioRepository {
   final uuid = const Uuid();
   var socket = Get.find<AppSocketConfig>().socket;
 
-  Future<List<ExpedicaoEstagioModel>> select([String params = '']) {
+  Future<List<ExpedicaoEstagioModel>> select(QueryBuilder queryBuilder) {
     final event = '${socket.id} expedicao.estagio.select';
     final completer = Completer<List<ExpedicaoEstagioModel>>();
     final responseIn = uuid.v4();
@@ -22,7 +23,9 @@ class ExpedicaoEstagioRepository {
     final send = SendQuerySocketModel(
       session: socket.id!,
       responseIn: responseIn,
-      where: params,
+      where: queryBuilder.buildSqlWhere(),
+      pagination: queryBuilder.buildPagination(),
+      orderBy: queryBuilder.buildOrderByQuery(),
     );
 
     socket.emit(event, jsonEncode(send.toJson()));

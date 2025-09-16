@@ -1,17 +1,12 @@
 import 'dart:async';
-
 import 'dart:io' as io;
-
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'package:app_expedicao/src/routes/app_router.dart';
 import 'package:app_expedicao/src/service/carrinho_service.dart';
 import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
-import 'package:app_expedicao/src/model/send_query_socket_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_model.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
 import 'package:app_expedicao/src/service/separacao_consulta_service.dart';
@@ -43,6 +38,7 @@ import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_model.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/service/separar_services.dart';
+import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 
 class SepararController extends GetxController {
   bool _iniciada = false;
@@ -165,12 +161,13 @@ class SepararController extends GetxController {
   }
 
   Future<void> _fillCarrinhoPercurso() async {
-    final params = '''
-        CodEmpresa = ${_processoExecutavel.codEmpresa} 
-      AND Origem = '${_processoExecutavel.origem}' 
-      AND CodOrigem = ${_processoExecutavel.codOrigem} ''';
+    final queryBuilder = QueryBuilder()
+        .equals('CodEmpresa', _processoExecutavel.codEmpresa)
+        .equals('Origem', _processoExecutavel.origem)
+        .equals('CodOrigem', _processoExecutavel.codOrigem);
 
-    final carrinhoPercursos = await CarrinhoPercursoServices().select(params);
+    final carrinhoPercursos =
+        await CarrinhoPercursoServices().select(queryBuilder);
 
     if (carrinhoPercursos.isNotEmpty)
       _carrinhoPercurso = carrinhoPercursos.first;
@@ -309,11 +306,11 @@ class SepararController extends GetxController {
       final carrinhoPercursoEstagioServices = CarrinhoPercursoEstagioServices();
       final carrinhoService = CarrinhoService();
 
-      final params = '''
-          CodEmpresa = ${carrinhoConsulta.codEmpresa} 
-            AND CodCarrinho = ${carrinhoConsulta.codCarrinho} ''';
+      final queryBuilder = QueryBuilder()
+          .equals('CodEmpresa', carrinhoConsulta.codEmpresa)
+          .equals('CodCarrinho', carrinhoConsulta.codCarrinho);
 
-      final carrinhos = await carrinhoService.select(params);
+      final carrinhos = await carrinhoService.select(queryBuilder);
 
       if (carrinhos.isEmpty) {
         await MessageDialogView.show(
@@ -336,7 +333,7 @@ class SepararController extends GetxController {
       }
 
       final carrinhosPercurso =
-          await carrinhoPercursoEstagioServices.select(params, 1, OrderBy.DESC);
+          await carrinhoPercursoEstagioServices.select(queryBuilder);
 
       if (carrinhosPercurso.isEmpty) {
         await MessageDialogView.show(

@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:app_expedicao/src/app/app_error.dart';
+import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 import 'package:app_expedicao/src/model/send_mutation_socket_model.dart';
 import 'package:app_expedicao/src/model/send_query_socket_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_model.dart';
@@ -14,7 +15,7 @@ class CarrinhoRepository {
   final uuid = const Uuid();
   var socket = Get.find<AppSocketConfig>().socket;
 
-  Future<List<ExpedicaoCarrinhoModel>> select([String params = '']) {
+  Future<List<ExpedicaoCarrinhoModel>> select(QueryBuilder queryBuilder) {
     final event = '${socket.id} carrinho.select';
     final completer = Completer<List<ExpedicaoCarrinhoModel>>();
     final responseIn = uuid.v4();
@@ -22,7 +23,9 @@ class CarrinhoRepository {
     final send = SendQuerySocketModel(
       session: socket.id!,
       responseIn: responseIn,
-      where: params,
+      where: queryBuilder.buildSqlWhere(),
+      pagination: queryBuilder.buildPagination(),
+      orderBy: queryBuilder.buildOrderByQuery(),
     );
 
     socket.emit(event, jsonEncode(send.toJson()));

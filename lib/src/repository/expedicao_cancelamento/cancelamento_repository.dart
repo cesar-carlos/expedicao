@@ -8,13 +8,14 @@ import 'package:app_expedicao/src/app/app_error.dart';
 import 'package:app_expedicao/src/model/send_mutation_socket_model.dart';
 import 'package:app_expedicao/src/model/expedicao_cancelamento_model.dart';
 import 'package:app_expedicao/src/model/send_query_socket_model.dart';
+import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 import 'package:app_expedicao/src/app/app_socket_config.dart';
 
 class CancelamentoRepository {
   final uuid = const Uuid();
   var socket = Get.find<AppSocketConfig>().socket;
 
-  Future<List<ExpedicaoCancelamentoModel>> select([String params = '']) {
+  Future<List<ExpedicaoCancelamentoModel>> select(QueryBuilder queryBuilder) {
     final event = '${socket.id} cancelamento.select';
     final completer = Completer<List<ExpedicaoCancelamentoModel>>();
     final responseIn = uuid.v4();
@@ -22,7 +23,9 @@ class CancelamentoRepository {
     final send = SendQuerySocketModel(
       session: socket.id!,
       responseIn: responseIn,
-      where: params,
+      where: queryBuilder.buildSqlWhere(),
+      pagination: queryBuilder.buildPagination(),
+      orderBy: queryBuilder.buildOrderByQuery(),
     );
 
     socket.emit(event, jsonEncode(send.toJson()));

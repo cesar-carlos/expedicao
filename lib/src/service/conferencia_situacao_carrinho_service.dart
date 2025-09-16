@@ -1,9 +1,13 @@
 import 'package:app_expedicao/src/model/expedicao_carrinho_conferir_consulta_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_conferir/conferir_carrinho_consulta_repository.dart';
+import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 
 class ConferenciaSituacaoCarrinhoService {
   final int codEmpresa;
   final int codConferir;
+
+  final conferirCarrinhoConsultaRepository =
+      ConferirCarrinhoConsultaRepository();
 
   ConferenciaSituacaoCarrinhoService({
     required this.codEmpresa,
@@ -12,15 +16,23 @@ class ConferenciaSituacaoCarrinhoService {
 
   Future<ExpedicaoCarrinhoConferirConsultaModel?> consulta(
       int codCarrinho) async {
-    final params = '''
-        codEmpresa = $codEmpresa 
-      AND codConferir = $codConferir 
-      AND codCarrinho = $codCarrinho ''';
+    try {
+      final queryBuilder = QueryBuilder()
+          .equals('CodEmpresa', codEmpresa)
+          .equals('CodConferir', codConferir)
+          .equals('CodCarrinho', codCarrinho);
 
-    final carrinhos = await ConferirCarrinhoConsultaRepository().select(params);
-    if (carrinhos.isEmpty) return null;
+      final carrinhos =
+          await conferirCarrinhoConsultaRepository.select(queryBuilder);
 
-    final carrinho = carrinhos.last;
-    return carrinho;
+      if (carrinhos.isEmpty) {
+        return null;
+      }
+
+      final carrinho = carrinhos.last;
+      return carrinho;
+    } catch (e) {
+      throw Exception('Erro ao consultar situação do carrinho: $e');
+    }
   }
 }

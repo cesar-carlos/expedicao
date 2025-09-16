@@ -5,15 +5,17 @@ import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:app_expedicao/src/app/app_error.dart';
-import 'package:app_expedicao/src/model/send_query_socket_model.dart';
+import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_consulta_model.dart';
+import 'package:app_expedicao/src/model/send_query_socket_model.dart';
 import 'package:app_expedicao/src/app/app_socket_config.dart';
 
 class ConferirConsultaRepository {
   final uuid = const Uuid();
   var socket = Get.find<AppSocketConfig>().socket;
 
-  Future<List<ExpedicaoConferirConsultaModel>> select([String params = '']) {
+  Future<List<ExpedicaoConferirConsultaModel>> select(
+      QueryBuilder queryBuilder) {
     final event = '${socket.id} conferir.consulta';
     final completer = Completer<List<ExpedicaoConferirConsultaModel>>();
     final responseIn = uuid.v4();
@@ -21,7 +23,9 @@ class ConferirConsultaRepository {
     final send = SendQuerySocketModel(
       session: socket.id!,
       responseIn: responseIn,
-      where: params,
+      where: queryBuilder.buildSqlWhere(),
+      pagination: queryBuilder.buildPagination(),
+      orderBy: queryBuilder.buildOrderByQuery(),
     );
 
     socket.emit(event, jsonEncode(send.toJson()));

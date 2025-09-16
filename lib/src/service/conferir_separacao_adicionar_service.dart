@@ -7,10 +7,16 @@ import 'package:app_expedicao/src/repository/expedicao_conferir_item/conferir_it
 import 'package:app_expedicao/src/repository/expedicao_conferir_item/conferir_item_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_conferir/conferir_repository.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_model.dart';
+import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
 
 class ConferirSeparacaoAdicionarService {
+  final conferirRepository = ConferirRepository();
   final ExpedicaoCarrinhoPercursoModel carrinhoPercurso;
+  final conferirItemRepository = ConferirItemRepository();
+
+  final conferirItemConsultaSeparacaoRepository =
+      ConferirItemConsultaSeparacaoRepository();
 
   ConferirSeparacaoAdicionarService(this.carrinhoPercurso);
 
@@ -18,35 +24,39 @@ class ConferirSeparacaoAdicionarService {
     try {
       final itensSeparacaoConsulta = await _findSeparado();
       final conferir = _createConferir(itensSeparacaoConsulta.first);
-      final result = await ConferirRepository().insert(conferir);
+      final result = await conferirRepository.insert(conferir);
 
       final newItensConferir = _createItensConferir(
         result.first,
         itensSeparacaoConsulta,
       );
 
-      await ConferirItemRepository().insertAll(newItensConferir);
+      await conferirItemRepository.insertAll(newItensConferir);
     } catch (e) {
-      rethrow;
+      if (e is AppError) rethrow;
+      throw Exception('Erro ao adicionar conferência de separação: $e');
     }
   }
 
   Future<List<ExpedicaoSeparadoItemConsultaModel>> _findSeparado() async {
     try {
-      final repository = ConferirItemConsultaSeparacaoRepository();
+      final queryBuilder = QueryBuilder()
+          .equals('CodEmpresa', carrinhoPercurso.codEmpresa)
+          .equals('Origem', carrinhoPercurso.origem)
+          .equals('CodSepararEstoque', carrinhoPercurso.codOrigem)
+          .equals('Situacao', ExpedicaoSituacaoModel.separado);
 
-      final params = '''
-        CodEmpresa = ${carrinhoPercurso.codEmpresa}
-      AND Origem = '${carrinhoPercurso.origem}'
-      AND CodSepararEstoque = ${carrinhoPercurso.codOrigem}
-      AND Situacao = '${ExpedicaoSituacaoModel.separado}' ''';
+      final itens =
+          await conferirItemConsultaSeparacaoRepository.select(queryBuilder);
 
-      final itens = await repository.select(params);
-      if (itens.isEmpty) throw AppError('Nenhum item encontrado');
+      if (itens.isEmpty) {
+        throw AppError('Nenhum item encontrado');
+      }
 
       return itens;
     } catch (e) {
-      rethrow;
+      if (e is AppError) rethrow;
+      throw Exception('Erro ao buscar itens separados: $e');
     }
   }
 

@@ -1,18 +1,23 @@
 import 'package:app_expedicao/src/model/expedicao_separacao_item_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_repository.dart';
+import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 
 class SeparacaoConsultaService {
   static Future<List<ExpedicaoSeparacaoItemModel>> getSeparacaoItens({
     required int codEmpresa,
     required int codSepararEstoque,
   }) async {
-    final separacaoItemRepository = SeparacaoItemRepository();
+    try {
+      final separacaoItemRepository = SeparacaoItemRepository();
+      final queryBuilder = QueryBuilder()
+          .equals('CodEmpresa', codEmpresa)
+          .equals('CodSepararEstoque', codSepararEstoque);
 
-    final separacaoItens = await separacaoItemRepository.select(
-      'codEmpresa = $codEmpresa and codSepararEstoque = $codSepararEstoque',
-    );
-
-    return separacaoItens;
+      final separacaoItens = await separacaoItemRepository.select(queryBuilder);
+      return separacaoItens;
+    } catch (e) {
+      throw Exception('Erro ao buscar itens da separação: $e');
+    }
   }
 
   static Future<List<ExpedicaoSeparacaoItemModel>> getSeparacaoItensCarrinho({
@@ -20,13 +25,18 @@ class SeparacaoConsultaService {
     required int codCarrinhoPercurso,
     required String itemCarrinhoPercurso,
   }) async {
-    final separacaoItemRepository = SeparacaoItemRepository();
-    final params = ''' CodEmpresa = $codEmpresa 
-        AND CodCarrinhoPercurso = $codCarrinhoPercurso 
-        AND ItemCarrinhoPercurso = '$itemCarrinhoPercurso' ''';
+    try {
+      final separacaoItemRepository = SeparacaoItemRepository();
+      final queryBuilder = QueryBuilder()
+          .equals('CodEmpresa', codEmpresa)
+          .equals('CodCarrinhoPercurso', codCarrinhoPercurso)
+          .equals('ItemCarrinhoPercurso', itemCarrinhoPercurso);
 
-    final separacaoItens = await separacaoItemRepository.select(params);
-    return separacaoItens;
+      final separacaoItens = await separacaoItemRepository.select(queryBuilder);
+      return separacaoItens;
+    } catch (e) {
+      throw Exception('Erro ao buscar itens do carrinho: $e');
+    }
   }
 
   static Future<List<ExpedicaoSeparacaoItemModel>>
@@ -34,12 +44,16 @@ class SeparacaoConsultaService {
     required int codEmpresa,
     required int codCarrinhoPercurso,
   }) async {
-    final separacaoItemRepository = SeparacaoItemRepository();
+    try {
+      final separacaoItemRepository = SeparacaoItemRepository();
+      final queryBuilder = QueryBuilder()
+          .equals('CodEmpresa', codEmpresa)
+          .equals('CodCarrinhoPercurso', codCarrinhoPercurso);
 
-    final separacaoItens = await separacaoItemRepository.select(
-      'CodEmpresa = $codEmpresa and CodCarrinhoPercurso = $codCarrinhoPercurso',
-    );
-
-    return separacaoItens;
+      final separacaoItens = await separacaoItemRepository.select(queryBuilder);
+      return separacaoItens;
+    } catch (e) {
+      throw Exception('Erro ao buscar itens do percurso do carrinho: $e');
+    }
   }
 }

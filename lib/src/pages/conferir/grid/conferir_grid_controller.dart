@@ -7,6 +7,7 @@ import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_item_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_item_unidade_medida_consulta_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_repository.dart';
+import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 
 class ConferirGridController extends GetxController {
@@ -212,11 +213,13 @@ class ConferirGridController extends GetxController {
     List<ExpedicaoConferirItemConsultaModel> conferirItem = [];
 
     for (var el in _itens) {
-      final separacaoItens = await repository.select('''
-          CodEmpresa = ${el.codEmpresa}
-        AND CodConferirEstoque = ${el.codConferir}
-        AND CodProduto = ${el.codProduto}
-        AND Situacao <> ${ExpedicaoSituacaoModel.cancelada} ''');
+      final queryBuilder = QueryBuilder()
+          .equals('CodEmpresa', el.codEmpresa)
+          .equals('CodConferirEstoque', el.codConferir)
+          .equals('CodProduto', el.codProduto)
+          .notEquals('Situacao', ExpedicaoSituacaoModel.cancelada);
+
+      final separacaoItens = await repository.select(queryBuilder);
 
       if (separacaoItens.isEmpty) {
         conferirItem.add(el.copyWith(quantidadeConferida: 0.00));

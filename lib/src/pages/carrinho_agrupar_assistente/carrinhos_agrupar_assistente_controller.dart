@@ -9,6 +9,7 @@ import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog_gen
 import 'package:app_expedicao/src/pages/carrinho_agrupar_assistente/model/carrinhos_agrupar_assistente_view_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_agrupamento_consulta_model.dart';
 import 'package:app_expedicao/src/pages/common/message_dialog/message_dialog_view.dart';
+import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 
 class CarrinhosAgruparAssistenteController extends GetxController {
   String descricaoCarrinho = '';
@@ -102,15 +103,15 @@ class CarrinhosAgruparAssistenteController extends GetxController {
       context: Get.context!,
       process: () async {
         try {
-          final params = '''
-            CodEmpresa = ${input.codEmpresa}
-              AND Origem = '${input.origem}'
-              AND CodOrigem = ${input.codOrigem} 
-              AND CodigoBarrasCarrinho LIKE '${codigoCarrinho.trim()}' 
-              AND Situacao <> '${ExpedicaoSituacaoModel.cancelada}' ''';
+          final queryBuilder = QueryBuilder()
+              .equals('CodEmpresa', input.codEmpresa)
+              .equals('Origem', input.origem)
+              .equals('CodOrigem', input.codOrigem)
+              .like('CodigoBarrasCarrinho', codigoCarrinho.trim())
+              .notEquals('Situacao', ExpedicaoSituacaoModel.cancelada);
 
-          final result =
-              await CarrinhoPercursoEstagioAgruparService.consulta(params);
+          final result = await CarrinhoPercursoEstagioAgruparService.consulta(
+              queryBuilder);
 
           if (result.isEmpty) return null;
           return result.first;

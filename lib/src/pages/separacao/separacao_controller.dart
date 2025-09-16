@@ -34,7 +34,7 @@ import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
-import 'package:app_expedicao/src/model/send_query_socket_model.dart';
+import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 import 'package:app_expedicao/src/service/cancelamento_service.dart';
 import 'package:app_expedicao/src/service/carrinho_service.dart';
 import 'package:app_expedicao/src/app/app_audio_helper.dart';
@@ -220,12 +220,13 @@ class SeparacaoController extends GetxController {
   }
 
   Future<void> _fillCarrinhoPercurso() async {
-    final params = '''
-        CodEmpresa = ${percursoEstagioConsulta.codEmpresa} 
-      AND CodEmpresa = '${percursoEstagioConsulta.codEmpresa}' 
-      AND CodCarrinhoPercurso = ${percursoEstagioConsulta.codCarrinhoPercurso} ''';
+    final queryBuilder = QueryBuilder()
+        .equals('CodEmpresa', percursoEstagioConsulta.codEmpresa)
+        .equals(
+            'CodCarrinhoPercurso', percursoEstagioConsulta.codCarrinhoPercurso);
 
-    final carrinhosPercurso = await CarrinhoPercursoServices().select(params);
+    final carrinhosPercurso =
+        await CarrinhoPercursoServices().select(queryBuilder);
     if (carrinhosPercurso.isEmpty) return;
     _carrinhoPercurso = carrinhosPercurso.last;
   }
@@ -680,11 +681,11 @@ class SeparacaoController extends GetxController {
       final carrinhoPercursoEstagioServices = CarrinhoPercursoEstagioServices();
       final carrinhoService = CarrinhoService();
 
-      final params = '''
-          CodEmpresa = ${percursoEstagioConsulta.codEmpresa} 
-            AND CodCarrinho = ${percursoEstagioConsulta.codCarrinho} ''';
+      final queryBuilder = QueryBuilder()
+          .equals('CodEmpresa', percursoEstagioConsulta.codEmpresa)
+          .equals('CodCarrinho', percursoEstagioConsulta.codCarrinho);
 
-      final carrinhos = await carrinhoService.select(params);
+      final carrinhos = await carrinhoService.select(queryBuilder);
 
       if (carrinhos.isEmpty) {
         await MessageDialogView.show(
@@ -708,7 +709,7 @@ class SeparacaoController extends GetxController {
       }
 
       final carrinhosPercurso =
-          await carrinhoPercursoEstagioServices.select(params, 2, OrderBy.DESC);
+          await carrinhoPercursoEstagioServices.select(queryBuilder);
 
       if (carrinhosPercurso.isEmpty || carrinhosPercurso.length == 1) {
         await MessageDialogView.show(

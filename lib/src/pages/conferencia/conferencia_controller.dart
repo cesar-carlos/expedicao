@@ -28,6 +28,7 @@ import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 import 'package:app_expedicao/src/service/conferir_consultas_services.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
 import 'package:app_expedicao/src/service/cancelamento_service.dart';
+import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 
 class ConferenciaController extends GetxController {
   bool canClose = true;
@@ -203,12 +204,13 @@ class ConferenciaController extends GetxController {
   }
 
   Future<void> _fillCarrinhoPercurso() async {
-    final params = '''
-            CodEmpresa = ${percursoEstagioConsulta.codEmpresa} 
-          AND CodEmpresa = '${percursoEstagioConsulta.codEmpresa}' 
-          AND CodCarrinhoPercurso = ${percursoEstagioConsulta.codCarrinhoPercurso} ''';
+    final queryBuilder = QueryBuilder()
+        .equals('CodEmpresa', percursoEstagioConsulta.codEmpresa)
+        .equals(
+            'CodCarrinhoPercurso', percursoEstagioConsulta.codCarrinhoPercurso);
 
-    final carrinhosPercurso = await CarrinhoPercursoServices().select(params);
+    final carrinhosPercurso =
+        await CarrinhoPercursoServices().select(queryBuilder);
     if (carrinhosPercurso.isEmpty) return;
     _carrinhoPercurso = carrinhosPercurso.last;
   }

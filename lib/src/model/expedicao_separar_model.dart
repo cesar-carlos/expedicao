@@ -4,6 +4,8 @@ import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
 class ExpedicaoSepararModel {
   final int codEmpresa;
   final int codSepararEstoque;
+  final String origem;
+  final int codOrigem;
   final int codTipoOperacaoExpedicao;
   final String tipoEntidade;
   final int codEntidade;
@@ -24,6 +26,8 @@ class ExpedicaoSepararModel {
   ExpedicaoSepararModel({
     required this.codEmpresa,
     required this.codSepararEstoque,
+    required this.origem,
+    required this.codOrigem,
     required this.codTipoOperacaoExpedicao,
     required this.tipoEntidade,
     required this.codEntidade,
@@ -45,6 +49,8 @@ class ExpedicaoSepararModel {
   ExpedicaoSepararModel copyWith({
     int? codEmpresa,
     int? codSepararEstoque,
+    String? origem,
+    int? codOrigem,
     int? codTipoOperacaoExpedicao,
     String? tipoEntidade,
     int? codEntidade,
@@ -65,6 +71,8 @@ class ExpedicaoSepararModel {
     return ExpedicaoSepararModel(
       codEmpresa: codEmpresa ?? this.codEmpresa,
       codSepararEstoque: codSepararEstoque ?? this.codSepararEstoque,
+      origem: origem ?? this.origem,
+      codOrigem: codOrigem ?? this.codOrigem,
       codTipoOperacaoExpedicao:
           codTipoOperacaoExpedicao ?? this.codTipoOperacaoExpedicao,
       tipoEntidade: tipoEntidade ?? this.tipoEntidade,
@@ -94,6 +102,8 @@ class ExpedicaoSepararModel {
     return ExpedicaoSepararModel(
       codEmpresa: model.codEmpresa,
       codSepararEstoque: model.codSepararEstoque,
+      origem: model.origem,
+      codOrigem: model.codOrigem,
       codTipoOperacaoExpedicao: model.codTipoOperacao,
       tipoEntidade: model.tipoEntidade,
       codEntidade: model.codEntidade,
@@ -112,6 +122,8 @@ class ExpedicaoSepararModel {
       return ExpedicaoSepararModel(
         codEmpresa: json['CodEmpresa'],
         codSepararEstoque: json['CodSepararEstoque'],
+        origem: json['Origem'],
+        codOrigem: json['CodOrigem'],
         codTipoOperacaoExpedicao: json['CodTipoOperacaoExpedicao'],
         tipoEntidade: json['TipoEntidade'],
         codEntidade: json['CodEntidade'],
@@ -139,6 +151,8 @@ class ExpedicaoSepararModel {
     return {
       "CodEmpresa": codEmpresa,
       "CodSepararEstoque": codSepararEstoque,
+      "Origem": origem,
+      "CodOrigem": codOrigem,
       "CodTipoOperacaoExpedicao": codTipoOperacaoExpedicao,
       "TipoEntidade": tipoEntidade,
       "CodEntidade": codEntidade,
@@ -164,6 +178,8 @@ class ExpedicaoSepararModel {
       ExpedicaoSepararModel(
         codEmpresa: $codEmpresa, 
         codSepararEstoque: $codSepararEstoque, 
+        origem: $origem, 
+        codOrigem: $codOrigem, 
         codTipoOperacaoExpedicao: $codTipoOperacaoExpedicao, 
         tipoEntidade: $tipoEntidade, 
         codEntidade: $codEntidade, 

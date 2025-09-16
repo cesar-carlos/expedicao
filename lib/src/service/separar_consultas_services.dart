@@ -11,10 +11,19 @@ import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_cons
 import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_item_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
+import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 
 class SepararConsultaServices {
   final int codEmpresa;
   final int codSepararEstoque;
+
+  final separarConsultaRepository = SepararConsultaRepository();
+  final separarItemConsultaRepository = SepararItemConsultaRepository();
+  final separarItemUnidadeMedidaConsultaRepository =
+      SepararItemUnidadeMedidaConsultaRepository();
+  final separacaoItemConsultaRepository = SeparacaoItemConsultaRepository();
+  final carrinhoPercursoEstagioConsultaRepository =
+      CarrinhoPercursoEstagioConsultaRepository();
 
   SepararConsultaServices({
     required this.codEmpresa,
@@ -22,123 +31,158 @@ class SepararConsultaServices {
   });
 
   Future<ExpedicaoSepararConsultaModel?> separar() async {
-    final params = '''
-        CodEmpresa = $codEmpresa 
-      AND CodSepararEstoque = $codSepararEstoque ''';
+    try {
+      final queryBuilder = QueryBuilder()
+          .equals('CodEmpresa', codEmpresa)
+          .equals('CodSepararEstoque', codSepararEstoque);
 
-    final response = await SepararConsultaRepository().select(params);
-    if (response.isEmpty) {
-      return null;
+      final response = await separarConsultaRepository.select(queryBuilder);
+      if (response.isEmpty) {
+        return null;
+      }
+
+      return response.last;
+    } catch (e) {
+      throw Exception('Erro ao buscar separação: $e');
     }
-
-    return response.last;
   }
 
   Future<List<ExpedicaoSepararItemConsultaModel>> itensSaparar() async {
-    final params = '''
-        CodEmpresa = $codEmpresa 
-      AND CodSepararEstoque = $codSepararEstoque ''';
+    try {
+      final queryBuilder = QueryBuilder()
+          .equals('CodEmpresa', codEmpresa)
+          .equals('CodSepararEstoque', codSepararEstoque);
 
-    return await SepararItemConsultaRepository().select(params);
+      return await separarItemConsultaRepository.select(queryBuilder);
+    } catch (e) {
+      throw Exception('Erro ao buscar itens para separar: $e');
+    }
   }
 
   Future<List<ExpedicaoSepararItemUnidadeMedidaConsultaModel>>
       itensSapararUnidades() async {
-    final params = '''
-        CodEmpresa = $codEmpresa 
-      AND CodSepararEstoque = $codSepararEstoque ''';
+    try {
+      final queryBuilder = QueryBuilder()
+          .equals('CodEmpresa', codEmpresa)
+          .equals('CodSepararEstoque', codSepararEstoque);
 
-    return await SepararItemUnidadeMedidaConsultaRepository().select(params);
+      return await separarItemUnidadeMedidaConsultaRepository
+          .select(queryBuilder);
+    } catch (e) {
+      throw Exception('Erro ao buscar unidades de medida dos itens: $e');
+    }
   }
 
   Future<List<ExpedicaSeparacaoItemConsultaModel>> itensSeparacao() async {
-    final params = '''
-        CodEmpresa = $codEmpresa 
-      AND CodSepararEstoque = $codSepararEstoque ''';
+    try {
+      final queryBuilder = QueryBuilder()
+          .equals('CodEmpresa', codEmpresa)
+          .equals('CodSepararEstoque', codSepararEstoque);
 
-    return await SeparacaoItemConsultaRepository().select(params);
+      return await separacaoItemConsultaRepository.select(queryBuilder);
+    } catch (e) {
+      throw Exception('Erro ao buscar itens de separação: $e');
+    }
   }
 
   Future<List<ExpedicaSeparacaoItemConsultaModel>> itensCarrinho(
       int codCarrinho) async {
-    final itensSeparacao = await this.itensSeparacao();
+    try {
+      final itensSeparacaoList = await itensSeparacao();
 
-    return itensSeparacao.where((el) {
-      return el.codCarrinho == codCarrinho;
-    }).toList();
+      return itensSeparacaoList
+          .where((el) => el.codCarrinho == codCarrinho)
+          .toList();
+    } catch (e) {
+      throw Exception('Erro ao buscar itens do carrinho: $e');
+    }
   }
 
   Future<List<ExpedicaoCarrinhoPercursoEstagioConsultaModel>>
       carrinhosPercurso() async {
-    final params = '''
-      CodEmpresa = $codEmpresa 
-        AND Origem = '${ExpedicaoOrigemModel.separacao}' 
-        AND CodOrigem = $codSepararEstoque  ''';
+    try {
+      final queryBuilder = QueryBuilder()
+          .equals('CodEmpresa', codEmpresa)
+          .equals('Origem', ExpedicaoOrigemModel.separacao)
+          .equals('CodOrigem', codSepararEstoque);
 
-    return await CarrinhoPercursoEstagioConsultaRepository().select(params);
+      return await carrinhoPercursoEstagioConsultaRepository
+          .select(queryBuilder);
+    } catch (e) {
+      throw Exception('Erro ao buscar carrinhos do percurso: $e');
+    }
   }
 
   Future<bool> isComplete() async {
-    final itensSaparar = await this.itensSaparar();
-    return itensSaparar.every((el) => el.quantidade == el.quantidadeSeparacao);
+    try {
+      final itensSapararList = await itensSaparar();
+      return itensSapararList
+          .every((el) => el.quantidade == el.quantidadeSeparacao);
+    } catch (e) {
+      throw Exception('Erro ao verificar se separação está completa: $e');
+    }
   }
 
   Future<bool> cartIsValid(int codCarrinho) async {
-    final itensSaparar = await this.itensSaparar();
-    final itensSeparacao = await this.itensSeparacao();
+    try {
+      final itensSapararList = await itensSaparar();
+      final itensSeparacaoList = await itensSeparacao();
 
-    //ITENS SEPARADOS
-    final itensSeparados = itensSeparacao.where((el) {
-      return el.situacao != ExpedicaoItemSituacaoModel.cancelado;
-    }).toList();
+      final itensSeparados = itensSeparacaoList
+          .where((el) => el.situacao != ExpedicaoItemSituacaoModel.cancelado)
+          .toList();
 
-    final itensSeparadosGroup = itensSeparados.map((el) {
-      return (codProduto: el.codProduto, total: 0.00);
-    }).toSet();
+      final itensSeparadosGroup = itensSeparados
+          .map((el) => (codProduto: el.codProduto, total: 0.00))
+          .toSet();
 
-    final itensSeparadoGroupTotais = itensSeparadosGroup.map((element) {
-      final soma = itensSeparados.where((el) {
-        return el.codProduto == element.codProduto;
-      }).fold(0.00, (prev, el) => prev + el.quantidade);
+      final itensSeparadoGroupTotais = itensSeparadosGroup.map((element) {
+        final soma = itensSeparados
+            .where((el) => el.codProduto == element.codProduto)
+            .fold(0.00, (prev, el) => prev + el.quantidade);
 
-      return (codProduto: element.codProduto, total: soma);
-    }).toList();
+        return (codProduto: element.codProduto, total: soma);
+      }).toList();
 
-    //ITENS SEPARAR
-    final itensSapararGroup = itensSaparar.map((el) {
-      return (codProduto: el.codProduto, total: 0.00);
-    }).toSet();
+      final itensSapararGroup = itensSapararList
+          .map((el) => (codProduto: el.codProduto, total: 0.00))
+          .toSet();
 
-    final itensSapararGroupTotais = itensSapararGroup.map((element) {
-      final soma = itensSaparar.where((el) {
-        return el.codProduto == element.codProduto;
-      }).fold(0.00, (prev, el) => prev + el.quantidade);
+      final itensSapararGroupTotais = itensSapararGroup.map((element) {
+        final soma = itensSapararList
+            .where((el) => el.codProduto == element.codProduto)
+            .fold(0.00, (prev, el) => prev + el.quantidade);
 
-      return (codProduto: element.codProduto, total: soma);
-    }).toList();
+        return (codProduto: element.codProduto, total: soma);
+      }).toList();
 
-    for (var el in itensSapararGroupTotais) {
-      final totalSeparado = itensSeparadoGroupTotais
-          .firstWhere((element) => element.codProduto == el.codProduto,
-              orElse: () => (codProduto: el.codProduto, total: 0.00))
-          .total;
+      for (var el in itensSapararGroupTotais) {
+        final totalSeparado = itensSeparadoGroupTotais
+            .firstWhere((element) => element.codProduto == el.codProduto,
+                orElse: () => (codProduto: el.codProduto, total: 0.00))
+            .total;
 
-      if (totalSeparado > el.total) {
-        return false;
+        if (totalSeparado > el.total) {
+          return false;
+        }
       }
-    }
 
-    return true;
+      return true;
+    } catch (e) {
+      throw Exception('Erro ao validar carrinho: $e');
+    }
   }
 
   Future<bool> existsOpenCart() async {
-    final carrinhosPercurso = await this.carrinhosPercurso();
+    try {
+      final carrinhosPercursoList = await carrinhosPercurso();
 
-    final carrinhosEmAndamento = carrinhosPercurso.where((el) {
-      return el.situacao == ExpedicaoSituacaoModel.separando;
-    });
+      final carrinhosEmAndamento = carrinhosPercursoList
+          .where((el) => el.situacao == ExpedicaoSituacaoModel.separando);
 
-    if (carrinhosEmAndamento.isEmpty) return false;
-    return true;
+      return carrinhosEmAndamento.isNotEmpty;
+    } catch (e) {
+      throw Exception('Erro ao verificar se existe carrinho aberto: $e');
+    }
   }
 }

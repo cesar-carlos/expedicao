@@ -4,16 +4,17 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
-import 'package:app_expedicao/src/model/send_query_socket_model.dart';
-import 'package:app_expedicao/src/model/estoque_produto_consulta_model.dart';
-import 'package:app_expedicao/src/app/app_socket_config.dart';
 import 'package:app_expedicao/src/app/app_error.dart';
+import 'package:app_expedicao/src/model/pagination/query_builder.dart';
+import 'package:app_expedicao/src/model/estoque_produto_consulta_model.dart';
+import 'package:app_expedicao/src/model/send_query_socket_model.dart';
+import 'package:app_expedicao/src/app/app_socket_config.dart';
 
 class EstoqueProdutoConsultaRepository {
   final uuid = const Uuid();
   var socket = Get.find<AppSocketConfig>().socket;
 
-  Future<List<EstoqueProdutoConsultaModel>> select([String params = '']) {
+  Future<List<EstoqueProdutoConsultaModel>> select(QueryBuilder queryBuilder) {
     final event = '${socket.id} estoque.produto.consulta';
     final completer = Completer<List<EstoqueProdutoConsultaModel>>();
     final responseIn = uuid.v4();
@@ -21,7 +22,9 @@ class EstoqueProdutoConsultaRepository {
     final send = SendQuerySocketModel(
       session: socket.id!,
       responseIn: responseIn,
-      where: params,
+      where: queryBuilder.buildSqlWhere(),
+      pagination: queryBuilder.buildPagination(),
+      orderBy: queryBuilder.buildOrderByQuery(),
     );
 
     try {

@@ -15,6 +15,7 @@ import 'package:app_expedicao/src/pages/common/carrinho_dialog/model/carrinho_di
 import 'package:app_expedicao/src/model/expedicao_carrinho_consulta_model.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/app/app_event_state.dart';
+import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 
 class CarrinhoController extends GetxController {
   Uuid uuid = const Uuid();
@@ -78,12 +79,12 @@ class CarrinhoController extends GetxController {
         ExpedicaoCarrinhoConsultaModel? carrinhoConsulta,
         AppDialog? dialog
       })?> getCarrinho(String codigoBarras) async {
-    final params = '''
-        CodEmpresa = ${_processoExecutavel.codEmpresa} 
-      AND CodigoBarras = '$codigoBarras' ''';
+    final queryBuilder = QueryBuilder()
+        .equals('CodEmpresa', _processoExecutavel.codEmpresa)
+        .equals('CodigoBarras', codigoBarras);
 
     final List<ExpedicaoCarrinhoConsultaModel> carrinhos =
-        await repotory.select(params);
+        await repotory.select(queryBuilder);
 
     if (carrinhos.isEmpty) {
       final appDialog = AppDialog(

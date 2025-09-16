@@ -1,10 +1,10 @@
-// import 'package:app_expedicao/src/model/expedicao_conferir_item_model.dart';
-// import 'package:app_expedicao/src/repository/expedicao_conferir_item/conferir_item_consulta_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_conferencia_item/conferencia_item_repository.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferencia_item_model.dart';
+import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 
 class ConferenciaRemoverItemService {
+  final conferenciaItemRepository = ConferenciaItemRepository();
   final ExpedicaoCarrinhoPercursoEstagioConsultaModel percursoEstagioConsulta;
 
   ConferenciaRemoverItemService({
@@ -12,57 +12,66 @@ class ConferenciaRemoverItemService {
   });
 
   Future<void> remove({required String item}) async {
-    final params = '''
-        CodEmpresa = ${percursoEstagioConsulta.codEmpresa}
-      AND CodConferir = ${percursoEstagioConsulta.codOrigem}
-      AND Item = '$item' ''';
+    try {
+      final queryBuilder = QueryBuilder()
+          .equals('CodEmpresa', percursoEstagioConsulta.codEmpresa)
+          .equals('CodConferir', percursoEstagioConsulta.codOrigem)
+          .equals('Item', item);
 
-    final repository = ConferenciaItemRepository();
-    final response = await repository.select(params);
+      final response = await conferenciaItemRepository.select(queryBuilder);
 
-    for (var el in response) {
-      await repository.delete(el);
+      for (var el in response) {
+        await conferenciaItemRepository.delete(el);
+      }
+    } catch (e) {
+      throw Exception('Erro ao remover item da conferência: $e');
     }
   }
 
   Future<void> removeAll() async {
-    final conferenciaItens = await _getConferenciaItens();
-    ConferenciaItemRepository().deleteAll(conferenciaItens);
+    try {
+      final conferenciaItens = await _getConferenciaItens();
+      await conferenciaItemRepository.deleteAll(conferenciaItens);
+    } catch (e) {
+      throw Exception('Erro ao remover todos os itens da conferência: $e');
+    }
   }
 
   Future<void> removeAllItensCart() async {
-    final conferenciaItens = await _getConferenciaItensCarrinho();
-    await ConferenciaItemRepository().deleteAll(conferenciaItens);
+    try {
+      final conferenciaItens = await _getConferenciaItensCarrinho();
+      await conferenciaItemRepository.deleteAll(conferenciaItens);
+    } catch (e) {
+      throw Exception(
+          'Erro ao remover todos os itens do carrinho da conferência: $e');
+    }
   }
-
-  // Future<List<ExpedicaoConferirItemModel>> _getConferirItensCarrinho() async {
-  //   final params = '''
-  //       CodEmpresa = ${percursoEstagioConsulta.codEmpresa}
-  //     AND CodConferir = ${percursoEstagioConsulta.codOrigem}
-  //     AND CodCarrinho = '${percursoEstagioConsulta.codCarrinho}' ''';
-
-  //   final itens = await ConferirItemConsultaRepository().select(params);
-  //   return itens
-  //       .map((el) => ExpedicaoConferirItemModel.fromConsulta(el))
-  //       .toList();
-  // }
 
   Future<List<ExpedicaoConferenciaItemModel>>
       _getConferenciaItensCarrinho() async {
-    final params = '''
-        CodEmpresa = ${percursoEstagioConsulta.codEmpresa}
-      AND CodConferir = ${percursoEstagioConsulta.codOrigem}
-      AND CodCarrinhoPercurso = ${percursoEstagioConsulta.codCarrinhoPercurso}  
-      AND ItemCarrinhoPercurso = '${percursoEstagioConsulta.item}' ''';
+    try {
+      final queryBuilder = QueryBuilder()
+          .equals('CodEmpresa', percursoEstagioConsulta.codEmpresa)
+          .equals('CodConferir', percursoEstagioConsulta.codOrigem)
+          .equals('CodCarrinhoPercurso',
+              percursoEstagioConsulta.codCarrinhoPercurso)
+          .equals('ItemCarrinhoPercurso', percursoEstagioConsulta.item);
 
-    return await ConferenciaItemRepository().select(params);
+      return await conferenciaItemRepository.select(queryBuilder);
+    } catch (e) {
+      throw Exception('Erro ao buscar itens de conferência do carrinho: $e');
+    }
   }
 
   Future<List<ExpedicaoConferenciaItemModel>> _getConferenciaItens() async {
-    final params = '''
-        CodEmpresa = ${percursoEstagioConsulta.codEmpresa}
-      AND CodConferir = ${percursoEstagioConsulta.codOrigem} ''';
+    try {
+      final queryBuilder = QueryBuilder()
+          .equals('CodEmpresa', percursoEstagioConsulta.codEmpresa)
+          .equals('CodConferir', percursoEstagioConsulta.codOrigem);
 
-    return await ConferenciaItemRepository().select(params);
+      return await conferenciaItemRepository.select(queryBuilder);
+    } catch (e) {
+      throw Exception('Erro ao buscar itens de conferência: $e');
+    }
   }
 }

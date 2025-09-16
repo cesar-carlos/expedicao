@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:app_expedicao/src/app/app_error.dart';
+import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 import 'package:app_expedicao/src/model/send_query_socket_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_item_unidade_medida_consulta_model.dart';
 import 'package:app_expedicao/src/app/app_socket_config.dart';
@@ -14,7 +15,7 @@ class SepararItemUnidadeMedidaConsultaRepository {
   var socket = Get.find<AppSocketConfig>().socket;
 
   Future<List<ExpedicaoSepararItemUnidadeMedidaConsultaModel>> select(
-      [String params = '']) {
+      QueryBuilder queryBuilder) {
     final event = '${socket.id} separar.item.unidade.medida.consulta';
     final completer =
         Completer<List<ExpedicaoSepararItemUnidadeMedidaConsultaModel>>();
@@ -23,7 +24,9 @@ class SepararItemUnidadeMedidaConsultaRepository {
     final send = SendQuerySocketModel(
       session: socket.id!,
       responseIn: responseIn,
-      where: params,
+      where: queryBuilder.buildSqlWhere(),
+      pagination: queryBuilder.buildPagination(),
+      orderBy: queryBuilder.buildOrderByQuery(),
     );
 
     socket.emit(event, jsonEncode(send.toJson()));

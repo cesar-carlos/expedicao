@@ -10,12 +10,13 @@ import 'package:app_expedicao/src/model/send_mutations_socket_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separacao_item_model.dart';
 import 'package:app_expedicao/src/model/send_mutation_socket_model.dart';
 import 'package:app_expedicao/src/model/send_query_socket_model.dart';
+import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 
 class SeparacaoItemRepository {
   final uuid = const Uuid();
   final socket = Get.find<AppSocketConfig>().socket;
 
-  Future<List<ExpedicaoSeparacaoItemModel>> select([String params = '']) {
+  Future<List<ExpedicaoSeparacaoItemModel>> select(QueryBuilder queryBuilder) {
     final event = '${socket.id} separacao.item.select';
     final completer = Completer<List<ExpedicaoSeparacaoItemModel>>();
     final responseIn = uuid.v4();
@@ -23,7 +24,9 @@ class SeparacaoItemRepository {
     final send = SendQuerySocketModel(
       session: socket.id!,
       responseIn: responseIn,
-      where: params,
+      where: queryBuilder.buildSqlWhere(),
+      pagination: queryBuilder.buildPagination(),
+      orderBy: queryBuilder.buildOrderByQuery(),
     );
 
     socket.emit(event, jsonEncode(send.toJson()));

@@ -7,66 +7,93 @@ import 'package:app_expedicao/src/service/expedicao_percurso_adicionar_service.d
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_model.dart';
 import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
+import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 
 class SepararServices {
   final ExpedicaoSepararModel separar;
   final separacaoItemRepository = SeparacaoItemRepository();
+  final carrinhoPercursoRepository = CarrinhoPercursoRepository();
+  final separarRepository = SepararRepository();
 
   SepararServices(this.separar);
 
   Future<void> iniciar() async {
-    final existsPercurso = await _existsPercurso();
-    if (!existsPercurso) await _iniciarPercurso();
+    try {
+      final existsPercurso = await _existsPercurso();
 
-    final newSeparar = separar.copyWith(
-      situacao: ExpedicaoSituacaoModel.separando,
-    );
+      if (!existsPercurso) {
+        await _iniciarPercurso();
+      }
 
-    await SepararRepository().update(newSeparar);
+      final newSeparar = separar.copyWith(
+        situacao: ExpedicaoSituacaoModel.separando,
+      );
+
+      await separarRepository.update(newSeparar);
+    } catch (e) {
+      throw Exception('Erro ao iniciar separação: $e');
+    }
   }
 
   Future<List<ExpedicaoSeparacaoItemModel>> separacaoItem() async {
-    final params = '''
-        CodEmpresa = ${separar.codEmpresa} 
-      AND CodSepararEstoque = ${separar.codSepararEstoque} 
-      AND Situacao = '${ExpedicaoItemSituacaoModel.separado}' ''';
+    try {
+      final queryBuilder = QueryBuilder()
+          .equals('CodEmpresa', separar.codEmpresa)
+          .equals('CodSepararEstoque', separar.codSepararEstoque)
+          .equals('Situacao', ExpedicaoItemSituacaoModel.separado);
 
-    return await separacaoItemRepository.select(params);
+      return await separacaoItemRepository.select(queryBuilder);
+    } catch (e) {
+      throw Exception('Erro ao buscar itens de separação: $e');
+    }
   }
 
   Future<void> pausa() async {
-    throw UnimplementedError();
+    throw UnimplementedError('Método pausa ainda não implementado');
   }
 
   Future<void> retomar() async {
-    throw UnimplementedError();
+    throw UnimplementedError('Método retomar ainda não implementado');
   }
 
   Future<void> finalizar() async {
-    throw UnimplementedError();
+    throw UnimplementedError('Método finalizar ainda não implementado');
   }
 
   static Future<void> atualizar(ExpedicaoSepararModel separar) async {
-    await SepararRepository().update(separar);
+    try {
+      await SepararRepository().update(separar);
+    } catch (e) {
+      throw Exception('Erro ao atualizar separação: $e');
+    }
   }
 
   Future<bool> _existsPercurso() async {
-    final params = '''
-        CodEmpresa = ${separar.codEmpresa} 
-      AND Origem = '${ExpedicaoOrigemModel.separacao}' 
-      AND CodOrigem = ${separar.codSepararEstoque} 
-      AND Situacao <> '${ExpedicaoSituacaoModel.cancelada}' ''';
+    try {
+      final queryBuilder = QueryBuilder()
+          .equals('CodEmpresa', separar.codEmpresa)
+          .equals('Origem', ExpedicaoOrigemModel.separacao)
+          .equals('CodOrigem', separar.codSepararEstoque)
+          .notEquals('Situacao', ExpedicaoSituacaoModel.cancelada);
 
-    final carrinhoPercurso = await CarrinhoPercursoRepository().select(params);
-    return carrinhoPercurso.isNotEmpty;
+      final carrinhoPercurso =
+          await carrinhoPercursoRepository.select(queryBuilder);
+      return carrinhoPercurso.isNotEmpty;
+    } catch (e) {
+      throw Exception('Erro ao verificar percurso existente: $e');
+    }
   }
 
   Future<void> _iniciarPercurso() async {
-    await ExpedicaoPercursoAdicionarService(
-      codEmpresa: separar.codEmpresa,
-      origem: ExpedicaoOrigemModel.separacao,
-      codOrigem: separar.codSepararEstoque,
-      situacao: ExpedicaoSituacaoModel.emSeparacao,
-    ).execute();
+    try {
+      await ExpedicaoPercursoAdicionarService(
+        codEmpresa: separar.codEmpresa,
+        origem: ExpedicaoOrigemModel.separacao,
+        codOrigem: separar.codSepararEstoque,
+        situacao: ExpedicaoSituacaoModel.emSeparacao,
+      ).execute();
+    } catch (e) {
+      throw Exception('Erro ao iniciar percurso: $e');
+    }
   }
 }

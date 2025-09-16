@@ -32,6 +32,7 @@ import 'package:app_expedicao/src/service/conferir_consultas_services.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_model.dart';
+import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 
 class ConferirController extends GetxController {
   bool _iniciada = false;
@@ -156,12 +157,13 @@ class ConferirController extends GetxController {
   }
 
   Future<void> _fillCarrinhoPercurso() async {
-    final params = '''
-        CodEmpresa = ${_conferirConsulta.codEmpresa}
-      AND Origem = '${_conferirConsulta.origem}'
-      AND CodOrigem = ${_conferirConsulta.codOrigem} ''';
+    final queryBuilder = QueryBuilder()
+        .equals('CodEmpresa', _conferirConsulta.codEmpresa)
+        .equals('Origem', _conferirConsulta.origem)
+        .equals('CodOrigem', _conferirConsulta.codOrigem);
 
-    final carrinhoPercursos = await CarrinhoPercursoServices().select(params);
+    final carrinhoPercursos =
+        await CarrinhoPercursoServices().select(queryBuilder);
 
     if (carrinhoPercursos.isNotEmpty) {
       _carrinhoPercurso = carrinhoPercursos.first;

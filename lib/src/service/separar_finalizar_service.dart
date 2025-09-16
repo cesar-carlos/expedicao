@@ -8,11 +8,15 @@ import 'package:app_expedicao/src/service/conferir_separacao_adicionar_service.d
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
+import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 import 'package:app_expedicao/src/app/app_error.dart';
 
 class SepararFinalizarService {
   final ExpedicaoSepararConsultaModel separarConsulta;
   final ExpedicaoCarrinhoPercursoModel carrinhoPercurso;
+  final carrinhoPercursoRepository = CarrinhoPercursoRepository();
+  final tipoOperacaoRepository = TipoOperacaoRepository();
+  final separarRepository = SepararRepository();
 
   SepararFinalizarService({
     required this.separarConsulta,
@@ -21,26 +25,23 @@ class SepararFinalizarService {
 
   Future<void> execute() async {
     try {
-      final separarRepository = SepararRepository();
-      final carrinhoPercursoRepository = CarrinhoPercursoRepository();
-
       final tipoOperacao = await _getTipoOperacao(
-        this.separarConsulta.codEmpresa,
-        this.separarConsulta.codTipoOperacao,
+        separarConsulta.codEmpresa,
+        separarConsulta.codTipoOperacao,
       );
 
       final separar = await _getSeparar(
-        this.separarConsulta.codEmpresa,
-        this.separarConsulta.codSepararEstoque,
+        separarConsulta.codEmpresa,
+        separarConsulta.codSepararEstoque,
       );
 
       final newSeparar = separar.copyWith(
         situacao: ExpedicaoSituacaoModel.separado,
       );
 
-      final newCarrinhoPercurso = this.carrinhoPercurso.copyWith(
-            situacao: ExpedicaoSituacaoModel.separado,
-          );
+      final newCarrinhoPercurso = carrinhoPercurso.copyWith(
+        situacao: ExpedicaoSituacaoModel.separado,
+      );
 
       await separarRepository.update(newSeparar);
       await carrinhoPercursoRepository.update(newCarrinhoPercurso);
@@ -54,37 +55,47 @@ class SepararFinalizarService {
         await _addArmazenar(newCarrinhoPercurso);
       }
     } catch (e) {
-      rethrow;
+      throw Exception('Erro ao finalizar separação: $e');
     }
   }
 
   Future<ExpedicaoSepararModel> _getSeparar(
       int codEmpresa, int codSepararEstoque) async {
     try {
-      final models = await SepararRepository().select('''
-            CodEmpresa = $codEmpresa
-          AND CodSepararEstoque = $codSepararEstoque ''');
+      final queryBuilder = QueryBuilder()
+          .equals('CodEmpresa', codEmpresa)
+          .equals('CodSepararEstoque', codSepararEstoque);
 
-      if (models.isEmpty) throw AppError('Separar não encontrado');
+      final models = await separarRepository.select(queryBuilder);
+
+      if (models.isEmpty) {
+        throw AppError('Separar não encontrado');
+      }
+
       return models.first;
     } catch (e) {
-      rethrow;
+      if (e is AppError) rethrow;
+      throw Exception('Erro ao buscar separação: $e');
     }
   }
 
   Future<ExpedicaoTipoOperacaoModel> _getTipoOperacao(
       int codEmpresa, int codTipoOperacaoExpedicao) async {
     try {
-      final repository = TipoOperacaoRepository();
-      final models = await repository.select('''
-          CodEmpresa = $codEmpresa
-            AND CodTipoOperacaoExpedicao = $codTipoOperacaoExpedicao ''');
+      final queryBuilder = QueryBuilder()
+          .equals('CodEmpresa', codEmpresa)
+          .equals('CodTipoOperacaoExpedicao', codTipoOperacaoExpedicao);
 
-      if (models.isEmpty) throw AppError('Tipo de operação não encontrado');
+      final models = await tipoOperacaoRepository.select(queryBuilder);
+
+      if (models.isEmpty) {
+        throw AppError('Tipo de operação não encontrado');
+      }
 
       return models.first;
     } catch (e) {
-      rethrow;
+      if (e is AppError) rethrow;
+      throw Exception('Erro ao buscar tipo de operação: $e');
     }
   }
 
@@ -92,7 +103,7 @@ class SepararFinalizarService {
     try {
       await ConferirSeparacaoAdicionarService(model).execute();
     } catch (e) {
-      rethrow;
+      throw Exception('Erro ao criar conferência: $e');
     }
   }
 
@@ -100,7 +111,7 @@ class SepararFinalizarService {
     try {
       await ArmazenarSeparacaoAdicionarService(model).execute();
     } catch (e) {
-      rethrow;
+      throw Exception('Erro ao criar armazenamento: $e');
     }
   }
 }

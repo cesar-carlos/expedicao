@@ -1,8 +1,6 @@
 import 'dart:async';
-
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
-
 import 'package:app_expedicao/src/model/usuario_consulta.dart';
 import 'package:app_expedicao/src/service/carrinho_service.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
@@ -26,6 +24,7 @@ import 'package:app_expedicao/src/service/separar_consultas_services.dart';
 import 'package:app_expedicao/src/pages/separar/separar_controller.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/pages/separacao/separacao_page.dart';
+import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 
 class SeparadoCarrinhosController extends GetxController {
   late ProcessoExecutavelModel _processoExecutavel;
@@ -120,18 +119,23 @@ class SeparadoCarrinhosController extends GetxController {
         context: Get.context!,
         process: () async {
           try {
-            final carrinho = await CarrinhoService().select(
-              '''CodEmpresa = ${item.codEmpresa} 
-                  AND CodCarrinho = ${item.codCarrinho} ''',
-            );
+            final carrinhoQueryBuilder = QueryBuilder()
+                .equals('CodEmpresa', item.codEmpresa)
+                .equals('CodCarrinho', item.codCarrinho);
+
+            final carrinho =
+                await CarrinhoService().select(carrinhoQueryBuilder);
+
+            final carrinhosPercursoEstagioQueryBuilder = QueryBuilder()
+                .equals('CodEmpresa', item.codEmpresa)
+                .equals('CodCarrinhoPercurso', item.codCarrinhoPercurso)
+                .equals('CodPercursoEstagio', item.codPercursoEstagio)
+                .equals('CodCarrinho', item.codCarrinho)
+                .equals('Item', item.item);
 
             final carrinhosPercursoEstagio =
-                await CarrinhoPercursoEstagioServices().select('''
-                  CodEmpresa = ${item.codEmpresa}
-                AND CodCarrinhoPercurso = ${item.codCarrinhoPercurso}
-                AND CodPercursoEstagio = ${item.codPercursoEstagio}
-                AND CodCarrinho = ${item.codCarrinho}
-                AND Item = ${item.item} ''');
+                await CarrinhoPercursoEstagioServices()
+                    .select(carrinhosPercursoEstagioQueryBuilder);
 
             if (carrinho.isEmpty || carrinhosPercursoEstagio.isEmpty) {
               await MessageDialogView.show(
@@ -204,16 +208,20 @@ class SeparadoCarrinhosController extends GetxController {
         ].contains(item.situacao) ||
         _separarConsulta.situacao == ExpedicaoSituacaoModel.cancelada;
 
-    final carrinho = await CarrinhoService().select('''
-            CodEmpresa = ${item.codEmpresa} 
-          AND CodCarrinho = ${item.codCarrinho} ''');
+    final carrinhoQueryBuilder = QueryBuilder()
+        .equals('CodEmpresa', item.codEmpresa)
+        .equals('CodCarrinho', item.codCarrinho);
 
-    final carrinhosPercursoEstagio =
-        await CarrinhoPercursoEstagioServices().select('''
-              CodEmpresa = ${item.codEmpresa}
-            AND CodCarrinhoPercurso = ${item.codCarrinhoPercurso}
-            AND CodCarrinho = ${item.codCarrinho}
-            AND Item = ${item.item} ''');
+    final carrinho = await CarrinhoService().select(carrinhoQueryBuilder);
+
+    final carrinhosPercursoEstagioQueryBuilder = QueryBuilder()
+        .equals('CodEmpresa', item.codEmpresa)
+        .equals('CodCarrinhoPercurso', item.codCarrinhoPercurso)
+        .equals('CodCarrinho', item.codCarrinho)
+        .equals('Item', item.item);
+
+    final carrinhosPercursoEstagio = await CarrinhoPercursoEstagioServices()
+        .select(carrinhosPercursoEstagioQueryBuilder);
 
     if (carrinho.isEmpty || carrinhosPercursoEstagio.isEmpty) {
       await MessageDialogView.show(
@@ -333,16 +341,22 @@ class SeparadoCarrinhosController extends GetxController {
               return false;
             }
 
-            final carrinho = await CarrinhoService().select('''
-                    CodEmpresa = ${item.codEmpresa} 
-                  AND CodCarrinho = ${item.codCarrinho} ''');
+            final carrinhoQueryBuilder = QueryBuilder()
+                .equals('CodEmpresa', item.codEmpresa)
+                .equals('CodCarrinho', item.codCarrinho);
+
+            final carrinho =
+                await CarrinhoService().select(carrinhoQueryBuilder);
+
+            final carrinhosPercursoEstagioQueryBuilder = QueryBuilder()
+                .equals('CodEmpresa', item.codEmpresa)
+                .equals('CodCarrinhoPercurso', item.codCarrinhoPercurso)
+                .equals('CodCarrinho', item.codCarrinho)
+                .equals('Item', item.item);
 
             final carrinhosPercursoEstagio =
-                await CarrinhoPercursoEstagioServices().select('''
-                    CodEmpresa = ${item.codEmpresa}
-                  AND CodCarrinhoPercurso = ${item.codCarrinhoPercurso}
-                  AND CodCarrinho = ${item.codCarrinho}
-                  AND Item = ${item.item} ''');
+                await CarrinhoPercursoEstagioServices()
+                    .select(carrinhosPercursoEstagioQueryBuilder);
 
             if (carrinho.isEmpty || carrinhosPercursoEstagio.isEmpty) {
               await MessageDialogView.show(

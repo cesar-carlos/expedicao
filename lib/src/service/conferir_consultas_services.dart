@@ -12,10 +12,25 @@ import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_cons
 import 'package:app_expedicao/src/model/expedicao_conferencia_item_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_item_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
+import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 
 class ConferirConsultaServices {
   final int codEmpresa;
   final int codConferir;
+
+  final conferirConsultaRepository = ConferirConsultaRepository();
+
+  final conferirCarrinhoConsultaRepository =
+      ConferirCarrinhoConsultaRepository();
+
+  final conferirItemConsultaRepository = ConferirItemConsultaRepository();
+
+  final conferirItemUnidadeMedidaConsultaRepository =
+      ConferirItemUnidadeMedidaConsultaRepository();
+
+  final conferenciaItemConsultaRepository = ConferenciaItemConsultaRepository();
+  final carrinhoPercursoEstagioConsultaRepository =
+      CarrinhoPercursoEstagioConsultaRepository();
 
   ConferirConsultaServices({
     required this.codEmpresa,
@@ -23,99 +38,152 @@ class ConferirConsultaServices {
   });
 
   Future<ExpedicaoConferirConsultaModel?> conferir() async {
-    final params = '''
-        CodEmpresa = $codEmpresa 
-      AND CodConferir = $codConferir ''';
+    try {
+      final queryBuilder = QueryBuilder()
+          .equals('CodEmpresa', codEmpresa)
+          .equals('CodConferir', codConferir);
 
-    final response = await ConferirConsultaRepository().select(params);
-    if (response.isEmpty) {
-      return null;
+      final response = await conferirConsultaRepository.select(queryBuilder);
+
+      if (response.isEmpty) {
+        return null;
+      }
+
+      return response.first;
+    } catch (e) {
+      throw Exception('Erro ao buscar conferência: $e');
     }
-
-    return response.first;
   }
 
   Future<List<ExpedicaoCarrinhoConferirConsultaModel>>
       carrinhosConferir() async {
-    final params = '''
-        CodEmpresa = $codEmpresa 
-      AND CodConferir = $codConferir ''';
+    try {
+      final queryBuilder = QueryBuilder()
+          .equals('CodEmpresa', codEmpresa)
+          .equals('CodConferir', codConferir);
 
-    final response = await ConferirCarrinhoConsultaRepository().select(params);
-    return response;
+      final response =
+          await conferirCarrinhoConsultaRepository.select(queryBuilder);
+      return response;
+    } catch (e) {
+      throw Exception('Erro ao buscar carrinhos de conferência: $e');
+    }
   }
 
   Future<ExpedicaoCarrinhoConferirConsultaModel> carrinhoConferir(
       int codCarrinho) async {
-    final params = '''
-        CodEmpresa = $codEmpresa 
-      AND CodConferir = $codConferir 
-      AND CodCarrinho = $codCarrinho ''';
+    try {
+      final queryBuilder = QueryBuilder()
+          .equals('CodEmpresa', codEmpresa)
+          .equals('CodConferir', codConferir)
+          .equals('CodCarrinho', codCarrinho);
 
-    final response = await ConferirCarrinhoConsultaRepository().select(params);
-    return response.first;
+      final response =
+          await conferirCarrinhoConsultaRepository.select(queryBuilder);
+
+      if (response.isEmpty) {
+        throw Exception('Carrinho não encontrado');
+      }
+
+      return response.first;
+    } catch (e) {
+      if (e is Exception && e.toString().contains('não encontrado')) {
+        rethrow;
+      }
+      throw Exception('Erro ao buscar carrinho de conferência: $e');
+    }
   }
 
   Future<List<ExpedicaoConferirItemConsultaModel>> itensConferir() async {
-    final params = '''
-        CodEmpresa = $codEmpresa 
-      AND CodConferir = $codConferir ''';
+    try {
+      final queryBuilder = QueryBuilder()
+          .equals('CodEmpresa', codEmpresa)
+          .equals('CodConferir', codConferir);
 
-    return await ConferirItemConsultaRepository().select(params);
+      return await conferirItemConsultaRepository.select(queryBuilder);
+    } catch (e) {
+      throw Exception('Erro ao buscar itens de conferência: $e');
+    }
   }
 
   Future<List<ExpedicaoConferirItemUnidadeMedidaConsultaModel>>
       itensConferirUnidades() async {
-    final params = '''
-        CodEmpresa = $codEmpresa 
-      AND CodConferir = $codConferir ''';
+    try {
+      final queryBuilder = QueryBuilder()
+          .equals('CodEmpresa', codEmpresa)
+          .equals('CodConferir', codConferir);
 
-    return await ConferirItemUnidadeMedidaConsultaRepository().select(params);
+      return await conferirItemUnidadeMedidaConsultaRepository
+          .select(queryBuilder);
+    } catch (e) {
+      throw Exception('Erro ao buscar itens de conferência com unidades: $e');
+    }
   }
 
   Future<List<ExpedicaConferenciaItemConsultaModel>> itensConferencia() async {
-    final params = '''
-        CodEmpresa = $codEmpresa 
-      AND CodConferir = $codConferir ''';
+    try {
+      final queryBuilder = QueryBuilder()
+          .equals('CodEmpresa', codEmpresa)
+          .equals('CodConferir', codConferir);
 
-    final result = await ConferenciaItemConsultaRepository().select(params);
-    return result;
+      final result =
+          await conferenciaItemConsultaRepository.select(queryBuilder);
+      return result;
+    } catch (e) {
+      throw Exception('Erro ao buscar itens de conferência: $e');
+    }
   }
 
   Future<List<ExpedicaoCarrinhoPercursoEstagioConsultaModel>>
       carrinhosPercurso() async {
-    final params = '''
-        CodEmpresa = $codEmpresa 
-          AND Origem = '${ExpedicaoOrigemModel.conferencia}' 
-          AND CodOrigem = $codConferir  ''';
+    try {
+      final queryBuilder = QueryBuilder()
+          .equals('CodEmpresa', codEmpresa)
+          .equals('Origem', ExpedicaoOrigemModel.conferencia)
+          .equals('CodOrigem', codConferir);
 
-    final result =
-        await CarrinhoPercursoEstagioConsultaRepository().select(params);
-    return result;
+      final result =
+          await carrinhoPercursoEstagioConsultaRepository.select(queryBuilder);
+      return result;
+    } catch (e) {
+      throw Exception('Erro ao buscar carrinhos de percurso: $e');
+    }
   }
 
   Future<List<ExpedicaConferenciaItemConsultaModel>> itensCarrinho(
       int codCarrinho) async {
-    final itensConferencia = await this.itensConferencia();
+    try {
+      final itensConferenciaList = await itensConferencia();
 
-    return itensConferencia.where((el) {
-      return el.codCarrinho == codCarrinho;
-    }).toList();
+      return itensConferenciaList.where((el) {
+        return el.codCarrinho == codCarrinho;
+      }).toList();
+    } catch (e) {
+      throw Exception('Erro ao buscar itens do carrinho: $e');
+    }
   }
 
   Future<bool> isComplete() async {
-    final itensConferir = await this.itensConferir();
-    return itensConferir.every((el) => el.quantidade == el.quantidadeConferida);
+    try {
+      final itensConferirList = await itensConferir();
+      return itensConferirList
+          .every((el) => el.quantidade == el.quantidadeConferida);
+    } catch (e) {
+      throw Exception('Erro ao verificar completude da conferência: $e');
+    }
   }
 
   Future<bool> existsOpenCart() async {
-    final carrinhosPercurso = await this.carrinhosPercurso();
+    try {
+      final carrinhosPercursoList = await carrinhosPercurso();
 
-    final carrinhosConferindo = carrinhosPercurso.where((el) {
-      return el.situacao == ExpedicaoSituacaoModel.conferindo;
-    });
+      final carrinhosConferindo = carrinhosPercursoList.where((el) {
+        return el.situacao == ExpedicaoSituacaoModel.conferindo;
+      });
 
-    if (carrinhosConferindo.isEmpty) return false;
-    return true;
+      return carrinhosConferindo.isNotEmpty;
+    } catch (e) {
+      throw Exception('Erro ao verificar carrinhos abertos: $e');
+    }
   }
 }
