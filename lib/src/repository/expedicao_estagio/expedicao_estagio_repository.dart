@@ -16,7 +16,7 @@ class ExpedicaoEstagioRepository {
   var socket = Get.find<AppSocketConfig>().socket;
 
   Future<List<ExpedicaoEstagioModel>> select(QueryBuilder queryBuilder) {
-    final event = '${socket.id} expedicao.estagio.select';
+    final event = '${socket.id} expedicao.percurso.estagio.select';
     final completer = Completer<List<ExpedicaoEstagioModel>>();
     final responseIn = uuid.v4();
 
@@ -54,7 +54,7 @@ class ExpedicaoEstagioRepository {
   }
 
   Future<List<ExpedicaoEstagioModel>> insert(ExpedicaoEstagioModel entity) {
-    final event = '${socket.id} expedicao.estagio.insert';
+    final event = '${socket.id} expedicao.percurso.estagio.insert';
     final completer = Completer<List<ExpedicaoEstagioModel>>();
     final responseIn = uuid.v4();
 
@@ -89,7 +89,7 @@ class ExpedicaoEstagioRepository {
   }
 
   Future<List<ExpedicaoEstagioModel>> update(ExpedicaoEstagioModel entity) {
-    final event = '${socket.id} expedicao.estagio.update';
+    final event = '${socket.id} expedicao.percurso.estagio.update';
     final completer = Completer<List<ExpedicaoEstagioModel>>();
     final responseIn = uuid.v4();
 
@@ -125,7 +125,7 @@ class ExpedicaoEstagioRepository {
   }
 
   Future<List<ExpedicaoEstagioModel>> delete(ExpedicaoEstagioModel entity) {
-    final event = '${socket.id} expedicao.estagio.delete';
+    final event = '${socket.id} expedicao.percurso.estagio.delete';
     final completer = Completer<List<ExpedicaoEstagioModel>>();
     final responseIn = uuid.v4();
 

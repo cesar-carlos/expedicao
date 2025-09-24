@@ -16,7 +16,7 @@ class CancelamentoRepository {
   var socket = Get.find<AppSocketConfig>().socket;
 
   Future<List<ExpedicaoCancelamentoModel>> select(QueryBuilder queryBuilder) {
-    final event = '${socket.id} cancelamento.select';
+    final event = '${socket.id} expedicao.cancelamento.select';
     final completer = Completer<List<ExpedicaoCancelamentoModel>>();
     final responseIn = uuid.v4();
 
@@ -55,7 +55,7 @@ class CancelamentoRepository {
 
   Future<List<ExpedicaoCancelamentoModel>> insert(
       ExpedicaoCancelamentoModel entity) {
-    final event = '${socket.id} cancelamento.insert';
+    final event = '${socket.id} expedicao.cancelamento.insert';
     final completer = Completer<List<ExpedicaoCancelamentoModel>>();
     final responseIn = uuid.v4();
 
@@ -92,7 +92,7 @@ class CancelamentoRepository {
 
   Future<List<ExpedicaoCancelamentoModel>> update(
       ExpedicaoCancelamentoModel entity) {
-    final event = '${socket.id} cancelamento.update';
+    final event = '${socket.id} expedicao.cancelamento.update';
     final completer = Completer<List<ExpedicaoCancelamentoModel>>();
     final responseIn = uuid.v4();
 
@@ -129,7 +129,7 @@ class CancelamentoRepository {
 
   Future<List<ExpedicaoCancelamentoModel>> delete(
       ExpedicaoCancelamentoModel entity) {
-    final event = '${socket.id} cancelamento.delete';
+    final event = '${socket.id} expedicao.cancelamento.delete';
     final completer = Completer<List<ExpedicaoCancelamentoModel>>();
     final responseIn = uuid.v4();
 

@@ -52,7 +52,7 @@ class CancelamentoEventRepository implements EventContract {
   }
 
   void _onInsert() {
-    const event = 'cancelamento.insert.listen';
+    const event = 'expedicao.cancelamento.insert.listen';
     _appSocket.socket.on(event, (data) {
       _listener
           .where((element) => element.event == Event.insert)
@@ -69,7 +69,7 @@ class CancelamentoEventRepository implements EventContract {
   }
 
   void _onUpdate() {
-    const event = 'cancelamento.update.listen';
+    const event = 'expedicao.cancelamento.update.listen';
     _appSocket.socket.on(event, (data) {
       _listener
           .where((element) => element.event == Event.update)
@@ -86,7 +86,7 @@ class CancelamentoEventRepository implements EventContract {
   }
 
   void _onDelete() {
-    const event = 'cancelamento.delete.listen';
+    const event = 'expedicao.cancelamento.delete.listen';
     _appSocket.socket.on(event, (data) {
       _listener
           .where((element) => element.event == Event.delete)
