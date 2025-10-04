@@ -1,4 +1,5 @@
 import 'package:app_expedicao/src/model/expedicao_separar_model.dart';
+import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 import 'package:app_expedicao/src/model/expedicao_tipo_operacao_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_separar/separar_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_repository.dart';
@@ -8,7 +9,6 @@ import 'package:app_expedicao/src/service/conferir_separacao_adicionar_service.d
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
-import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 import 'package:app_expedicao/src/app/app_error.dart';
 
 class SepararFinalizarService {
@@ -25,10 +25,11 @@ class SepararFinalizarService {
 
   Future<void> execute() async {
     try {
-      final tipoOperacao = await _getTipoOperacao(
-        separarConsulta.codEmpresa,
-        separarConsulta.codTipoOperacao,
-      );
+      //TODO: REVER CONFIGURAÇÃO
+      //final tipoOperacao = await _getTipoOperacao(
+      //  separarConsulta.codEmpresa,
+      //  separarConsulta.codTipoOperacao,
+      //);
 
       final separar = await _getSeparar(
         separarConsulta.codEmpresa,
@@ -46,14 +47,14 @@ class SepararFinalizarService {
       await separarRepository.update(newSeparar);
       await carrinhoPercursoRepository.update(newCarrinhoPercurso);
 
-      if (tipoOperacao.fazerConferencia == 'S') {
-        await _addConferir(newCarrinhoPercurso);
-      }
+      //if (tipoOperacao.fazerConferencia == 'S') {
+      //  await _addConferir(newCarrinhoPercurso);
+      //}
 
-      if (tipoOperacao.fazerConferencia == 'N' &&
-          tipoOperacao.fazerArmazenamento == 'S') {
-        await _addArmazenar(newCarrinhoPercurso);
-      }
+      // if (tipoOperacao.fazerConferencia == 'N' &&
+      //     tipoOperacao.fazerArmazenamento == 'S') {
+      //   await _addArmazenar(newCarrinhoPercurso);
+      // }
     } catch (e) {
       throw Exception('Erro ao finalizar separação: $e');
     }

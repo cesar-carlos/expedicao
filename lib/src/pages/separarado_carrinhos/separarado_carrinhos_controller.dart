@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
+
 import 'package:app_expedicao/src/model/usuario_consulta.dart';
 import 'package:app_expedicao/src/service/carrinho_service.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
@@ -405,13 +406,14 @@ class SeparadoCarrinhosController extends GetxController {
 
             _separadoCarrinhoGridController
                 .updateGrid(newCarrinhoPercursoConsulta);
+
             _separadoCarrinhoGridController.update();
 
             final isComplete = await _separarConsultaServices.isComplete();
             final existsOpenCart =
                 await _separarConsultaServices.existsOpenCart();
 
-            //FINALIZAR CONFERENCIA AUTOMATICAMENTE
+            //FINALIZAR SEPARAÇÃO AUTOMATICAMENTE
             if (isComplete && !existsOpenCart) {
               final separarController = Get.find<SepararController>();
               await separarController.finalizarSeparacao();

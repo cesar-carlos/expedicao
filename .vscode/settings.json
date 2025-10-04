@@ -16,5 +16,6 @@
     "statusBar.border": "#A47551"
   },
   "debug.toolBarLocation": "commandCenter",
-  "cmake.sourceDirectory": "D:/Developer/Data7/Expedicao/Flutter/app_expedicao/linux"
+  "cmake.sourceDirectory": "D:/Developer/Data7/Expedicao/Flutter/app_expedicao/linux",
+  "postman.settings.dotenv-detection-notification-visibility": false
 }
