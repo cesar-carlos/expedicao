@@ -75,11 +75,6 @@ class SepararEventRepository implements EventContract {
           .where((element) => element.event == Event.update)
           .forEach((element) {
         final basicEvent = _convert(data);
-
-        if (basicEvent.session == _appSocket.socket.id && !element.allEvent) {
-          return;
-        }
-
         element.callback(basicEvent);
       });
     });

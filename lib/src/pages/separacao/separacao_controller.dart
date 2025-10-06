@@ -49,7 +49,7 @@ class SeparacaoController extends GetxController {
 
   // ignore: unused_field
   ExpedicaoCarrinhoPercursoModel? _carrinhoPercurso;
-  final ExpedicaoCarrinhoPercursoEstagioConsultaModel percursoEstagioConsulta;
+  late ExpedicaoCarrinhoPercursoEstagioConsultaModel percursoEstagioConsulta;
   final List<RepositoryEventListenerModel> _pageListerner = [];
 
   late ProcessoExecutavelModel _processoExecutavel;
@@ -83,6 +83,11 @@ class SeparacaoController extends GetxController {
 
   String get displaySituacao {
     return percursoEstagioConsulta.situacao;
+  }
+
+  set setSituacao(String situacao) {
+    percursoEstagioConsulta.situacao = situacao;
+    indicator.value = colorIndicator;
   }
 
   Color get colorIndicator {
@@ -828,6 +833,7 @@ class SeparacaoController extends GetxController {
     const uuid = Uuid();
     final carrinhoPercursoEvent =
         CarrinhoPercursoEstagioEventRepository.instancia;
+
     final separacaoItemEvent = SeparacaoItemEventRepository.instancia;
     final separarEvent = SepararEventRepository.instancia;
 
@@ -839,22 +845,26 @@ class SeparacaoController extends GetxController {
           final itemConsulta =
               ExpedicaoCarrinhoPercursoEstagioConsultaModel.fromJson(el);
 
+          this.setSituacao = itemConsulta.situacao;
+
           if (itemConsulta.codEmpresa == percursoEstagioConsulta.codEmpresa &&
               itemConsulta.codCarrinhoPercurso ==
                   percursoEstagioConsulta.codCarrinhoPercurso &&
               itemConsulta.item == percursoEstagioConsulta.item) {
-            if (itemConsulta.situacao == ExpedicaoSituacaoModel.separando) {
+            if (itemConsulta.situacao == ExpedicaoSituacaoModel.separado) {
+              _viewMode.value = true;
+
               await MessageDialogView.show(
                 context: Get.context!,
                 message: 'Carrinho finalizado!',
                 detail:
-                    'Carrinho finalizado pelo usuario ${itemConsulta.nomeUsuarioFinalizacao}!',
+                    'finalizado pelo usuario ${itemConsulta.nomeUsuarioFinalizacao}!',
               );
-
-              _viewMode.value = true;
             }
 
             if (itemConsulta.situacao == ExpedicaoSituacaoModel.cancelada) {
+              _viewMode.value = true;
+
               final cancelamentos =
                   await CancelamentoService().selectOrigemWithItem(
                 codEmpresa: itemConsulta.codEmpresa,
@@ -870,7 +880,9 @@ class SeparacaoController extends GetxController {
                   detail:
                       'Cancelado pelo usuario: ${cancelamentos.nomeUsuarioCancelamento}!',
                 );
-              } else {
+              }
+
+              if (cancelamentos == null) {
                 await MessageDialogView.show(
                   context: Get.context!,
                   message: 'Carrinho cancelado!',
@@ -878,8 +890,6 @@ class SeparacaoController extends GetxController {
                       'O carrinho cancelado. Não possivel identificar usuario cancelamento!',
                 );
               }
-
-              _viewMode.value = true;
             }
 
             update();

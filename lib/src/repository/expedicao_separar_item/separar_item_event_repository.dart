@@ -69,7 +69,7 @@ class SepararItemEventRepository implements EventContract {
   }
 
   void _onUpdate() {
-    const event = 'separar.item.update.listen';
+    const event = 'separar.item.consulta.update.listen';
     _appSocket.socket.on(event, (data) {
       _listener
           .where((element) => element.event == Event.update)

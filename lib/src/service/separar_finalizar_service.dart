@@ -80,7 +80,7 @@ class SepararFinalizarService {
     }
   }
 
-  Future<ExpedicaoTipoOperacaoModel> _getTipoOperacao(
+  Future<ExpedicaoTipoOperacaoModel> getTipoOperacao(
       int codEmpresa, int codTipoOperacaoExpedicao) async {
     try {
       final queryBuilder = QueryBuilder()
@@ -100,7 +100,7 @@ class SepararFinalizarService {
     }
   }
 
-  Future<void> _addConferir(ExpedicaoCarrinhoPercursoModel model) async {
+  Future<void> addConferir(ExpedicaoCarrinhoPercursoModel model) async {
     try {
       await ConferirSeparacaoAdicionarService(model).execute();
     } catch (e) {
@@ -108,7 +108,7 @@ class SepararFinalizarService {
     }
   }
 
-  Future<void> _addArmazenar(ExpedicaoCarrinhoPercursoModel model) async {
+  Future<void> addArmazenar(ExpedicaoCarrinhoPercursoModel model) async {
     try {
       await ArmazenarSeparacaoAdicionarService(model).execute();
     } catch (e) {

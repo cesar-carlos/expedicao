@@ -22,7 +22,6 @@ import 'package:app_expedicao/src/pages/separar/grid/separar_grid_controller.dar
 import 'package:app_expedicao/src/service/separacao_cancelar_item_service.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
 import 'package:app_expedicao/src/service/separar_consultas_services.dart';
-import 'package:app_expedicao/src/pages/separar/separar_controller.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/pages/separacao/separacao_page.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';

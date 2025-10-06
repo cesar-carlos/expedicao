@@ -7,7 +7,7 @@ class ExpedicaoCarrinhoPercursoEstagioConsultaModel {
   final int codPercursoEstagio;
   final String origem;
   final int codOrigem;
-  final String situacao;
+  String situacao;
   final String carrinhoAgrupador;
   final int? codCarrinhoAgrupador;
   final int codCarrinho;
