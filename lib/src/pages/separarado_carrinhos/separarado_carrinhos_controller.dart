@@ -409,16 +409,16 @@ class SeparadoCarrinhosController extends GetxController {
 
             _separadoCarrinhoGridController.update();
 
-            final isComplete = await _separarConsultaServices.isComplete();
-            final existsOpenCart =
-                await _separarConsultaServices.existsOpenCart();
-
             //FINALIZAR SEPARAÇÃO AUTOMATICAMENTE
-            if (isComplete && !existsOpenCart) {
-              final separarController = Get.find<SepararController>();
-              await separarController.finalizarSeparacao();
-              await Future.delayed(Duration(seconds: 1));
-            }
+            //final isComplete = await _separarConsultaServices.isComplete();
+            //final existsOpenCart =
+            //await _separarConsultaServices.existsOpenCart();
+
+            //if (isComplete && !existsOpenCart) {
+            //  final separarController = Get.find<SepararController>();
+            //  await separarController.finalizarSeparacao();
+            //  await Future.delayed(Duration(seconds: 1));
+            //}
 
             return true;
           } catch (err) {
