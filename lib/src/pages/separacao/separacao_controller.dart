@@ -845,12 +845,22 @@ class SeparacaoController extends GetxController {
           final itemConsulta =
               ExpedicaoCarrinhoPercursoEstagioConsultaModel.fromJson(el);
 
+          if (itemConsulta.codEmpresa !=
+                  this.percursoEstagioConsulta.codEmpresa ||
+              itemConsulta.codCarrinhoPercurso !=
+                  this.percursoEstagioConsulta.codCarrinhoPercurso ||
+              itemConsulta.item != this.percursoEstagioConsulta.item) {
+            return;
+          }
+
+          print('entrou');
           this.setSituacao = itemConsulta.situacao;
 
-          if (itemConsulta.codEmpresa == percursoEstagioConsulta.codEmpresa &&
+          if (itemConsulta.codEmpresa ==
+                  this.percursoEstagioConsulta.codEmpresa &&
               itemConsulta.codCarrinhoPercurso ==
-                  percursoEstagioConsulta.codCarrinhoPercurso &&
-              itemConsulta.item == percursoEstagioConsulta.item) {
+                  this.percursoEstagioConsulta.codCarrinhoPercurso &&
+              itemConsulta.item == this.percursoEstagioConsulta.item) {
             if (itemConsulta.situacao == ExpedicaoSituacaoModel.separado) {
               _viewMode.value = true;
 

@@ -607,6 +607,13 @@ class ConferenciaController extends GetxController {
           final itemConsulta =
               ExpedicaoCarrinhoPercursoEstagioConsultaModel.fromJson(el);
 
+          if (itemConsulta.codEmpresa != percursoEstagioConsulta.codEmpresa ||
+              itemConsulta.codCarrinhoPercurso !=
+                  percursoEstagioConsulta.codCarrinhoPercurso ||
+              itemConsulta.item != percursoEstagioConsulta.item) {
+            return;
+          }
+
           if (itemConsulta.codEmpresa == percursoEstagioConsulta.codEmpresa &&
               itemConsulta.codCarrinho == percursoEstagioConsulta.codCarrinho &&
               itemConsulta.situacao == ExpedicaoSituacaoModel.cancelada) {
