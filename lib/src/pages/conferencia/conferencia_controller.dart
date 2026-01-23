@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
@@ -40,6 +42,8 @@ class ConferenciaController extends GetxController {
   ExpedicaoCarrinhoPercursoModel? _carrinhoPercurso;
   final ExpedicaoCarrinhoPercursoEstagioConsultaModel percursoEstagioConsulta;
   final List<RepositoryEventListenerModel> _pageListerner = [];
+
+  StreamSubscription<String>? _changeListListenWorker;
 
   late ConferirGridController _conferirGridController;
   late ConferenciaCarrinhoGridController _conferenciaGridController;
@@ -131,27 +135,37 @@ class ConferenciaController extends GetxController {
     _listenFocusNode();
     _liteners();
 
-    _conferirGridController.changeListListen.listen((event) {
+    _changeListListenWorker = _conferirGridController.changeListListen.listen((event) {
       update();
     });
   }
 
   @override
   void onClose() {
+    // Cancelar o listener antes de deletar o controller
+    _changeListListenWorker?.cancel();
+
+    // Remover listeners de eventos
+    _removeliteners();
+
+    // Fechar RxBool
+    _viewMode.close();
+
+    // Dispose dos controllers e focus nodes
     scanController.dispose();
     quantidadeController.dispose();
     quantidadeFocusNode.dispose();
     displayController.dispose();
     scanFocusNode.dispose();
+    formFocusNode.dispose();
 
-    Get.delete<ConferenciaController>();
+    // Deletar controllers do GetX (isso já chama onClose() automaticamente)
     Get.delete<ConferirGridController>();
     Get.delete<ConferenciaCarrinhoGridController>();
-    Get.find<AppEventState>()..canCloseWindow = true;
-    _conferirGridController.dispose();
+    Get.delete<ConferenciaController>();
 
-    _removeliteners();
-    _viewMode.close();
+    Get.find<AppEventState>()..canCloseWindow = true;
+
     super.onClose();
   }
 
