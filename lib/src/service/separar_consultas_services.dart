@@ -125,25 +125,37 @@ class SepararConsultaServices {
 
   Future<bool> cartIsValid(int codCarrinho) async {
     try {
-      final itensSapararList = await itensSaparar();
-      final itensSeparacaoList = await itensSeparacao();
-
-      final itensSeparados = itensSeparacaoList
+      // Busca apenas os itens separados do carrinho específico
+      final itensSeparacaoCarrinho = await itensCarrinho(codCarrinho);
+      
+      // Filtra apenas itens não cancelados do carrinho
+      final itensSeparadosCarrinho = itensSeparacaoCarrinho
           .where((el) => el.situacao != ExpedicaoItemSituacaoModel.cancelado)
           .toList();
 
-      final itensSeparadosGroup = itensSeparados
+      // Se o carrinho não tem itens, não precisa validar
+      if (itensSeparadosCarrinho.isEmpty) {
+        return true;
+      }
+
+      // Busca os itens a separar (gerais da separação)
+      final itensSapararList = await itensSaparar();
+
+      // Agrupa itens separados do carrinho por produto e soma quantidades
+      final itensSeparadosCarrinhoGroup = itensSeparadosCarrinho
           .map((el) => (codProduto: el.codProduto, total: 0.00))
           .toSet();
 
-      final itensSeparadoGroupTotais = itensSeparadosGroup.map((element) {
-        final soma = itensSeparados
+      final itensSeparadoCarrinhoGroupTotais =
+          itensSeparadosCarrinhoGroup.map((element) {
+        final soma = itensSeparadosCarrinho
             .where((el) => el.codProduto == element.codProduto)
             .fold(0.00, (prev, el) => prev + el.quantidade);
 
         return (codProduto: element.codProduto, total: soma);
       }).toList();
 
+      // Agrupa itens a separar por produto e soma quantidades
       final itensSapararGroup = itensSapararList
           .map((el) => (codProduto: el.codProduto, total: 0.00))
           .toSet();
@@ -156,13 +168,17 @@ class SepararConsultaServices {
         return (codProduto: element.codProduto, total: soma);
       }).toList();
 
-      for (var el in itensSapararGroupTotais) {
-        final totalSeparado = itensSeparadoGroupTotais
-            .firstWhere((element) => element.codProduto == el.codProduto,
-                orElse: () => (codProduto: el.codProduto, total: 0.00))
+      // Valida cada produto do carrinho
+      for (var itemCarrinho in itensSeparadoCarrinhoGroupTotais) {
+        // Busca a quantidade total a separar para este produto
+        final quantidadeASeparar = itensSapararGroupTotais
+            .firstWhere(
+                (element) => element.codProduto == itemCarrinho.codProduto,
+                orElse: () => (codProduto: itemCarrinho.codProduto, total: 0.00))
             .total;
 
-        if (totalSeparado > el.total) {
+        // Se a quantidade separada no carrinho exceder a quantidade total a separar, está inválido
+        if (itemCarrinho.total > quantidadeASeparar) {
           return false;
         }
       }

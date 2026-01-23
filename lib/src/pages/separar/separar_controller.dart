@@ -498,6 +498,32 @@ class SepararController extends GetxController {
       return;
     }
 
+    // Valida quantidade de todos os carrinhos antes de finalizar
+    final carrinhosPercurso = await _separarConsultaServices.carrinhosPercurso();
+    final carrinhosParaValidar = carrinhosPercurso
+        .where((el) => el.situacao != ExpedicaoSituacaoModel.cancelada)
+        .toList();
+
+    for (var carrinho in carrinhosParaValidar) {
+      final cartIsValid =
+          await _separarConsultaServices.cartIsValid(carrinho.codCarrinho);
+
+      if (!cartIsValid) {
+        final itens = await _separarConsultaServices.itensSaparar();
+        _separarGridController.updateAllGrid(itens);
+        _separarGridController.update();
+
+        await MessageDialogView.show(
+          context: Get.context!,
+          message: 'Separação não pode ser finalizada!',
+          detail:
+              'Carrinho "${carrinho.nomeCarrinho}" (${carrinho.codCarrinho}) possui quantidade separada maior que a quantidade a separar. Verifique e corrija antes de finalizar.',
+        );
+
+        return;
+      }
+    }
+
     final bool? confirmation = await ConfirmationDialogView.show(
       context: Get.context!,
       message: 'Deseja realmente finalizar?',
