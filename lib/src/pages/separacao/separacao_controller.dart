@@ -679,7 +679,7 @@ class SeparacaoController extends GetxController {
     final confirmation = await ConfirmationDialogView.show(
       context: Get.context!,
       message: 'Deseja realmente recuperar?',
-      detail: 'O sistema localiza os itens do ultimo carrinho cancelado!',
+      detail: 'O sistema localiza os itens do penúltimo carrinho cancelado!',
     );
 
     if (confirmation != null && confirmation) {
@@ -716,7 +716,7 @@ class SeparacaoController extends GetxController {
       final carrinhosPercurso =
           await carrinhoPercursoEstagioServices.select(queryBuilder);
 
-      if (carrinhosPercurso.isEmpty || carrinhosPercurso.length == 1) {
+      if (carrinhosPercurso.isEmpty || carrinhosPercurso.length < 2) {
         await MessageDialogView.show(
           context: Get.context!,
           message: 'Carrinho não encontrado.',
@@ -726,17 +726,6 @@ class SeparacaoController extends GetxController {
         return;
       }
 
-      if (carrinhosPercurso.length == 1) {
-        await MessageDialogView.show(
-          context: Get.context!,
-          message: 'Carrinho não encontrado.',
-          detail: 'Verifique. Carrinho nunca esteve em percurso anteriores!.',
-        );
-
-        return;
-      }
-
-      //final lastCarrinhosPercurso = carrinhosPercurso.last;
       final penultimoCarrinhoPercurso =
           carrinhosPercurso[carrinhosPercurso.length - 2];
 
@@ -745,7 +734,7 @@ class SeparacaoController extends GetxController {
         await MessageDialogView.show(
           context: Get.context!,
           message: 'Carrinho não cancelado!',
-          detail: 'Carrinho não esta foi cancelado, na separação .',
+          detail: 'Carrinho não foi cancelado na separação.',
         );
 
         return;
