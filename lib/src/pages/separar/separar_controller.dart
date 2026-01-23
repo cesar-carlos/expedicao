@@ -345,7 +345,7 @@ class SepararController extends GetxController {
         return;
       }
 
-      final carrinhoPercuro = carrinhosPercurso.first;
+      final carrinhoPercuro = carrinhosPercurso.last;
 
       if (carrinhoPercuro.situacao != ExpedicaoSituacaoModel.cancelada &&
           carrinhoPercuro.situacao != ExpedicaoOrigemModel.separacao) {

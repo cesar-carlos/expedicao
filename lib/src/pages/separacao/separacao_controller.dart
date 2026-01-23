@@ -726,9 +726,22 @@ class SeparacaoController extends GetxController {
         return;
       }
 
-      final lastCarrinhosPercurso = carrinhosPercurso.last;
+      if (carrinhosPercurso.length == 1) {
+        await MessageDialogView.show(
+          context: Get.context!,
+          message: 'Carrinho não encontrado.',
+          detail: 'Verifique. Carrinho nunca esteve em percurso anteriores!.',
+        );
 
-      if (lastCarrinhosPercurso.situacao != ExpedicaoSituacaoModel.cancelada) {
+        return;
+      }
+
+      //final lastCarrinhosPercurso = carrinhosPercurso.last;
+      final penultimoCarrinhoPercurso =
+          carrinhosPercurso[carrinhosPercurso.length - 2];
+
+      if (penultimoCarrinhoPercurso.situacao !=
+          ExpedicaoSituacaoModel.cancelada) {
         await MessageDialogView.show(
           context: Get.context!,
           message: 'Carrinho não cancelado!',
@@ -738,7 +751,7 @@ class SeparacaoController extends GetxController {
         return;
       }
 
-      if (lastCarrinhosPercurso.origem != ExpedicaoOrigemModel.separacao) {
+      if (penultimoCarrinhoPercurso.origem != ExpedicaoOrigemModel.separacao) {
         await MessageDialogView.show(
           context: Get.context!,
           message: 'Origem não é separação!',
@@ -750,9 +763,9 @@ class SeparacaoController extends GetxController {
 
       final separacaoItens =
           await SeparacaoConsultaService.getSeparacaoItensCarrinho(
-        codEmpresa: lastCarrinhosPercurso.codEmpresa,
-        codCarrinhoPercurso: lastCarrinhosPercurso.codCarrinhoPercurso,
-        itemCarrinhoPercurso: lastCarrinhosPercurso.item,
+        codEmpresa: penultimoCarrinhoPercurso.codEmpresa,
+        codCarrinhoPercurso: penultimoCarrinhoPercurso.codCarrinhoPercurso,
+        itemCarrinhoPercurso: penultimoCarrinhoPercurso.item,
       );
 
       if (separacaoItens.isEmpty) {
