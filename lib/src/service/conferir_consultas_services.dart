@@ -111,7 +111,8 @@ class ConferirConsultaServices {
     try {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', codEmpresa)
-          .equals('CodConferir', codConferir);
+          .equals('CodConferir', codConferir)
+          .paginate(limit: 2500);
 
       return await conferirItemUnidadeMedidaConsultaRepository
           .select(queryBuilder);

@@ -3,13 +3,30 @@ class Pagination {
   final int offset;
   final int page;
 
-  const Pagination({
+  const Pagination._({
     required this.limit,
     required this.offset,
     required this.page,
   });
 
-  static Pagination create({int limit = 50, int offset = 0, int page = 1}) {
+  factory Pagination({
+    required int limit,
+    int? offset,
+    required int page,
+  }) {
+    final normalizedLimit = limit < 1 ? 1 : limit;
+    final normalizedPage = page < 1 ? 1 : page;
+    final resolvedOffset = offset ?? ((normalizedPage - 1) * normalizedLimit);
+    final normalizedOffset = resolvedOffset < 0 ? 0 : resolvedOffset;
+
+    return Pagination._(
+      limit: normalizedLimit,
+      offset: normalizedOffset,
+      page: normalizedPage,
+    );
+  }
+
+  static Pagination create({int limit = 50, int? offset, int page = 1}) {
     return Pagination(limit: limit, offset: offset, page: page);
   }
 
