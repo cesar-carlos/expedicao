@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:app_expedicao/src/pages/common/form_element/button_form_element.dart';
 import 'package:app_expedicao/src/pages/common/message_dialog/message_dialog_controller.dart';
 import 'package:app_expedicao/src/app/app_event_state.dart';
+import 'package:app_expedicao/src/app/app_raw_keyboard.dart';
 
 class MessageDialogView {
   static const double _widthForm = 370;
@@ -20,13 +21,13 @@ class MessageDialogView {
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        final _appEventState = Get.find<AppEventState>();
-        _appEventState.canCloseWindow = canCloseWindow;
+        final appEventState = Get.find<AppEventState>();
+        appEventState.canCloseWindow = canCloseWindow;
 
         return GetBuilder<MessageDialogController>(
           init: MessageDialogController(),
           builder: (MessageDialogController controller) {
-            return RawKeyboardListener(
+            return AppKeyboardListener(
               focusNode: controller.formFocusNode,
               onKey: controller.handleKeyEvent,
               child: Dialog(

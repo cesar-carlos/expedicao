@@ -6,6 +6,7 @@ import 'package:app_expedicao/src/pages/common/form_element/button_form_element.
 import 'package:app_expedicao/src/pages/common/observacao_dialog/observacao_dialog_controller.dart';
 import 'package:app_expedicao/src/pages/common/observacao_dialog/model/observacao_dialog_view_model.dart';
 import 'package:app_expedicao/src/pages/common/form_element/bar_head_form_element.dart';
+import 'package:app_expedicao/src/app/app_raw_keyboard.dart';
 
 class ObservacaoDialogView {
   static const double _barHeadHeight = 30;
@@ -21,13 +22,13 @@ class ObservacaoDialogView {
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        final _appEventState = Get.find<AppEventState>();
-        _appEventState.canCloseWindow = canCloseWindow;
+        final appEventState = Get.find<AppEventState>();
+        appEventState.canCloseWindow = canCloseWindow;
 
         return GetBuilder<ObservacaoDialogController>(
           init: ObservacaoDialogController(viewModel),
           builder: (ObservacaoDialogController controller) {
-            return RawKeyboardListener(
+            return AppKeyboardListener(
               focusNode: controller.formFocusNode,
               onKey: controller.handleKeyEvent,
               child: Dialog(
@@ -51,7 +52,7 @@ class ObservacaoDialogView {
                         decoration: BoxDecoration(
                           borderRadius: const BorderRadius.vertical(
                               bottom: Radius.circular(10)),
-                          color: Color(Colors.white.value),
+                          color: Color(Colors.white.toARGB32()),
                         ),
                         child: Column(
                           children: [

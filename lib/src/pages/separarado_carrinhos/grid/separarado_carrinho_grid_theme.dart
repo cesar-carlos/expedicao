@@ -9,7 +9,7 @@ class SeparadoCarrinhoGridTheme {
     return SfDataGridThemeData.raw(
       gridLineStrokeWidth: 1,
       brightness: Brightness.dark,
-      rowHoverColor: Theme.of(Get.context!).primaryColor.withOpacity(0.3),
+      rowHoverColor: Theme.of(Get.context!).primaryColor.withValues(alpha: 0.3),
       selectionColor: AppColor.gridRowSelectedRowColor,
     );
   }

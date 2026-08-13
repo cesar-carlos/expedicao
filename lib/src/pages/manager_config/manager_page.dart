@@ -13,7 +13,7 @@ class ManagerPage extends StatelessWidget {
     final size = MediaQuery.of(context).size;
 
     return GetBuilder<ManagerController>(
-      builder: (_) => Scaffold(
+      builder: (controller) => Scaffold(
         body: SizedBox(
           width: size.width,
           height: size.height,
@@ -25,7 +25,7 @@ class ManagerPage extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.center,
                   child: Form(
-                    key: _.formKey,
+                    key: controller.formKey,
                     child: SizedBox(
                       width: size.width * 0.3,
                       child: Column(
@@ -39,28 +39,28 @@ class ManagerPage extends StatelessWidget {
                           const SizedBox(height: 20),
                           Obx(
                             () => DropdownButton<String>(
-                              value: _.gerenciadoraSelected,
+                              value: controller.gerenciadoraSelected,
                               isExpanded: true,
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(5)),
                               hint: const Text('Selecione a gerenciadora'),
                               icon: const Icon(Icons.arrow_drop_down),
-                              items: _.gerenciadora.map((String value) {
+                              items: controller.gerenciadora.map((String value) {
                                 return DropdownMenuItem<String>(
                                   value: value,
                                   child: Text(value),
                                 );
                               }).toList(),
                               onChanged: (value) {
-                                _.setDatabaseSelected(value!);
+                                controller.setDatabaseSelected(value!);
                               },
                             ),
                           ),
                           const SizedBox(height: 20),
                           TextFormField(
                             keyboardType: TextInputType.text,
-                            controller: _.cnpjController,
-                            validator: _.validCNPJController,
+                            controller: controller.cnpjController,
+                            validator: controller.validCNPJController,
                             decoration: const InputDecoration(
                               labelText: 'CNPJ',
                               border: OutlineInputBorder(),
@@ -73,8 +73,8 @@ class ManagerPage extends StatelessWidget {
                           const SizedBox(height: 20),
                           TextFormField(
                             keyboardType: TextInputType.text,
-                            controller: _.clientId,
-                            validator: _.valisClientId,
+                            controller: controller.clientId,
+                            validator: controller.valisClientId,
                             decoration: const InputDecoration(
                               labelText: 'client id',
                               border: OutlineInputBorder(),
@@ -83,8 +83,8 @@ class ManagerPage extends StatelessWidget {
                           const SizedBox(height: 20),
                           TextFormField(
                             keyboardType: TextInputType.text,
-                            controller: _.clientSecret,
-                            validator: _.validClientSecret,
+                            controller: controller.clientSecret,
+                            validator: controller.validClientSecret,
                             decoration: const InputDecoration(
                               labelText: 'client secret',
                               border: OutlineInputBorder(),
@@ -115,7 +115,7 @@ class ManagerPage extends StatelessWidget {
                                       const Color.fromARGB(255, 70, 194, 74),
                                     ),
                                   ),
-                                  onPressed: _.selectFile),
+                                  onPressed: controller.selectFile),
                             ],
                           ),
                           const SizedBox(height: 20),
@@ -162,7 +162,7 @@ class ManagerPage extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-                                  onPressed: _.subimit,
+                                  onPressed: controller.subimit,
                                   child: const Text(
                                     'SALVAR',
                                     style: TextStyle(

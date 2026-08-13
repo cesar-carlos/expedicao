@@ -33,7 +33,7 @@ class CarrinhoPercursoAgrupamentoConsultaRepository {
     socket.on(responseIn, (receiver) {
       try {
         final respose = jsonDecode(receiver);
-        final error = respose?['Error'] ?? null;
+        final error = respose?['Error'];
         final data = respose?['Data'] ?? [];
 
         if (error != null) throw error;

@@ -10,24 +10,24 @@ class LoadingSeverDialogWidget {
     required BuildContext context,
   }) async {
     final socket = Get.find<AppSocketConfig>();
-    final _appEventState = Get.find<AppEventState>();
-    _appEventState.canCloseWindow = canCloseWindow;
+    final appEventState = Get.find<AppEventState>();
+    appEventState.canCloseWindow = canCloseWindow;
 
     return await showDialog<void>(
       barrierDismissible: false,
-      barrierColor: Colors.white.withOpacity(0.7),
+      barrierColor: Colors.white.withValues(alpha: 0.7),
       context: context,
       builder: (_) {
         return PopScope(
           canPop: false,
           child: StatefulBuilder(
-            builder: (_, __) {
+            builder: (_, _) {
               WidgetsBinding.instance.addPostFrameCallback(
                 (_) async {
                   socket.isConnect.listen((event) {
                     if (event == true) {
                       Future.delayed(const Duration(seconds: 1), () {
-                        _appEventState.canCloseWindow = true;
+                        appEventState.canCloseWindow = true;
                         Get.back();
                       });
                     }

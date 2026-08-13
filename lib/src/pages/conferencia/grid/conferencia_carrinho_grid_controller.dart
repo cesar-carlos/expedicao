@@ -8,7 +8,7 @@ class ConferenciaCarrinhoGridController extends GetxController {
   static const gridName = 'conferenciaCarrinhoGrid';
 
   final dataGridController = DataGridController();
-  late List<ExpedicaConferenciaItemConsultaModel> _itens = [];
+  late final List<ExpedicaConferenciaItemConsultaModel> _itens = [];
 
   List<ExpedicaConferenciaItemConsultaModel> get itens => _itens;
   List<ExpedicaConferenciaItemConsultaModel> get itensSort =>
@@ -20,10 +20,6 @@ class ConferenciaCarrinhoGridController extends GetxController {
   void Function(ExpedicaConferenciaItemConsultaModel item)? onPressedEditItem;
   void Function(ExpedicaConferenciaItemConsultaModel item)? onPressedRemoveItem;
 
-  @override
-  void onInit() {
-    super.onInit();
-  }
 
   @override
   void onClose() {

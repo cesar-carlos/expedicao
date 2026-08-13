@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 
 import 'package:app_expedicao/src/app/app_event_state.dart';
 import 'package:app_expedicao/src/pages/common/Identificacao_dialog/model/identificacao_dialog_view_model.dart';
+import 'package:app_expedicao/src/app/app_raw_keyboard.dart';
 
 class IdentificacaoDialogController extends GetxController {
   late FocusNode formFocusNode;
@@ -32,15 +33,16 @@ class IdentificacaoDialogController extends GetxController {
     passwordController.dispose();
     passwordFocusNode.dispose();
     userFocusNode.dispose();
-    Get.find<AppEventState>()..canCloseWindow = true;
+    Get.find<AppEventState>().canCloseWindow = true;
     super.onClose();
   }
 
-  KeyEventResult handleKeyEvent(RawKeyEvent event) {
-    if (event is RawKeyDownEvent) {
+  KeyEventResult handleKeyEvent(AppRawKeyEvent event) {
+    if (isRawKeyDown(event)) {
       if (event.logicalKey == LogicalKeyboardKey.escape) {
-        Get.find<AppEventState>()..canCloseWindow = true;
+        Get.find<AppEventState>().canCloseWindow = true;
         Get.back(result: null);
+        return KeyEventResult.handled;
       }
 
       return KeyEventResult.ignored;
@@ -49,7 +51,7 @@ class IdentificacaoDialogController extends GetxController {
     return KeyEventResult.ignored;
   }
 
-  _listenFocusNode() {
+  void _listenFocusNode() {
     userFocusNode.addListener(() {
       if (userFocusNode.hasFocus) {
         userController.selection = TextSelection(

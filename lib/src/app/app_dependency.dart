@@ -8,11 +8,11 @@ class AppDependency {
     return _instance;
   }
 
-  putDependency<T>(T dependency) {
+  void putDependency<T>(T dependency) {
     Get.put(dependency);
   }
 
-  lazyPutDependency<T>(T dependency) {
+  void lazyPutDependency<T>(T dependency) {
     Get.put(dependency);
   }
 }

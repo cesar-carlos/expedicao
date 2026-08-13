@@ -13,13 +13,13 @@ class LoadingProcessDialogWidget {
       barrierDismissible: false,
       context: context,
       builder: (_) {
-        final _appEventState = Get.find<AppEventState>();
-        _appEventState.canCloseWindow = canCloseWindow;
+        final appEventState = Get.find<AppEventState>();
+        appEventState.canCloseWindow = canCloseWindow;
 
         return PopScope(
           canPop: false,
           child: StatefulBuilder(
-            builder: (_, __) {
+            builder: (_, _) {
               WidgetsBinding.instance.addPostFrameCallback((_) async {
                 try {
                   await process();
@@ -43,7 +43,7 @@ class LoadingProcessDialogWidget {
                     ),
                   );
                 } finally {
-                  _appEventState.canCloseWindow = true;
+                  appEventState.canCloseWindow = true;
                 }
               });
 

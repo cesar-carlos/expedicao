@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
 
 import 'package:app_expedicao/src/app/app_event_state.dart';
+import 'package:app_expedicao/src/app/app_raw_keyboard.dart';
 
 class MessageDialogController extends GetxController {
   late FocusNode formFocusNode;
@@ -22,11 +23,12 @@ class MessageDialogController extends GetxController {
     super.onClose();
   }
 
-  KeyEventResult handleKeyEvent(RawKeyEvent event) {
-    if (event is RawKeyDownEvent) {
+  KeyEventResult handleKeyEvent(AppRawKeyEvent event) {
+    if (isRawKeyDown(event)) {
       if (event.logicalKey == LogicalKeyboardKey.escape) {
-        Get.find<AppEventState>()..canCloseWindow = true;
+        Get.find<AppEventState>().canCloseWindow = true;
         Get.back(result: false);
+        return KeyEventResult.handled;
       }
 
       return KeyEventResult.ignored;
@@ -36,7 +38,7 @@ class MessageDialogController extends GetxController {
   }
 
   void onPressedOK() {
-    Get.find<AppEventState>()..canCloseWindow = true;
+    Get.find<AppEventState>().canCloseWindow = true;
     Get.back(result: true);
   }
 }

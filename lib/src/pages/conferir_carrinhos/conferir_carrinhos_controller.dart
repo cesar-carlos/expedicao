@@ -89,7 +89,7 @@ class ConferirCarrinhosController extends GetxController {
     _conferirCarrinhoGridController.update();
   }
 
-  _liteners() {
+  void _liteners() {
     const uuid = Uuid();
 
     _conferirEvent.addListener(

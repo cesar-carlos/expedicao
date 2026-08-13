@@ -13,6 +13,7 @@ import 'package:app_expedicao/src/pages/separacao/grid_separacao/separacao_carri
 import 'package:app_expedicao/src/pages/separacao/widget/scan_separacao_item_widget.dart';
 import 'package:app_expedicao/src/pages/common/form_element/bar_head_form_element.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid.dart';
+import 'package:app_expedicao/src/app/app_raw_keyboard.dart';
 
 class SeparacaoPage {
   static const double _spaceHeadlement = 30;
@@ -26,7 +27,7 @@ class SeparacaoPage {
     required ExpedicaoCarrinhoPercursoEstagioConsultaModel
         percursoEstagioConsulta,
   }) async {
-    Get.find<AppEventState>()..canCloseWindow = canCloseWindow;
+    Get.find<AppEventState>().canCloseWindow = canCloseWindow;
 
     await showDialog(
       barrierDismissible: false,
@@ -35,7 +36,7 @@ class SeparacaoPage {
         return GetBuilder<SeparacaoController>(
           init: SeparacaoController(percursoEstagioConsulta),
           builder: (SeparacaoController controller) {
-            return RawKeyboardListener(
+            return AppKeyboardListener(
               focusNode: controller.formFocusNode,
               onKey: controller.handleKeyEvent,
               child: Dialog(
@@ -47,7 +48,7 @@ class SeparacaoPage {
                   height: size.height * 0.80,
                   child: Column(children: [
                     BarHeadFormElement(
-                      title: '${controller.title}',
+                      title: controller.title,
                       widthBar: size.width,
                       onPressedCloseBar: controller.onPressedCloseBar,
                     ),
@@ -150,7 +151,7 @@ class SeparacaoPage {
                                         ),
                                         Spacer(),
                                         Text(
-                                          '${controller.fullCartName}',
+                                          controller.fullCartName,
                                           style: TextStyle(
                                             fontSize: 16,
                                             color: Colors.black87,

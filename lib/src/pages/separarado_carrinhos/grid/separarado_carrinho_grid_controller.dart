@@ -13,16 +13,12 @@ class SeparadoCarrinhoGridController extends GetxController {
 
   final iconSize = 19.0;
   final DataGridController dataGridController = DataGridController();
-  late List<ExpedicaoCarrinhoPercursoEstagioConsultaModel> _itens = [];
+  late final List<ExpedicaoCarrinhoPercursoEstagioConsultaModel> _itens = [];
 
   List<ExpedicaoCarrinhoPercursoEstagioConsultaModel> get itens => _itens;
   List<ExpedicaoCarrinhoPercursoEstagioConsultaModel> get itensSort =>
       _itens.toList()..sort((a, b) => b.item.compareTo(a.item));
 
-  @override
-  void onInit() {
-    super.onInit();
-  }
 
   void Function(ExpedicaoCarrinhoPercursoEstagioConsultaModel item)?
       onPressedRemove;
@@ -86,7 +82,7 @@ class SeparadoCarrinhoGridController extends GetxController {
     onPressedSave?.call(item);
   }
 
-  iconIndicator(ExpedicaoCarrinhoPercursoEstagioConsultaModel item) {
+  Icon iconIndicator(ExpedicaoCarrinhoPercursoEstagioConsultaModel item) {
     return Icon(
       BootstrapIcons.file_earmark_arrow_down_fill,
       color: Theme.of(Get.context!).primaryColor,

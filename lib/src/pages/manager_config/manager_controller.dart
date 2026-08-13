@@ -54,13 +54,13 @@ class ManagerController extends GetxController {
   final List<String> gerenciadora = <String>[' GERENCIA-NET '].obs;
   String gerenciadoraSelected = ' GERENCIA-NET ';
 
-  setDatabaseSelected(String value) {
+  void setDatabaseSelected(String value) {
     gerenciadoraSelected = value;
     update();
   }
 
-  selectFile() async {
-    _file = await FilePicker.platform.pickFiles(
+  Future<void> selectFile() async {
+    _file = await FilePicker.pickFiles(
       dialogTitle: 'Selecione o cerificado',
       type: FileType.custom,
       allowedExtensions: ['p12'],

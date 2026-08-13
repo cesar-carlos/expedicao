@@ -27,12 +27,15 @@ class ButtonFormElement extends StatelessWidget {
         style: ButtonStyle(
           overlayColor: WidgetStateProperty.resolveWith<Color>(
             (Set<WidgetState> states) {
-              if (states.contains(WidgetState.focused))
+              if (states.contains(WidgetState.focused)) {
                 return AppColor.hoverColor;
-              if (states.contains(WidgetState.hovered))
+              }
+              if (states.contains(WidgetState.hovered)) {
                 return AppColor.hoverColor;
-              if (states.contains(WidgetState.pressed))
+              }
+              if (states.contains(WidgetState.pressed)) {
                 return AppColor.clickColor;
+              }
               return AppColor.backGroundButton;
             },
           ),

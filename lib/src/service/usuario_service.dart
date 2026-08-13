@@ -5,19 +5,19 @@ import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 import 'package:app_expedicao/src/model/usuario.model.dart';
 
 class UsuarioService {
-  UsuarioService() {}
+  UsuarioService();
 
   static Future<UsuarioModel?> select(int codUsuario) async {
-    final _usuarioRep = UsuarioRepository();
-    final result = await _usuarioRep
+    final usuarioRep = UsuarioRepository();
+    final result = await usuarioRep
         .select(QueryBuilder().equals('CodUsuario', codUsuario));
     if (result.isEmpty) return null;
     return result.first;
   }
 
   static Future<UsuarioConsultaMoldel?> selectConsulta(int codUsuario) async {
-    final _usuarioConsultaRep = UsuarioConsultaRepository();
-    final result = await _usuarioConsultaRep
+    final usuarioConsultaRep = UsuarioConsultaRepository();
+    final result = await usuarioConsultaRep
         .select(QueryBuilder().equals('CodUsuario', codUsuario));
     if (result.isEmpty) return null;
     return result.first;

@@ -16,6 +16,7 @@ import 'package:app_expedicao/src/model/expedicao_carrinho_consulta_model.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/app/app_event_state.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
+import 'package:app_expedicao/src/app/app_raw_keyboard.dart';
 
 class CarrinhoController extends GetxController {
   Uuid uuid = const Uuid();
@@ -50,16 +51,17 @@ class CarrinhoController extends GetxController {
     focusNodeCodigoCarrinho.dispose();
     textControllerCodigoCarrinho.dispose();
     focusNodeBtnAdicionarCarrinho.dispose();
-    Get.find<AppEventState>()..canCloseWindow = true;
+    Get.find<AppEventState>().canCloseWindow = true;
     formFocusNode.dispose();
     super.onClose();
   }
 
-  KeyEventResult handleKeyEvent(RawKeyEvent event) {
-    if (event is RawKeyDownEvent) {
+  KeyEventResult handleKeyEvent(AppRawKeyEvent event) {
+    if (isRawKeyDown(event)) {
       if (event.logicalKey == LogicalKeyboardKey.escape) {
-        Get.find<AppEventState>()..canCloseWindow = true;
+        Get.find<AppEventState>().canCloseWindow = true;
         Get.back(result: null);
+        return KeyEventResult.handled;
       }
 
       return KeyEventResult.ignored;
@@ -147,7 +149,7 @@ class CarrinhoController extends GetxController {
     Get.back(result: output.carrinhoConsulta!);
   }
 
-  viewFromCarrinhoConsulta(ExpedicaoCarrinhoConsultaModel input) {
+  void viewFromCarrinhoConsulta(ExpedicaoCarrinhoConsultaModel input) {
     _carrinho.codCarrinho = input.codCarrinho;
     _carrinho.descricaoCarrinho = input.descricaoCarrinho;
     _carrinho.situacao = input.situacao;
@@ -173,8 +175,9 @@ class CarrinhoController extends GetxController {
       codConferir: _processoExecutavel.codOrigem,
     ).consulta(input.codCarrinho);
 
-    if (carrinhoConsulta == null)
+    if (carrinhoConsulta == null) {
       return 'Carrinho não listado para esta conferência.';
+    }
 
     final situacaoInfalidas = [
       ExpedicaoCarrinhoSituacaoModel.liberado,

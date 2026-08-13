@@ -12,6 +12,7 @@ import 'package:app_expedicao/src/pages/conferencia/grid/conferencia_carrinho_gr
 import 'package:app_expedicao/src/pages/common/form_element/bar_head_form_element.dart';
 import 'package:app_expedicao/src/pages/conferencia/conferencia_controller.dart';
 import 'package:app_expedicao/src/app/app_event_state.dart';
+import 'package:app_expedicao/src/app/app_raw_keyboard.dart';
 
 class ConferenciaPage {
   static const double _spaceHeadlement = 30;
@@ -25,7 +26,7 @@ class ConferenciaPage {
     required ExpedicaoCarrinhoPercursoEstagioConsultaModel
         percursoEstagioConsulta,
   }) async {
-    Get.find<AppEventState>()..canCloseWindow = canCloseWindow;
+    Get.find<AppEventState>().canCloseWindow = canCloseWindow;
 
     await showDialog(
       barrierDismissible: false,
@@ -34,7 +35,7 @@ class ConferenciaPage {
         return GetBuilder<ConferenciaController>(
           init: ConferenciaController(percursoEstagioConsulta),
           builder: (ConferenciaController controller) {
-            return RawKeyboardListener(
+            return AppKeyboardListener(
               focusNode: controller.formFocusNode,
               onKey: controller.handleKeyEvent,
               child: Dialog(
@@ -45,7 +46,7 @@ class ConferenciaPage {
                   height: size.height * 0.8,
                   child: Column(children: [
                     BarHeadFormElement(
-                      title: '${controller.title}',
+                      title: controller.title,
                       widthBar: size.width,
                       onPressedCloseBar: controller.onPressedCloseBar,
                     ),
@@ -173,7 +174,7 @@ class ConferenciaPage {
                                           ),
                                           Spacer(),
                                           Text(
-                                            '${controller.fullCartName}',
+                                            controller.fullCartName,
                                             style: TextStyle(
                                               fontSize: 16,
                                               color: Colors.black87,

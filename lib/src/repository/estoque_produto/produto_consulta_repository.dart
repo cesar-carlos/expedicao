@@ -31,7 +31,7 @@ class EstoqueProdutoConsultaRepository {
       socket.emit(event, jsonEncode(send.toJson()));
       socket.on(responseIn, (receiver) {
         final respose = jsonDecode(receiver);
-        final error = respose?['Error'] ?? null;
+        final error = respose?['Error'];
         final data = respose?['Data'] ?? [];
         socket.off(responseIn);
 

@@ -25,7 +25,7 @@ class UserMessange extends StatelessWidget {
               alignment: Alignment.center,
               width: size.width,
               height: 75,
-              color: Colors.red.withOpacity(0.3),
+              color: Colors.red.withValues(alpha: 0.3),
               child: Text(
                 messange,
                 style: TextStyle(

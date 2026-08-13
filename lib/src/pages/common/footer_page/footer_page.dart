@@ -55,7 +55,7 @@ class FooterPage extends StatelessWidget {
                                   fontSize: 9,
                                 ),
                               ),
-                        Container(
+                        SizedBox(
                           height: 12,
                           child: VerticalDivider(
                             color: Colors.white,
@@ -70,7 +70,7 @@ class FooterPage extends StatelessWidget {
                             fontSize: 9,
                           ),
                         ),
-                        Container(
+                        SizedBox(
                           height: 12,
                           child: VerticalDivider(
                             color: Colors.white,
@@ -79,7 +79,7 @@ class FooterPage extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          '${AppHelper.capitalize(processoExecutavel.nomeUsuario)}',
+                          AppHelper.capitalize(processoExecutavel.nomeUsuario),
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 9,

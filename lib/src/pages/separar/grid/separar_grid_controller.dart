@@ -17,19 +17,13 @@ class SepararGridController extends GetxController {
   final iconSize = 19.0;
 
   final isComplitListiner = false.obs;
-  Color _selectedRowColor = AppColor.gridRowSelectedRowColor;
+  Color selectedRowColor = AppColor.gridRowSelectedRowColor;
 
   final List<ExpedicaoSepararItemConsultaModel> _itens = [];
   final List<ExpedicaoSepararItemUnidadeMedidaConsultaModel> _itemUnids = [];
 
   final _processoExecutavel = Get.find<ProcessoExecutavelModel>();
   final dataGridController = DataGridController();
-
-  Color get selectedRowColor => _selectedRowColor;
-
-  set selectedRowColor(Color value) {
-    _selectedRowColor = value;
-  }
 
   List<DataGridRow> get selectedoRows => dataGridController.selectedRows;
   int get selectedIndex => dataGridController.selectedIndex;
@@ -38,10 +32,6 @@ class SepararGridController extends GetxController {
   List<ExpedicaoSepararItemConsultaModel> get itensSort =>
       _itens.toList()..sort((a, b) => a.item.compareTo(b.item));
 
-  @override
-  void onInit() {
-    super.onInit();
-  }
 
   @override
   void onClose() {
@@ -49,7 +39,7 @@ class SepararGridController extends GetxController {
     super.onClose();
   }
 
-  getItensSort(int? codSetorEstoque) {
+  List<ExpedicaoSepararItemConsultaModel> getItensSort(int? codSetorEstoque) {
     if (codSetorEstoque == null) return itensSort;
 
     return itensSort.where((el) {
@@ -60,7 +50,7 @@ class SepararGridController extends GetxController {
     }).toList();
   }
 
-  get itensSortSetor {
+  dynamic get itensSortSetor {
     return getItensSort(_processoExecutavel.codSetorEstoque);
   }
 
@@ -176,8 +166,8 @@ class SepararGridController extends GetxController {
         .fold<double>(0.00, (acm, el) => acm + el.quantidadeSeparacao);
   }
 
-  ExpedicaoSepararItemConsultaModel findItem(String Item) {
-    final el = _itens.where((el) => el.item == Item).toList();
+  ExpedicaoSepararItemConsultaModel findItem(String item) {
+    final el = _itens.where((el) => el.item == item).toList();
     return el.first;
   }
 
@@ -277,7 +267,7 @@ class SepararGridController extends GetxController {
     return Colors.white;
   }
 
-  iconIndicator(ExpedicaoSepararItemConsultaModel item) {
+  Icon iconIndicator(ExpedicaoSepararItemConsultaModel item) {
     if (item.quantidade == item.quantidadeSeparacao) {
       return Icon(
         BootstrapIcons.check_circle_fill,

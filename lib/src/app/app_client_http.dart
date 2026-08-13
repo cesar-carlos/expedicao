@@ -38,11 +38,11 @@ class AppClientHttp {
     return appError == null ? false : true;
   }
 
-  getError() {
+  AppError? getError() {
     return appError;
   }
 
-  setClearError() {
+  void setClearError() {
     appError = null;
   }
 

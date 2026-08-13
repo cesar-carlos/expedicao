@@ -19,47 +19,39 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 1.2.1+11
 
 environment:
-  sdk: ">=3.1.5 <4.0.0"
+  sdk: ^3.13.0
 
-# Dependencies specify other packages that your package needs in order to work.
-# To automatically upgrade your package dependencies to the latest versions
-# consider running `flutter pub upgrade --major-versions`. Alternatively,
-# dependencies can be manually updated by changing the version numbers below to
-# the latest version available on pub.dev. To see which dependencies have newer
-# versions available, run `flutter pub outdated`.
 dependencies:
   flutter:
     sdk: flutter
 
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-
-  dio:
-  get:
-  window_manager:
-  cupertino_icons:
-  bootstrap_icons:
-  syncfusion_flutter_datagrid:
-  date_format:
-  socket_io_client:
-  animated_text_kit:
-  uuid:
-  brasil_fields:
-  number_text_input_formatter:
-  device_info_plus:
-  shared_preferences:
-  file_picker:
-  http:
-  media_kit:
-  media_kit_libs_audio:
-  flutter_dotenv:
+  dio: ^5.11.0
+  get: ^4.7.3
+  window_manager: ^0.5.2
+  cupertino_icons: ^1.0.9
+  bootstrap_icons: ^1.13.1
+  syncfusion_flutter_datagrid: ^34.2.3
+  syncfusion_flutter_core: ^34.2.3
+  date_format: ^2.0.9
+  socket_io_client: ^3.1.6
+  animated_text_kit: ^4.3.0
+  uuid: ^4.6.0
+  brasil_fields: ^1.19.0
+  number_text_input_formatter: ^1.0.0+9
+  device_info_plus: ^12.4.0
+  shared_preferences: ^2.5.5
+  file_picker: ^11.0.3
+  http: ^1.6.0
+  media_kit: ^1.2.6
+  media_kit_libs_audio: ^1.0.7
+  flutter_dotenv: ^6.0.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  msix: ^3.16.7
-
-  flutter_launcher_icons: ^0.14.3
+  flutter_lints: ^6.0.0
+  msix: ^3.18.0
+  flutter_launcher_icons: ^0.14.4
 
 flutter_launcher_icons:
   android: "launcher_icon"
@@ -91,13 +83,6 @@ msix_config:
   certificate_password: MinhaSenha123
   certificate_path: C:\path\myCertificate.pfx
   logo_path: D:\Developer\Data7 Projetos\Expedicao\Logo\app_icon.ico.png
-
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
-  flutter_lints: ^2.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

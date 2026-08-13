@@ -202,7 +202,7 @@ class SeparadoCarrinhosController extends GetxController {
   Future<void> editCart(
     ExpedicaoCarrinhoPercursoEstagioConsultaModel item,
   ) async {
-    bool _viewMode = [
+    bool viewMode = [
           ExpedicaoSituacaoModel.cancelada,
           ExpedicaoSituacaoModel.separado,
         ].contains(item.situacao) ||
@@ -236,13 +236,13 @@ class SeparadoCarrinhosController extends GetxController {
     //TOOD:: ADD SOLICITACAO DE SENHA
     final carrinhoPercursoEstagio = carrinhosPercursoEstagio.last;
 
-    final _editViewMode =
-        (_usuarioLogado.editaCarrinhoOutroUsuario == 'S' || _viewMode);
+    final editViewMode =
+        (_usuarioLogado.editaCarrinhoOutroUsuario == 'S' || viewMode);
 
-    final _editUsuario = (carrinhoPercursoEstagio.codUsuarioInicio !=
+    final editUsuario = (carrinhoPercursoEstagio.codUsuarioInicio !=
         _processoExecutavel.codUsuario);
 
-    if (_editUsuario && !_editViewMode) {
+    if (editUsuario && !editViewMode) {
       await MessageDialogView.show(
         context: Get.context!,
         message: 'Carrinho não pertence a você!',
@@ -430,7 +430,7 @@ class SeparadoCarrinhosController extends GetxController {
     return false;
   }
 
-  _evetsCarrinhoGrid() {
+  void _evetsCarrinhoGrid() {
     _separadoCarrinhoGridController.onPressedRemove = (item) async {
       await removeCart(item);
     };
@@ -444,7 +444,7 @@ class SeparadoCarrinhosController extends GetxController {
     };
   }
 
-  _liteners() {
+  void _liteners() {
     final carrinhoPercursoEvent =
         CarrinhoPercursoEstagioEventRepository.instancia;
     const uuid = Uuid();

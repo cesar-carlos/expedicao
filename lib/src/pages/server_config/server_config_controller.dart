@@ -17,7 +17,7 @@ class ServerConfigController extends GetxController {
 
   final formKey = GlobalKey<FormState>();
 
-  get dataBases => _dataBases;
+  List<String> get dataBases => _dataBases;
   String? get databaseSelected => _dataBaseSelected;
 
   set databaseSelected(String? value) {

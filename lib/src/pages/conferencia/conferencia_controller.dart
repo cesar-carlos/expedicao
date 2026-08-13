@@ -31,6 +31,7 @@ import 'package:app_expedicao/src/service/conferir_consultas_services.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
 import 'package:app_expedicao/src/service/cancelamento_service.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
+import 'package:app_expedicao/src/app/app_raw_keyboard.dart';
 
 class ConferenciaController extends GetxController {
   bool canClose = true;
@@ -164,13 +165,13 @@ class ConferenciaController extends GetxController {
     Get.delete<ConferenciaCarrinhoGridController>();
     Get.delete<ConferenciaController>();
 
-    Get.find<AppEventState>()..canCloseWindow = true;
+    Get.find<AppEventState>().canCloseWindow = true;
 
     super.onClose();
   }
 
-  KeyEventResult handleKeyEvent(RawKeyEvent event) {
-    if (event is RawKeyDownEvent) {
+  KeyEventResult handleKeyEvent(AppRawKeyEvent event) {
+    if (isRawKeyDown(event)) {
       if (event.logicalKey == LogicalKeyboardKey.f7) {
         onConferirTudo();
         return KeyEventResult.handled;
@@ -187,8 +188,9 @@ class ConferenciaController extends GetxController {
       }
 
       if (event.logicalKey == LogicalKeyboardKey.escape) {
-        Get.find<AppEventState>()..canCloseWindow = true;
+        Get.find<AppEventState>().canCloseWindow = true;
         Get.back();
+        return KeyEventResult.handled;
       }
 
       return KeyEventResult.ignored;
@@ -204,7 +206,7 @@ class ConferenciaController extends GetxController {
     if (canClose) Get.back();
   }
 
-  _listenFocusNode() {
+  void _listenFocusNode() {
     quantidadeFocusNode.addListener(() {
       quantidadeController.selection = TextSelection(
         baseOffset: 0,
@@ -593,7 +595,7 @@ class ConferenciaController extends GetxController {
         await _conferidoCarrinhosController.saveCart(percursoEstagioConsulta);
 
     if (result) {
-      Get.find<AppEventState>()..canCloseWindow = true;
+      Get.find<AppEventState>().canCloseWindow = true;
       Get.back();
     }
   }

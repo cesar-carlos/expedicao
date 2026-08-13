@@ -1,5 +1,5 @@
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+
 class SeparadoCarrinhoGridEvent {
-  static onCellDoubleTap(value) {
-    print(value);
-  }
+  static void onCellDoubleTap(DataGridCellDoubleTapDetails details) {}
 }

@@ -10,6 +10,7 @@ import 'package:app_expedicao/src/pages/carrinho_agrupar/grid/carrinhos_agrupar_
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_agrupar_service.dart';
 import 'package:app_expedicao/src/pages/common/message_dialog/message_dialog_view.dart';
 import 'package:app_expedicao/src/app/app_event_state.dart';
+import 'package:app_expedicao/src/app/app_raw_keyboard.dart';
 
 class CarrinhosAgruparController extends GetxController {
   late FocusNode formFocusNode;
@@ -72,19 +73,22 @@ class CarrinhosAgruparController extends GetxController {
     super.onClose();
   }
 
-  KeyEventResult handleKeyEvent(RawKeyEvent event) {
-    if (event is RawKeyDownEvent) {
+  KeyEventResult handleKeyEvent(AppRawKeyEvent event) {
+    if (isRawKeyDown(event)) {
       if (event.logicalKey == LogicalKeyboardKey.escape) {
-        Get.find<AppEventState>()..canCloseWindow = true;
+        Get.find<AppEventState>().canCloseWindow = true;
         Get.back();
+        return KeyEventResult.handled;
       }
 
       if (event.logicalKey == LogicalKeyboardKey.f7) {
         Get.find<CarrinhosAgruparController>().onAgruparTudo();
+        return KeyEventResult.handled;
       }
 
       if (event.logicalKey == LogicalKeyboardKey.f8) {
         Get.find<CarrinhosAgruparController>().onDesabruparTudo();
+        return KeyEventResult.handled;
       }
 
       return KeyEventResult.ignored;
@@ -94,19 +98,20 @@ class CarrinhosAgruparController extends GetxController {
   }
 
   Future<void> _fillGridCarrinhosAgruparGrid() async {
-    final _carrinhoAgruparService = CarrinhoPercursoEstagioAgruparService(
+    final carrinhoAgruparService = CarrinhoPercursoEstagioAgruparService(
       codEmpresa: carrinhoPercursoAgrupamento.codEmpresa,
       codCarrinhoPercurso: carrinhoPercursoAgrupamento.codCarrinhoPercurso,
     );
 
-    final result = await _carrinhoAgruparService.carrinhosPercurso(
-      this.carrinhoPercursoAgrupamento,
+    final result = await carrinhoAgruparService.carrinhosPercurso(
+      carrinhoPercursoAgrupamento,
     );
 
     final resultFiltered = result.where((el) {
       if (el.codCarrinhoAgrupador == null) return true;
-      if (el.codCarrinhoAgrupador == carrinhoPercursoAgrupamento.codCarrinho)
+      if (el.codCarrinhoAgrupador == carrinhoPercursoAgrupamento.codCarrinho) {
         return true;
+      }
 
       return false;
     }).where((el) {
@@ -200,7 +205,7 @@ class CarrinhosAgruparController extends GetxController {
   }
 
   void onPressedCloseBar() {
-    Get.find<AppEventState>()..canCloseWindow = true;
+    Get.find<AppEventState>().canCloseWindow = true;
     Get.back();
   }
 
@@ -232,7 +237,7 @@ class CarrinhosAgruparController extends GetxController {
     _removeAllItemGroup(carrinhoPercursoAgrupamento);
   }
 
-  _evetsCarrinhoGrid() {
+  void _evetsCarrinhoGrid() {
     _carrinhosAgruparGridController.onPressedRemove = (item) async {
       if (item.situacao != ExpedicaoSituacaoModel.agrupado) return;
       _removeItemGroup(item);
@@ -296,9 +301,9 @@ class CarrinhosAgruparController extends GetxController {
             carrinhoRemover,
           );
 
-          result.forEach((element) {
+          for (var element in result) {
             _carrinhosAgruparGridController.updateGrid(element);
-          });
+          }
 
           _carrinhosAgruparGridController.update();
           return true;
@@ -373,9 +378,9 @@ class CarrinhosAgruparController extends GetxController {
             carrinhoAgrupar,
           );
 
-          result.forEach((element) {
+          for (var element in result) {
             _carrinhosAgruparGridController.updateGrid(element);
-          });
+          }
 
           _carrinhosAgruparGridController.update();
           return true;

@@ -13,16 +13,12 @@ class ConferirCarrinhoGridController extends GetxController {
   static const gridName = 'conferirCarrinhoGrid';
 
   final DataGridController dataGridController = DataGridController();
-  late List<ExpedicaoCarrinhoConferirConsultaModel> _itens = [];
+  late final List<ExpedicaoCarrinhoConferirConsultaModel> _itens = [];
 
   List<ExpedicaoCarrinhoConferirConsultaModel> get itens => _itens;
   List<ExpedicaoCarrinhoConferirConsultaModel> get itensSort => _itens.toList()
     ..sort((a, b) => b.itemCarrinhoPercurso.compareTo(a.itemCarrinhoPercurso));
 
-  @override
-  void onInit() {
-    super.onInit();
-  }
 
   void Function(ExpedicaoCarrinhoConferirConsultaModel item)? onPressedRemove;
   void Function(ExpedicaoCarrinhoConferirConsultaModel item)? onPressedSave;
@@ -210,7 +206,7 @@ class ConferirCarrinhoGridController extends GetxController {
     });
   }
 
-  iconIndicator(ExpedicaoCarrinhoConferirConsultaModel item) {
+  Icon iconIndicator(ExpedicaoCarrinhoConferirConsultaModel item) {
     if (item.situacaoCarrinhoConferencia == ExpedicaoSituacaoModel.conferido ||
         item.situacaoCarrinhoConferencia == ExpedicaoSituacaoModel.agrupado) {
       return const Icon(

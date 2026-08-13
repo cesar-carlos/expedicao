@@ -2,14 +2,14 @@ import 'package:app_expedicao/src/app/app_helper.dart';
 import 'package:flutter/material.dart';
 
 class ConferenciaCarrinhoGridCells {
-  static textStyleCell() {
+  static TextStyle textStyleCell() {
     return const TextStyle(
       color: Colors.black,
       fontSize: 12,
     );
   }
 
-  static defaultCells<T>(T value, {alignment = Alignment.centerLeft}) {
+  static Container defaultCells<T>(T value, {alignment = Alignment.centerLeft}) {
     return Container(
       padding: const EdgeInsets.all(2),
       alignment: alignment,
@@ -26,7 +26,7 @@ class ConferenciaCarrinhoGridCells {
     );
   }
 
-  static defaultIntCell(int value) {
+  static Container defaultIntCell(int value) {
     return Container(
       padding: const EdgeInsets.all(10),
       alignment: Alignment.centerRight,
@@ -43,7 +43,7 @@ class ConferenciaCarrinhoGridCells {
     );
   }
 
-  static defaultMoneyCell(double value) {
+  static Container defaultMoneyCell(double value) {
     final display = value.toStringAsFixed(3).replaceAll('.', ',');
 
     return Container(
@@ -62,7 +62,7 @@ class ConferenciaCarrinhoGridCells {
     );
   }
 
-  static defaultWidgetCell(Widget value) {
+  static SizedBox defaultWidgetCell(Widget value) {
     return SizedBox(
       child: Container(
         child: value,

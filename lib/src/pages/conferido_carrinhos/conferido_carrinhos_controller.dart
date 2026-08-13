@@ -146,13 +146,13 @@ class ConferidoCarrinhosController extends GetxController {
             //TOOD:: ADD SOLICITACAO DE SENHA
             final carrinhoPercursoEstagio = carrinhosPercursoEstagio.last;
 
-            final _editViewMode =
+            final editViewMode =
                 (_usuarioLogado.editaCarrinhoOutroUsuario == 'S');
 
-            final _editUsuario = (carrinhoPercursoEstagio.codUsuarioInicio !=
+            final editUsuario = (carrinhoPercursoEstagio.codUsuarioInicio !=
                 _processoExecutavel.codUsuario);
 
-            if (_editUsuario && !_editViewMode) {
+            if (editUsuario && !editViewMode) {
               await MessageDialogView.show(
                 context: Get.context!,
                 message: 'Carrinho não pertence a você!',
@@ -195,7 +195,7 @@ class ConferidoCarrinhosController extends GetxController {
   Future<void> editCart(
     ExpedicaoCarrinhoPercursoEstagioConsultaModel item,
   ) async {
-    bool _viewMode = [
+    bool viewMode = [
       ExpedicaoSituacaoModel.conferido,
       ExpedicaoSituacaoModel.cancelada,
       ExpedicaoSituacaoModel.agrupado,
@@ -230,14 +230,14 @@ class ConferidoCarrinhosController extends GetxController {
 
     final carrinhoPercursoEstagio = carrinhosPercursoEstagio.last;
 
-    final _editViewMode =
-        (_usuarioLogado.editaCarrinhoOutroUsuario == 'S' || _viewMode);
+    final editViewMode =
+        (_usuarioLogado.editaCarrinhoOutroUsuario == 'S' || viewMode);
 
-    final _editUsuario = (carrinhoPercursoEstagio.codUsuarioInicio !=
+    final editUsuario = (carrinhoPercursoEstagio.codUsuarioInicio !=
         _processoExecutavel.codUsuario);
 
     //TOOD:: ADD SOLICITACAO DE SENHA
-    if (_editUsuario && !_editViewMode) {
+    if (editUsuario && !editViewMode) {
       await MessageDialogView.show(
         context: Get.context!,
         message: 'Carrinho não pertence a você!',
@@ -271,11 +271,11 @@ class ConferidoCarrinhosController extends GetxController {
       return;
     }
 
-    bool _isValidGroup = [
+    bool isValidGroup = [
       ExpedicaoSituacaoModel.conferido,
     ].contains(item.situacao);
 
-    if (!_isValidGroup) {
+    if (!isValidGroup) {
       await MessageDialogView.show(
         context: Get.context!,
         message: 'Carrinho ${item.situacao.toLowerCase()}!',
@@ -286,15 +286,15 @@ class ConferidoCarrinhosController extends GetxController {
       return;
     }
 
-    final _carrinhoAgruparService = CarrinhoPercursoEstagioAgruparService(
+    final carrinhoAgruparService = CarrinhoPercursoEstagioAgruparService(
       codEmpresa: item.codEmpresa,
       codCarrinhoPercurso: item.codCarrinhoPercurso,
     );
 
-    final _carrinhoPercurso =
-        await _carrinhoAgruparService.carrinhoPercurso(item.item);
+    final carrinhoPercurso =
+        await carrinhoAgruparService.carrinhoPercurso(item.item);
 
-    if (_carrinhoPercurso == null) {
+    if (carrinhoPercurso == null) {
       await MessageDialogView.show(
         context: Get.context!,
         message: 'Carrinho não encontrado!',
@@ -304,7 +304,7 @@ class ConferidoCarrinhosController extends GetxController {
       return;
     }
 
-    bool _isViewMode = ![
+    bool isViewMode = ![
           ExpedicaoSituacaoModel.emAndamento,
           ExpedicaoSituacaoModel.emConverencia
         ].contains(conferirConsulta.situacao) ||
@@ -318,9 +318,9 @@ class ConferidoCarrinhosController extends GetxController {
 
     await CarrinhosAgruparPage.show(
       size: Get.size,
-      viewMode: _isViewMode,
+      viewMode: isViewMode,
       context: Get.context!,
-      carrinhoPercursoAgrupamento: _carrinhoPercurso,
+      carrinhoPercursoAgrupamento: carrinhoPercurso,
     );
   }
 
@@ -409,12 +409,12 @@ class ConferidoCarrinhosController extends GetxController {
 
     //TOOD:: ADD SOLICITACAO DE SENHA
     final carrinhoPercursoEstagio = carrinhosPercursoEstagio.last;
-    final _editViewMode = (_usuarioLogado.editaCarrinhoOutroUsuario == 'S');
+    final editViewMode = (_usuarioLogado.editaCarrinhoOutroUsuario == 'S');
 
-    final _editUsuario = (carrinhoPercursoEstagio.codUsuarioInicio !=
+    final editUsuario = (carrinhoPercursoEstagio.codUsuarioInicio !=
         _processoExecutavel.codUsuario);
 
-    if (_editUsuario && !_editViewMode) {
+    if (editUsuario && !editViewMode) {
       await MessageDialogView.show(
         context: Get.context!,
         message: 'Carrinho não pertence a você!',
@@ -521,7 +521,7 @@ class ConferidoCarrinhosController extends GetxController {
     return false;
   }
 
-  _evetsCarrinhoGrid() {
+  void _evetsCarrinhoGrid() {
     _conferidoCarrinhoGridController.onPressedRemove = (item) async {
       await removeCart(item);
     };
@@ -539,7 +539,7 @@ class ConferidoCarrinhosController extends GetxController {
     };
   }
 
-  _liteners() {
+  void _liteners() {
     final carrinhoPercursoEvent =
         CarrinhoPercursoEstagioEventRepository.instancia;
 

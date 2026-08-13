@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:app_expedicao/src/app/app_helper.dart';
+
 class ProcessoExecutavelModel {
   int codProcessoExecutavel;
   int codEmpresa;
@@ -112,7 +114,7 @@ class ProcessoExecutavelModel {
     );
   }
 
-  update(ProcessoExecutavelModel input) {
+  void update(ProcessoExecutavelModel input) {
     codProcessoExecutavel = input.codProcessoExecutavel;
     codEmpresa = input.codEmpresa;
     codFilial = input.codFilial;
@@ -137,26 +139,27 @@ class ProcessoExecutavelModel {
   factory ProcessoExecutavelModel.fromJson(Map<String, dynamic> json) {
     try {
       return ProcessoExecutavelModel(
-        codProcessoExecutavel: json['CodProcessoExecutavel'],
-        codEmpresa: json['CodEmpresa'],
-        codFilial: json['CodFilial'],
-        status: json['Status'],
-        contexto: json['Contexto'],
-        origem: json['Origem'],
-        codOrigem: json['CodOrigem'],
-        itemOrigem: json['ItemOrigem'],
+        codProcessoExecutavel:
+            AppHelper.toIntOrZero(json['CodProcessoExecutavel']),
+        codEmpresa: AppHelper.toIntOrZero(json['CodEmpresa']),
+        codFilial: AppHelper.toIntOrZero(json['CodFilial']),
+        status: json['Status']?.toString() ?? '',
+        contexto: json['Contexto']?.toString() ?? '',
+        origem: json['Origem']?.toString() ?? '',
+        codOrigem: AppHelper.toIntOrZero(json['CodOrigem']),
+        itemOrigem: json['ItemOrigem']?.toString(),
         dataAbertura:
             DateTime.parse(json['DataAbertura'].toString().replaceAll('/', '')),
-        codUsuario: json['CodUsuario'],
-        nomeUsuario: json['NomeUsuario'],
-        codSetorEstoque: json['CodSetorEstoque'],
-        codSetorConferencia: json['CodSetorConferencia'],
-        codContaFinanceira: json['CodContaFinanceira'],
-        codPeriodoCaixa: json['CodPeriodoCaixa'],
-        statusPeriodoCaixa: json['StatusPeriodoCaixa'],
-        usuarioWindows: json['UsuarioWindows'],
-        nomeComputador: json['NomeComputador'],
-        bancoDados: json['BancoDados'],
+        codUsuario: AppHelper.toIntOrZero(json['CodUsuario']),
+        nomeUsuario: json['NomeUsuario']?.toString() ?? '',
+        codSetorEstoque: AppHelper.toIntOrNull(json['CodSetorEstoque']),
+        codSetorConferencia: AppHelper.toIntOrNull(json['CodSetorConferencia']),
+        codContaFinanceira: json['CodContaFinanceira']?.toString(),
+        codPeriodoCaixa: AppHelper.toIntOrNull(json['CodPeriodoCaixa']),
+        statusPeriodoCaixa: json['StatusPeriodoCaixa']?.toString(),
+        usuarioWindows: json['UsuarioWindows']?.toString() ?? '',
+        nomeComputador: json['NomeComputador']?.toString() ?? '',
+        bancoDados: json['BancoDados']?.toString() ?? '',
       );
     } catch (_) {
       rethrow;

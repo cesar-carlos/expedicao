@@ -10,6 +10,7 @@ import 'package:app_expedicao/src/pages/carrinho_agrupar/carrinhos_agrupar_contr
 import 'package:app_expedicao/src/pages/carrinho_agrupar/grid/carrinhos_agrupar_grid.dart';
 import 'package:app_expedicao/src/pages/common/form_element/bar_head_form_element.dart';
 import 'package:app_expedicao/src/app/app_event_state.dart';
+import 'package:app_expedicao/src/app/app_raw_keyboard.dart';
 
 class CarrinhosAgruparPage {
   static const double _spaceHeadlement = 30;
@@ -24,7 +25,7 @@ class CarrinhosAgruparPage {
         carrinhoPercursoAgrupamento,
     bool canCloseWindow = false,
   }) async {
-    Get.find<AppEventState>()..canCloseWindow = canCloseWindow;
+    Get.find<AppEventState>().canCloseWindow = canCloseWindow;
 
     await showDialog(
       barrierDismissible: false,
@@ -34,7 +35,7 @@ class CarrinhosAgruparPage {
           init:
               CarrinhosAgruparController(carrinhoPercursoAgrupamento, viewMode),
           builder: (CarrinhosAgruparController controller) {
-            return RawKeyboardListener(
+            return AppKeyboardListener(
               focusNode: controller.formFocusNode,
               onKey: controller.handleKeyEvent,
               child: Dialog(
@@ -91,7 +92,7 @@ class CarrinhosAgruparPage {
                               children: [
                                 Row(
                                   children: [
-                                    Container(
+                                    SizedBox(
                                       width: 400,
                                       height: 32,
                                       child: TextField(
@@ -128,7 +129,7 @@ class CarrinhosAgruparPage {
                                       ),
                                     ),
                                     SizedBox(width: 10),
-                                    Container(
+                                    SizedBox(
                                       width: 300,
                                       height: 32,
                                       child: TextField(
@@ -165,7 +166,7 @@ class CarrinhosAgruparPage {
                                       ),
                                     ),
                                     const Spacer(),
-                                    Container(
+                                    SizedBox(
                                       width: 280,
                                       height: 32,
                                       child: TextField(
@@ -207,7 +208,7 @@ class CarrinhosAgruparPage {
                                 SizedBox(height: 25),
 
                                 //ROW2
-                                Container(
+                                SizedBox(
                                   width: double.infinity,
                                   height: 45,
                                   child: TextField(

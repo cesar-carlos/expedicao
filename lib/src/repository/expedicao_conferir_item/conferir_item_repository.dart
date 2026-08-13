@@ -33,7 +33,7 @@ class ConferirItemRepository {
     socket.on(responseIn, (receiver) {
       try {
         final respose = jsonDecode(receiver);
-        final error = respose?['Error'] ?? null;
+        final error = respose?['Error'];
         final data = respose?['Data'] ?? [];
 
         if (error != null) throw error;
@@ -71,7 +71,7 @@ class ConferirItemRepository {
       try {
         final respose = jsonDecode(receiver);
         final mutation = respose?['Mutation'] ?? [];
-        final error = respose?['Error'] ?? null;
+        final error = respose?['Error'];
 
         if (error != null) throw error;
 
@@ -108,7 +108,7 @@ class ConferirItemRepository {
       try {
         final respose = jsonDecode(receiver);
         final mutation = respose?['Mutation'] ?? [];
-        final error = respose?['Error'] ?? null;
+        final error = respose?['Error'];
 
         if (error != null) throw error;
 
@@ -145,7 +145,7 @@ class ConferirItemRepository {
       try {
         final respose = jsonDecode(receiver);
         final mutation = respose?['Mutation'] ?? [];
-        final error = respose?['Error'] ?? null;
+        final error = respose?['Error'];
 
         if (error != null) throw error;
 
@@ -182,7 +182,7 @@ class ConferirItemRepository {
       try {
         final respose = jsonDecode(receiver);
         final mutation = respose?['Mutation'] ?? [];
-        final error = respose?['Error'] ?? null;
+        final error = respose?['Error'];
 
         if (error != null) throw error;
 
@@ -219,7 +219,7 @@ class ConferirItemRepository {
       try {
         final respose = jsonDecode(receiver);
         final mutation = respose?['Mutation'] ?? [];
-        final error = respose?['Error'] ?? null;
+        final error = respose?['Error'];
 
         if (error != null) throw error;
 
@@ -256,7 +256,7 @@ class ConferirItemRepository {
       try {
         final respose = jsonDecode(receiver);
         final mutation = respose?['Mutation'] ?? [];
-        final error = respose?['Error'] ?? null;
+        final error = respose?['Error'];
 
         if (error != null) throw error;
 

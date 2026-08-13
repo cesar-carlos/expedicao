@@ -45,7 +45,7 @@ class SplashController extends GetxController {
     }
 
     try {
-      _processoExecutavel = await Get.find<ProcessoExecutavelModel>();
+      _processoExecutavel = Get.find<ProcessoExecutavelModel>();
     } catch (_) {
       _processoExecutavel = await ProcessoExecutavelService().executar();
 

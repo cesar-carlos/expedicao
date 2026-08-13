@@ -6,9 +6,9 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 class SepararGridEvent {
   final controller = Get.find<SepararGridController>();
 
-  onCellDoubleTap(value) {}
+  void onCellDoubleTap(DataGridCellDoubleTapDetails details) {}
 
-  onSelectionChanged(
+  void onSelectionChanged(
     List<DataGridRow> newDataGridRows,
     List<DataGridRow> oldDataGridRows,
   ) {}

@@ -12,8 +12,8 @@ class LoadingProcessDialogGenericWidget {
     bool canCloseWindow = false,
   }) async {
     Completer<T> completer = Completer<T>();
-    final _appEventState = Get.find<AppEventState>();
-    _appEventState.canCloseWindow = canCloseWindow;
+    final appEventState = Get.find<AppEventState>();
+    appEventState.canCloseWindow = canCloseWindow;
 
     await showDialog<void>(
       barrierDismissible: false,
@@ -55,7 +55,7 @@ class LoadingProcessDialogGenericWidget {
 
                 Get.back();
               } finally {
-                _appEventState.canCloseWindow = true;
+                appEventState.canCloseWindow = true;
               }
             });
 

@@ -15,19 +15,14 @@ class ConferirGridController extends GetxController {
 
   final iconSize = 19.0;
   bool _selectionMode = true;
-  Color _selectedRowColor = AppColor.gridRowSelectedRowColor;
-  Rx<String> _changeListListen = ''.obs;
+  Color selectedRowColor = AppColor.gridRowSelectedRowColor;
+  final Rx<String> _changeListListen = ''.obs;
 
   final List<ExpedicaoConferirItemConsultaModel> _itens = [];
   final List<ExpedicaoConferirItemUnidadeMedidaConsultaModel> _itemUnids = [];
   final dataGridController = DataGridController();
 
-  Color get selectedRowColor => _selectedRowColor;
   Rx<String> get changeListListen => _changeListListen;
-
-  set selectedRowColor(Color value) {
-    _selectedRowColor = value;
-  }
 
   bool get selectionMode => _selectionMode;
 
@@ -38,10 +33,6 @@ class ConferirGridController extends GetxController {
   List<ExpedicaoConferirItemConsultaModel> get itensSort =>
       _itens.toList()..sort((a, b) => a.item.compareTo(b.item));
 
-  @override
-  void onInit() {
-    super.onInit();
-  }
 
   @override
   void onClose() {
@@ -159,8 +150,8 @@ class ConferirGridController extends GetxController {
         .every((el) => el.quantidade == el.quantidadeConferida);
   }
 
-  ExpedicaoConferirItemConsultaModel findItem(String Item) {
-    final el = _itens.where((el) => el.item == Item).toList();
+  ExpedicaoConferirItemConsultaModel findItem(String item) {
+    final el = _itens.where((el) => el.item == item).toList();
     return el.first;
   }
 
@@ -256,7 +247,7 @@ class ConferirGridController extends GetxController {
     _selectionMode = true;
   }
 
-  iconIndicator(ExpedicaoConferirItemConsultaModel item) {
+  Icon iconIndicator(ExpedicaoConferirItemConsultaModel item) {
     if (item.quantidade == item.quantidadeConferida) {
       return Icon(
         BootstrapIcons.check_circle_fill,

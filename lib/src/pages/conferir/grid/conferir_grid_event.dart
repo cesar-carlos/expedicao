@@ -1,9 +1,9 @@
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class ConferirGridEvent {
-  onCellDoubleTap(value) {}
+  void onCellDoubleTap(DataGridCellDoubleTapDetails details) {}
 
-  onSelectionChanged(
+  void onSelectionChanged(
     List<DataGridRow> newDataGridRows,
     List<DataGridRow> oldDataGridRows,
   ) {}

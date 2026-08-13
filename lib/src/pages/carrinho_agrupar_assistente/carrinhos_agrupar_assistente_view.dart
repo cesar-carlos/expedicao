@@ -7,6 +7,7 @@ import 'package:app_expedicao/src/pages/carrinho_agrupar_assistente/model/carrin
 import 'package:app_expedicao/src/pages/carrinho_agrupar_assistente/carrinhos_agrupar_assistente_controller.dart';
 import 'package:app_expedicao/src/pages/common/form_element/bar_head_form_element.dart';
 import 'package:app_expedicao/src/app/app_event_state.dart';
+import 'package:app_expedicao/src/app/app_raw_keyboard.dart';
 
 class CarrinhosAgruparAssistenteView {
   static const double _spaceHeadlement = 30;
@@ -20,7 +21,7 @@ class CarrinhosAgruparAssistenteView {
     required CarrinhosAgruparAssistenteViewModel input,
     bool canCloseWindow = false,
   }) async {
-    Get.find<AppEventState>()..canCloseWindow = canCloseWindow;
+    Get.find<AppEventState>().canCloseWindow = canCloseWindow;
 
     return await showDialog<ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel?>(
       barrierDismissible: false,
@@ -29,7 +30,7 @@ class CarrinhosAgruparAssistenteView {
         return GetBuilder<CarrinhosAgruparAssistenteController>(
           init: CarrinhosAgruparAssistenteController(input),
           builder: (CarrinhosAgruparAssistenteController controller) {
-            return RawKeyboardListener(
+            return AppKeyboardListener(
               focusNode: controller.formFocusNode,
               onKey: controller.handleKeyEvent,
               child: Dialog(
@@ -37,7 +38,7 @@ class CarrinhosAgruparAssistenteView {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Container(
+                child: SizedBox(
                   width: _widthForm,
                   height: _heightForm - _spaceHeadlement,
                   child: Column(children: [
@@ -52,15 +53,13 @@ class CarrinhosAgruparAssistenteView {
                         padding: EdgeInsets.all(15),
                         child: Column(
                           children: [
-                            Container(
-                              child: Text(
+                            Text(
                                 'CARRINHO AGRUPAMENTO',
                                 style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                            ),
                             Container(
                               alignment: Alignment.centerLeft,
                               padding: EdgeInsets.only(left: 10),

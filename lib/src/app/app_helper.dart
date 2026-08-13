@@ -44,26 +44,26 @@ class AppHelper {
   }
 
   static int? tryStringToIntOrNull(String? value) {
-    try {
-      if (value == null) return null;
-      if (value == '') return null;
-
-      return int.parse(value);
-    } catch (err) {
-      return null;
-    }
+    return toIntOrNull(value);
   }
 
   static int tryStringToIntOrZero(String? value) {
-    try {
-      if (value == null) return 0;
-      if (value == '') return 0;
-
-      return int.parse(value);
-    } catch (err) {
-      return 0;
-    }
+    return toIntOrZero(value);
   }
+
+  static int? toIntOrNull(dynamic value) {
+    if (value == null) return null;
+    if (value is int) return value;
+    if (value is num) return value.toInt();
+    if (value is String) {
+      final trimmed = value.trim();
+      if (trimmed.isEmpty) return null;
+      return int.tryParse(trimmed);
+    }
+    return int.tryParse(value.toString());
+  }
+
+  static int toIntOrZero(dynamic value) => toIntOrNull(value) ?? 0;
 
   static double stringToDouble(String? value) {
     try {
@@ -83,11 +83,11 @@ class AppHelper {
     }
   }
 
-  static qtdDisplayToDouble(String value) {
+  static double qtdDisplayToDouble(String value) {
     return double.parse(value.replaceAll('.', '').replaceAll(',', '.'));
   }
 
-  static isBarCode(String value) {
+  static bool isBarCode(String value) {
     if (value.trim().length > 6) return true;
     if (!AppHelper.isNumeric(value.trim())) return true;
 

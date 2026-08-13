@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 
 import 'package:app_expedicao/src/app/app_event_state.dart';
 import 'package:app_expedicao/src/pages/common/observacao_dialog/model/observacao_dialog_view_model.dart';
+import 'package:app_expedicao/src/app/app_raw_keyboard.dart';
 
 class ObservacaoDialogController extends GetxController {
   late FocusNode formFocusNode;
@@ -15,7 +16,8 @@ class ObservacaoDialogController extends GetxController {
 
   final ObservacaoDialogViewModel _viewModel;
 
-  ObservacaoDialogController(viewModel) : _viewModel = viewModel;
+  ObservacaoDialogController(ObservacaoDialogViewModel viewModel)
+      : _viewModel = viewModel;
 
   ObservacaoDialogViewModel get viewModel => ObservacaoDialogViewModel(
         title: 'Adicionar Observação',
@@ -48,10 +50,10 @@ class ObservacaoDialogController extends GetxController {
     super.onClose();
   }
 
-  KeyEventResult handleKeyEvent(RawKeyEvent event) {
-    if (event is RawKeyDownEvent) {
+  KeyEventResult handleKeyEvent(AppRawKeyEvent event) {
+    if (isRawKeyDown(event)) {
       if (event.logicalKey == LogicalKeyboardKey.f12) {
-        KeyEventResult.handled;
+        return KeyEventResult.handled;
       }
 
       if (event.logicalKey == LogicalKeyboardKey.enter) {
@@ -89,17 +91,17 @@ class ObservacaoDialogController extends GetxController {
   }
 
   void onPressedCloseBar() {
-    Get.find<AppEventState>()..canCloseWindow = true;
+    Get.find<AppEventState>().canCloseWindow = true;
     Get.back(result: null);
   }
 
   void onPressedCancelar() {
-    Get.find<AppEventState>()..canCloseWindow = true;
+    Get.find<AppEventState>().canCloseWindow = true;
     Get.back(result: null);
   }
 
   void onPressedSalvar() {
-    Get.find<AppEventState>()..canCloseWindow = true;
+    Get.find<AppEventState>().canCloseWindow = true;
     Get.back(result: viewModel);
   }
 }

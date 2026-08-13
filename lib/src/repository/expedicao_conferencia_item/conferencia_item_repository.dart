@@ -34,7 +34,7 @@ class ConferenciaItemRepository {
     socket.on(responseIn, (receiver) {
       try {
         final respose = jsonDecode(receiver);
-        final error = respose?['Error'] ?? null;
+        final error = respose?['Error'];
         final data = respose?['Data'] ?? [];
 
         if (error != null) throw error;
@@ -72,7 +72,7 @@ class ConferenciaItemRepository {
       try {
         final respose = jsonDecode(receiver);
         final mutation = respose?['Mutation'] ?? [];
-        final error = respose?['Error'] ?? null;
+        final error = respose?['Error'];
 
         if (error != null) throw error;
 
@@ -109,7 +109,7 @@ class ConferenciaItemRepository {
       try {
         final respose = jsonDecode(receiver);
         final mutation = respose?['Mutation'] ?? [];
-        final error = respose?['Error'] ?? null;
+        final error = respose?['Error'];
 
         if (error != null) throw error;
 
@@ -146,7 +146,7 @@ class ConferenciaItemRepository {
       try {
         final respose = jsonDecode(receiver);
         final mutation = respose?['Mutation'] ?? [];
-        final error = respose?['Error'] ?? null;
+        final error = respose?['Error'];
 
         if (error != null) throw error;
 
@@ -183,7 +183,7 @@ class ConferenciaItemRepository {
       try {
         final respose = jsonDecode(receiver);
         final mutation = respose?['Mutation'] ?? [];
-        final error = respose?['Error'] ?? null;
+        final error = respose?['Error'];
 
         if (error != null) throw error;
         final list = mutation.map<ExpedicaoConferenciaItemModel>((json) {
@@ -219,7 +219,7 @@ class ConferenciaItemRepository {
       try {
         final respose = jsonDecode(receiver);
         final mutation = respose?['Mutation'] ?? [];
-        final error = respose?['Error'] ?? null;
+        final error = respose?['Error'];
 
         if (error != null) throw error;
 
@@ -256,7 +256,7 @@ class ConferenciaItemRepository {
       try {
         final respose = jsonDecode(receiver);
         final mutation = respose?['Mutation'] ?? [];
-        final error = respose?['Error'] ?? null;
+        final error = respose?['Error'];
 
         if (error != null) throw error;
 

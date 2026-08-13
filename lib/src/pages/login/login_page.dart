@@ -11,7 +11,7 @@ class LoginPage extends StatelessWidget {
     final size = MediaQuery.of(context).size;
 
     return GetBuilder<LoginController>(
-      builder: (_) => Scaffold(
+      builder: (controller) => Scaffold(
         body: ListView(
           children: [
             Center(
@@ -19,7 +19,7 @@ class LoginPage extends StatelessWidget {
                 width: 380.0,
                 height: size.height * 0.78,
                 child: Form(
-                  key: _.formKey,
+                  key: controller.formKey,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -31,7 +31,7 @@ class LoginPage extends StatelessWidget {
                         style: const TextStyle(
                           color: Colors.black,
                         ),
-                        controller: _.userController,
+                        controller: controller.userController,
                         decoration: const InputDecoration(
                           filled: true,
                           fillColor: Colors.white38,
@@ -41,8 +41,8 @@ class LoginPage extends StatelessWidget {
                       ),
                       const SizedBox(height: 20),
                       TextFormField(
-                        controller: _.passwordController,
-                        validator: _.validPassword,
+                        controller: controller.passwordController,
+                        validator: controller.validPassword,
                         obscureText: true,
                         decoration: const InputDecoration(
                           filled: true,
@@ -66,7 +66,7 @@ class LoginPage extends StatelessWidget {
                               ),
                             ),
                           ),
-                          onPressed: _.login,
+                          onPressed: controller.login,
                           child: const Text(
                             'Login',
                             style: TextStyle(color: Colors.white),

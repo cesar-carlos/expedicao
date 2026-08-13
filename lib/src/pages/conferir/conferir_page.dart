@@ -8,6 +8,7 @@ import 'package:app_expedicao/src/pages/common/form_element/space_button_head_fo
 import 'package:app_expedicao/src/pages/conferido_carrinhos/conferido_carrinhos_page.dart';
 import 'package:app_expedicao/src/pages/conferir_carrinhos/conferir_carrinhos_page.dart';
 import 'package:app_expedicao/src/pages/conferir/conferir_controller.dart';
+import 'package:app_expedicao/src/app/app_raw_keyboard.dart';
 
 class ConferirPage extends StatelessWidget {
   const ConferirPage({super.key});
@@ -18,7 +19,7 @@ class ConferirPage extends StatelessWidget {
 
     return GetBuilder<ConferirController>(
       builder: (ConferirController controller) {
-        return RawKeyboardListener(
+        return AppKeyboardListener(
           focusNode: controller.formFocusNode,
           onKey: controller.handleKeyEvent,
           child: Scaffold(

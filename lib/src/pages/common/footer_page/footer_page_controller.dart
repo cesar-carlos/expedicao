@@ -15,12 +15,8 @@ class FooterPageController extends GetxController {
     _linstenConnection();
   }
 
-  @override
-  void onClose() {
-    super.onClose();
-  }
 
-  _linstenConnection() {
+  void _linstenConnection() {
     _socket.isConnect.listen((event) {
       _isConnected = event;
       update();

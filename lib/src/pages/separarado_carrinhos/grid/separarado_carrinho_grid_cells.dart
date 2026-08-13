@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 class SeparadoCarrinhoGridCells {
-  static textStyleCell() {
+  static TextStyle textStyleCell() {
     return const TextStyle(
       color: Colors.black,
       fontSize: 12,
     );
   }
 
-  static defaultCells<T>(T value, {alignment = Alignment.centerLeft}) {
+  static Container defaultCells<T>(T value, {alignment = Alignment.centerLeft}) {
     return Container(
       padding: const EdgeInsets.all(2),
       alignment: alignment,
@@ -25,7 +25,7 @@ class SeparadoCarrinhoGridCells {
     );
   }
 
-  static defaultIntCell(int value) {
+  static Container defaultIntCell(int value) {
     return Container(
       padding: const EdgeInsets.all(10),
       alignment: Alignment.centerRight,
@@ -42,7 +42,7 @@ class SeparadoCarrinhoGridCells {
     );
   }
 
-  static defaultMoneyCell(double value) {
+  static Container defaultMoneyCell(double value) {
     return Container(
       padding: const EdgeInsets.all(10),
       alignment: Alignment.centerRight,
@@ -59,7 +59,7 @@ class SeparadoCarrinhoGridCells {
     );
   }
 
-  static defaultWidgetCell(Widget value) {
+  static SizedBox defaultWidgetCell(Widget value) {
     return SizedBox(
       child: Container(
         child: value,

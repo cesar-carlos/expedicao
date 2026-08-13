@@ -38,6 +38,7 @@ import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 import 'package:app_expedicao/src/service/cancelamento_service.dart';
 import 'package:app_expedicao/src/service/carrinho_service.dart';
 import 'package:app_expedicao/src/app/app_audio_helper.dart';
+import 'package:app_expedicao/src/app/app_raw_keyboard.dart';
 
 class SeparacaoController extends GetxController {
   final RxBool _viewMode = false.obs;
@@ -69,15 +70,15 @@ class SeparacaoController extends GetxController {
   late FocusNode scanFocusNode;
 
   bool _isComplit = false;
-  get isComplit => _isComplit;
+  bool get isComplit => _isComplit;
 
   SeparacaoController(this.percursoEstagioConsulta);
 
-  get title {
+  String get title {
     return _viewMode.value ? 'Separação  - Visualização' : 'Separação - Edição';
   }
 
-  get fullCartName {
+  String get fullCartName {
     return '${percursoEstagioConsulta.codCarrinho} - ${percursoEstagioConsulta.nomeCarrinho}';
   }
 
@@ -170,8 +171,8 @@ class SeparacaoController extends GetxController {
     super.onClose();
   }
 
-  KeyEventResult handleKeyEvent(RawKeyEvent event) {
-    if (event is RawKeyDownEvent) {
+  KeyEventResult handleKeyEvent(AppRawKeyEvent event) {
+    if (isRawKeyDown(event)) {
       if (event.logicalKey == LogicalKeyboardKey.f7) {
         onSepararTudo();
         return KeyEventResult.handled;
@@ -193,8 +194,9 @@ class SeparacaoController extends GetxController {
       }
 
       if (event.logicalKey == LogicalKeyboardKey.escape) {
-        Get.find<AppEventState>()..canCloseWindow = true;
+        Get.find<AppEventState>().canCloseWindow = true;
         Get.back();
+        return KeyEventResult.handled;
       }
 
       return KeyEventResult.ignored;
@@ -203,15 +205,15 @@ class SeparacaoController extends GetxController {
     return KeyEventResult.ignored;
   }
 
-  onPressedCloseBar() {
-    Get.find<AppEventState>()..canCloseWindow = true;
+  void onPressedCloseBar() {
+    Get.find<AppEventState>().canCloseWindow = true;
     Get.back();
   }
 
   ExpedicaoCarrinhoPercursoEstagioConsultaModel get percursoEstagio =>
       percursoEstagioConsulta;
 
-  _listenFocusNode() {
+  void _listenFocusNode() {
     quantidadeFocusNode.addListener(() {
       quantidadeController.selection = TextSelection(
         baseOffset: 0,
@@ -821,7 +823,7 @@ class SeparacaoController extends GetxController {
         await _separadoCarrinhosController.saveCart(percursoEstagioConsulta);
 
     if (result) {
-      Get.find<AppEventState>()..canCloseWindow = true;
+      Get.find<AppEventState>().canCloseWindow = true;
       Get.back();
     }
   }
@@ -848,21 +850,20 @@ class SeparacaoController extends GetxController {
               ExpedicaoCarrinhoPercursoEstagioConsultaModel.fromJson(el);
 
           if (itemConsulta.codEmpresa !=
-                  this.percursoEstagioConsulta.codEmpresa ||
+                  percursoEstagioConsulta.codEmpresa ||
               itemConsulta.codCarrinhoPercurso !=
-                  this.percursoEstagioConsulta.codCarrinhoPercurso ||
-              itemConsulta.item != this.percursoEstagioConsulta.item) {
+                  percursoEstagioConsulta.codCarrinhoPercurso ||
+              itemConsulta.item != percursoEstagioConsulta.item) {
             return;
           }
 
-          print('entrou');
-          this.setSituacao = itemConsulta.situacao;
+          setSituacao = itemConsulta.situacao;
 
           if (itemConsulta.codEmpresa ==
-                  this.percursoEstagioConsulta.codEmpresa &&
+                  percursoEstagioConsulta.codEmpresa &&
               itemConsulta.codCarrinhoPercurso ==
-                  this.percursoEstagioConsulta.codCarrinhoPercurso &&
-              itemConsulta.item == this.percursoEstagioConsulta.item) {
+                  percursoEstagioConsulta.codCarrinhoPercurso &&
+              itemConsulta.item == percursoEstagioConsulta.item) {
             if (itemConsulta.situacao == ExpedicaoSituacaoModel.separado) {
               _viewMode.value = true;
 

@@ -9,6 +9,7 @@ import 'package:app_expedicao/src/pages/common/form_element/space_button_head_fo
 import 'package:app_expedicao/src/pages/common/form_element/button_head_form_element.dart';
 import 'package:app_expedicao/src/pages/separar/widget/separar_itens_widget.dart';
 import 'package:app_expedicao/src/pages/common/footer_page/footer_page.dart';
+import 'package:app_expedicao/src/app/app_raw_keyboard.dart';
 
 class SepararPage extends StatelessWidget {
   final ExpedicaoSepararConsultaModel separarConsulta;
@@ -19,7 +20,7 @@ class SepararPage extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
     return GetBuilder<SepararController>(
       builder: (controller) {
-        return RawKeyboardListener(
+        return AppKeyboardListener(
           focusNode: controller.formFocusNode,
           onKey: controller.handleKeyEvent,
           child: Scaffold(

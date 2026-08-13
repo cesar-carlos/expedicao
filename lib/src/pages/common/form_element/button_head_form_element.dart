@@ -34,7 +34,7 @@ class ButtonHeadForm extends StatelessWidget {
         child: Stack(
           children: [
             IgnorePointer(
-              child: Container(
+              child: SizedBox(
                 width: 120,
                 height: 90,
                 child: Container(
@@ -49,7 +49,7 @@ class ButtonHeadForm extends StatelessWidget {
                           child: Container(
                             padding: const EdgeInsets.all(2),
                             decoration: BoxDecoration(
-                              color: shortCutColor.withOpacity(0.40),
+                              color: shortCutColor.withValues(alpha: 0.40),
                               borderRadius: BorderRadius.circular(5),
                             ),
                             child: Text(
@@ -73,7 +73,7 @@ class ButtonHeadForm extends StatelessWidget {
                 padding:
                     const EdgeInsets.only(top: 5, bottom: 2, left: 3, right: 3),
                 child: InkWell(
-                  hoverColor: Colors.white.withOpacity(0.1),
+                  hoverColor: Colors.white.withValues(alpha: 0.1),
                   onTap: onPressed,
                   child: Column(
                     children: [

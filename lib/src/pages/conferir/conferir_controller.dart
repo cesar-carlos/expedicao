@@ -33,6 +33,7 @@ import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_model.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
+import 'package:app_expedicao/src/app/app_raw_keyboard.dart';
 
 class ConferirController extends GetxController {
   bool _iniciada = false;
@@ -105,12 +106,12 @@ class ConferirController extends GetxController {
   onClose() {
     _removeAllliteners();
     formFocusNode.dispose();
-    Get.find<AppEventState>()..canCloseWindow = true;
+    Get.find<AppEventState>().canCloseWindow = true;
     super.onClose();
   }
 
-  KeyEventResult handleKeyEvent(RawKeyEvent event) {
-    if (event is RawKeyDownEvent) {
+  KeyEventResult handleKeyEvent(AppRawKeyEvent event) {
+    if (isRawKeyDown(event)) {
       if (event.logicalKey == LogicalKeyboardKey.f4) {
         btnConferirCarrinho();
         return KeyEventResult.handled;
@@ -140,6 +141,7 @@ class ConferirController extends GetxController {
         ).then((value) {
           if (value != null && value) io.exit(0);
         });
+        return KeyEventResult.handled;
       }
 
       return KeyEventResult.ignored;
@@ -325,7 +327,7 @@ class ConferirController extends GetxController {
   }
 
   Future<void> btnAssistenteAgrupamento() async {
-    bool _isNotValidGroupCart = [
+    bool isNotValidGroupCart = [
       ExpedicaoSituacaoModel.conferido,
       ExpedicaoSituacaoModel.cancelada,
       ExpedicaoSituacaoModel.embalado,
@@ -334,11 +336,11 @@ class ConferirController extends GetxController {
       ExpedicaoSituacaoModel.entregue,
     ].contains(conferirConsulta.situacao);
 
-    if (_isNotValidGroupCart) {
+    if (isNotValidGroupCart) {
       await MessageDialogView.show(
         context: Get.context!,
-        message: '${_expedicaoSituacao}!',
-        detail: 'Conferencia ${_expedicaoSituacao}, não é possível agrupar.',
+        message: '$_expedicaoSituacao!',
+        detail: 'Conferencia $_expedicaoSituacao, não é possível agrupar.',
       );
 
       return;
@@ -379,8 +381,8 @@ class ConferirController extends GetxController {
     if (notValidFinalize) {
       await MessageDialogView.show(
         context: Get.context!,
-        message: '${_expedicaoSituacao}!',
-        detail: 'Conferencia ${_expedicaoSituacao}, não é possível finalizar.',
+        message: '$_expedicaoSituacao!',
+        detail: 'Conferencia $_expedicaoSituacao, não é possível finalizar.',
       );
 
       return;
@@ -440,7 +442,7 @@ class ConferirController extends GetxController {
     update();
   }
 
-  _liteners() {
+  void _liteners() {
     const uuid = Uuid();
     final conferirEvent = ConferirEventRepository.instancia;
 

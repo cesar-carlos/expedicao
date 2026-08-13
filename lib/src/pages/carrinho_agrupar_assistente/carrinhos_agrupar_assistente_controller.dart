@@ -10,6 +10,7 @@ import 'package:app_expedicao/src/pages/carrinho_agrupar_assistente/model/carrin
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_agrupamento_consulta_model.dart';
 import 'package:app_expedicao/src/pages/common/message_dialog/message_dialog_view.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
+import 'package:app_expedicao/src/app/app_raw_keyboard.dart';
 
 class CarrinhosAgruparAssistenteController extends GetxController {
   String descricaoCarrinho = '';
@@ -50,10 +51,10 @@ class CarrinhosAgruparAssistenteController extends GetxController {
     super.onClose();
   }
 
-  KeyEventResult handleKeyEvent(RawKeyEvent event) {
+  KeyEventResult handleKeyEvent(AppRawKeyEvent event) {
     final appEventState = Get.find<AppEventState>();
 
-    if (event is RawKeyDownEvent) {
+    if (isRawKeyDown(event)) {
       if (event.logicalKey == LogicalKeyboardKey.escape) {
         appEventState.canCloseWindow = true;
         Get.back();
@@ -163,12 +164,12 @@ class CarrinhosAgruparAssistenteController extends GetxController {
   }
 
   void onPressedCloseBar() {
-    Get.find<AppEventState>()..canCloseWindow = true;
+    Get.find<AppEventState>().canCloseWindow = true;
     Get.back(result: null);
   }
 
   void onPressedCancelar() {
-    Get.find<AppEventState>()..canCloseWindow = true;
+    Get.find<AppEventState>().canCloseWindow = true;
     Get.back(result: null);
   }
 
@@ -183,7 +184,7 @@ class CarrinhosAgruparAssistenteController extends GetxController {
       return;
     }
 
-    Get.find<AppEventState>()..canCloseWindow = true;
+    Get.find<AppEventState>().canCloseWindow = true;
     Get.back(result: _carrinhoPercursoAgrupamentoConsulta);
   }
 }

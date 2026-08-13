@@ -10,8 +10,8 @@ Future<void> customDialog(
   required String message,
   required bool canCloseWindow,
 }) async {
-  final _appEventState = Get.find<AppEventState>();
-  _appEventState.canCloseWindow = canCloseWindow;
+  final appEventState = Get.find<AppEventState>();
+  appEventState.canCloseWindow = canCloseWindow;
 
   return await showDialog<void>(
     barrierDismissible: false,
@@ -23,7 +23,7 @@ Future<void> customDialog(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(10)),
-          color: Color(Colors.white.value),
+          color: Color(Colors.white.toARGB32()),
         ),
         child: Column(
           children: [
@@ -58,7 +58,7 @@ Future<void> customDialog(
                   name: 'OK',
                   focusNode: FocusNode()..requestFocus(),
                   onPressed: () {
-                    _appEventState.canCloseWindow = true;
+                    appEventState.canCloseWindow = true;
                     Get.back();
                   },
                 ),

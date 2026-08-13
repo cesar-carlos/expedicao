@@ -39,6 +39,7 @@ import 'package:app_expedicao/src/model/expedicao_carrinho_model.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/service/separar_services.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
+import 'package:app_expedicao/src/app/app_raw_keyboard.dart';
 
 class SepararController extends GetxController {
   bool _iniciada = false;
@@ -117,8 +118,8 @@ class SepararController extends GetxController {
     super.onClose();
   }
 
-  KeyEventResult handleKeyEvent(RawKeyEvent event) {
-    if (event is RawKeyDownEvent) {
+  KeyEventResult handleKeyEvent(AppRawKeyEvent event) {
+    if (isRawKeyDown(event)) {
       if (event.logicalKey == LogicalKeyboardKey.f4) {
         onAdicionarCarrinho();
         return KeyEventResult.handled;
@@ -143,6 +144,7 @@ class SepararController extends GetxController {
         ).then((value) {
           if (value != null && value) io.exit(0);
         });
+        return KeyEventResult.handled;
       }
 
       return KeyEventResult.ignored;
@@ -169,8 +171,9 @@ class SepararController extends GetxController {
     final carrinhoPercursos =
         await CarrinhoPercursoServices().select(queryBuilder);
 
-    if (carrinhoPercursos.isNotEmpty)
+    if (carrinhoPercursos.isNotEmpty) {
       _carrinhoPercurso = carrinhoPercursos.first;
+    }
   }
 
   Future<void> iniciarSeparacao() async {
@@ -471,8 +474,8 @@ class SepararController extends GetxController {
     if (notValidFinalize) {
       await MessageDialogView.show(
         context: Get.context!,
-        message: '${_expedicaoSituacao}!',
-        detail: '${_expedicaoSituacao}, não é possível finalizar.',
+        message: '$_expedicaoSituacao!',
+        detail: '$_expedicaoSituacao, não é possível finalizar.',
       );
 
       return;
@@ -574,7 +577,7 @@ class SepararController extends GetxController {
     _pageListerner.clear();
   }
 
-  _liteners() {
+  void _liteners() {
     const uuid = Uuid();
     final separarEvent = SepararEventRepository.instancia;
     final carrinhoPercursoEvent = SepararItemEventRepository.instancia;

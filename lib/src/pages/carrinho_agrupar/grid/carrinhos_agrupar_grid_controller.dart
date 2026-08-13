@@ -12,14 +12,10 @@ class CarrinhosAgruparGridController extends GetxController {
   final iconSize = 19.0;
 
   final DataGridController dataGridController = DataGridController();
-  late List<ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel> _itens = [];
+  late final List<ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel> _itens = [];
 
   List<ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel> get itens => _itens;
 
-  @override
-  void onInit() {
-    super.onInit();
-  }
 
   void Function(ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel item)?
       onPressedGroup;

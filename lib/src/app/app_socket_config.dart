@@ -1,12 +1,12 @@
 import 'package:get/get.dart';
 
-import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:socket_io_client/socket_io_client.dart' as io;
 import 'package:app_expedicao/src/app/app_api_file_init.dart';
 
 class AppSocketConfig extends GetxController {
   late String _baseUrl;
   final Rx<bool> _isConnected = false.obs;
-  late IO.Socket _socket;
+  late io.Socket _socket;
 
   @override
   Future<void> onInit() async {
@@ -21,10 +21,10 @@ class AppSocketConfig extends GetxController {
   }
 
   Rx<bool> get isConnect => _isConnected;
-  IO.Socket get socket => _socket;
+  io.Socket get socket => _socket;
 
-  initSocket() {
-    _socket = IO.io(_baseUrl, <String, dynamic>{
+  void initSocket() {
+    _socket = io.io(_baseUrl, <String, dynamic>{
       'autoConnect': true,
       'transports': ['websocket'],
     });
@@ -35,27 +35,27 @@ class AppSocketConfig extends GetxController {
     onError();
   }
 
-  connect() {
+  void connect() {
     _socket.connect();
   }
 
-  onConnect() {
+  void onConnect() {
     _socket.onConnect((_) {
       _isConnected.value = true;
     });
   }
 
-  onDisconnect() {
+  void onDisconnect() {
     _socket.onDisconnect((_) {
       _isConnected.value = false;
     });
   }
 
-  onConnectError() {
+  void onConnectError() {
     _socket.onConnectError((_) {});
   }
 
-  onError() {
+  void onError() {
     _socket.onError((_) {});
   }
 

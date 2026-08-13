@@ -9,6 +9,15 @@
 # packages, and plugins designed to encourage good coding practices.
 
 # ignore: unused_element
+analyzer:
+  exclude:
+    - build/**
+    - android/**
+    - ios/**
+    - web/**
+    - windows/**
+    - macos/**
+    - linux/**
 include: package:flutter_lints/flutter.yaml # ignore: unused_element
 
 linter:

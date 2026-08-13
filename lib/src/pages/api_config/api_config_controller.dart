@@ -17,7 +17,7 @@ class ApiConfigController extends GetxController {
 
   final formKey = GlobalKey<FormState>();
 
-  get dataBases => _dataBases;
+  List<String> get dataBases => _dataBases;
 
   set databaseSelected(String? value) {
     _dataBaseSelected = value;

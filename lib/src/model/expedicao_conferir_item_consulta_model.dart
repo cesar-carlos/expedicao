@@ -203,7 +203,7 @@ class ExpedicaoConferirItemConsultaModel {
     };
   }
 
-  isComplited() {
+  bool isComplited() {
     return quantidade == quantidadeConferida;
   }
 

@@ -18,15 +18,7 @@ class ConferidoCarrinhoGridController extends GetxController {
   List<ExpedicaoCarrinhoPercursoEstagioConsultaModel> get itensSort =>
       _itens.toList()..sort((a, b) => b.item.compareTo(a.item));
 
-  @override
-  void onInit() {
-    super.onInit();
-  }
 
-  @override
-  void onReady() {
-    super.onReady();
-  }
 
   void Function(ExpedicaoCarrinhoPercursoEstagioConsultaModel item)?
       onPressedRemove;

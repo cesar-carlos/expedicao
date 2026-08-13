@@ -32,10 +32,10 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     if (widget.args.isNotEmpty) {
-      final _executavel =
+      final executavel =
           ProcessoExecutavelModel.fromBase64(widget.args.join(''));
 
-      Get.put(_executavel);
+      Get.put(executavel);
     }
 
     MediaKit.ensureInitialized();

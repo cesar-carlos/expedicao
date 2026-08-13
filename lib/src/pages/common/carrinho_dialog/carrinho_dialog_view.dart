@@ -6,6 +6,7 @@ import 'package:app_expedicao/src/pages/common/form_element/button_form_element.
 import 'package:app_expedicao/src/pages/common/carrinho_dialog/carrinho_controller.dart';
 import 'package:app_expedicao/src/pages/common/form_element/bar_head_form_element.dart';
 import 'package:app_expedicao/src/app/app_event_state.dart';
+import 'package:app_expedicao/src/app/app_raw_keyboard.dart';
 
 class CarrinhoDialogView {
   static const double _widthForm = 600;
@@ -21,13 +22,13 @@ class CarrinhoDialogView {
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        final _appEventState = Get.find<AppEventState>();
-        _appEventState.canCloseWindow = canCloseWindow;
+        final appEventState = Get.find<AppEventState>();
+        appEventState.canCloseWindow = canCloseWindow;
 
         return GetBuilder<CarrinhoController>(
           init: CarrinhoController(),
           builder: (CarrinhoController controller) {
-            return RawKeyboardListener(
+            return AppKeyboardListener(
               focusNode: controller.formFocusNode,
               onKey: controller.handleKeyEvent,
               child: Dialog(
@@ -49,7 +50,7 @@ class CarrinhoDialogView {
                         decoration: BoxDecoration(
                           borderRadius: const BorderRadius.vertical(
                               bottom: Radius.circular(10)),
-                          color: Color(Colors.white.value),
+                          color: Color(Colors.white.toARGB32()),
                         ),
                         child: Column(
                           children: [
@@ -59,7 +60,7 @@ class CarrinhoDialogView {
                                     left: 30, top: 5, right: 30),
                                 child: ListenableBuilder(
                                   listenable: controller,
-                                  builder: (_, __) {
+                                  builder: (_, _) {
                                     return Column(
                                       children: [
                                         Container(
@@ -104,7 +105,7 @@ class CarrinhoDialogView {
                                             border: Border.all(
                                               color: Colors.grey,
                                             ),
-                                            color: Color(Colors.white.value),
+                                            color: Color(Colors.white.toARGB32()),
                                             borderRadius:
                                                 BorderRadius.circular(5),
                                           ),
