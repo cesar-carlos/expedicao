@@ -27,6 +27,7 @@ class CarrinhosAgruparGrid extends StatelessWidget {
             onCellDoubleTap: CarrinhosAgruparGridEvent.onCellDoubleTap,
             columns: CarrinhosAgruparGridColumns().columns,
             selectionMode: SelectionMode.single,
+            highlightRowOnHover: false,
             showColumnHeaderIconOnHover: true,
             isScrollbarAlwaysShown: true,
             headerRowHeight: 30,

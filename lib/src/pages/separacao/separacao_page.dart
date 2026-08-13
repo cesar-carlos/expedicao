@@ -187,7 +187,9 @@ class SeparacaoPage {
                                     ),
                                     Container(
                                       color: Colors.white70,
-                                      child: const SepararGrid(),
+                                      child: const SepararGrid(
+                                        forSeparacao: true,
+                                      ),
                                     ),
                                   ]),
                                 ),

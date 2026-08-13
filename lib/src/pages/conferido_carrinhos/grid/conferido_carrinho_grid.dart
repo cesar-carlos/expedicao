@@ -30,6 +30,7 @@ class ConferidoCarrinhoGrid extends StatelessWidget {
             columns: ConferidoCarrinhoGridColumns().columns,
             selectionMode: SelectionMode.single,
             footer: const ConferidoCarrinhoGridFooter(),
+            highlightRowOnHover: false,
             showColumnHeaderIconOnHover: true,
             isScrollbarAlwaysShown: true,
             headerRowHeight: 30,

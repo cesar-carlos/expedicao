@@ -31,6 +31,7 @@ class ConferirGrid extends StatelessWidget {
                 ? SelectionMode.single
                 : SelectionMode.none,
             footer: const ConferirGridFooter(),
+            highlightRowOnHover: false,
             showColumnHeaderIconOnHover: true,
             isScrollbarAlwaysShown: true,
             headerRowHeight: 40,

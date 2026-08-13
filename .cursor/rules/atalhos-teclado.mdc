@@ -1,0 +1,28 @@
+---
+description: Atalhos de teclado padrão das telas e modais
+alwaysApply: true
+---
+
+# Atalhos de teclado
+
+## Confirmar: F12
+
+Em toda tela ou modal com botão de confirmação (Adicionar, Salvar, Confirmar, Finalizar), **F12** dispara essa ação.
+
+- Consumir o evento (`KeyEventResult.handled`) para o F12 não chegar na tela de trás.
+- **Não** colocar badge, label ou widget visual de atalho no botão de confirmação. O usuário já sabe que F12 confirma.
+
+```dart
+if (event.logicalKey == LogicalKeyboardKey.f12) {
+  confirmar();
+  return KeyEventResult.handled;
+}
+```
+
+## Fechar modal: ESC
+
+ESC fecha só o modal atual, com o mesmo efeito do X. Consumir o evento para não afetar a tela de trás.
+
+## Outros atalhos
+
+Badges visuais (`ShortcutBadge`, `shortCut` em `ButtonHeadForm`) só para atalhos que não são F12/ESC (ex.: F5, F9, F10, Del).

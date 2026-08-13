@@ -18,17 +18,25 @@ class LoadingProcessDialogGenericWidget {
     await showDialog<void>(
       barrierDismissible: false,
       context: context,
-      builder: (_) {
+      builder: (dialogContext) {
         return PopScope(
           canPop: false,
           child: StatefulBuilder(builder: (_, setState) {
             WidgetsBinding.instance.addPostFrameCallback((_) async {
               try {
                 T result = await process();
-                completer.complete(result);
+                if (!completer.isCompleted) {
+                  completer.complete(result);
+                }
 
-                Get.back();
+                if (dialogContext.mounted) {
+                  Navigator.of(dialogContext).pop();
+                }
               } catch (e) {
+                if (dialogContext.mounted) {
+                  Navigator.of(dialogContext).pop();
+                }
+
                 Get.snackbar(
                   'Processo erro',
                   e.toString(),
@@ -41,8 +49,10 @@ class LoadingProcessDialogGenericWidget {
                   margin: const EdgeInsets.only(bottom: 40),
                   mainButton: TextButton(
                     onPressed: () {
-                      Get.back();
-                      completer.completeError(e);
+                      Get.closeCurrentSnackbar();
+                      if (!completer.isCompleted) {
+                        completer.completeError(e);
+                      }
                     },
                     child: const Text(
                       'OK',
@@ -53,7 +63,9 @@ class LoadingProcessDialogGenericWidget {
                   ),
                 );
 
-                Get.back();
+                if (!completer.isCompleted) {
+                  completer.completeError(e);
+                }
               } finally {
                 appEventState.canCloseWindow = true;
               }

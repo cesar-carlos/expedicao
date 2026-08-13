@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:flutter/widgets.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import 'package:app_expedicao/src/model/expedicao_separacao_item_consulta_model.dart';
@@ -20,6 +21,9 @@ class SeparacaoCarrinhoGridController extends GetxController {
   void Function(ExpedicaSeparacaoItemConsultaModel item)? onPressedRemoveItem;
 
   void addGrid(ExpedicaSeparacaoItemConsultaModel item) {
+    if (_itens.any((el) => el.item == item.item)) {
+      return;
+    }
     _itens.add(item);
   }
 
@@ -50,8 +54,16 @@ class SeparacaoCarrinhoGridController extends GetxController {
     _itens.clear();
   }
 
+  int findIndexItem(String item) {
+    return itensSort.indexWhere((el) => el.item == item);
+  }
+
   void setSelectedRow(int index) {
-    Future.delayed(const Duration(milliseconds: 150), () async {
+    if (index < 0) {
+      return;
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       dataGridController.selectedIndex = index;
       dataGridController.scrollToRow(
         index.toDouble(),

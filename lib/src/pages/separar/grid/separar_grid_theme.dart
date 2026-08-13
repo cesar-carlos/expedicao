@@ -12,7 +12,7 @@ class SepararGridTheme {
     return SfDataGridThemeData.raw(
       gridLineStrokeWidth: 1,
       brightness: Brightness.dark,
-      rowHoverColor: Theme.of(Get.context!).primaryColor.withValues(alpha: 0.3),
+      rowHoverColor: Colors.transparent,
       selectionColor: AppColor.gridRowSelectedRowColor,
     );
   }

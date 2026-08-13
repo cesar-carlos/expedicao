@@ -130,6 +130,21 @@ class SepararController extends GetxController {
         return KeyEventResult.handled;
       }
 
+      if (event.logicalKey == LogicalKeyboardKey.f9) {
+        btnEditarCarrinho();
+        return KeyEventResult.handled;
+      }
+
+      if (event.logicalKey == LogicalKeyboardKey.f10) {
+        btnSalvarCarrinho();
+        return KeyEventResult.handled;
+      }
+
+      if (event.logicalKey == LogicalKeyboardKey.delete) {
+        btnExcluirCarrinho();
+        return KeyEventResult.handled;
+      }
+
       if (event.logicalKey == LogicalKeyboardKey.f12) {
         btnFinalizarSeparacao();
         return KeyEventResult.handled;
@@ -277,6 +292,18 @@ class SepararController extends GetxController {
         }
       },
     );
+  }
+
+  Future<void> btnEditarCarrinho() async {
+    await _separarCarrinhosController.editCartFromShortcut();
+  }
+
+  Future<void> btnSalvarCarrinho() async {
+    await _separarCarrinhosController.saveCartFromShortcut();
+  }
+
+  Future<void> btnExcluirCarrinho() async {
+    await _separarCarrinhosController.removeCartFromShortcut();
   }
 
   FutureOr<void> recuperarCarrinho() async {

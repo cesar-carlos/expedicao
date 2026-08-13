@@ -1,4 +1,3 @@
-import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 import 'package:syncfusion_flutter_core/theme.dart';
@@ -9,7 +8,7 @@ class ConferirCarrinhoGridTheme {
     return SfDataGridThemeData.raw(
       gridLineStrokeWidth: 1,
       brightness: Brightness.dark,
-      rowHoverColor: Theme.of(Get.context!).primaryColor.withValues(alpha: 0.3),
+      rowHoverColor: Colors.transparent,
       selectionColor: AppColor.gridRowSelectedRowColor,
     );
   }

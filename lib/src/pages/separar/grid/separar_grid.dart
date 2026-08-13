@@ -10,9 +10,13 @@ import 'package:app_expedicao/src/pages/separar/grid/separar_grid_source.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid_footer.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid_event.dart';
 
-// ignore: must_be_immutable
 class SepararGrid extends StatelessWidget {
-  const SepararGrid({super.key});
+  const SepararGrid({
+    super.key,
+    this.forSeparacao = false,
+  });
+
+  final bool forSeparacao;
 
   @override
   Widget build(BuildContext context) {
@@ -22,13 +26,17 @@ class SepararGrid extends StatelessWidget {
           data: SepararGridTheme().theme,
           child: SfDataGrid(
             columnWidthMode: ColumnWidthMode.fill,
-            controller: controller.dataGridController,
+            controller: forSeparacao
+                ? controller.dataGridControllerSeparacao
+                : controller.dataGridController,
             source: SepararSource(controller.itensSort),
             onCellDoubleTap: SepararGridEvent().onCellDoubleTap,
             onSelectionChanged: SepararGridEvent().onSelectionChanged,
             columns: SepararGridColumns().columns,
             selectionMode: SelectionMode.single,
+            navigationMode: GridNavigationMode.row,
             footer: const SepararGridFooter(),
+            highlightRowOnHover: false,
             showColumnHeaderIconOnHover: true,
             isScrollbarAlwaysShown: true,
             headerRowHeight: 40,

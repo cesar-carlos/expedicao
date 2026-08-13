@@ -5,6 +5,7 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:app_expedicao/src/pages/separarado_carrinhos/grid/separarado_carrinho_grid_cells.dart';
 import 'package:app_expedicao/src/pages/separarado_carrinhos/grid/separarado_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
+import 'package:app_expedicao/src/pages/common/widget/shortcut_badge.dart';
 import 'package:app_expedicao/src/app/app_helper.dart';
 
 class SeparadoCarrinhoGridSource extends DataGridSource {
@@ -75,14 +76,13 @@ class SeparadoCarrinhoGridSource extends DataGridSource {
                 columnName: 'actions',
                 value:
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  SizedBox(
-                    width: 37,
-                    child: IconButton(
-                      icon: controller.iconRemove(i),
-                      onPressed: () {
-                        controller.onRemoveItem(this, i);
-                      },
-                    ),
+                  ShortcutBadge(
+                    shortCut: 'Del',
+                    tooltip: 'Excluir Carrinho (Del)',
+                    onPressed: () {
+                      controller.onRemoveItem(this, i);
+                    },
+                    child: controller.iconRemove(i),
                   ),
                   const SizedBox(
                     width: 9,
@@ -91,11 +91,13 @@ class SeparadoCarrinhoGridSource extends DataGridSource {
                       thickness: 0.5,
                     ),
                   ),
-                  IconButton(
-                    icon: controller.iconEdit(i),
+                  ShortcutBadge(
+                    shortCut: 'F9',
+                    tooltip: 'Editar Carrinho (F9)',
                     onPressed: () {
                       controller.onEditItem(this, i);
                     },
+                    child: controller.iconEdit(i),
                   ),
                   const SizedBox(
                     width: 9,
@@ -104,11 +106,13 @@ class SeparadoCarrinhoGridSource extends DataGridSource {
                       thickness: 0.5,
                     ),
                   ),
-                  IconButton(
-                    icon: controller.iconSave(i),
+                  ShortcutBadge(
+                    shortCut: 'F10',
+                    tooltip: 'Salvar Carrinho (F10)',
                     onPressed: () {
                       controller.onSavetem(this, i);
                     },
+                    child: controller.iconSave(i),
                   ),
                 ]),
               ),
@@ -121,8 +125,14 @@ class SeparadoCarrinhoGridSource extends DataGridSource {
 
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
+    final itemCell = row.getCells().where((cell) => cell.columnName == 'item');
+    final itemValue = itemCell.isEmpty ? null : itemCell.first.value?.toString();
+    final item = itemValue == null
+        ? null
+        : controller.itensSort.where((el) => el.item == itemValue).firstOrNull;
+
     return DataGridRowAdapter(
-        color: Colors.white,
+        color: item == null ? Colors.white : controller.rowColor(item),
         cells: row.getCells().map<Widget>((cell) {
           if (cell.value is double) {
             return SeparadoCarrinhoGridCells.defaultMoneyCell(cell.value);

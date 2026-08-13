@@ -211,7 +211,7 @@ class SeparadoCarrinhoGridColumns {
     _columns.add(
       GridColumn(
         visible: true,
-        maximumWidth: 140,
+        maximumWidth: 160,
         columnName: 'actions',
         label: Container(
           padding: padding,

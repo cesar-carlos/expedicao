@@ -33,6 +33,7 @@ class ConferenciaCarrinhoGrid extends StatelessWidget {
               codCarrinho: percursoEstagioConsulta.codCarrinho,
               item: percursoEstagioConsulta.item,
             ),
+            highlightRowOnHover: false,
             showColumnHeaderIconOnHover: true,
             isScrollbarAlwaysShown: true,
             headerRowHeight: 40,

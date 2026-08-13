@@ -28,10 +28,12 @@ class SeparacaoCarrinhoGrid extends StatelessWidget {
             onCellDoubleTap: SeparacaoCarrinhoGridEvent.onCellDoubleTap,
             columns: SeparacaoCarrinhoGridColumns().columns,
             selectionMode: SelectionMode.single,
+            navigationMode: GridNavigationMode.row,
             footer: SeparacaoCarrinhoGridFooter(
               codCarrinho: percursoEstagioConsulta.codCarrinho,
               item: percursoEstagioConsulta.item,
             ),
+            highlightRowOnHover: false,
             showColumnHeaderIconOnHover: true,
             isScrollbarAlwaysShown: true,
             headerRowHeight: 40,

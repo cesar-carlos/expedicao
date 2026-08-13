@@ -437,14 +437,6 @@ class SeparacaoController extends GetxController {
       displayController.text = itemSepararConsulta.nomeProduto;
       _separacaoGridController.addGrid(separacaoItemConsulta);
 
-      final indexAdd = _separarGridController.findIndexCodProduto(
-        separacaoItemConsulta.codProduto,
-      );
-
-      _separarGridController.setSelectedRow(indexAdd);
-      _separacaoGridController.update();
-      _separarGridController.update();
-
       final itemSeparar = _findItemSepararGrid(
         separacaoItemConsulta.codProduto,
       )!;
@@ -453,8 +445,14 @@ class SeparacaoController extends GetxController {
         quantidadeSeparacao:
             itemSeparar.quantidadeSeparacao + separacaoItemConsulta.quantidade,
       ));
+      _separarGridController.highlightItem(itemSeparar.item);
 
-      scanController.text = '';
+      _separacaoGridController.update();
+      _separacaoGridController.setSelectedRow(
+        _separacaoGridController.findIndexItem(separacaoItemConsulta.item),
+      );
+
+      scanController.clear();
       quantidadeController.text = '1,000';
       scanFocusNode.requestFocus();
 
@@ -923,6 +921,12 @@ class SeparacaoController extends GetxController {
               itemConsulta.codSepararEstoque ==
                   percursoEstagioConsulta.codOrigem &&
               itemConsulta.codCarrinho == percursoEstagioConsulta.codCarrinho) {
+            final alreadyInGrid = _separacaoGridController.itens
+                .any((el) => el.item == itemConsulta.item);
+            if (alreadyInGrid) {
+              continue;
+            }
+
             _separacaoGridController.addGrid(itemConsulta);
             _separacaoGridController.update();
           }

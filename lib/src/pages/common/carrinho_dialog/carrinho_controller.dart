@@ -64,6 +64,11 @@ class CarrinhoController extends GetxController {
         return KeyEventResult.handled;
       }
 
+      if (event.logicalKey == LogicalKeyboardKey.f12) {
+        addCarrinho();
+        return KeyEventResult.handled;
+      }
+
       return KeyEventResult.ignored;
     }
 

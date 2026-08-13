@@ -30,23 +30,20 @@ class ConfirmationDialogController extends GetxController {
   KeyEventResult handleKeyEvent(AppRawKeyEvent event) {
     if (isRawKeyDown(event)) {
       if (event.logicalKey == LogicalKeyboardKey.escape) {
-        Get.find<AppEventState>().canCloseWindow = true;
-        Get.back(result: false);
+        _pop(false);
         return KeyEventResult.handled;
       }
 
       if (event.logicalKey == LogicalKeyboardKey.numpad1 ||
           event.logicalKey == LogicalKeyboardKey.digit1 ||
           event.logicalKey == LogicalKeyboardKey.enter) {
-        Get.find<AppEventState>().canCloseWindow = true;
-        Get.back(result: true);
+        _pop(true);
         return KeyEventResult.handled;
       }
 
       if (event.logicalKey == LogicalKeyboardKey.numpad0 ||
           event.logicalKey == LogicalKeyboardKey.digit0) {
-        Get.find<AppEventState>().canCloseWindow = false;
-        Get.back(result: false);
+        _pop(false, canCloseWindow: false);
         return KeyEventResult.handled;
       }
 
@@ -56,13 +53,24 @@ class ConfirmationDialogController extends GetxController {
     return KeyEventResult.ignored;
   }
 
-  void notConfirmationOnPressed() {
-    Get.find<AppEventState>().canCloseWindow = true;
-    Get.back(result: false);
-  }
+  void notConfirmationOnPressed() => _pop(false);
 
-  void confirmationOnPressed() {
-    Get.find<AppEventState>().canCloseWindow = true;
-    Get.back(result: true);
+  void confirmationOnPressed() => _pop(true);
+
+  void _pop(bool result, {bool canCloseWindow = true}) {
+    Get.find<AppEventState>().canCloseWindow = canCloseWindow;
+    final ctx = formFocusNode.context;
+    if (ctx != null && ctx.mounted) {
+      Navigator.of(ctx).pop(result);
+      return;
+    }
+
+    final overlay = Get.overlayContext;
+    if (overlay != null && overlay.mounted) {
+      Navigator.of(overlay).pop(result);
+      return;
+    }
+
+    Get.back(result: result);
   }
 }

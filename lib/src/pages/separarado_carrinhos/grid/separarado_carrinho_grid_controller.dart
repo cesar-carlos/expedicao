@@ -7,6 +7,7 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/pages/separarado_carrinhos/grid/separarado_carrinho_grid_source.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
+import 'package:app_expedicao/src/app/app_color.dart';
 
 class SeparadoCarrinhoGridController extends GetxController {
   static const gridName = 'separadoCarrinhoGrid';
@@ -18,6 +19,10 @@ class SeparadoCarrinhoGridController extends GetxController {
   List<ExpedicaoCarrinhoPercursoEstagioConsultaModel> get itens => _itens;
   List<ExpedicaoCarrinhoPercursoEstagioConsultaModel> get itensSort =>
       _itens.toList()..sort((a, b) => b.item.compareTo(a.item));
+
+  String? highlightedItem;
+  bool _applyingSelection = false;
+  bool get applyingSelection => _applyingSelection;
 
 
   void Function(ExpedicaoCarrinhoPercursoEstagioConsultaModel item)?
@@ -39,6 +44,9 @@ class SeparadoCarrinhoGridController extends GetxController {
 
   void updateGrid(ExpedicaoCarrinhoPercursoEstagioConsultaModel item) {
     final index = _itens.indexWhere((el) => el.item == item.item);
+    if (index < 0) {
+      return;
+    }
     _itens[index] = item;
   }
 
@@ -152,14 +160,60 @@ class SeparadoCarrinhoGridController extends GetxController {
     );
   }
 
-  void setSelectedRow(int index) {
-    Future.delayed(const Duration(milliseconds: 150), () async {
+  int findIndexItem(String item) {
+    return itensSort.indexWhere((el) => el.item == item);
+  }
+
+  ExpedicaoCarrinhoPercursoEstagioConsultaModel? get selectedItem {
+    if (highlightedItem == null) {
+      return null;
+    }
+
+    final match = itensSort.where((el) => el.item == highlightedItem);
+    if (match.isEmpty) {
+      return null;
+    }
+
+    return match.first;
+  }
+
+  void setSelectedRow(int index, {bool scroll = true}) {
+    if (index < 0) {
+      return;
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       dataGridController.selectedIndex = index;
-      dataGridController.scrollToRow(
-        index.toDouble(),
-        canAnimate: true,
-        position: DataGridScrollPosition.center,
-      );
+      if (scroll) {
+        dataGridController.scrollToRow(
+          index.toDouble(),
+          canAnimate: true,
+          position: DataGridScrollPosition.center,
+        );
+      }
     });
+  }
+
+  void highlightItem(String item, {bool scroll = true}) {
+    if (highlightedItem == item && !scroll) {
+      return;
+    }
+
+    _applyingSelection = true;
+    highlightedItem = item;
+    update();
+    setSelectedRow(findIndexItem(item), scroll: scroll);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _applyingSelection = false;
+    });
+  }
+
+  Color rowColor(ExpedicaoCarrinhoPercursoEstagioConsultaModel item) {
+    if (highlightedItem != null && item.item == highlightedItem) {
+      return AppColor.gridRowSelectedRowColor;
+    }
+
+    return Colors.white;
   }
 }

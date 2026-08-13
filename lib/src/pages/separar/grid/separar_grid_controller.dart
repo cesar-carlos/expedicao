@@ -24,6 +24,9 @@ class SepararGridController extends GetxController {
 
   final _processoExecutavel = Get.find<ProcessoExecutavelModel>();
   final dataGridController = DataGridController();
+  final dataGridControllerSeparacao = DataGridController();
+
+  String? highlightedItem;
 
   List<DataGridRow> get selectedoRows => dataGridController.selectedRows;
   int get selectedIndex => dataGridController.selectedIndex;
@@ -123,14 +126,48 @@ class SepararGridController extends GetxController {
         el.item == item.item);
   }
 
-  void setSelectedRow(int index) {
-    Future.delayed(const Duration(milliseconds: 150), () async {
-      dataGridController.selectedIndex = index;
-      dataGridController.scrollToRow(
-        index.toDouble(),
-        canAnimate: true,
-        position: DataGridScrollPosition.center,
-      );
+  bool _applyingSelection = false;
+  bool get applyingSelection => _applyingSelection;
+
+  void setSelectedRow(int index, {bool scroll = true}) {
+    _applySelectedRow(dataGridController, index, scroll: scroll);
+    _applySelectedRow(dataGridControllerSeparacao, index, scroll: scroll);
+  }
+
+  /// Um único foco de row: scan posiciona e rola; clique do usuário só troca a row.
+  void highlightItem(String item, {bool scroll = true}) {
+    if (highlightedItem == item && !scroll) {
+      return;
+    }
+
+    _applyingSelection = true;
+    highlightedItem = item;
+    update();
+    setSelectedRow(findIndexItem(item), scroll: scroll);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _applyingSelection = false;
+    });
+  }
+
+  void _applySelectedRow(
+    DataGridController target,
+    int index, {
+    bool scroll = true,
+  }) {
+    if (index < 0) {
+      return;
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      target.selectedIndex = index;
+      if (scroll) {
+        target.scrollToRow(
+          index.toDouble(),
+          canAnimate: true,
+          position: DataGridScrollPosition.center,
+        );
+      }
     });
   }
 
@@ -189,13 +226,11 @@ class SepararGridController extends GetxController {
   }
 
   int findIndexCodProduto(int codProduto) {
-    final el = _itens.where((el) => el.codProduto == codProduto).toList();
-    return _itens.indexOf(el.first);
+    return itensSort.indexWhere((el) => el.codProduto == codProduto);
   }
 
   int findIndexItem(String item) {
-    final el = _itens.where((el) => el.item == item).toList();
-    return _itens.indexOf(el.first);
+    return itensSort.indexWhere((el) => el.item == item);
   }
 
   ExpedicaoSepararItemConsultaModel? findBarCode(String barCode) {
@@ -260,6 +295,10 @@ class SepararGridController extends GetxController {
     DataGridRow dataGridRow,
     ExpedicaoSepararItemConsultaModel el,
   ) {
+    if (highlightedItem != null && el.item == highlightedItem) {
+      return AppColor.gridRowSelectedRowColor;
+    }
+
     if (el.quantidade == el.quantidadeSeparacao) {
       return AppColor.gridRowSelectedComplit;
     }

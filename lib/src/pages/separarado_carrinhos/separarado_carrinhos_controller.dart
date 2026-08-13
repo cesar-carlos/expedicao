@@ -39,7 +39,7 @@ class SeparadoCarrinhosController extends GetxController {
   ExpedicaoSepararConsultaModel get separarConsulta => _separarConsulta;
 
   @override
-  Future<void> onInit() async {
+  void onInit() {
     super.onInit();
     _usuarioLogado = Get.find<UsuarioConsultaMoldel>();
     _separarConsulta = Get.find<ExpedicaoSepararConsultaModel>();
@@ -53,13 +53,13 @@ class SeparadoCarrinhosController extends GetxController {
       codSepararEstoque: _processoExecutavel.codOrigem,
     );
 
-    await _fillGridSeparadoCarrinhos();
+    _evetsCarrinhoGrid();
+    _fillGridSeparadoCarrinhos();
   }
 
   @override
-  onReady() async {
+  void onReady() {
     super.onReady();
-    _evetsCarrinhoGrid();
     _liteners();
   }
 
@@ -114,89 +114,73 @@ class SeparadoCarrinhosController extends GetxController {
       detail: 'Ao cancelar, os itens serão removido do carrinho!',
     );
 
-    if (confirmation != null && confirmation) {
+    if (confirmation != true) {
+      return;
+    }
+
+    try {
       await LoadingProcessDialogGenericWidget.show<bool>(
         context: Get.context!,
         process: () async {
-          try {
-            final carrinhoQueryBuilder = QueryBuilder()
-                .equals('CodEmpresa', item.codEmpresa)
-                .equals('CodCarrinho', item.codCarrinho);
+          final carrinhoQueryBuilder = QueryBuilder()
+              .equals('CodEmpresa', item.codEmpresa)
+              .equals('CodCarrinho', item.codCarrinho);
 
-            final carrinho =
-                await CarrinhoService().select(carrinhoQueryBuilder);
+          final carrinho = await CarrinhoService().select(carrinhoQueryBuilder);
 
-            final carrinhosPercursoEstagioQueryBuilder = QueryBuilder()
-                .equals('CodEmpresa', item.codEmpresa)
-                .equals('CodCarrinhoPercurso', item.codCarrinhoPercurso)
-                .equals('CodPercursoEstagio', item.codPercursoEstagio)
-                .equals('CodCarrinho', item.codCarrinho)
-                .equals('Item', item.item);
+          final carrinhosPercursoEstagioQueryBuilder = QueryBuilder()
+              .equals('CodEmpresa', item.codEmpresa)
+              .equals('CodCarrinhoPercurso', item.codCarrinhoPercurso)
+              .equals('CodPercursoEstagio', item.codPercursoEstagio)
+              .equals('CodCarrinho', item.codCarrinho)
+              .equals('Item', item.item);
 
-            final carrinhosPercursoEstagio =
-                await CarrinhoPercursoEstagioServices()
-                    .select(carrinhosPercursoEstagioQueryBuilder);
+          final carrinhosPercursoEstagio =
+              await CarrinhoPercursoEstagioServices()
+                  .select(carrinhosPercursoEstagioQueryBuilder);
 
-            if (carrinho.isEmpty || carrinhosPercursoEstagio.isEmpty) {
-              await MessageDialogView.show(
-                canCloseWindow: false,
-                context: Get.context!,
-                message: 'Carrinho não encontrado!',
-                detail: 'Carrinho não encontrado na tabela percurso estagio!',
-              );
-
-              return false;
-            }
-
-            //TOOD:: ADD SOLICITACAO DE SENHA
-            final carrinhoPercursoEstagio = carrinhosPercursoEstagio.last;
-            if (carrinhoPercursoEstagio.codUsuarioInicio !=
-                    _processoExecutavel.codUsuario &&
-                _usuarioLogado.excluiCarrinhoOutroUsuario != 'S') {
-              await MessageDialogView.show(
-                canCloseWindow: false,
-                context: Get.context!,
-                message: 'Carrinho não pertence a você!',
-                detail:
-                    '''Carrinho não pode ser cancelado. Solicite para o usuario ${carrinhoPercursoEstagio.nomeUsuarioInicio} fazer o cancelamento! ''',
-              );
-
-              return false;
-            }
-
-            final newCarrinho = carrinho.last.copyWith(
-              situacao: ExpedicaoCarrinhoSituacaoModel.liberado,
+          if (carrinho.isEmpty || carrinhosPercursoEstagio.isEmpty) {
+            throw Exception(
+              'Carrinho não encontrado na tabela percurso estagio!',
             );
-
-            await CarrinhoPercursoEstagioCancelarService(
-              carrinho: newCarrinho,
-              percursoEstagio: carrinhoPercursoEstagio,
-            ).execute();
-
-            final carrinhoPercursoConsulta = item.copyWith(
-              situacao: ExpedicaoSituacaoModel.cancelada,
-            );
-
-            await SeparacaoCancelarItemService(
-              percursoEstagioConsulta: carrinhoPercursoConsulta,
-            ).cancelarAllItensCart();
-
-            final newSepararItens =
-                await _separarConsultaServices.itensSaparar();
-
-            _separadoCarrinhoGridController
-                .updateGrid(carrinhoPercursoConsulta);
-
-            _separarGridController.updateAllGrid(newSepararItens);
-            _separadoCarrinhoGridController.update();
-            _separarGridController.update();
-            return true;
-          } catch (err) {
-            return false;
           }
+
+          final carrinhoPercursoEstagio = carrinhosPercursoEstagio.last;
+          if (carrinhoPercursoEstagio.codUsuarioInicio !=
+                  _processoExecutavel.codUsuario &&
+              _usuarioLogado.excluiCarrinhoOutroUsuario != 'S') {
+            throw Exception(
+              'Carrinho não pode ser cancelado. Solicite para o usuario ${carrinhoPercursoEstagio.nomeUsuarioInicio} fazer o cancelamento!',
+            );
+          }
+
+          final newCarrinho = carrinho.last.copyWith(
+            situacao: ExpedicaoCarrinhoSituacaoModel.liberado,
+          );
+
+          await CarrinhoPercursoEstagioCancelarService(
+            carrinho: newCarrinho,
+            percursoEstagio: carrinhoPercursoEstagio,
+          ).execute();
+
+          final carrinhoPercursoConsulta = item.copyWith(
+            situacao: ExpedicaoSituacaoModel.cancelada,
+          );
+
+          await SeparacaoCancelarItemService(
+            percursoEstagioConsulta: carrinhoPercursoConsulta,
+          ).cancelarAllItensCart();
+
+          final newSepararItens = await _separarConsultaServices.itensSaparar();
+
+          _separadoCarrinhoGridController.updateGrid(carrinhoPercursoConsulta);
+          _separarGridController.updateAllGrid(newSepararItens);
+          _separadoCarrinhoGridController.update();
+          _separarGridController.update();
+          return true;
         },
       );
-    }
+    } catch (_) {}
   }
 
   Future<void> editCart(
@@ -428,6 +412,73 @@ class SeparadoCarrinhosController extends GetxController {
     }
 
     return false;
+  }
+
+  ExpedicaoCarrinhoPercursoEstagioConsultaModel? _carrinhoParaAtalho() {
+    final itens = _separadoCarrinhoGridController.itensSort;
+    if (itens.isEmpty) {
+      return null;
+    }
+
+    final selecionado = _separadoCarrinhoGridController.selectedItem;
+    if (selecionado != null) {
+      return selecionado;
+    }
+
+    if (itens.length == 1) {
+      return itens.first;
+    }
+
+    final emSeparacao = itens.where((el) =>
+        el.situacao == ExpedicaoSituacaoModel.separando ||
+        el.situacao == ExpedicaoSituacaoModel.emAndamento);
+    if (emSeparacao.isNotEmpty) {
+      return emSeparacao.first;
+    }
+
+    return itens.first;
+  }
+
+  Future<void> editCartFromShortcut() async {
+    final item = _carrinhoParaAtalho();
+    if (item == null) {
+      await MessageDialogView.show(
+        context: Get.context!,
+        message: 'Nenhum carrinho!',
+        detail: 'Adicione um carrinho para editar.',
+      );
+      return;
+    }
+
+    await editCart(item);
+  }
+
+  Future<void> saveCartFromShortcut() async {
+    final item = _carrinhoParaAtalho();
+    if (item == null) {
+      await MessageDialogView.show(
+        context: Get.context!,
+        message: 'Nenhum carrinho!',
+        detail: 'Adicione um carrinho para salvar.',
+      );
+      return;
+    }
+
+    await saveCart(item);
+  }
+
+  Future<void> removeCartFromShortcut() async {
+    final item = _carrinhoParaAtalho();
+    if (item == null) {
+      await MessageDialogView.show(
+        context: Get.context!,
+        message: 'Nenhum carrinho!',
+        detail: 'Adicione um carrinho para excluir.',
+      );
+      return;
+    }
+
+    await removeCart(item);
   }
 
   void _evetsCarrinhoGrid() {
