@@ -4,6 +4,7 @@ import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import 'package:app_expedicao/src/app/app_color.dart';
+import 'package:app_expedicao/src/app/app_data_grid.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_item_unidade_medida_consulta_model.dart';
@@ -155,20 +156,7 @@ class SepararGridController extends GetxController {
     int index, {
     bool scroll = true,
   }) {
-    if (index < 0) {
-      return;
-    }
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      target.selectedIndex = index;
-      if (scroll) {
-        target.scrollToRow(
-          index.toDouble(),
-          canAnimate: true,
-          position: DataGridScrollPosition.center,
-        );
-      }
-    });
+    target.selectAndScrollToRow(index, scroll: scroll);
   }
 
   double totalQuantity() {

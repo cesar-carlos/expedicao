@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -8,12 +9,14 @@ import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/pages/separarado_carrinhos/grid/separarado_carrinho_grid_source.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
 import 'package:app_expedicao/src/app/app_color.dart';
+import 'package:app_expedicao/src/app/app_data_grid.dart';
 
 class SeparadoCarrinhoGridController extends GetxController {
   static const gridName = 'separadoCarrinhoGrid';
 
   final iconSize = 19.0;
   final DataGridController dataGridController = DataGridController();
+  final gridFocusNode = FocusNode();
   late final List<ExpedicaoCarrinhoPercursoEstagioConsultaModel> _itens = [];
 
   List<ExpedicaoCarrinhoPercursoEstagioConsultaModel> get itens => _itens;
@@ -33,6 +36,12 @@ class SeparadoCarrinhoGridController extends GetxController {
 
   void Function(ExpedicaoCarrinhoPercursoEstagioConsultaModel item)?
       onPressedSave;
+
+  @override
+  void onClose() {
+    gridFocusNode.dispose();
+    super.onClose();
+  }
 
   void addGrid(ExpedicaoCarrinhoPercursoEstagioConsultaModel item) {
     _itens.add(item);
@@ -178,20 +187,54 @@ class SeparadoCarrinhoGridController extends GetxController {
   }
 
   void setSelectedRow(int index, {bool scroll = true}) {
-    if (index < 0) {
+    dataGridController.selectAndScrollToRow(index, scroll: scroll);
+  }
+
+  void highlightFirstRow() {
+    if (itensSort.isEmpty) {
       return;
     }
 
+    highlightItem(itensSort.first.item);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      dataGridController.selectedIndex = index;
-      if (scroll) {
-        dataGridController.scrollToRow(
-          index.toDouble(),
-          canAnimate: true,
-          position: DataGridScrollPosition.center,
-        );
+      if (gridFocusNode.canRequestFocus) {
+        gridFocusNode.requestFocus();
       }
     });
+  }
+
+  void highlightAdjacentRow(int delta) {
+    final itens = itensSort;
+    if (itens.isEmpty) {
+      return;
+    }
+
+    var current =
+        highlightedItem == null ? -1 : findIndexItem(highlightedItem!);
+    if (current < 0) {
+      current = delta > 0 ? -1 : 0;
+    }
+
+    final next = (current + delta).clamp(0, itens.length - 1);
+    highlightItem(itens[next].item);
+  }
+
+  KeyEventResult handleGridKeyEvent(FocusNode node, KeyEvent event) {
+    if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
+      return KeyEventResult.ignored;
+    }
+
+    if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+      highlightAdjacentRow(1);
+      return KeyEventResult.handled;
+    }
+
+    if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+      highlightAdjacentRow(-1);
+      return KeyEventResult.handled;
+    }
+
+    return KeyEventResult.ignored;
   }
 
   void highlightItem(String item, {bool scroll = true}) {

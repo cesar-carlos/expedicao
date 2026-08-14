@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
-import 'package:flutter/widgets.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
+import 'package:app_expedicao/src/app/app_data_grid.dart';
 import 'package:app_expedicao/src/model/expedicao_separacao_item_consulta_model.dart';
 import 'package:app_expedicao/src/pages/separacao/grid_separacao/separacao_carrinho_grid_source.dart';
 
@@ -59,18 +59,7 @@ class SeparacaoCarrinhoGridController extends GetxController {
   }
 
   void setSelectedRow(int index) {
-    if (index < 0) {
-      return;
-    }
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      dataGridController.selectedIndex = index;
-      dataGridController.scrollToRow(
-        index.toDouble(),
-        canAnimate: true,
-        position: DataGridScrollPosition.center,
-      );
-    });
+    dataGridController.selectAndScrollToRow(index);
   }
 
   double totalQuantity() {

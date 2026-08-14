@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import 'package:app_expedicao/src/app/app_color.dart';
+import 'package:app_expedicao/src/app/app_data_grid.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_item_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_item_unidade_medida_consulta_model.dart';
@@ -108,14 +109,7 @@ class ConferirGridController extends GetxController {
   }
 
   void setSelectedRow(int index) {
-    Future.delayed(const Duration(milliseconds: 150), () async {
-      dataGridController.selectedIndex = index;
-      dataGridController.scrollToRow(
-        index.toDouble(),
-        canAnimate: true,
-        position: DataGridScrollPosition.center,
-      );
-    });
+    dataGridController.selectAndScrollToRow(index);
   }
 
   double totalQuantity() {

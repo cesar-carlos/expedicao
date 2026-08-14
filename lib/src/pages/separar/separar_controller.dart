@@ -145,6 +145,11 @@ class SepararController extends GetxController {
         return KeyEventResult.handled;
       }
 
+      if (event.logicalKey == LogicalKeyboardKey.f11) {
+        recuperarCarrinho();
+        return KeyEventResult.handled;
+      }
+
       if (event.logicalKey == LogicalKeyboardKey.f12) {
         btnFinalizarSeparacao();
         return KeyEventResult.handled;

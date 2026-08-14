@@ -68,6 +68,7 @@ class SeparadoCarrinhosController extends GetxController {
         await _separarConsultaServices.carrinhosPercurso();
     _separadoCarrinhoGridController.addAllGrid(separadoCarrinhos);
     _separadoCarrinhoGridController.update();
+    _separadoCarrinhoGridController.highlightFirstRow();
   }
 
   void addCart(ExpedicaoCarrinhoPercursoEstagioConsultaModel model) {

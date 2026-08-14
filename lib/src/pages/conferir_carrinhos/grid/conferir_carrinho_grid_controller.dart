@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
+import 'package:app_expedicao/src/app/app_data_grid.dart';
 import 'package:app_expedicao/src/pages/common/message_dialog/message_dialog_view.dart';
 import 'package:app_expedicao/src/pages/conferir_carrinhos/grid/conferir_carrinho_grid_source.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_conferir_consulta_model.dart';
@@ -196,14 +197,7 @@ class ConferirCarrinhoGridController extends GetxController {
   }
 
   void setSelectedRow(int index) {
-    Future.delayed(const Duration(milliseconds: 150), () async {
-      dataGridController.selectedIndex = index;
-      dataGridController.scrollToRow(
-        index.toDouble(),
-        canAnimate: true,
-        position: DataGridScrollPosition.center,
-      );
-    });
+    dataGridController.selectAndScrollToRow(index);
   }
 
   Icon iconIndicator(ExpedicaoCarrinhoConferirConsultaModel item) {

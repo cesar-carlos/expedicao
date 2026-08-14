@@ -17,23 +17,27 @@ class SeparadoCarrinhoGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<SeparadoCarrinhoGridController>(
       builder: (controller) {
-        return SfDataGridTheme(
-          data: SeparadoCarrinhoGridTheme().theme,
-          child: SfDataGrid(
-            columnWidthMode: ColumnWidthMode.fill,
-            controller: controller.dataGridController,
-            source: SeparadoCarrinhoGridSource(itens: controller.itensSort),
-            onCellDoubleTap: SeparadoCarrinhoGridEvent.onCellDoubleTap,
-            onSelectionChanged: SeparadoCarrinhoGridEvent.onSelectionChanged,
-            columns: SeparadoCarrinhoGridColumns().columns,
-            selectionMode: SelectionMode.single,
-            navigationMode: GridNavigationMode.row,
-            footer: const SeparadoCarrinhoGridFooter(),
-            highlightRowOnHover: false,
-            showColumnHeaderIconOnHover: true,
-            isScrollbarAlwaysShown: true,
-            headerRowHeight: 30,
-            rowHeight: 40,
+        return Focus(
+          focusNode: controller.gridFocusNode,
+          onKeyEvent: controller.handleGridKeyEvent,
+          child: SfDataGridTheme(
+            data: SeparadoCarrinhoGridTheme().theme,
+            child: SfDataGrid(
+              columnWidthMode: ColumnWidthMode.fill,
+              controller: controller.dataGridController,
+              source: SeparadoCarrinhoGridSource(itens: controller.itensSort),
+              onCellDoubleTap: SeparadoCarrinhoGridEvent.onCellDoubleTap,
+              onSelectionChanged: SeparadoCarrinhoGridEvent.onSelectionChanged,
+              columns: SeparadoCarrinhoGridColumns().columns,
+              selectionMode: SelectionMode.single,
+              navigationMode: GridNavigationMode.row,
+              footer: const SeparadoCarrinhoGridFooter(),
+              highlightRowOnHover: false,
+              showColumnHeaderIconOnHover: true,
+              isScrollbarAlwaysShown: true,
+              headerRowHeight: 30,
+              rowHeight: 40,
+            ),
           ),
         );
       },
