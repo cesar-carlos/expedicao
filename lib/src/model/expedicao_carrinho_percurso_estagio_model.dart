@@ -1,4 +1,5 @@
 import 'package:app_expedicao/src/app/app_helper.dart';
+import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 
 class ExpedicaoCarrinhoPercursoEstagioModel {
   final int codEmpresa;
@@ -77,8 +78,30 @@ class ExpedicaoCarrinhoPercursoEstagioModel {
     );
   }
 
+  ExpedicaoCarrinhoPercursoEstagioModel reabrir() {
+    return ExpedicaoCarrinhoPercursoEstagioModel(
+      codEmpresa: codEmpresa,
+      codCarrinhoPercurso: codCarrinhoPercurso,
+      item: item,
+      origem: origem,
+      codOrigem: codOrigem,
+      codPercursoEstagio: codPercursoEstagio,
+      codCarrinho: codCarrinho,
+      situacao: ExpedicaoSituacaoModel.separando,
+      dataInicio: dataInicio,
+      horaInicio: horaInicio,
+      codUsuarioInicio: codUsuarioInicio,
+      nomeUsuarioInicio: nomeUsuarioInicio,
+      dataFinalizacao: null,
+      horaFinalizacao: null,
+      codUsuarioFinalizacao: null,
+      nomeUsuarioFinalizacao: null,
+    );
+  }
+
   factory ExpedicaoCarrinhoPercursoEstagioModel.fromJson(
-      Map<String, dynamic> json) {
+    Map<String, dynamic> json,
+  ) {
     try {
       return ExpedicaoCarrinhoPercursoEstagioModel(
         codEmpresa: json['CodEmpresa'],
@@ -93,8 +116,9 @@ class ExpedicaoCarrinhoPercursoEstagioModel {
         horaInicio: json['HoraInicio'],
         codUsuarioInicio: json['CodUsuarioInicio'],
         nomeUsuarioInicio: json['NomeUsuarioInicio'],
-        dataFinalizacao:
-            AppHelper.tryStringToDateOrNull(json['DataFinalizacao']),
+        dataFinalizacao: AppHelper.tryStringToDateOrNull(
+          json['DataFinalizacao'],
+        ),
         horaFinalizacao: json['HoraFinalizacao'],
         codUsuarioFinalizacao: json['CodUsuarioFinalizacao'],
         nomeUsuarioFinalizacao: json['NomeUsuarioFinalizacao'],

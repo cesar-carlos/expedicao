@@ -12,6 +12,7 @@ import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.da
 import 'package:app_expedicao/src/model/expedicao_item_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
+import 'package:app_expedicao/src/service/separacao_carrinho_validacao.dart';
 
 class SepararConsultaServices {
   final int codEmpresa;
@@ -60,14 +61,15 @@ class SepararConsultaServices {
   }
 
   Future<List<ExpedicaoSepararItemUnidadeMedidaConsultaModel>>
-      itensSapararUnidades() async {
+  itensSapararUnidades() async {
     try {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', codEmpresa)
           .equals('CodSepararEstoque', codSepararEstoque);
 
-      return await separarItemUnidadeMedidaConsultaRepository
-          .select(queryBuilder);
+      return await separarItemUnidadeMedidaConsultaRepository.select(
+        queryBuilder,
+      );
     } catch (e) {
       throw Exception('Erro ao buscar unidades de medida dos itens: $e');
     }
@@ -86,28 +88,35 @@ class SepararConsultaServices {
   }
 
   Future<List<ExpedicaSeparacaoItemConsultaModel>> itensCarrinho(
-      int codCarrinho) async {
+    int codCarrinho, {
+    String? itemCarrinhoPercurso,
+  }) async {
     try {
       final itensSeparacaoList = await itensSeparacao();
 
-      return itensSeparacaoList
-          .where((el) => el.codCarrinho == codCarrinho)
-          .toList();
+      return itensSeparacaoList.where((el) {
+        final mesmoCarrinho = el.codCarrinho == codCarrinho;
+        final mesmoPercurso =
+            itemCarrinhoPercurso == null ||
+            el.itemCarrinhoPercurso == itemCarrinhoPercurso;
+        return mesmoCarrinho && mesmoPercurso;
+      }).toList();
     } catch (e) {
       throw Exception('Erro ao buscar itens do carrinho: $e');
     }
   }
 
   Future<List<ExpedicaoCarrinhoPercursoEstagioConsultaModel>>
-      carrinhosPercurso() async {
+  carrinhosPercurso() async {
     try {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', codEmpresa)
           .equals('Origem', ExpedicaoOrigemModel.separacao)
           .equals('CodOrigem', codSepararEstoque);
 
-      return await carrinhoPercursoEstagioConsultaRepository
-          .select(queryBuilder);
+      return await carrinhoPercursoEstagioConsultaRepository.select(
+        queryBuilder,
+      );
     } catch (e) {
       throw Exception('Erro ao buscar carrinhos do percurso: $e');
     }
@@ -116,87 +125,80 @@ class SepararConsultaServices {
   Future<bool> isComplete() async {
     try {
       final itensSapararList = await itensSaparar();
-      return itensSapararList
-          .every((el) => el.quantidade == el.quantidadeSeparacao);
+      return itensSapararList.every(
+        (el) => el.quantidade == el.quantidadeSeparacao,
+      );
     } catch (e) {
       throw Exception('Erro ao verificar se separação está completa: $e');
     }
   }
 
-  Future<bool> cartIsValid(int codCarrinho) async {
+  Future<bool> cartIsValid(
+    int codCarrinho, {
+    String? itemCarrinhoPercurso,
+  }) async {
     try {
-      // Busca apenas os itens separados do carrinho específico
-      final itensSeparacaoCarrinho = await itensCarrinho(codCarrinho);
-      
-      // Filtra apenas itens não cancelados do carrinho
-      final itensSeparadosCarrinho = itensSeparacaoCarrinho
+      final itensSeparacaoList = await itensSeparacao();
+      final itensSeparados = itensSeparacaoList
           .where((el) => el.situacao != ExpedicaoItemSituacaoModel.cancelado)
           .toList();
 
-      // Se o carrinho não tem itens, não precisa validar
+      final itensSeparadosCarrinho = itensSeparados.where((el) {
+        final mesmoCarrinho = el.codCarrinho == codCarrinho;
+        final mesmoPercurso =
+            itemCarrinhoPercurso == null ||
+            el.itemCarrinhoPercurso == itemCarrinhoPercurso;
+        return mesmoCarrinho && mesmoPercurso;
+      }).toList();
+
       if (itensSeparadosCarrinho.isEmpty) {
         return true;
       }
 
-      // Busca os itens a separar (gerais da separação)
       final itensSapararList = await itensSaparar();
 
-      // Agrupa itens separados do carrinho por produto e soma quantidades
-      final itensSeparadosCarrinhoGroup = itensSeparadosCarrinho
-          .map((el) => (codProduto: el.codProduto, total: 0.00))
-          .toSet();
-
-      final itensSeparadoCarrinhoGroupTotais =
-          itensSeparadosCarrinhoGroup.map((element) {
-        final soma = itensSeparadosCarrinho
-            .where((el) => el.codProduto == element.codProduto)
-            .fold(0.00, (prev, el) => prev + el.quantidade);
-
-        return (codProduto: element.codProduto, total: soma);
-      }).toList();
-
-      // Agrupa itens a separar por produto e soma quantidades
-      final itensSapararGroup = itensSapararList
-          .map((el) => (codProduto: el.codProduto, total: 0.00))
-          .toSet();
-
-      final itensSapararGroupTotais = itensSapararGroup.map((element) {
-        final soma = itensSapararList
-            .where((el) => el.codProduto == element.codProduto)
-            .fold(0.00, (prev, el) => prev + el.quantidade);
-
-        return (codProduto: element.codProduto, total: soma);
-      }).toList();
-
-      // Valida cada produto do carrinho
-      for (var itemCarrinho in itensSeparadoCarrinhoGroupTotais) {
-        // Busca a quantidade total a separar para este produto
-        final quantidadeASeparar = itensSapararGroupTotais
-            .firstWhere(
-                (element) => element.codProduto == itemCarrinho.codProduto,
-                orElse: () => (codProduto: itemCarrinho.codProduto, total: 0.00))
-            .total;
-
-        // Se a quantidade separada no carrinho exceder a quantidade total a separar, está inválido
-        if (itemCarrinho.total > quantidadeASeparar) {
-          return false;
-        }
-      }
-
-      return true;
+      return SeparacaoCarrinhoValidacao.quantidadeDentroDoPedido(
+        separados: itensSeparados.map(_toQuantidadeItem),
+        aSeparar: itensSapararList.map(_toQuantidadeItemASeparar),
+        somenteItensDoCarrinho: itensSeparadosCarrinho.map(_toQuantidadeItem),
+      );
     } catch (e) {
       throw Exception('Erro ao validar carrinho: $e');
     }
   }
 
+  SeparacaoQuantidadeItem _toQuantidadeItem(
+    ExpedicaSeparacaoItemConsultaModel item,
+  ) {
+    return (
+      codProduto: item.codProduto,
+      codUnidadeMedida: item.codUnidadeMedida,
+      quantidade: item.quantidade,
+    );
+  }
+
+  SeparacaoQuantidadeItem _toQuantidadeItemASeparar(
+    ExpedicaoSepararItemConsultaModel item,
+  ) {
+    return (
+      codProduto: item.codProduto,
+      codUnidadeMedida: item.codUnidadeMedida,
+      quantidade: item.quantidade,
+    );
+  }
+
   Future<bool> existsOpenCart() async {
     try {
       final carrinhosPercursoList = await carrinhosPercurso();
+      const situacoesAbertas = {
+        ExpedicaoSituacaoModel.separando,
+        ExpedicaoSituacaoModel.emAndamento,
+        ExpedicaoSituacaoModel.emSeparacao,
+      };
 
-      final carrinhosEmAndamento = carrinhosPercursoList
-          .where((el) => el.situacao == ExpedicaoSituacaoModel.separando);
-
-      return carrinhosEmAndamento.isNotEmpty;
+      return carrinhosPercursoList.any(
+        (el) => situacoesAbertas.contains(el.situacao),
+      );
     } catch (e) {
       throw Exception('Erro ao verificar se existe carrinho aberto: $e');
     }

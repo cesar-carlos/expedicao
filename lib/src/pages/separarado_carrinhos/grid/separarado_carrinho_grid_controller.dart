@@ -6,6 +6,8 @@ import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
+import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
+import 'package:app_expedicao/src/service/separacao_carrinho_validacao.dart';
 import 'package:app_expedicao/src/pages/separarado_carrinhos/grid/separarado_carrinho_grid_source.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
 import 'package:app_expedicao/src/app/app_color.dart';
@@ -27,15 +29,17 @@ class SeparadoCarrinhoGridController extends GetxController {
   bool _applyingSelection = false;
   bool get applyingSelection => _applyingSelection;
 
+  void Function(ExpedicaoCarrinhoPercursoEstagioConsultaModel item)?
+  onPressedRemove;
 
   void Function(ExpedicaoCarrinhoPercursoEstagioConsultaModel item)?
-      onPressedRemove;
+  onPressedEdit;
 
   void Function(ExpedicaoCarrinhoPercursoEstagioConsultaModel item)?
-      onPressedEdit;
+  onPressedSave;
 
   void Function(ExpedicaoCarrinhoPercursoEstagioConsultaModel item)?
-      onPressedSave;
+  onPressedReopen;
 
   @override
   void onClose() {
@@ -60,7 +64,8 @@ class SeparadoCarrinhoGridController extends GetxController {
   }
 
   void updateAllGrid(
-      List<ExpedicaoCarrinhoPercursoEstagioConsultaModel> itens) {
+    List<ExpedicaoCarrinhoPercursoEstagioConsultaModel> itens,
+  ) {
     for (var el in itens) {
       final index = _itens.indexWhere((i) => i.item == el.item);
       _itens[index] = el;
@@ -68,10 +73,12 @@ class SeparadoCarrinhoGridController extends GetxController {
   }
 
   void removeGrid(ExpedicaoCarrinhoPercursoEstagioConsultaModel item) {
-    _itens.removeWhere((el) =>
-        el.codEmpresa == item.codEmpresa &&
-        el.codCarrinho == item.codCarrinho &&
-        el.item == item.item);
+    _itens.removeWhere(
+      (el) =>
+          el.codEmpresa == item.codEmpresa &&
+          el.codCarrinho == item.codCarrinho &&
+          el.item == item.item,
+    );
   }
 
   void removeAllGrid() {
@@ -99,6 +106,13 @@ class SeparadoCarrinhoGridController extends GetxController {
     onPressedSave?.call(item);
   }
 
+  Future<void> onReopenItem(
+    SeparadoCarrinhoGridSource grid,
+    ExpedicaoCarrinhoPercursoEstagioConsultaModel item,
+  ) async {
+    onPressedReopen?.call(item);
+  }
+
   Icon iconIndicator(ExpedicaoCarrinhoPercursoEstagioConsultaModel item) {
     return Icon(
       BootstrapIcons.file_earmark_arrow_down_fill,
@@ -107,22 +121,32 @@ class SeparadoCarrinhoGridController extends GetxController {
     );
   }
 
-  Icon iconRemove(ExpedicaoCarrinhoPercursoEstagioConsultaModel item) {
-    Color color = Colors.red;
+  bool canRemove(ExpedicaoCarrinhoPercursoEstagioConsultaModel item) {
+    return item.situacao != ExpedicaoSituacaoModel.cancelada &&
+        item.situacao != ExpedicaoSituacaoModel.separado;
+  }
 
-    switch (item.situacao) {
-      case ExpedicaoSituacaoModel.cancelada:
-      case ExpedicaoSituacaoModel.separado:
-        color = Colors.grey;
-        break;
-      default:
-        color = Colors.red;
+  bool canSave(ExpedicaoCarrinhoPercursoEstagioConsultaModel item) {
+    return item.situacao != ExpedicaoSituacaoModel.cancelada &&
+        item.situacao != ExpedicaoSituacaoModel.separado;
+  }
+
+  bool canReopen(ExpedicaoCarrinhoPercursoEstagioConsultaModel item) {
+    if (!Get.isRegistered<ExpedicaoSepararConsultaModel>()) {
+      return false;
     }
 
+    return SeparacaoCarrinhoValidacao.podeReabrir(
+      situacaoSeparacao: Get.find<ExpedicaoSepararConsultaModel>().situacao,
+      situacaoCarrinho: item.situacao,
+    );
+  }
+
+  Icon iconRemove(ExpedicaoCarrinhoPercursoEstagioConsultaModel item) {
     return Icon(
       size: iconSize,
       Icons.delete,
-      color: color,
+      color: canRemove(item) ? Colors.red : Colors.grey,
     );
   }
 
@@ -149,23 +173,14 @@ class SeparadoCarrinhoGridController extends GetxController {
   }
 
   Icon iconSave(ExpedicaoCarrinhoPercursoEstagioConsultaModel item) {
-    Color color = Colors.blue;
-
-    switch (item.situacao) {
-      case ExpedicaoSituacaoModel.cancelada:
-        color = Colors.grey;
-      case ExpedicaoSituacaoModel.separando:
-        color = Colors.green;
-      case ExpedicaoSituacaoModel.separado:
-        color = Colors.grey;
-      case ExpedicaoSituacaoModel.emAndamento:
-        color = Colors.green;
+    if (canReopen(item)) {
+      return Icon(size: iconSize, Icons.lock_open, color: Colors.orange);
     }
 
     return Icon(
       size: iconSize,
       Icons.save,
-      color: color,
+      color: canSave(item) ? Colors.green : Colors.grey,
     );
   }
 
@@ -213,8 +228,9 @@ class SeparadoCarrinhoGridController extends GetxController {
       return;
     }
 
-    var current =
-        highlightedItem == null ? -1 : findIndexItem(highlightedItem!);
+    var current = highlightedItem == null
+        ? -1
+        : findIndexItem(highlightedItem!);
     if (current < 0) {
       current = delta > 0 ? -1 : 0;
     }

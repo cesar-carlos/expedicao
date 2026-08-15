@@ -1,4 +1,5 @@
 import 'package:app_expedicao/src/app/app_helper.dart';
+import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 
 class ExpedicaoCarrinhoPercursoEstagioConsultaModel {
   final int codEmpresa;
@@ -105,8 +106,37 @@ class ExpedicaoCarrinhoPercursoEstagioConsultaModel {
     );
   }
 
+  ExpedicaoCarrinhoPercursoEstagioConsultaModel reabrir() {
+    return ExpedicaoCarrinhoPercursoEstagioConsultaModel(
+      codEmpresa: codEmpresa,
+      codCarrinhoPercurso: codCarrinhoPercurso,
+      item: item,
+      codPercursoEstagio: codPercursoEstagio,
+      origem: origem,
+      codOrigem: codOrigem,
+      situacao: ExpedicaoSituacaoModel.separando,
+      carrinhoAgrupador: carrinhoAgrupador,
+      codCarrinhoAgrupador: codCarrinhoAgrupador,
+      codCarrinho: codCarrinho,
+      nomeCarrinho: nomeCarrinho,
+      codigoBarrasCarrinho: codigoBarrasCarrinho,
+      ativo: ativo,
+      codUsuarioInicio: codUsuarioInicio,
+      nomeUsuarioInicio: nomeUsuarioInicio,
+      dataInicio: dataInicio,
+      horaInicio: horaInicio,
+      codUsuarioFinalizacao: null,
+      nomeUsuarioFinalizacao: null,
+      dataFinalizacao: null,
+      horaFinalizacao: null,
+      codSetorEstoque: codSetorEstoque,
+      nomeSetorEstoque: nomeSetorEstoque,
+    );
+  }
+
   factory ExpedicaoCarrinhoPercursoEstagioConsultaModel.fromJson(
-      Map<String, dynamic> json) {
+    Map<String, dynamic> json,
+  ) {
     try {
       return ExpedicaoCarrinhoPercursoEstagioConsultaModel(
         codEmpresa: json['CodEmpresa'],
@@ -128,8 +158,9 @@ class ExpedicaoCarrinhoPercursoEstagioConsultaModel {
         horaInicio: json['HoraInicio'] ?? '00:00:00',
         codUsuarioFinalizacao: json['CodUsuarioFinalizacao'],
         nomeUsuarioFinalizacao: json['NomeUsuarioFinalizacao'],
-        dataFinalizacao:
-            AppHelper.tryStringToDateOrNull(json['DataFinalizacao']),
+        dataFinalizacao: AppHelper.tryStringToDateOrNull(
+          json['DataFinalizacao'],
+        ),
         horaFinalizacao: json['HoraFinalizacao'],
         codSetorEstoque: json['CodSetorEstoque'],
         nomeSetorEstoque: json['NomeSetorEstoque'],

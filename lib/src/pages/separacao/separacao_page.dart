@@ -25,7 +25,7 @@ class SeparacaoPage {
     required bool canCloseWindow,
     required BuildContext context,
     required ExpedicaoCarrinhoPercursoEstagioConsultaModel
-        percursoEstagioConsulta,
+    percursoEstagioConsulta,
   }) async {
     Get.find<AppEventState>().canCloseWindow = canCloseWindow;
 
@@ -46,190 +46,224 @@ class SeparacaoPage {
                 child: SizedBox(
                   width: size.width * 0.95,
                   height: size.height * 0.80,
-                  child: Column(children: [
-                    BarHeadFormElement(
-                      title: controller.title,
-                      widthBar: size.width,
-                      onPressedCloseBar: controller.onPressedCloseBar,
-                    ),
-                    SizedBox(
-                      width: size.width * 0.95,
-                      height: size.height * 0.8 - _spaceHeadlement,
-                      child: Column(children: [
-                        SpaceButtonsHeadFormElement(
-                          width: double.infinity,
+                  child: Column(
+                    children: [
+                      BarHeadFormElement(
+                        title: controller.title,
+                        widthBar: size.width,
+                        onPressedCloseBar: controller.onPressedCloseBar,
+                      ),
+                      SizedBox(
+                        width: size.width * 0.95,
+                        height: size.height * 0.8 - _spaceHeadlement,
+                        child: Column(
                           children: [
-                            ButtonHeadForm(
-                              title: 'Separar tudo',
-                              shortCut: 'F7',
-                              shortCutActive: true,
-                              onPressed: controller.onSepararTudo,
-                              icon: const Icon(
-                                BootstrapIcons.list_check,
-                                color: Colors.white,
-                                size: 33,
+                            SpaceButtonsHeadFormElement(
+                              width: double.infinity,
+                              children: [
+                                ButtonHeadForm(
+                                  title: 'Separar tudo',
+                                  shortCut: 'F7',
+                                  shortCutActive: true,
+                                  onPressed: controller.onSepararTudo,
+                                  icon: const Icon(
+                                    BootstrapIcons.list_check,
+                                    color: Colors.white,
+                                    size: 33,
+                                  ),
+                                ),
+                                ButtonHeadForm(
+                                  title: 'Reconferir tudo',
+                                  shortCut: 'F8',
+                                  shortCutActive: true,
+                                  onPressed: controller.onReconferirTudo,
+                                  icon: const Icon(
+                                    BootstrapIcons.list_task,
+                                    color: Colors.white,
+                                    size: 33,
+                                  ),
+                                ),
+                                ButtonHeadForm(
+                                  title: 'Recuperar Itens',
+                                  shortCut: 'F11',
+                                  shortCutActive: true,
+                                  onPressed: controller.onRecuperarItens,
+                                  icon: const Icon(
+                                    BootstrapIcons.recycle,
+                                    color: Colors.white,
+                                    size: 33,
+                                  ),
+                                ),
+                                ButtonHeadForm(
+                                  title: 'Reabrir Carrinho',
+                                  shortCut: 'F6',
+                                  shortCutActive: controller.canReopenCarrinho,
+                                  onPressed: controller.canReopenCarrinho
+                                      ? controller.onReopenCarrinho
+                                      : null,
+                                  icon: Icon(
+                                    BootstrapIcons.unlock,
+                                    color: controller.canReopenCarrinho
+                                        ? Colors.white
+                                        : Colors.white54,
+                                    size: 33,
+                                  ),
+                                ),
+                                ButtonHeadForm(
+                                  title: 'Finalizar Carrinho',
+                                  onPressed: controller.viewMode
+                                      ? null
+                                      : controller.onSaveCarrinho,
+                                  icon: Icon(
+                                    BootstrapIcons.cart_check_fill,
+                                    color: controller.viewMode
+                                        ? Colors.white54
+                                        : Colors.white,
+                                    size: 33,
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            ScanSeparacaoItemWidget(
+                              percursoEstagioConsulta,
+                              size: size,
+                            ),
+
+                            Obx(
+                              () => IndicatorWidget(
+                                size: size,
+                                indicatorColor: controller.indicator.value,
+                                indicatorText: controller.displaySituacao,
                               ),
                             ),
-                            ButtonHeadForm(
-                              title: 'Reconferir tudo',
-                              shortCut: 'F8',
-                              shortCutActive: true,
-                              onPressed: controller.onReconferirTudo,
-                              icon: const Icon(
-                                BootstrapIcons.list_task,
-                                color: Colors.white,
-                                size: 33,
-                              ),
-                            ),
-                            ButtonHeadForm(
-                              title: 'Recuperar Itens',
-                              shortCut: 'F11',
-                              shortCutActive: true,
-                              onPressed: controller.onRecuperarItens,
-                              icon: const Icon(
-                                BootstrapIcons.recycle,
-                                color: Colors.white,
-                                size: 33,
-                              ),
-                            ),
-                            ButtonHeadForm(
-                              title: 'Finalizar Carrinho',
-                              onPressed: controller.onSaveCarrinho,
-                              shortCut: 'F12',
-                              shortCutActive: true,
-                              icon: const Icon(
-                                BootstrapIcons.cart_check_fill,
-                                color: Colors.white,
-                                size: 33,
+
+                            //TAB VIEW
+                            Expanded(
+                              child: ClipRRect(
+                                borderRadius: const BorderRadius.only(
+                                  bottomLeft: Radius.circular(10),
+                                  bottomRight: Radius.circular(10),
+                                ),
+                                child: DefaultTabController(
+                                  initialIndex: controller.viewMode ? 0 : 1,
+                                  length: 2,
+                                  animationDuration: const Duration(
+                                    milliseconds: 500,
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        color: Colors.white,
+                                        constraints:
+                                            const BoxConstraints.expand(
+                                              height: 40,
+                                            ),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 5,
+                                        ),
+                                        child: TabBar(
+                                          indicatorColor: Colors.black45,
+                                          overlayColor: WidgetStateProperty.all(
+                                            Colors.black12,
+                                          ),
+                                          indicatorPadding: EdgeInsets.zero,
+                                          tabs: [
+                                            Row(
+                                              children: [
+                                                Icon(
+                                                  size: 20,
+                                                  BootstrapIcons.list_task,
+                                                ),
+                                                Spacer(),
+                                                Text(
+                                                  controller.fullCartName,
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    color: Colors.black87,
+                                                  ),
+                                                ),
+                                                Spacer(),
+                                              ],
+                                            ),
+                                            Row(
+                                              children: [
+                                                Icon(
+                                                  size: 20,
+                                                  BootstrapIcons.list_check,
+                                                ),
+                                                Spacer(),
+                                                Text(
+                                                  'Separação',
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    color: Colors.black87,
+                                                  ),
+                                                ),
+                                                Spacer(),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: TabBarView(
+                                          children: [
+                                            Container(
+                                              color: Colors.white70,
+                                              child: SeparacaoCarrinhoGrid(
+                                                percursoEstagioConsulta,
+                                              ),
+                                            ),
+                                            Container(
+                                              color: Colors.white70,
+                                              child: const SepararGrid(
+                                                forSeparacao: true,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      FooterDialog(
+                                        leftWidgets: [
+                                          // Text(
+                                          //   controller.fullCartName,
+                                          //   style: TextStyle(
+                                          //     color: Colors.white,
+                                          //     fontWeight: FontWeight.bold,
+                                          //     fontSize: 9,
+                                          //   ),
+                                          // ),
+                                          // Container(
+                                          //   height: 12,
+                                          //   child: VerticalDivider(
+                                          //     color: Colors.white,
+                                          //     thickness: 2,
+                                          //     width: 20,
+                                          //   ),
+                                          // ),
+                                        ],
+                                        rightWidgets: [
+                                          Text(
+                                            '',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 9,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                             ),
                           ],
                         ),
-
-                        ScanSeparacaoItemWidget(
-                          percursoEstagioConsulta,
-                          size: size,
-                        ),
-
-                        Obx(
-                          () => IndicatorWidget(
-                            size: size,
-                            indicatorColor: controller.indicator.value,
-                            indicatorText: controller.displaySituacao,
-                          ),
-                        ),
-
-                        //TAB VIEW
-                        Expanded(
-                          child: ClipRRect(
-                            borderRadius: const BorderRadius.only(
-                              bottomLeft: Radius.circular(10),
-                              bottomRight: Radius.circular(10),
-                            ),
-                            child: DefaultTabController(
-                              initialIndex: controller.viewMode ? 0 : 1,
-                              length: 2,
-                              animationDuration:
-                                  const Duration(milliseconds: 500),
-                              child: Column(children: [
-                                Container(
-                                  color: Colors.white,
-                                  constraints:
-                                      const BoxConstraints.expand(height: 40),
-                                  padding:
-                                      const EdgeInsets.symmetric(horizontal: 5),
-                                  child: TabBar(
-                                    indicatorColor: Colors.black45,
-                                    overlayColor:
-                                        WidgetStateProperty.all(Colors.black12),
-                                    indicatorPadding: EdgeInsets.zero,
-                                    tabs: [
-                                      Row(children: [
-                                        Icon(
-                                          size: 20,
-                                          BootstrapIcons.list_task,
-                                        ),
-                                        Spacer(),
-                                        Text(
-                                          controller.fullCartName,
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            color: Colors.black87,
-                                          ),
-                                        ),
-                                        Spacer(),
-                                      ]),
-                                      Row(children: [
-                                        Icon(
-                                          size: 20,
-                                          BootstrapIcons.list_check,
-                                        ),
-                                        Spacer(),
-                                        Text(
-                                          'Separação',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            color: Colors.black87,
-                                          ),
-                                        ),
-                                        Spacer(),
-                                      ]),
-                                    ],
-                                  ),
-                                ),
-                                Expanded(
-                                  child: TabBarView(children: [
-                                    Container(
-                                      color: Colors.white70,
-                                      child: SeparacaoCarrinhoGrid(
-                                        percursoEstagioConsulta,
-                                      ),
-                                    ),
-                                    Container(
-                                      color: Colors.white70,
-                                      child: const SepararGrid(
-                                        forSeparacao: true,
-                                      ),
-                                    ),
-                                  ]),
-                                ),
-                                FooterDialog(
-                                  leftWidgets: [
-                                    // Text(
-                                    //   controller.fullCartName,
-                                    //   style: TextStyle(
-                                    //     color: Colors.white,
-                                    //     fontWeight: FontWeight.bold,
-                                    //     fontSize: 9,
-                                    //   ),
-                                    // ),
-                                    // Container(
-                                    //   height: 12,
-                                    //   child: VerticalDivider(
-                                    //     color: Colors.white,
-                                    //     thickness: 2,
-                                    //     width: 20,
-                                    //   ),
-                                    // ),
-                                  ],
-                                  rightWidgets: [
-                                    Text(
-                                      '',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 9,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ]),
-                            ),
-                          ),
-                        )
-                      ]),
-                    ),
-                  ]),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             );

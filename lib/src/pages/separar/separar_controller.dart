@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io' as io;
+
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
@@ -130,6 +131,11 @@ class SepararController extends GetxController {
         return KeyEventResult.handled;
       }
 
+      if (event.logicalKey == LogicalKeyboardKey.f6) {
+        btnReabrirCarrinho();
+        return KeyEventResult.handled;
+      }
+
       if (event.logicalKey == LogicalKeyboardKey.f9) {
         btnEditarCarrinho();
         return KeyEventResult.handled;
@@ -188,8 +194,9 @@ class SepararController extends GetxController {
         .equals('Origem', _processoExecutavel.origem)
         .equals('CodOrigem', _processoExecutavel.codOrigem);
 
-    final carrinhoPercursos =
-        await CarrinhoPercursoServices().select(queryBuilder);
+    final carrinhoPercursos = await CarrinhoPercursoServices().select(
+      queryBuilder,
+    );
 
     if (carrinhoPercursos.isNotEmpty) {
       _carrinhoPercurso = carrinhoPercursos.first;
@@ -238,12 +245,14 @@ class SepararController extends GetxController {
       return;
     }
 
-    final carrinhoConsulta =
-        await CarrinhoDialogView.show(context: Get.context!);
+    final carrinhoConsulta = await CarrinhoDialogView.show(
+      context: Get.context!,
+    );
 
     if (carrinhoConsulta != null) {
-      final carrinhoPercursoEstagioConsulta =
-          await adicionarCarrinho(carrinhoConsulta);
+      final carrinhoPercursoEstagioConsulta = await adicionarCarrinho(
+        carrinhoConsulta,
+      );
 
       if (carrinhoPercursoEstagioConsulta != null) {
         _separarCarrinhosController.editCart(carrinhoPercursoEstagioConsulta);
@@ -261,17 +270,16 @@ class SepararController extends GetxController {
     ExpedicaoCarrinhoConsultaModel carrinhoConsulta,
   ) async {
     return await LoadingProcessDialogGenericWidget.show<
-        ExpedicaoCarrinhoPercursoEstagioConsultaModel?>(
+      ExpedicaoCarrinhoPercursoEstagioConsultaModel?
+    >(
       context: Get.context!,
       process: () async {
         try {
           await iniciarSeparacao();
           await _fillCarrinhoPercurso();
 
-          final carrinho =
-              ExpedicaoCarrinhoModel.fromConsulta(carrinhoConsulta).copyWith(
-            situacao: ExpedicaoCarrinhoSituacaoModel.emSeparacao,
-          );
+          final carrinho = ExpedicaoCarrinhoModel.fromConsulta(carrinhoConsulta)
+              .copyWith(situacao: ExpedicaoCarrinhoSituacaoModel.emSeparacao);
 
           final percursoEstagio = await CarrinhoPercursoEstagioAdicionarService(
             carrinho: carrinho,
@@ -305,6 +313,10 @@ class SepararController extends GetxController {
 
   Future<void> btnSalvarCarrinho() async {
     await _separarCarrinhosController.saveCartFromShortcut();
+  }
+
+  Future<void> btnReabrirCarrinho() async {
+    await _separarCarrinhosController.reopenCartFromShortcut();
   }
 
   Future<void> btnExcluirCarrinho() async {
@@ -367,8 +379,9 @@ class SepararController extends GetxController {
         return;
       }
 
-      final carrinhosPercurso =
-          await carrinhoPercursoEstagioServices.select(queryBuilder);
+      final carrinhosPercurso = await carrinhoPercursoEstagioServices.select(
+        queryBuilder,
+      );
 
       if (carrinhosPercurso.isEmpty) {
         await MessageDialogView.show(
@@ -387,8 +400,7 @@ class SepararController extends GetxController {
         await MessageDialogView.show(
           context: Get.context!,
           message: 'Carrinho ${carrinhoPercuro.situacao.toLowerCase()}',
-          detail:
-              'Carrinho percurso com situação diferente de cancelado. Não é possível recuperar.',
+          detail: 'Carrinho percurso com situação diferente de cancelado. Não é possível recuperar.',
         );
 
         return;
@@ -396,13 +408,14 @@ class SepararController extends GetxController {
 
       final separacaoItens =
           await SeparacaoConsultaService.getSeparacaoItensCarrinho(
-        codEmpresa: carrinhoPercuro.codEmpresa,
-        codCarrinhoPercurso: carrinhoPercuro.codCarrinhoPercurso,
-        itemCarrinhoPercurso: carrinhoPercuro.item,
-      );
+            codEmpresa: carrinhoPercuro.codEmpresa,
+            codCarrinhoPercurso: carrinhoPercuro.codCarrinhoPercurso,
+            itemCarrinhoPercurso: carrinhoPercuro.item,
+          );
 
-      final carrinhoPercursoEstagioConsulta =
-          await adicionarCarrinho(carrinhoConsulta);
+      final carrinhoPercursoEstagioConsulta = await adicionarCarrinho(
+        carrinhoConsulta,
+      );
 
       if (carrinhoPercursoEstagioConsulta == null) {
         await MessageDialogView.show(
@@ -435,8 +448,8 @@ class SepararController extends GetxController {
 
           final carrinhoPercursoAdicionarItemService =
               SeparacaoAdicionarItemService(
-            percursoEstagioConsulta: percursoEstagio,
-          );
+                percursoEstagioConsulta: percursoEstagio,
+              );
 
           for (var item in separacaoItensRecuperado) {
             final existsSepararItem = separarItens.any((el) {
@@ -500,7 +513,7 @@ class SepararController extends GetxController {
 
     final notValidFinalize = [
       ExpedicaoSituacaoModel.cancelada,
-      ExpedicaoSituacaoModel.separado
+      ExpedicaoSituacaoModel.separado,
     ].contains(_expedicaoSituacao);
 
     if (notValidFinalize) {
@@ -534,14 +547,17 @@ class SepararController extends GetxController {
     }
 
     // Valida quantidade de todos os carrinhos antes de finalizar
-    final carrinhosPercurso = await _separarConsultaServices.carrinhosPercurso();
+    final carrinhosPercurso = await _separarConsultaServices
+        .carrinhosPercurso();
     final carrinhosParaValidar = carrinhosPercurso
         .where((el) => el.situacao != ExpedicaoSituacaoModel.cancelada)
         .toList();
 
     for (var carrinho in carrinhosParaValidar) {
-      final cartIsValid =
-          await _separarConsultaServices.cartIsValid(carrinho.codCarrinho);
+      final cartIsValid = await _separarConsultaServices.cartIsValid(
+        carrinho.codCarrinho,
+        itemCarrinhoPercurso: carrinho.item,
+      );
 
       if (!cartIsValid) {
         final itens = await _separarConsultaServices.itensSaparar();
