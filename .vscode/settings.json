@@ -15,6 +15,7 @@
     "statusBar.foreground": "#D0B49F",
     "statusBar.border": "#A47551"
   },
+  "explorer.compactFolders": false,
   "debug.toolBarLocation": "commandCenter",
   "cmake.sourceDirectory": "D:/Developer/Data7/Expedicao/Flutter/app_expedicao/linux",
   "postman.settings.dotenv-detection-notification-visibility": false
