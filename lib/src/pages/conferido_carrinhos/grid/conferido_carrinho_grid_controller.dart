@@ -227,6 +227,9 @@ class ConferidoCarrinhoGridController extends GetxController {
   }
 
   void setSelectedRow(int index) {
-    dataGridController.selectAndScrollToRow(index);
+    dataGridController.selectAndScrollToRow(
+      index,
+      rowCount: itensSort.length,
+    );
   }
 }

@@ -33,17 +33,24 @@ class SeparacaoCarrinhoGridController extends GetxController {
 
   void updateGrid(ExpedicaSeparacaoItemConsultaModel item) {
     final index = _itens.indexWhere((el) => el.item == item.item);
+    if (index < 0) {
+      return;
+    }
     _itens[index] = item;
   }
 
   void updateAllGrid(List<ExpedicaSeparacaoItemConsultaModel> itens) {
     for (var el in itens) {
       final index = _itens.indexWhere((i) => i.item == el.item);
+      if (index < 0) {
+        continue;
+      }
       _itens[index] = el;
     }
   }
 
   void removeGrid(ExpedicaSeparacaoItemConsultaModel item) {
+    dataGridController.clearSelection();
     _itens.removeWhere((el) =>
         el.codEmpresa == item.codEmpresa &&
         el.codSepararEstoque == item.codSepararEstoque &&
@@ -51,6 +58,7 @@ class SeparacaoCarrinhoGridController extends GetxController {
   }
 
   void removeAllGrid() {
+    dataGridController.clearSelection();
     _itens.clear();
   }
 
@@ -58,8 +66,12 @@ class SeparacaoCarrinhoGridController extends GetxController {
     return itensSort.indexWhere((el) => el.item == item);
   }
 
-  void setSelectedRow(int index) {
-    dataGridController.selectAndScrollToRow(index);
+  void setSelectedRow(int index, {bool scroll = true}) {
+    dataGridController.selectAndScrollToRow(
+      index,
+      scroll: scroll,
+      rowCount: itensSort.length,
+    );
   }
 
   double totalQuantity() {

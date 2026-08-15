@@ -39,17 +39,24 @@ class ConferenciaCarrinhoGridController extends GetxController {
 
   void updateGrid(ExpedicaConferenciaItemConsultaModel item) {
     final index = _itens.indexWhere((el) => el.item == item.item);
+    if (index < 0) {
+      return;
+    }
     _itens[index] = item;
   }
 
   void updateAllGrid(List<ExpedicaConferenciaItemConsultaModel> itens) {
     for (var el in itens) {
       final index = _itens.indexWhere((i) => i.item == el.item);
+      if (index < 0) {
+        continue;
+      }
       _itens[index] = el;
     }
   }
 
   void removeGrid(ExpedicaConferenciaItemConsultaModel item) {
+    dataGridController.clearSelection();
     _itens.removeWhere((el) =>
         el.codEmpresa == item.codEmpresa &&
         el.codConferir == item.codConferir &&
@@ -57,11 +64,16 @@ class ConferenciaCarrinhoGridController extends GetxController {
   }
 
   void removeAllGrid() {
+    dataGridController.clearSelection();
     _itens.clear();
   }
 
-  void setSelectedRow(int index) {
-    dataGridController.selectAndScrollToRow(index);
+  void setSelectedRow(int index, {bool scroll = true}) {
+    dataGridController.selectAndScrollToRow(
+      index,
+      scroll: scroll,
+      rowCount: itensSort.length,
+    );
   }
 
   double totalQuantity() {

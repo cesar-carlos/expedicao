@@ -73,7 +73,10 @@ class ExpedicaoSepararItemUnidadeMedidaConsultaModel {
         unidadeMedidaDescricao: json['UnidadeMedidaDescricao'],
         unidadeMedidaPadrao: json['UnidadeMedidaPadrao'] ?? 'S',
         tipoFatorConversao: json['TipoFatorConversao'] ?? 'M',
-        fatorConversao: AppHelper.stringToDouble(json['FatorConversao']),
+        fatorConversao: json['FatorConversao'] == null ||
+                json['FatorConversao'].toString().trim().isEmpty
+            ? 1.0
+            : AppHelper.stringToDouble(json['FatorConversao'].toString()),
         codigoBarras: json['CodigoBarras'],
         observacao: json['Observacao'],
       );

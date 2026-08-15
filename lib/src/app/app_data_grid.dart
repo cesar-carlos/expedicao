@@ -8,18 +8,35 @@ extension AppDataGridController on DataGridController {
   /// checar [ScrollController.hasClients]. No primeiro item, ou quando a
   /// grid ainda não está na árvore, isso dispara
   /// `ScrollController not attached to any scroll views`.
-  void selectAndScrollToRow(int index, {bool scroll = true}) {
-    if (index < 0) {
+  void selectAndScrollToRow(
+    int index, {
+    bool scroll = true,
+    int? rowCount,
+  }) {
+    if (!_isValidRowIndex(index, rowCount)) {
       return;
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      selectedIndex = index;
+      if (!_isValidRowIndex(index, rowCount)) {
+        return;
+      }
+
+      try {
+        selectedIndex = index;
+      } catch (_) {
+        return;
+      }
+
       if (!scroll) {
         return;
       }
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!_isValidRowIndex(index, rowCount)) {
+          return;
+        }
+
         try {
           scrollToRow(
             index.toDouble(),
@@ -30,8 +47,29 @@ extension AppDataGridController on DataGridController {
           // Debug: assert(_positions.isNotEmpty) no ScrollController.
         } on StateError {
           // Release: _positions.single com a lista vazia.
+        } catch (_) {
+          // Grid desmontada, source trocado ou métricas de row inválidas.
         }
       });
     });
+  }
+
+  void clearSelection() {
+    try {
+      selectedRows.clear();
+      selectedIndex = -1;
+    } catch (_) {}
+  }
+
+  bool _isValidRowIndex(int index, int? rowCount) {
+    if (index < 0) {
+      return false;
+    }
+
+    if (rowCount != null && index >= rowCount) {
+      return false;
+    }
+
+    return true;
   }
 }

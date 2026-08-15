@@ -70,6 +70,9 @@ class SepararGridController extends GetxController {
 
   void updateGrid(ExpedicaoSepararItemConsultaModel item) {
     final index = _itens.indexWhere((el) => el.item == item.item);
+    if (index < 0) {
+      return;
+    }
     _itens[index] = item;
     isComplitListiner.value = isComplit();
   }
@@ -77,6 +80,9 @@ class SepararGridController extends GetxController {
   void updateAllGrid(List<ExpedicaoSepararItemConsultaModel> itens) {
     for (var el in itens) {
       final index = _itens.indexWhere((i) => i.item == el.item);
+      if (index < 0) {
+        continue;
+      }
       _itens[index] = el;
     }
 
@@ -109,6 +115,9 @@ class SepararGridController extends GetxController {
 
   void updateUnidade(ExpedicaoSepararItemUnidadeMedidaConsultaModel item) {
     final index = _itemUnids.indexWhere((el) => el.item == item.item);
+    if (index < 0) {
+      return;
+    }
     _itemUnids[index] = item;
   }
 
@@ -116,6 +125,9 @@ class SepararGridController extends GetxController {
       List<ExpedicaoSepararItemUnidadeMedidaConsultaModel> itens) {
     for (var el in itens) {
       final index = _itemUnids.indexWhere((i) => i.item == el.item);
+      if (index < 0) {
+        continue;
+      }
       _itemUnids[index] = el;
     }
   }
@@ -130,13 +142,33 @@ class SepararGridController extends GetxController {
   bool _applyingSelection = false;
   bool get applyingSelection => _applyingSelection;
 
-  void setSelectedRow(int index, {bool scroll = true}) {
-    _applySelectedRow(dataGridController, index, scroll: scroll);
-    _applySelectedRow(dataGridControllerSeparacao, index, scroll: scroll);
+  void setSelectedRow(
+    int index, {
+    bool scroll = true,
+    bool scrollMain = true,
+    bool scrollSeparacao = true,
+  }) {
+    _applySelectedRow(
+      dataGridController,
+      index,
+      scroll: scroll && scrollMain,
+    );
+    _applySelectedRow(
+      dataGridControllerSeparacao,
+      index,
+      scroll: scroll && scrollSeparacao,
+    );
   }
 
   /// Um único foco de row: scan posiciona e rola; clique do usuário só troca a row.
-  void highlightItem(String item, {bool scroll = true}) {
+  /// [scrollMain] rola a grid da tela Separar (atrás do modal).
+  /// [scrollSeparacao] rola a grid visível dentro do modal de separação.
+  void highlightItem(
+    String item, {
+    bool scroll = true,
+    bool scrollMain = true,
+    bool scrollSeparacao = true,
+  }) {
     if (highlightedItem == item && !scroll) {
       return;
     }
@@ -144,7 +176,12 @@ class SepararGridController extends GetxController {
     _applyingSelection = true;
     highlightedItem = item;
     update();
-    setSelectedRow(findIndexItem(item), scroll: scroll);
+    setSelectedRow(
+      findIndexItem(item),
+      scroll: scroll,
+      scrollMain: scrollMain,
+      scrollSeparacao: scrollSeparacao,
+    );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _applyingSelection = false;
@@ -156,7 +193,16 @@ class SepararGridController extends GetxController {
     int index, {
     bool scroll = true,
   }) {
-    target.selectAndScrollToRow(index, scroll: scroll);
+    final rowCount = itensSort.length;
+    if (index < 0 || index >= rowCount) {
+      return;
+    }
+
+    target.selectAndScrollToRow(
+      index,
+      scroll: scroll,
+      rowCount: rowCount,
+    );
   }
 
   double totalQuantity() {
@@ -191,8 +237,11 @@ class SepararGridController extends GetxController {
         .fold<double>(0.00, (acm, el) => acm + el.quantidadeSeparacao);
   }
 
-  ExpedicaoSepararItemConsultaModel findItem(String item) {
-    final el = _itens.where((el) => el.item == item).toList();
+  ExpedicaoSepararItemConsultaModel? findItem(String item) {
+    final el = _itens.where((el) => el.item == item);
+    if (el.isEmpty) {
+      return null;
+    }
     return el.first;
   }
 
@@ -209,7 +258,10 @@ class SepararGridController extends GetxController {
   }
 
   int? findCodProdutoFromBarCode(String barCode) {
-    final el = _itemUnids.where((el) => el.codigoBarras == barCode).toList();
+    final el = _itemUnids.where((el) => el.codigoBarras == barCode);
+    if (el.isEmpty) {
+      return null;
+    }
     return el.first.codProduto;
   }
 
@@ -222,16 +274,23 @@ class SepararGridController extends GetxController {
   }
 
   ExpedicaoSepararItemConsultaModel? findBarCode(String barCode) {
-    final unidades =
-        _itemUnids.where((el) => el.codigoBarras == barCode).toList();
-    if (unidades.isEmpty) return null;
+    final unidades = _itemUnids.where((el) => el.codigoBarras == barCode);
+    if (unidades.isEmpty) {
+      return null;
+    }
 
-    final el = _itens.where((el) => el.item == unidades.first.item).toList();
+    final el = _itens.where((el) => el.item == unidades.first.item);
+    if (el.isEmpty) {
+      return null;
+    }
     return el.first;
   }
 
   ExpedicaoSepararItemConsultaModel? findCodProduto(int codProduto) {
-    final el = _itens.where((el) => el.codProduto == codProduto).toList();
+    final el = _itens.where((el) => el.codProduto == codProduto);
+    if (el.isEmpty) {
+      return null;
+    }
     return el.first;
   }
 

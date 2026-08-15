@@ -140,11 +140,13 @@ class ConferirSource extends DataGridSource {
 
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
-    final columnValueItem = row.getCells()[3].value;
+    final columnValueItem = row.getCells()[3].value?.toString() ?? '';
     final item = controller.findItem(columnValueItem);
 
     var dataGridRowAdapter = DataGridRowAdapter(
-        color: controller.rowColor(row, item),
+        color: item == null
+            ? Colors.white
+            : controller.rowColor(row, item),
         cells: row.getCells().map<Widget>((cell) {
           if (cell.value is double) {
             return ConferirGridCell.defaultMoneyCell(cell.value);

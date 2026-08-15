@@ -313,10 +313,13 @@ class ConferenciaController extends GetxController {
 
     final scanText = scanValue.trim();
     final scanTextIsBarCode = AppHelper.isBarCode(scanText);
+    final codProdutoScan = AppHelper.tryStringToIntOrNull(scanText);
 
     final itemConferirConsulta = scanTextIsBarCode
         ? _conferirGridController.findBarCode(scanText)
-        : _conferirGridController.findCodProduto(int.parse(scanText));
+        : (codProdutoScan == null
+            ? null
+            : _conferirGridController.findCodProduto(codProdutoScan));
 
     if (itemConferirConsulta == null) {
       AppAudioHelper().play('/error.wav');
@@ -402,19 +405,33 @@ class ConferenciaController extends GetxController {
 
     displayController.text = itemConferirConsulta.nomeProduto;
     _conferenciaGridController.addGrid(conferenciaItemConsulta);
-    final indexAdd = _conferirGridController
-        .findIndexCodProduto(conferenciaItemConsulta.codProduto);
-    _conferirGridController.setSelectedRow(indexAdd);
-    _conferenciaGridController.update();
-    _conferirGridController.update();
 
     final itemSeparar =
-        _findItemConferirGrid(conferenciaItemConsulta.codProduto)!;
+        _findItemConferirGrid(conferenciaItemConsulta.codProduto);
+    if (itemSeparar == null) {
+      AppAudioHelper().play('/error.wav');
+      await MessageDialogView.show(
+        context: Get.context!,
+        message: 'Erro ao adicionar item!',
+        detail: 'Produto não encontrado na lista de conferência!',
+      );
+      scanController.text = '';
+      scanFocusNode.requestFocus();
+      return;
+    }
 
     _conferirGridController.updateGrid(itemSeparar.copyWith(
       quantidadeConferida:
           itemSeparar.quantidadeConferida + conferenciaItemConsulta.quantidade,
     ));
+
+    _conferenciaGridController.update();
+    _conferirGridController.update();
+    _conferirGridController.setSelectedRow(
+      _conferirGridController
+          .findIndexCodProduto(conferenciaItemConsulta.codProduto),
+      scroll: false,
+    );
 
     scanController.text = '';
     quantidadeController.text = '1,000';
@@ -426,9 +443,11 @@ class ConferenciaController extends GetxController {
     bool isBarCode = AppHelper.isBarCode(scanText);
     int? codProduto = isBarCode
         ? _conferirGridController.findcodProdutoFromBarCode(scanText.trim())
-        : int.parse(scanText.trim());
+        : AppHelper.tryStringToIntOrNull(scanText.trim());
 
-    final totalConferir = _conferirGridController.totalQtdProduct(codProduto!);
+    if (codProduto == null) return false;
+
+    final totalConferir = _conferirGridController.totalQtdProduct(codProduto);
     final totalSeparada =
         _conferirGridController.totalQtdProductChecked(codProduto);
     if ((totalSeparada + value) > totalConferir) return false;
@@ -469,13 +488,23 @@ class ConferenciaController extends GetxController {
         ).remove(item: el.item);
 
         _conferenciaGridController.removeGrid(el);
-        final itemConferir = _findItemConferirGrid(el.codProduto)!;
+
+        final itemConferir = _findItemConferirGrid(el.codProduto);
+        if (itemConferir != null) {
+          final quantidadeConferida =
+              itemConferir.quantidadeConferida - el.quantidade;
+          _conferirGridController.updateGrid(itemConferir.copyWith(
+            quantidadeConferida:
+                quantidadeConferida < 0 ? 0.00 : quantidadeConferida,
+          ));
+        }
+
         _conferenciaGridController.update();
         _conferirGridController.update();
+      }
 
-        _conferirGridController.updateGrid(itemConferir.copyWith(
-          quantidadeConferida: itemConferir.quantidadeConferida - el.quantidade,
-        ));
+      if (scanFocusNode.canRequestFocus) {
+        scanFocusNode.requestFocus();
       }
     };
   }
@@ -524,7 +553,10 @@ class ConferenciaController extends GetxController {
 
           final List<ExpedicaoConferirItemConsultaModel> itensGridConferir = [];
           for (var el in response) {
-            final itemConferir = _findItemConferirGrid(el.codProduto)!;
+            final itemConferir = _findItemConferirGrid(el.codProduto);
+            if (itemConferir == null) {
+              continue;
+            }
 
             itensGridConferir.add(itemConferir.copyWith(
               quantidadeConferida:
@@ -574,7 +606,10 @@ class ConferenciaController extends GetxController {
       final conferenciaItemConsulta = _conferenciaGridController.itens;
       final List<ExpedicaoConferirItemConsultaModel> itensGridConferir = [];
       for (var el in conferenciaItemConsulta) {
-        final itemConferir = _findItemConferirGrid(el.codProduto)!;
+        final itemConferir = _findItemConferirGrid(el.codProduto);
+        if (itemConferir == null) {
+          continue;
+        }
 
         itensGridConferir.add(itemConferir.copyWith(
           quantidadeConferida: 0.00,

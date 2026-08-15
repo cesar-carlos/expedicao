@@ -187,7 +187,11 @@ class SeparadoCarrinhoGridController extends GetxController {
   }
 
   void setSelectedRow(int index, {bool scroll = true}) {
-    dataGridController.selectAndScrollToRow(index, scroll: scroll);
+    dataGridController.selectAndScrollToRow(
+      index,
+      scroll: scroll,
+      rowCount: itensSort.length,
+    );
   }
 
   void highlightFirstRow() {

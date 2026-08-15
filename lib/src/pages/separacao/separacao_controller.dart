@@ -329,10 +329,13 @@ class SeparacaoController extends GetxController {
 
     final scanText = scanValue.trim();
     final scanTextIsBarCode = AppHelper.isBarCode(scanText);
+    final codProdutoScan = AppHelper.tryStringToIntOrNull(scanText);
 
     final itemSepararConsulta = scanTextIsBarCode
         ? _separarGridController.findBarCode(scanText)
-        : _separarGridController.findCodProduto(int.parse(scanText));
+        : (codProdutoScan == null
+            ? null
+            : _separarGridController.findCodProduto(codProdutoScan));
 
     if (itemSepararConsulta == null) {
       AppAudioHelper().play('/error.wav');
@@ -439,17 +442,32 @@ class SeparacaoController extends GetxController {
 
       final itemSeparar = _findItemSepararGrid(
         separacaoItemConsulta.codProduto,
-      )!;
+      );
+      if (itemSeparar == null) {
+        AppAudioHelper().play('/error.wav');
+        await MessageDialogView.show(
+          context: Get.context!,
+          message: 'Erro ao adicionar item!',
+          detail: 'Produto não encontrado na lista de separação!',
+        );
+        scanController.clear();
+        scanFocusNode.requestFocus();
+        return;
+      }
 
       _separarGridController.updateGrid(itemSeparar.copyWith(
         quantidadeSeparacao:
             itemSeparar.quantidadeSeparacao + separacaoItemConsulta.quantidade,
       ));
-      _separarGridController.highlightItem(itemSeparar.item);
+      _separarGridController.highlightItem(
+        itemSeparar.item,
+        scrollMain: false,
+      );
 
       _separacaoGridController.update();
       _separacaoGridController.setSelectedRow(
         _separacaoGridController.findIndexItem(separacaoItemConsulta.item),
+        scroll: false,
       );
 
       scanController.clear();
@@ -458,12 +476,13 @@ class SeparacaoController extends GetxController {
 
       AppAudioHelper().play('/success.wav');
     } catch (e) {
-      AppAudioHelper().play('/success.wav');
+      AppAudioHelper().play('/error.wav');
       await MessageDialogView.show(
         context: Get.context!,
         message: 'Erro ao adicionar item!',
         detail: e.toString(),
       );
+      scanFocusNode.requestFocus();
     }
   }
 
@@ -471,7 +490,7 @@ class SeparacaoController extends GetxController {
     bool isBarCode = AppHelper.isBarCode(scanText);
     int? codProduto = isBarCode
         ? _separarGridController.findCodProdutoFromBarCode(scanText.trim())
-        : int.parse(scanText.trim());
+        : AppHelper.tryStringToIntOrNull(scanText.trim());
 
     if (codProduto == null) return false;
 
@@ -532,16 +551,21 @@ class SeparacaoController extends GetxController {
               ).remove(item: el.item);
 
               _separacaoGridController.removeGrid(el);
-              final itemSeparar = _findItemSepararGrid(el.codProduto)!;
+
+              final itemSeparar = _findItemSepararGrid(el.codProduto);
+              if (itemSeparar != null) {
+                final quantidadeSeparacao =
+                    itemSeparar.quantidadeSeparacao - el.quantidade;
+                _separarGridController.updateGrid(
+                  itemSeparar.copyWith(
+                    quantidadeSeparacao:
+                        quantidadeSeparacao < 0 ? 0.00 : quantidadeSeparacao,
+                  ),
+                );
+              }
+
               _separacaoGridController.update();
               _separarGridController.update();
-
-              _separarGridController.updateGrid(
-                itemSeparar.copyWith(
-                  quantidadeSeparacao:
-                      itemSeparar.quantidadeSeparacao - el.quantidade,
-                ),
-              );
 
               return true;
             } catch (err) {
@@ -549,6 +573,10 @@ class SeparacaoController extends GetxController {
             }
           },
         );
+      }
+
+      if (scanFocusNode.canRequestFocus) {
+        scanFocusNode.requestFocus();
       }
     };
   }
@@ -598,7 +626,10 @@ class SeparacaoController extends GetxController {
 
           final List<ExpedicaoSepararItemConsultaModel> itensGridSeparar = [];
           for (var el in response) {
-            final itemSeparar = _findItemSepararGrid(el.codProduto)!;
+            final itemSeparar = _findItemSepararGrid(el.codProduto);
+            if (itemSeparar == null) {
+              continue;
+            }
 
             itensGridSeparar.add(itemSeparar.copyWith(
               quantidadeSeparacao:
@@ -650,7 +681,10 @@ class SeparacaoController extends GetxController {
       final separacaoItemConsulta = _separacaoGridController.itens;
       final List<ExpedicaoSepararItemConsultaModel> itensGridSeparar = [];
       for (var el in separacaoItemConsulta) {
-        final itemSeparar = _findItemSepararGrid(el.codProduto)!;
+        final itemSeparar = _findItemSepararGrid(el.codProduto);
+        if (itemSeparar == null) {
+          continue;
+        }
         itensGridSeparar.add(itemSeparar.copyWith(
           quantidadeSeparacao: 0.00,
         ));

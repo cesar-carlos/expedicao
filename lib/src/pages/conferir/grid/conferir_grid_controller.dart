@@ -55,6 +55,9 @@ class ConferirGridController extends GetxController {
   void updateGrid(ExpedicaoConferirItemConsultaModel item) {
     _changeListListen.value = DateTime.now().toString();
     final index = _itens.indexWhere((el) => el.item == item.item);
+    if (index < 0) {
+      return;
+    }
     _itens[index] = item;
   }
 
@@ -62,6 +65,9 @@ class ConferirGridController extends GetxController {
     _changeListListen.value = DateTime.now().toString();
     for (var el in itens) {
       final index = _itens.indexWhere((i) => i.item == el.item);
+      if (index < 0) {
+        continue;
+      }
       _itens[index] = el;
     }
   }
@@ -90,6 +96,9 @@ class ConferirGridController extends GetxController {
 
   void updateUnidade(ExpedicaoConferirItemUnidadeMedidaConsultaModel item) {
     final index = _itemUnids.indexWhere((el) => el.item == item.item);
+    if (index < 0) {
+      return;
+    }
     _itemUnids[index] = item;
   }
 
@@ -97,6 +106,9 @@ class ConferirGridController extends GetxController {
       List<ExpedicaoConferirItemUnidadeMedidaConsultaModel> itens) {
     for (var el in itens) {
       final index = _itemUnids.indexWhere((i) => i.item == el.item);
+      if (index < 0) {
+        continue;
+      }
       _itemUnids[index] = el;
     }
   }
@@ -108,8 +120,12 @@ class ConferirGridController extends GetxController {
         el.item == item.item);
   }
 
-  void setSelectedRow(int index) {
-    dataGridController.selectAndScrollToRow(index);
+  void setSelectedRow(int index, {bool scroll = true}) {
+    dataGridController.selectAndScrollToRow(
+      index,
+      scroll: scroll,
+      rowCount: itensSort.length,
+    );
   }
 
   double totalQuantity() {
@@ -144,8 +160,11 @@ class ConferirGridController extends GetxController {
         .every((el) => el.quantidade == el.quantidadeConferida);
   }
 
-  ExpedicaoConferirItemConsultaModel findItem(String item) {
-    final el = _itens.where((el) => el.item == item).toList();
+  ExpedicaoConferirItemConsultaModel? findItem(String item) {
+    final el = _itens.where((el) => el.item == item);
+    if (el.isEmpty) {
+      return null;
+    }
     return el.first;
   }
 
@@ -162,13 +181,15 @@ class ConferirGridController extends GetxController {
   }
 
   int? findcodProdutoFromBarCode(String barCode) {
-    final el = _itemUnids.where((el) => el.codigoBarras == barCode).toList();
+    final el = _itemUnids.where((el) => el.codigoBarras == barCode);
+    if (el.isEmpty) {
+      return null;
+    }
     return el.first.codProduto;
   }
 
   int findIndexCodProduto(int codProduto) {
-    final el = _itens.where((el) => el.codProduto == codProduto).toList();
-    return _itens.indexOf(el.first);
+    return itensSort.indexWhere((el) => el.codProduto == codProduto);
   }
 
   ExpedicaoConferirItemConsultaModel? findBarCode(String barCode) {
