@@ -31,6 +31,12 @@ class MessageDialogController extends GetxController {
         return KeyEventResult.handled;
       }
 
+      if (event.logicalKey == LogicalKeyboardKey.f12 ||
+          event.logicalKey == LogicalKeyboardKey.enter) {
+        onPressedOK();
+        return KeyEventResult.handled;
+      }
+
       return KeyEventResult.ignored;
     }
 

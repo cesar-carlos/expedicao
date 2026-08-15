@@ -18,20 +18,26 @@ class CarrinhosAgruparGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<CarrinhosAgruparGridController>(
       builder: (controller) {
-        return SfDataGridTheme(
-          data: CarrinhosAgruparGridTheme().theme,
-          child: SfDataGrid(
-            columnWidthMode: ColumnWidthMode.fill,
-            controller: controller.dataGridController,
-            source: CarrinhosAgruparGridSource(itens: controller.itens),
-            onCellDoubleTap: CarrinhosAgruparGridEvent.onCellDoubleTap,
-            columns: CarrinhosAgruparGridColumns().columns,
-            selectionMode: SelectionMode.single,
-            highlightRowOnHover: false,
-            showColumnHeaderIconOnHover: true,
-            isScrollbarAlwaysShown: true,
-            headerRowHeight: 30,
-            rowHeight: 40,
+        return Focus(
+          focusNode: controller.gridFocusNode,
+          onKeyEvent: controller.handleGridKeyEvent,
+          child: SfDataGridTheme(
+            data: CarrinhosAgruparGridTheme().theme,
+            child: SfDataGrid(
+              columnWidthMode: ColumnWidthMode.fill,
+              controller: controller.dataGridController,
+              source: CarrinhosAgruparGridSource(itens: controller.itens),
+              onCellDoubleTap: CarrinhosAgruparGridEvent.onCellDoubleTap,
+              onSelectionChanged: CarrinhosAgruparGridEvent.onSelectionChanged,
+              columns: CarrinhosAgruparGridColumns().columns,
+              selectionMode: SelectionMode.single,
+              navigationMode: GridNavigationMode.row,
+              highlightRowOnHover: false,
+              showColumnHeaderIconOnHover: true,
+              isScrollbarAlwaysShown: true,
+              headerRowHeight: 30,
+              rowHeight: 40,
+            ),
           ),
         );
       },

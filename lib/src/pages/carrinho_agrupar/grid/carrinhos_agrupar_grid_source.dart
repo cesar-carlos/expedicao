@@ -5,6 +5,7 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:app_expedicao/src/pages/carrinho_agrupar/grid/carrinhos_agrupar_grid_cells.dart';
 import 'package:app_expedicao/src/pages/carrinho_agrupar/grid/carrinhos_agrupar_grid_controller.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_agrupamento_consulta_model.dart';
+import 'package:app_expedicao/src/pages/common/widget/shortcut_badge.dart';
 import 'package:app_expedicao/src/app/app_helper.dart';
 
 class CarrinhosAgruparGridSource extends DataGridSource {
@@ -72,20 +73,28 @@ class CarrinhosAgruparGridSource extends DataGridSource {
                 columnName: 'actions',
                 value:
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  IconButton(
-                    icon: controller.iconRemove(i),
-                    onPressed: () => controller.onRemoveItem(this, i),
+                  ShortcutBadge(
+                    shortCut: 'Del',
+                    tooltip: 'Desagrupar Carrinho (Del)',
+                    onPressed: () {
+                      controller.onRemoveItem(this, i);
+                    },
+                    child: controller.iconRemove(i),
                   ),
                   const SizedBox(
-                    width: 10,
+                    width: 9,
                     child: VerticalDivider(
                       color: Colors.grey,
                       thickness: 0.5,
                     ),
                   ),
-                  IconButton(
-                    icon: controller.iconGroup(i),
-                    onPressed: () => controller.onGroupItem(this, i),
+                  ShortcutBadge(
+                    shortCut: 'F6',
+                    tooltip: 'Agrupar Carrinho (F6)',
+                    onPressed: () {
+                      controller.onGroupItem(this, i);
+                    },
+                    child: controller.iconGroup(i),
                   ),
                 ]),
               ),
@@ -98,8 +107,16 @@ class CarrinhosAgruparGridSource extends DataGridSource {
 
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
-    var dataGridRowAdapter = DataGridRowAdapter(
-        color: Colors.white,
+    final itemCell = row.getCells().where((cell) => cell.columnName == 'item');
+    final itemValue = itemCell.isEmpty ? null : itemCell.first.value?.toString();
+    final item = itemValue == null
+        ? null
+        : controller.itens
+            .where((el) => el.itemCarrinhoPercurso == itemValue)
+            .firstOrNull;
+
+    return DataGridRowAdapter(
+        color: item == null ? Colors.white : controller.rowColor(item),
         cells: row.getCells().map<Widget>((cell) {
           if (cell.value is double) {
             return CarrinhosAgruparGridCells.defaultMoneyCell(cell.value);
@@ -127,7 +144,5 @@ class CarrinhosAgruparGridSource extends DataGridSource {
 
           return CarrinhosAgruparGridCells.defaultCells(cell.value);
         }).toList());
-
-    return dataGridRowAdapter;
   }
 }

@@ -1,9 +1,11 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import 'package:app_expedicao/src/app/app_data_grid.dart';
+import 'package:app_expedicao/src/app/app_color.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_agrupamento_consulta_model.dart';
 import 'package:app_expedicao/src/pages/carrinho_agrupar/grid/carrinhos_agrupar_grid_source.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
@@ -13,9 +15,14 @@ class CarrinhosAgruparGridController extends GetxController {
   final iconSize = 19.0;
 
   final DataGridController dataGridController = DataGridController();
+  final gridFocusNode = FocusNode();
   late final List<ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel> _itens = [];
 
   List<ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel> get itens => _itens;
+
+  String? highlightedItem;
+  bool _applyingSelection = false;
+  bool get applyingSelection => _applyingSelection;
 
 
   void Function(ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel item)?
@@ -23,6 +30,12 @@ class CarrinhosAgruparGridController extends GetxController {
 
   void Function(ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel item)?
       onPressedRemove;
+
+  @override
+  void onClose() {
+    gridFocusNode.dispose();
+    super.onClose();
+  }
 
   void addGrid(ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel item) {
     _itens.add(item);
@@ -71,6 +84,11 @@ class CarrinhosAgruparGridController extends GetxController {
         el.codEmpresa == item.codEmpresa &&
         el.codCarrinho == item.codCarrinho &&
         el.itemCarrinhoPercurso == item.itemCarrinhoPercurso);
+
+    if (highlightedItem != null &&
+        !_itens.any((el) => el.itemCarrinhoPercurso == highlightedItem)) {
+      highlightedItem = null;
+    }
   }
 
   void removeAllGrid() {
@@ -114,15 +132,10 @@ class CarrinhosAgruparGridController extends GetxController {
   }
 
   Icon iconGroup(ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel item) {
-    Color color = Colors.blue;
+    Color color = Colors.grey;
 
     switch (item.situacao) {
-      case ExpedicaoSituacaoModel.agrupado:
-        color = Colors.grey;
-        break;
       case ExpedicaoSituacaoModel.conferido:
-      case ExpedicaoSituacaoModel.emEntrega:
-      case ExpedicaoSituacaoModel.embalando:
         color = Colors.green;
         break;
     }
@@ -170,10 +183,93 @@ class CarrinhosAgruparGridController extends GetxController {
     }
   }
 
-  void setSelectedRow(int index) {
+  int findIndexItem(String item) {
+    return _itens.indexWhere((el) => el.itemCarrinhoPercurso == item);
+  }
+
+  ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel? get selectedItem {
+    if (highlightedItem == null) {
+      return null;
+    }
+
+    final match =
+        _itens.where((el) => el.itemCarrinhoPercurso == highlightedItem);
+    if (match.isEmpty) {
+      return null;
+    }
+
+    return match.first;
+  }
+
+  void setSelectedRow(int index, {bool scroll = true}) {
     dataGridController.selectAndScrollToRow(
       index,
+      scroll: scroll,
       rowCount: _itens.length,
     );
+  }
+
+  void highlightFirstRow() {
+    if (_itens.isEmpty) {
+      return;
+    }
+
+    highlightItem(_itens.first.itemCarrinhoPercurso);
+  }
+
+  void highlightAdjacentRow(int delta) {
+    if (_itens.isEmpty) {
+      return;
+    }
+
+    var current =
+        highlightedItem == null ? -1 : findIndexItem(highlightedItem!);
+    if (current < 0) {
+      current = delta > 0 ? -1 : 0;
+    }
+
+    final next = (current + delta).clamp(0, _itens.length - 1);
+    highlightItem(_itens[next].itemCarrinhoPercurso);
+  }
+
+  KeyEventResult handleGridKeyEvent(FocusNode node, KeyEvent event) {
+    if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
+      return KeyEventResult.ignored;
+    }
+
+    if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+      highlightAdjacentRow(1);
+      return KeyEventResult.handled;
+    }
+
+    if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+      highlightAdjacentRow(-1);
+      return KeyEventResult.handled;
+    }
+
+    return KeyEventResult.ignored;
+  }
+
+  void highlightItem(String item, {bool scroll = true}) {
+    if (highlightedItem == item && !scroll) {
+      return;
+    }
+
+    _applyingSelection = true;
+    highlightedItem = item;
+    update();
+    setSelectedRow(findIndexItem(item), scroll: scroll);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _applyingSelection = false;
+    });
+  }
+
+  Color rowColor(ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel item) {
+    if (highlightedItem != null && item.itemCarrinhoPercurso == highlightedItem) {
+      return AppColor.gridRowSelectedRowColor;
+    }
+
+    return Colors.white;
   }
 }

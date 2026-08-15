@@ -36,7 +36,8 @@ class ConfirmationDialogController extends GetxController {
 
       if (event.logicalKey == LogicalKeyboardKey.numpad1 ||
           event.logicalKey == LogicalKeyboardKey.digit1 ||
-          event.logicalKey == LogicalKeyboardKey.enter) {
+          event.logicalKey == LogicalKeyboardKey.enter ||
+          event.logicalKey == LogicalKeyboardKey.f12) {
         _pop(true);
         return KeyEventResult.handled;
       }

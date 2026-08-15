@@ -20,21 +20,27 @@ class ConferidoCarrinhoGrid extends StatelessWidget {
     return GetBuilder<ConferidoCarrinhoGridController>(
       //tag: ConferidoCarrinhoGridController.gridName,
       builder: (controller) {
-        return SfDataGridTheme(
-          data: ConferidoCarrinhoGridTheme().theme,
-          child: SfDataGrid(
-            columnWidthMode: ColumnWidthMode.fill,
-            controller: controller.dataGridController,
-            source: ConferidoCarrinhoGridSource(itens: controller.itensSort),
-            onCellDoubleTap: ConferidoCarrinhoGridEvent.onCellDoubleTap,
-            columns: ConferidoCarrinhoGridColumns().columns,
-            selectionMode: SelectionMode.single,
-            footer: const ConferidoCarrinhoGridFooter(),
-            highlightRowOnHover: false,
-            showColumnHeaderIconOnHover: true,
-            isScrollbarAlwaysShown: true,
-            headerRowHeight: 30,
-            rowHeight: 40,
+        return Focus(
+          focusNode: controller.gridFocusNode,
+          onKeyEvent: controller.handleGridKeyEvent,
+          child: SfDataGridTheme(
+            data: ConferidoCarrinhoGridTheme().theme,
+            child: SfDataGrid(
+              columnWidthMode: ColumnWidthMode.fill,
+              controller: controller.dataGridController,
+              source: ConferidoCarrinhoGridSource(itens: controller.itensSort),
+              onCellDoubleTap: ConferidoCarrinhoGridEvent.onCellDoubleTap,
+              onSelectionChanged: ConferidoCarrinhoGridEvent.onSelectionChanged,
+              columns: ConferidoCarrinhoGridColumns().columns,
+              selectionMode: SelectionMode.single,
+              navigationMode: GridNavigationMode.row,
+              footer: const ConferidoCarrinhoGridFooter(),
+              highlightRowOnHover: false,
+              showColumnHeaderIconOnHover: true,
+              isScrollbarAlwaysShown: true,
+              headerRowHeight: 30,
+              rowHeight: 40,
+            ),
           ),
         );
       },

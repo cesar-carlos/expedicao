@@ -53,16 +53,12 @@ class ObservacaoDialogController extends GetxController {
   KeyEventResult handleKeyEvent(AppRawKeyEvent event) {
     if (isRawKeyDown(event)) {
       if (event.logicalKey == LogicalKeyboardKey.f12) {
-        return KeyEventResult.handled;
-      }
-
-      if (event.logicalKey == LogicalKeyboardKey.enter) {
         onPressedSalvar();
         return KeyEventResult.handled;
       }
 
       if (event.logicalKey == LogicalKeyboardKey.escape) {
-        onPressedSalvar();
+        onPressedCancelar();
         return KeyEventResult.handled;
       }
 

@@ -5,6 +5,7 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:app_expedicao/src/pages/conferido_carrinhos/grid/conferido_carrinho_grid_cells.dart';
 import 'package:app_expedicao/src/pages/conferido_carrinhos/grid/conferido_carrinho_grid_controller.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
+import 'package:app_expedicao/src/pages/common/widget/shortcut_badge.dart';
 import 'package:app_expedicao/src/app/app_helper.dart';
 
 class ConferidoCarrinhoGridSource extends DataGridSource {
@@ -75,42 +76,58 @@ class ConferidoCarrinhoGridSource extends DataGridSource {
                 columnName: 'actions',
                 value:
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  IconButton(
-                    icon: controller.iconRemove(i),
-                    onPressed: () => controller.onRemoveItem(this, i),
+                  ShortcutBadge(
+                    shortCut: 'Del',
+                    tooltip: 'Excluir Carrinho (Del)',
+                    onPressed: () {
+                      controller.onRemoveItem(this, i);
+                    },
+                    child: controller.iconRemove(i),
                   ),
                   const SizedBox(
-                    width: 10,
+                    width: 9,
                     child: VerticalDivider(
                       color: Colors.grey,
                       thickness: 0.5,
                     ),
                   ),
-                  IconButton(
-                    icon: controller.iconEdit(i),
-                    onPressed: () => controller.onEditItem(this, i),
+                  ShortcutBadge(
+                    shortCut: 'F9',
+                    tooltip: 'Editar Carrinho (F9)',
+                    onPressed: () {
+                      controller.onEditItem(this, i);
+                    },
+                    child: controller.iconEdit(i),
                   ),
                   const SizedBox(
-                    width: 10,
+                    width: 9,
                     child: VerticalDivider(
                       color: Colors.grey,
                       thickness: 0.5,
                     ),
                   ),
-                  IconButton(
-                    icon: controller.iconGroup(i),
-                    onPressed: () => controller.onGrouptem(this, i),
+                  ShortcutBadge(
+                    shortCut: 'F6',
+                    tooltip: 'Agrupar Carrinho (F6)',
+                    onPressed: () {
+                      controller.onGrouptem(this, i);
+                    },
+                    child: controller.iconGroup(i),
                   ),
                   const SizedBox(
-                    width: 10,
+                    width: 9,
                     child: VerticalDivider(
                       color: Colors.grey,
                       thickness: 0.5,
                     ),
                   ),
-                  IconButton(
-                    icon: controller.iconSave(i),
-                    onPressed: () => controller.onSavetem(this, i),
+                  ShortcutBadge(
+                    shortCut: 'F10',
+                    tooltip: 'Salvar Carrinho (F10)',
+                    onPressed: () {
+                      controller.onSavetem(this, i);
+                    },
+                    child: controller.iconSave(i),
                   ),
                 ]),
               ),
@@ -123,8 +140,14 @@ class ConferidoCarrinhoGridSource extends DataGridSource {
 
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
-    var dataGridRowAdapter = DataGridRowAdapter(
-        color: Colors.white,
+    final itemCell = row.getCells().where((cell) => cell.columnName == 'item');
+    final itemValue = itemCell.isEmpty ? null : itemCell.first.value?.toString();
+    final item = itemValue == null
+        ? null
+        : controller.itensSort.where((el) => el.item == itemValue).firstOrNull;
+
+    return DataGridRowAdapter(
+        color: item == null ? Colors.white : controller.rowColor(item),
         cells: row.getCells().map<Widget>((cell) {
           if (cell.value is double) {
             return ConferidoCarrinhoGridCells.defaultMoneyCell(cell.value);
@@ -152,7 +175,5 @@ class ConferidoCarrinhoGridSource extends DataGridSource {
 
           return ConferidoCarrinhoGridCells.defaultCells(cell.value);
         }).toList());
-
-    return dataGridRowAdapter;
   }
 }

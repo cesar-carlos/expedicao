@@ -63,9 +63,7 @@ class CarrinhosAgruparAssistenteController extends GetxController {
       }
 
       if (event.logicalKey == LogicalKeyboardKey.f12) {
-        appEventState.canCloseWindow = true;
-        Get.back();
-
+        onPressedContinuar();
         return KeyEventResult.handled;
       }
     }

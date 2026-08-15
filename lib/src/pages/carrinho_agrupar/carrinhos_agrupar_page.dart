@@ -213,6 +213,7 @@ class CarrinhosAgruparPage {
                                   height: 45,
                                   child: TextField(
                                     cursorHeight: 25,
+                                    enabled: !controller.viewMode,
                                     controller:
                                         controller.controllerScanCarrinho,
                                     focusNode: controller.focusScanCarrinho,

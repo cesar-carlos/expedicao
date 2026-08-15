@@ -37,6 +37,7 @@ import 'package:app_expedicao/src/app/app_raw_keyboard.dart';
 
 class ConferirController extends GetxController {
   bool _iniciada = false;
+  bool _processando = false;
 
   late FocusNode formFocusNode;
   final List<RepositoryEventListenerModel> _pageListerner = [];
@@ -112,6 +113,10 @@ class ConferirController extends GetxController {
 
   KeyEventResult handleKeyEvent(AppRawKeyEvent event) {
     if (isRawKeyDown(event)) {
+      if (_processando || _conferidoCarrinhosController.processando) {
+        return KeyEventResult.handled;
+      }
+
       if (event.logicalKey == LogicalKeyboardKey.f4) {
         btnConferirCarrinho();
         return KeyEventResult.handled;
@@ -122,8 +127,28 @@ class ConferirController extends GetxController {
         return KeyEventResult.handled;
       }
 
+      if (event.logicalKey == LogicalKeyboardKey.f6) {
+        btnAgruparCarrinho();
+        return KeyEventResult.handled;
+      }
+
       if (event.logicalKey == LogicalKeyboardKey.f7) {
         btnAssistenteAgrupamento();
+        return KeyEventResult.handled;
+      }
+
+      if (event.logicalKey == LogicalKeyboardKey.f9) {
+        btnEditarCarrinho();
+        return KeyEventResult.handled;
+      }
+
+      if (event.logicalKey == LogicalKeyboardKey.f10) {
+        btnSalvarCarrinho();
+        return KeyEventResult.handled;
+      }
+
+      if (event.logicalKey == LogicalKeyboardKey.delete) {
+        btnExcluirCarrinho();
         return KeyEventResult.handled;
       }
 
@@ -250,7 +275,13 @@ class ConferirController extends GetxController {
     );
 
     if (carrinhoConsulta != null) {
-      await LoadingProcessDialogGenericWidget.show<bool>(
+      if (_processando) {
+        return;
+      }
+
+      _processando = true;
+      try {
+        await LoadingProcessDialogGenericWidget.show<bool>(
         context: Get.context!,
         process: () async {
           try {
@@ -294,7 +325,26 @@ class ConferirController extends GetxController {
           }
         },
       );
+      } finally {
+        _processando = false;
+      }
     }
+  }
+
+  Future<void> btnEditarCarrinho() async {
+    await _conferidoCarrinhosController.editCartFromShortcut();
+  }
+
+  Future<void> btnSalvarCarrinho() async {
+    await _conferidoCarrinhosController.saveCartFromShortcut();
+  }
+
+  Future<void> btnExcluirCarrinho() async {
+    await _conferidoCarrinhosController.removeCartFromShortcut();
+  }
+
+  Future<void> btnAgruparCarrinho() async {
+    await _conferidoCarrinhosController.groupCartFromShortcut();
   }
 
   Future<void> btnAdicionarObservacao() async {
@@ -415,7 +465,12 @@ class ConferirController extends GetxController {
     );
 
     if (confirmationFinish != null && confirmationFinish) {
-      await finalizarConferencia();
+      _processando = true;
+      try {
+        await finalizarConferencia();
+      } finally {
+        _processando = false;
+      }
     }
 
     await Future.delayed(Duration(milliseconds: 500));

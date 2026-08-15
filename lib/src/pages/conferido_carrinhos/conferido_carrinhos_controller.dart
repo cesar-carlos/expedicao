@@ -32,8 +32,10 @@ class ConferidoCarrinhosController extends GetxController {
   late ConferidoCarrinhoGridController _conferidoCarrinhoGridController;
   late ConferirConsultaServices _conferirConsultaServices;
   late UsuarioConsultaMoldel _usuarioLogado;
+  bool _processando = false;
 
   ProcessoExecutavelModel get processoExecutavel => _processoExecutavel;
+  bool get processando => _processando;
 
   @override
   Future<void> onInit() async {
@@ -64,11 +66,13 @@ class ConferidoCarrinhosController extends GetxController {
         await _conferirConsultaServices.carrinhosPercurso();
     _conferidoCarrinhoGridController.addAllGrid(conferidoCarrinhos);
     _conferidoCarrinhoGridController.update();
+    _conferidoCarrinhoGridController.highlightFirstRow();
   }
 
   void addCarrinho(ExpedicaoCarrinhoPercursoEstagioConsultaModel model) {
     _conferidoCarrinhoGridController.addGrid(model);
     _conferidoCarrinhoGridController.update();
+    _conferidoCarrinhoGridController.highlightItem(model.item);
   }
 
   Future<void> removeCart(
@@ -111,7 +115,13 @@ class ConferidoCarrinhosController extends GetxController {
     );
 
     if (confirmation != null && confirmation) {
-      await LoadingProcessDialogGenericWidget.show<bool>(
+      if (_processando) {
+        return;
+      }
+
+      _processando = true;
+      try {
+        await LoadingProcessDialogGenericWidget.show<bool>(
         context: Get.context!,
         process: () async {
           try {
@@ -189,6 +199,9 @@ class ConferidoCarrinhosController extends GetxController {
           }
         },
       );
+      } finally {
+        _processando = false;
+      }
     }
   }
 
@@ -443,7 +456,13 @@ class ConferidoCarrinhosController extends GetxController {
     );
 
     if (confirmation != null && confirmation) {
-      return await LoadingProcessDialogGenericWidget.show<bool>(
+      if (_processando) {
+        return false;
+      }
+
+      _processando = true;
+      try {
+        return await LoadingProcessDialogGenericWidget.show<bool>(
         context: Get.context!,
         process: () async {
           try {
@@ -516,9 +535,114 @@ class ConferidoCarrinhosController extends GetxController {
           }
         },
       );
+      } finally {
+        _processando = false;
+      }
     }
 
     return false;
+  }
+
+  ExpedicaoCarrinhoPercursoEstagioConsultaModel? _carrinhoParaAtalho() {
+    final itens = _conferidoCarrinhoGridController.itensSort;
+    if (itens.isEmpty) {
+      return null;
+    }
+
+    final selecionado = _conferidoCarrinhoGridController.selectedItem;
+    if (selecionado != null) {
+      return selecionado;
+    }
+
+    if (itens.length == 1) {
+      return itens.first;
+    }
+
+    final emConferencia = itens.where((el) =>
+        el.situacao == ExpedicaoSituacaoModel.conferindo ||
+        el.situacao == ExpedicaoSituacaoModel.emAndamento);
+    if (emConferencia.isNotEmpty) {
+      return emConferencia.first;
+    }
+
+    return itens.first;
+  }
+
+  Future<void> editCartFromShortcut() async {
+    final item = _carrinhoParaAtalho();
+    if (item == null) {
+      await MessageDialogView.show(
+        context: Get.context!,
+        message: 'Nenhum carrinho!',
+        detail: 'Adicione um carrinho para editar.',
+      );
+      return;
+    }
+
+    await editCart(item);
+  }
+
+  Future<void> saveCartFromShortcut() async {
+    final item = _carrinhoParaAtalho();
+    if (item == null) {
+      await MessageDialogView.show(
+        context: Get.context!,
+        message: 'Nenhum carrinho!',
+        detail: 'Adicione um carrinho para salvar.',
+      );
+      return;
+    }
+
+    await saveCart(item);
+  }
+
+  Future<void> removeCartFromShortcut() async {
+    final item = _carrinhoParaAtalho();
+    if (item == null) {
+      await MessageDialogView.show(
+        context: Get.context!,
+        message: 'Nenhum carrinho!',
+        detail: 'Adicione um carrinho para excluir.',
+      );
+      return;
+    }
+
+    await removeCart(item);
+  }
+
+  Future<void> groupCartFromShortcut() async {
+    final item = _carrinhoParaAtalhoAgrupar();
+    if (item == null) {
+      await MessageDialogView.show(
+        context: Get.context!,
+        message: 'Nenhum carrinho!',
+        detail: 'Adicione um carrinho para agrupar.',
+      );
+      return;
+    }
+
+    await groupCart(item);
+  }
+
+  ExpedicaoCarrinhoPercursoEstagioConsultaModel? _carrinhoParaAtalhoAgrupar() {
+    final itens = _conferidoCarrinhoGridController.itensSort;
+    if (itens.isEmpty) {
+      return null;
+    }
+
+    final selecionado = _conferidoCarrinhoGridController.selectedItem;
+    if (selecionado != null) {
+      return selecionado;
+    }
+
+    final conferidos = itens.where(
+      (el) => el.situacao == ExpedicaoSituacaoModel.conferido,
+    );
+    if (conferidos.isNotEmpty) {
+      return conferidos.first;
+    }
+
+    return itens.first;
   }
 
   void _evetsCarrinhoGrid() {

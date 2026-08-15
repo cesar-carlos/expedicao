@@ -15,6 +15,7 @@ import 'package:app_expedicao/src/app/app_raw_keyboard.dart';
 class CarrinhosAgruparController extends GetxController {
   late FocusNode formFocusNode;
   final RxBool _viewMode = false.obs;
+  bool _processando = false;
 
   final ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel
       carrinhoPercursoAgrupamento;
@@ -54,11 +55,24 @@ class CarrinhosAgruparController extends GetxController {
     controllerCodigoBarras.text =
         carrinhoPercursoAgrupamento.codigoBarrasCarrinho;
     controllerCarrinhoSituacao.text = carrinhoPercursoAgrupamento.situacao;
-    focusScanCarrinho.requestFocus();
 
     _fillGridCarrinhosAgruparGrid();
     _evetsCarrinhoGrid();
     super.onInit();
+  }
+
+  @override
+  void onReady() {
+    super.onReady();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (viewMode) {
+        return;
+      }
+
+      if (focusScanCarrinho.canRequestFocus) {
+        focusScanCarrinho.requestFocus();
+      }
+    });
   }
 
   @override
@@ -68,6 +82,7 @@ class CarrinhosAgruparController extends GetxController {
     controllerCarrinhoSituacao.dispose();
     controllerScanCarrinho.dispose();
     focusScanCarrinho.dispose();
+    formFocusNode.dispose();
     Get.delete<CarrinhosAgruparGridController>();
     _viewMode.close();
     super.onClose();
@@ -75,6 +90,10 @@ class CarrinhosAgruparController extends GetxController {
 
   KeyEventResult handleKeyEvent(AppRawKeyEvent event) {
     if (isRawKeyDown(event)) {
+      if (_processando) {
+        return KeyEventResult.handled;
+      }
+
       if (event.logicalKey == LogicalKeyboardKey.escape) {
         Get.find<AppEventState>().canCloseWindow = true;
         Get.back();
@@ -82,12 +101,34 @@ class CarrinhosAgruparController extends GetxController {
       }
 
       if (event.logicalKey == LogicalKeyboardKey.f7) {
-        Get.find<CarrinhosAgruparController>().onAgruparTudo();
+        onAgruparTudo();
         return KeyEventResult.handled;
       }
 
       if (event.logicalKey == LogicalKeyboardKey.f8) {
-        Get.find<CarrinhosAgruparController>().onDesabruparTudo();
+        onDesabruparTudo();
+        return KeyEventResult.handled;
+      }
+
+      if (event.logicalKey == LogicalKeyboardKey.f6) {
+        onAgruparLinha();
+        return KeyEventResult.handled;
+      }
+
+      if (event.logicalKey == LogicalKeyboardKey.delete) {
+        if (focusScanCarrinho.hasFocus) {
+          return KeyEventResult.ignored;
+        }
+
+        onDesagruparLinha();
+        return KeyEventResult.handled;
+      }
+
+      if (event.logicalKey == LogicalKeyboardKey.f4 ||
+          event.logicalKey == LogicalKeyboardKey.f5 ||
+          event.logicalKey == LogicalKeyboardKey.f9 ||
+          event.logicalKey == LogicalKeyboardKey.f10 ||
+          event.logicalKey == LogicalKeyboardKey.f12) {
         return KeyEventResult.handled;
       }
 
@@ -127,10 +168,16 @@ class CarrinhosAgruparController extends GetxController {
 
     _carrinhosAgruparGridController.addAllGrid(resultFiltered);
     _carrinhosAgruparGridController.update();
+    _carrinhosAgruparGridController.highlightFirstRow();
   }
 
   Future<void> onSubmittedScan(String? value) async {
-    if (value == null || value.isEmpty) {
+    if (_processando) {
+      return;
+    }
+
+    final codigoBarras = value?.trim() ?? '';
+    if (codigoBarras.isEmpty) {
       await MessageDialogView.show(
         context: Get.context!,
         message: 'Valor invalido!',
@@ -143,7 +190,7 @@ class CarrinhosAgruparController extends GetxController {
     }
 
     final carrinhoAgrupar =
-        _carrinhosAgruparGridController.findCodigoBarras(value);
+        _carrinhosAgruparGridController.findCodigoBarras(codigoBarras);
 
     if (carrinhoAgrupar == null) {
       await MessageDialogView.show(
@@ -170,12 +217,29 @@ class CarrinhosAgruparController extends GetxController {
       return;
     }
 
+    if (carrinhoAgrupar.situacao != ExpedicaoSituacaoModel.conferido) {
+      await MessageDialogView.show(
+        context: Get.context!,
+        message: 'Carrinho ${carrinhoAgrupar.situacao.toLowerCase()}!',
+        detail:
+            'Não é possível agrupar um carrinho que esteja ${carrinhoAgrupar.situacao}!',
+      );
+
+      focusScanCarrinho.requestFocus();
+      controllerScanCarrinho.clear();
+      return;
+    }
+
     await _addItemGroup(carrinhoAgrupar);
     controllerScanCarrinho.clear();
     focusScanCarrinho.requestFocus();
   }
 
-  void onAgruparTudo() {
+  Future<void> onAgruparTudo() async {
+    if (_processando) {
+      return;
+    }
+
     if (viewMode) {
       MessageDialogView.show(
         context: Get.context!,
@@ -201,7 +265,7 @@ class CarrinhosAgruparController extends GetxController {
       return;
     }
 
-    _addAllItemGroup(carrinhoPercursoAgrupamento);
+    await _addAllItemGroup(carrinhoPercursoAgrupamento);
   }
 
   void onPressedCloseBar() {
@@ -209,7 +273,11 @@ class CarrinhosAgruparController extends GetxController {
     Get.back();
   }
 
-  void onDesabruparTudo() {
+  Future<void> onDesabruparTudo() async {
+    if (_processando) {
+      return;
+    }
+
     if (viewMode) {
       MessageDialogView.show(
         context: Get.context!,
@@ -234,7 +302,124 @@ class CarrinhosAgruparController extends GetxController {
       return;
     }
 
-    _removeAllItemGroup(carrinhoPercursoAgrupamento);
+    await _removeAllItemGroup(carrinhoPercursoAgrupamento);
+  }
+
+  Future<void> onAgruparLinha() async {
+    if (_processando) {
+      return;
+    }
+
+    if (viewMode) {
+      await MessageDialogView.show(
+        context: Get.context!,
+        message: 'Operação não permitida!',
+        detail: 'Operação não permitida em modo de visualização!',
+      );
+      return;
+    }
+
+    final item = _carrinhoParaAtalhoAgrupar();
+    if (item == null) {
+      await MessageDialogView.show(
+        context: Get.context!,
+        message: 'Nenhum carrinho!',
+        detail: 'Não existe carrinho conferido para agrupar.',
+      );
+      return;
+    }
+
+    if (item.situacao != ExpedicaoSituacaoModel.conferido) {
+      await MessageDialogView.show(
+        context: Get.context!,
+        message: 'Carrinho ${item.situacao.toLowerCase()}!',
+        detail:
+            'Não é possível agrupar um carrinho que esteja ${item.situacao}!',
+      );
+      return;
+    }
+
+    await _addItemGroup(item);
+  }
+
+  Future<void> onDesagruparLinha() async {
+    if (_processando) {
+      return;
+    }
+
+    if (viewMode) {
+      await MessageDialogView.show(
+        context: Get.context!,
+        message: 'Operação não permitida!',
+        detail: 'Operação não permitida em modo de visualização!',
+      );
+      return;
+    }
+
+    final item = _carrinhoParaAtalhoDesagrupar();
+    if (item == null) {
+      await MessageDialogView.show(
+        context: Get.context!,
+        message: 'Nenhum carrinho!',
+        detail: 'Não existe carrinho agrupado para desagrupar.',
+      );
+      return;
+    }
+
+    if (item.situacao != ExpedicaoSituacaoModel.agrupado) {
+      await MessageDialogView.show(
+        context: Get.context!,
+        message: 'Carrinho ${item.situacao.toLowerCase()}!',
+        detail:
+            'Não é possível desagrupar um carrinho que esteja ${item.situacao}!',
+      );
+      return;
+    }
+
+    await _removeItemGroup(item);
+  }
+
+  ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel? _carrinhoParaAtalhoAgrupar() {
+    final itens = _carrinhosAgruparGridController.itens;
+    if (itens.isEmpty) {
+      return null;
+    }
+
+    final selecionado = _carrinhosAgruparGridController.selectedItem;
+    if (selecionado != null) {
+      return selecionado;
+    }
+
+    final conferidos = itens.where(
+      (el) => el.situacao == ExpedicaoSituacaoModel.conferido,
+    );
+    if (conferidos.isNotEmpty) {
+      return conferidos.first;
+    }
+
+    return itens.first;
+  }
+
+  ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel?
+      _carrinhoParaAtalhoDesagrupar() {
+    final itens = _carrinhosAgruparGridController.itens;
+    if (itens.isEmpty) {
+      return null;
+    }
+
+    final selecionado = _carrinhosAgruparGridController.selectedItem;
+    if (selecionado != null) {
+      return selecionado;
+    }
+
+    final agrupados = itens.where(
+      (el) => el.situacao == ExpedicaoSituacaoModel.agrupado,
+    );
+    if (agrupados.isNotEmpty) {
+      return agrupados.first;
+    }
+
+    return itens.first;
   }
 
   void _evetsCarrinhoGrid() {
@@ -244,7 +429,7 @@ class CarrinhosAgruparController extends GetxController {
     };
 
     _carrinhosAgruparGridController.onPressedGroup = (item) async {
-      if (item.situacao == ExpedicaoSituacaoModel.agrupado) return;
+      if (item.situacao != ExpedicaoSituacaoModel.conferido) return;
       _addItemGroup(item);
     };
   }
@@ -252,6 +437,10 @@ class CarrinhosAgruparController extends GetxController {
   Future<void> _removeItemGroup(
     ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel carrinhoRemover,
   ) async {
+    if (_processando) {
+      return;
+    }
+
     if (viewMode) {
       MessageDialogView.show(
         context: Get.context!,
@@ -262,69 +451,84 @@ class CarrinhosAgruparController extends GetxController {
       return;
     }
 
-    await LoadingProcessDialogGenericWidget.show<bool>(
-      context: Get.context!,
-      process: () async {
-        try {
-          await _carrinhoAgruparService.cancelarAgrupamento(carrinhoRemover);
+    _processando = true;
+    try {
+      await LoadingProcessDialogGenericWidget.show<bool>(
+        context: Get.context!,
+        process: () async {
+          try {
+            await _carrinhoAgruparService.cancelarAgrupamento(carrinhoRemover);
 
-          final newCarrinhoAgrupar = carrinhoRemover.copyWith(
-            situacao: ExpedicaoSituacaoModel.conferido,
-          );
+            final newCarrinhoAgrupar = carrinhoRemover.copyWith(
+              situacao: ExpedicaoSituacaoModel.conferido,
+            );
 
-          _carrinhosAgruparGridController.updateGrid(newCarrinhoAgrupar);
-          _carrinhosAgruparGridController.update();
-          return true;
-        } on AppErrorAlert catch (err) {
-          await MessageDialogView.show(
-            context: Get.context!,
-            message: err.message,
-            detail: err.details ?? '',
-          );
+            _carrinhosAgruparGridController.updateGrid(newCarrinhoAgrupar);
+            _carrinhosAgruparGridController.update();
+            return true;
+          } on AppErrorAlert catch (err) {
+            await MessageDialogView.show(
+              context: Get.context!,
+              message: err.message,
+              detail: err.details ?? '',
+            );
 
-          return false;
-        } catch (err) {
-          return false;
-        }
-      },
-    );
+            return false;
+          } catch (err) {
+            return false;
+          }
+        },
+      );
+    } finally {
+      _processando = false;
+    }
   }
 
   Future<void> _removeAllItemGroup(
     ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel carrinhoRemover,
   ) async {
-    await LoadingProcessDialogGenericWidget.show<bool>(
-      context: Get.context!,
-      process: () async {
-        try {
-          final result = await _carrinhoAgruparService.cancelarTodosAgrupamento(
-            carrinhoRemover,
-          );
+    _processando = true;
+    try {
+      await LoadingProcessDialogGenericWidget.show<bool>(
+        context: Get.context!,
+        process: () async {
+          try {
+            final result =
+                await _carrinhoAgruparService.cancelarTodosAgrupamento(
+              carrinhoRemover,
+            );
 
-          for (var element in result) {
-            _carrinhosAgruparGridController.updateGrid(element);
+            for (var element in result) {
+              _carrinhosAgruparGridController.updateGrid(element);
+            }
+
+            _carrinhosAgruparGridController.update();
+            return true;
+          } on AppErrorAlert catch (err) {
+            await MessageDialogView.show(
+              context: Get.context!,
+              message: err.message,
+              detail: err.details ?? '',
+            );
+
+            return false;
+          } catch (err) {
+            return false;
           }
-
-          _carrinhosAgruparGridController.update();
-          return true;
-        } on AppErrorAlert catch (err) {
-          await MessageDialogView.show(
-            context: Get.context!,
-            message: err.message,
-            detail: err.details ?? '',
-          );
-
-          return false;
-        } catch (err) {
-          return false;
-        }
-      },
-    );
+        },
+      );
+    } finally {
+      _processando = false;
+    }
   }
 
   Future<void> _addItemGroup(
     ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel carrinhoAgrupar,
   ) async {
+    if (_processando) {
+      return;
+    }
+
     if (viewMode) {
       MessageDialogView.show(
         context: Get.context!,
@@ -335,67 +539,77 @@ class CarrinhosAgruparController extends GetxController {
       return;
     }
 
-    await LoadingProcessDialogGenericWidget.show<bool>(
-      context: Get.context!,
-      process: () async {
-        try {
-          await _carrinhoAgruparService.agruparCarrinho(
-            carrinhoPercursoAgrupamento,
-            carrinhoAgrupar,
-          );
+    _processando = true;
+    try {
+      await LoadingProcessDialogGenericWidget.show<bool>(
+        context: Get.context!,
+        process: () async {
+          try {
+            await _carrinhoAgruparService.agruparCarrinho(
+              carrinhoPercursoAgrupamento,
+              carrinhoAgrupar,
+            );
 
-          final newItemCarrinhoPercurso =
-              await _carrinhoAgruparService.carrinhoPercurso(
-            carrinhoAgrupar.itemCarrinhoPercurso,
-          );
+            final newItemCarrinhoPercurso =
+                await _carrinhoAgruparService.carrinhoPercurso(
+              carrinhoAgrupar.itemCarrinhoPercurso,
+            );
 
-          _carrinhosAgruparGridController.updateGrid(newItemCarrinhoPercurso!);
-          _carrinhosAgruparGridController.update();
-          return true;
-        } on AppErrorAlert catch (err) {
-          await MessageDialogView.show(
-            context: Get.context!,
-            message: err.message,
-            detail: err.details ?? '',
-          );
+            _carrinhosAgruparGridController.updateGrid(newItemCarrinhoPercurso!);
+            _carrinhosAgruparGridController.update();
+            return true;
+          } on AppErrorAlert catch (err) {
+            await MessageDialogView.show(
+              context: Get.context!,
+              message: err.message,
+              detail: err.details ?? '',
+            );
 
-          return false;
-        } catch (err) {
-          return false;
-        }
-      },
-    );
+            return false;
+          } catch (err) {
+            return false;
+          }
+        },
+      );
+    } finally {
+      _processando = false;
+    }
   }
 
   Future<void> _addAllItemGroup(
     ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel carrinhoAgrupar,
   ) async {
-    await LoadingProcessDialogGenericWidget.show<bool>(
-      context: Get.context!,
-      process: () async {
-        try {
-          final result = await _carrinhoAgruparService.agruparTodosCarrinho(
-            carrinhoAgrupar,
-          );
+    _processando = true;
+    try {
+      await LoadingProcessDialogGenericWidget.show<bool>(
+        context: Get.context!,
+        process: () async {
+          try {
+            final result = await _carrinhoAgruparService.agruparTodosCarrinho(
+              carrinhoAgrupar,
+            );
 
-          for (var element in result) {
-            _carrinhosAgruparGridController.updateGrid(element);
+            for (var element in result) {
+              _carrinhosAgruparGridController.updateGrid(element);
+            }
+
+            _carrinhosAgruparGridController.update();
+            return true;
+          } on AppErrorAlert catch (err) {
+            await MessageDialogView.show(
+              context: Get.context!,
+              message: err.message,
+              detail: err.details ?? '',
+            );
+
+            return false;
+          } catch (err) {
+            return false;
           }
-
-          _carrinhosAgruparGridController.update();
-          return true;
-        } on AppErrorAlert catch (err) {
-          await MessageDialogView.show(
-            context: Get.context!,
-            message: err.message,
-            detail: err.details ?? '',
-          );
-
-          return false;
-        } catch (err) {
-          return false;
-        }
-      },
-    );
+        },
+      );
+    } finally {
+      _processando = false;
+    }
   }
 }
