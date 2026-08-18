@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:app_expedicao/src/app/app_dialog_close.dart';
 import 'package:app_expedicao/src/app/app_event_state.dart';
 import 'package:app_expedicao/src/pages/common/Identificacao_dialog/model/identificacao_dialog_view_model.dart';
 import 'package:app_expedicao/src/app/app_raw_keyboard.dart';
@@ -14,6 +15,7 @@ class IdentificacaoDialogController extends GetxController {
   final passwordFocusNode = FocusNode()..requestFocus();
   final loginFocusNode = FocusNode();
   final userFocusNode = FocusNode();
+  final _closeGuard = DialogCloseGuard();
 
   @override
   void onInit() {
@@ -33,15 +35,23 @@ class IdentificacaoDialogController extends GetxController {
     passwordController.dispose();
     passwordFocusNode.dispose();
     userFocusNode.dispose();
-    Get.find<AppEventState>().canCloseWindow = true;
+    loginFocusNode.dispose();
+    formFocusNode.dispose();
+    if (Get.isRegistered<AppEventState>()) {
+      Get.find<AppEventState>().canCloseWindow = true;
+    }
     super.onClose();
   }
 
   KeyEventResult handleKeyEvent(AppRawKeyEvent event) {
     if (isRawKeyDown(event)) {
       if (event.logicalKey == LogicalKeyboardKey.escape) {
-        Get.find<AppEventState>().canCloseWindow = true;
-        Get.back(result: null);
+        cancelar();
+        return KeyEventResult.handled;
+      }
+
+      if (event.logicalKey == LogicalKeyboardKey.f12) {
+        login();
         return KeyEventResult.handled;
       }
 
@@ -84,7 +94,7 @@ class IdentificacaoDialogController extends GetxController {
   }
 
   void cancelar() {
-    Get.back();
+    _closeGuard.close(context: formFocusNode.context);
   }
 
   void onFieldSubmittedPassword(String value) {
@@ -96,13 +106,16 @@ class IdentificacaoDialogController extends GetxController {
       if (formKey.currentState!.validate()) {
         //TODO: implementar login
         if (userController.text == 'Administrador' &&
-            passwordController.text == 'sql@2012') {
+            passwordController.text == '1234') {
           final identificacaoModel = IdentificacaoDialogViewModel(
             codUsuario: 1,
             nomeUsuario: userController.text,
           );
 
-          Get.back(result: identificacaoModel);
+          _closeGuard.close(
+            result: identificacaoModel,
+            context: formFocusNode.context,
+          );
         } else {
           passwordFocusNode.requestFocus();
           Get.snackbar("Login", "usuario ou senha inválidos",

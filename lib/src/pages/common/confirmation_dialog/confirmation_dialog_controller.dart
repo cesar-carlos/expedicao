@@ -2,13 +2,14 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:app_expedicao/src/app/app_event_state.dart';
+import 'package:app_expedicao/src/app/app_dialog_close.dart';
 import 'package:app_expedicao/src/app/app_raw_keyboard.dart';
 
 class ConfirmationDialogController extends GetxController {
   late FocusNode formFocusNode;
   late FocusNode notConfirmationFocusNode;
   late FocusNode confirmationFocusNode;
+  final _closeGuard = DialogCloseGuard();
 
   @override
   void onInit() {
@@ -17,7 +18,6 @@ class ConfirmationDialogController extends GetxController {
     notConfirmationFocusNode = FocusNode();
     confirmationFocusNode = FocusNode()..requestFocus();
   }
-
 
   @override
   void onClose() {
@@ -59,19 +59,10 @@ class ConfirmationDialogController extends GetxController {
   void confirmationOnPressed() => _pop(true);
 
   void _pop(bool result, {bool canCloseWindow = true}) {
-    Get.find<AppEventState>().canCloseWindow = canCloseWindow;
-    final ctx = formFocusNode.context;
-    if (ctx != null && ctx.mounted) {
-      Navigator.of(ctx).pop(result);
-      return;
-    }
-
-    final overlay = Get.overlayContext;
-    if (overlay != null && overlay.mounted) {
-      Navigator.of(overlay).pop(result);
-      return;
-    }
-
-    Get.back(result: result);
+    _closeGuard.close(
+      result: result,
+      canCloseWindow: canCloseWindow,
+      context: formFocusNode.context,
+    );
   }
 }

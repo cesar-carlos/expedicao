@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
-import 'package:app_expedicao/src/app/app_event_state.dart';
+import 'package:app_expedicao/src/app/app_dialog_close.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_agrupar_service.dart';
 import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog_generic_widget.dart';
@@ -28,6 +28,7 @@ class CarrinhosAgruparAssistenteController extends GetxController {
 
   ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel?
       _carrinhoPercursoAgrupamentoConsulta;
+  final _closeGuard = DialogCloseGuard();
 
   CarrinhosAgruparAssistenteController(this.input);
 
@@ -52,13 +53,9 @@ class CarrinhosAgruparAssistenteController extends GetxController {
   }
 
   KeyEventResult handleKeyEvent(AppRawKeyEvent event) {
-    final appEventState = Get.find<AppEventState>();
-
     if (isRawKeyDown(event)) {
       if (event.logicalKey == LogicalKeyboardKey.escape) {
-        appEventState.canCloseWindow = true;
-        Get.back();
-
+        onPressedCancelar();
         return KeyEventResult.handled;
       }
 
@@ -162,13 +159,11 @@ class CarrinhosAgruparAssistenteController extends GetxController {
   }
 
   void onPressedCloseBar() {
-    Get.find<AppEventState>().canCloseWindow = true;
-    Get.back(result: null);
+    _closeGuard.close(context: formFocusNode.context);
   }
 
   void onPressedCancelar() {
-    Get.find<AppEventState>().canCloseWindow = true;
-    Get.back(result: null);
+    _closeGuard.close(context: formFocusNode.context);
   }
 
   void onPressedContinuar() {
@@ -182,7 +177,9 @@ class CarrinhosAgruparAssistenteController extends GetxController {
       return;
     }
 
-    Get.find<AppEventState>().canCloseWindow = true;
-    Get.back(result: _carrinhoPercursoAgrupamentoConsulta);
+    _closeGuard.close(
+      result: _carrinhoPercursoAgrupamentoConsulta,
+      context: formFocusNode.context,
+    );
   }
 }

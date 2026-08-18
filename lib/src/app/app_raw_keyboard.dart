@@ -29,6 +29,7 @@ class AppKeyboardListener extends StatefulWidget {
 
 class _AppKeyboardListenerState extends State<AppKeyboardListener> {
   static final List<_AppKeyboardListenerState> _stack = [];
+  static LogicalKeyboardKey? _consumedUntilKeyUp;
 
   @override
   void initState() {
@@ -44,19 +45,36 @@ class _AppKeyboardListenerState extends State<AppKeyboardListener> {
     _stack.remove(this);
     if (_stack.isEmpty) {
       HardwareKeyboard.instance.removeHandler(_dispatch);
+      _consumedUntilKeyUp = null;
     }
     super.dispose();
   }
 
   static bool _dispatch(KeyEvent event) {
+    if (_consumedUntilKeyUp != null &&
+        event.logicalKey == _consumedUntilKeyUp) {
+      if (event is KeyUpEvent) {
+        _consumedUntilKeyUp = null;
+      }
+      return true;
+    }
+
     if (_stack.isEmpty) {
       return false;
     }
 
     final result = _stack.last.widget.onKey(event);
-    // Consome o evento quando o modal do topo tratou o atalho (ESC, F-keys).
-    // Letras e demais teclas seguem para o TextField focado.
-    return result != KeyEventResult.ignored;
+    if (result == KeyEventResult.ignored) {
+      return false;
+    }
+
+    // Engole KeyUp/Repeat da tecla já tratada pelo modal do topo, mesmo
+    // depois dele fechar (ex.: Enter no "Quantidade excedida").
+    if (event is KeyDownEvent) {
+      _consumedUntilKeyUp = event.logicalKey;
+    }
+
+    return true;
   }
 
   @override

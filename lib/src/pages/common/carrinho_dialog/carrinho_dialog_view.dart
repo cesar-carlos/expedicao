@@ -42,7 +42,7 @@ class CarrinhoDialogView {
                       BarHeadFormElement(
                         widthBar: _widthForm + 80,
                         title: title,
-                        onPressedCloseBar: () => Get.back(),
+                        onPressedCloseBar: controller.cancelar,
                       ),
                       Container(
                         width: _widthForm,
@@ -169,7 +169,7 @@ class CarrinhoDialogView {
                                   ButtonFormElement(
                                     name: 'Cancelar',
                                     padding: const EdgeInsets.only(left: 5),
-                                    onPressed: () => Get.back(),
+                                    onPressed: controller.cancelar,
                                   ),
 
                                   //ADD NER CART

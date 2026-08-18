@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:app_expedicao/src/app/app_dialog.dart';
+import 'package:app_expedicao/src/app/app_dialog_close.dart';
 import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
 import 'package:app_expedicao/src/pages/common/widget/message_dialog_widget.dart';
@@ -31,6 +32,7 @@ class CarrinhoController extends GetxController {
   late TextEditingController textControllerCodigoCarrinho;
   late FocusNode focusNodeBtnAdicionarCarrinho;
   late FocusNode focusNodeCodigoCarrinho;
+  final _closeGuard = DialogCloseGuard();
 
   CarrinhoController() {
     _processoExecutavel = Get.find<ProcessoExecutavelModel>();
@@ -59,8 +61,7 @@ class CarrinhoController extends GetxController {
   KeyEventResult handleKeyEvent(AppRawKeyEvent event) {
     if (isRawKeyDown(event)) {
       if (event.logicalKey == LogicalKeyboardKey.escape) {
-        Get.find<AppEventState>().canCloseWindow = true;
-        Get.back(result: null);
+        cancelar();
         return KeyEventResult.handled;
       }
 
@@ -73,6 +74,10 @@ class CarrinhoController extends GetxController {
     }
 
     return KeyEventResult.ignored;
+  }
+
+  void cancelar() {
+    _closeGuard.close(context: formFocusNode.context);
   }
 
   void onSubmittedForm(String text) async {
@@ -151,7 +156,10 @@ class CarrinhoController extends GetxController {
       return;
     }
 
-    Get.back(result: output.carrinhoConsulta!);
+    _closeGuard.close(
+      result: output.carrinhoConsulta!,
+      context: formFocusNode.context,
+    );
   }
 
   void viewFromCarrinhoConsulta(ExpedicaoCarrinhoConsultaModel input) {

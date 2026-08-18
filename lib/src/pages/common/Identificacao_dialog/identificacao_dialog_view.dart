@@ -41,7 +41,7 @@ class IdentificacaoDialogView {
                     BarHeadFormElement(
                       title: 'Identificação',
                       widthBar: _widthForm + 80,
-                      onPressedCloseBar: () => Get.back(),
+                      onPressedCloseBar: controller.cancelar,
                     ),
 
                     //** BODY **//

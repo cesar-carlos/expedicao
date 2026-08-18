@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:app_expedicao/src/app/app_event_state.dart';
+import 'package:app_expedicao/src/app/app_dialog_close.dart';
 import 'package:app_expedicao/src/pages/common/observacao_dialog/model/observacao_dialog_view_model.dart';
 import 'package:app_expedicao/src/app/app_raw_keyboard.dart';
 
@@ -15,6 +15,7 @@ class ObservacaoDialogController extends GetxController {
   late TextEditingController observacaoController;
 
   final ObservacaoDialogViewModel _viewModel;
+  final _closeGuard = DialogCloseGuard();
 
   ObservacaoDialogController(ObservacaoDialogViewModel viewModel)
       : _viewModel = viewModel;
@@ -87,17 +88,14 @@ class ObservacaoDialogController extends GetxController {
   }
 
   void onPressedCloseBar() {
-    Get.find<AppEventState>().canCloseWindow = true;
-    Get.back(result: null);
+    _closeGuard.close(context: formFocusNode.context);
   }
 
   void onPressedCancelar() {
-    Get.find<AppEventState>().canCloseWindow = true;
-    Get.back(result: null);
+    _closeGuard.close(context: formFocusNode.context);
   }
 
   void onPressedSalvar() {
-    Get.find<AppEventState>().canCloseWindow = true;
-    Get.back(result: viewModel);
+    _closeGuard.close(result: viewModel, context: formFocusNode.context);
   }
 }
