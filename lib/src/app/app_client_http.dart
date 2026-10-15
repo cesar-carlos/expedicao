@@ -6,19 +6,23 @@ import 'package:app_expedicao/src/app/app_api_file_init.dart';
 class AppClientHttp {
   final client = Dio();
   AppError? appError;
+  late final Future<void> _ready;
 
   AppClientHttp() {
-    confg();
+    _ready = confg();
   }
 
   Future<void> confg() async {
     final apiServerModel = await AppApiFileInit.getConfg();
+    if (apiServerModel == null) return;
+
     client.options.baseUrl =
-        'http://${apiServerModel!.hostServer}:${apiServerModel.port}';
+        'http://${apiServerModel.hostServer}:${apiServerModel.port}';
   }
 
   Future<Response<T>> get<T>(String endPoint) async {
     try {
+      await _ready;
       appError = null;
       return await client.get<T>(endPoint);
     } on DioException catch (err) {

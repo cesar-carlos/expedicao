@@ -1,6 +1,3 @@
-// ignore: unused_import
-import 'dart:ffi';
-
 import 'package:media_kit/media_kit.dart';
 
 class AppAudioHelper {
@@ -20,6 +17,7 @@ class AppAudioHelper {
 
   Future<AppAudioHelper> _initialize() async {
     if (!initializeded) {
+      MediaKit.ensureInitialized();
       initializeded = true;
       audioPlayer = Player();
       audioPlayer.setVolume(250.0);
@@ -27,12 +25,6 @@ class AppAudioHelper {
 
     return this;
   }
-
-  // static Future<String> pathAssets() async {
-  //   String audioPath = 'assets/sounds';
-  //   String audioUrl = (await rootBundle.load(audioPath)).toString();
-  //   return audioUrl;
-  // }
 
   dynamic playPause(String path, {bool stopAll = true, double volume = 1}) {
     if (isPlaying && path == currentFile) return pause();
@@ -42,12 +34,6 @@ class AppAudioHelper {
   Future<void> play(String path, {bool stopAll = true, double volume = 1}) async {
     await _initialize();
     if (stopAll && isPlaying) await audioPlayer.stop();
-
-    // String audioPath = 'assets/sounds' + path;
-    // String audioUrl = (await rootBundle.load(audioPath)).toString();
-    // print(audioUrl);
-    // path = audioUrl;
-    // currentFile = Media('asset:///assets/videos/sample.mp4');
 
     await audioPlayer.open(Media('asset:///assets/sounds$path'));
     await audioPlayer.play();

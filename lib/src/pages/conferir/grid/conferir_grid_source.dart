@@ -10,9 +10,43 @@ class ConferirSource extends DataGridSource {
   var controller = Get.find<ConferirGridController>();
   List<DataGridRow> _itens = [];
 
-  ConferirSource(List<ExpedicaoConferirItemConsultaModel> itens) {
-    _itens = itens
-        .map<DataGridRow>((i) => DataGridRow(
+  void setRows(List<ExpedicaoConferirItemConsultaModel> itens) {
+    _itens = itens.map(_row).toList();
+    notifyListeners();
+  }
+
+  void insertRow(int index, ExpedicaoConferirItemConsultaModel item) {
+    final row = _row(item);
+    if (index < 0 || index > _itens.length) {
+      _itens.add(row);
+    } else {
+      _itens.insert(index, row);
+    }
+    notifyListeners();
+  }
+
+  void replaceRow(int index, ExpedicaoConferirItemConsultaModel item) {
+    if (index < 0 || index >= _itens.length) {
+      return;
+    }
+    _itens[index] = _row(item);
+    notifyListeners();
+  }
+
+  void removeRowAt(int index) {
+    if (index < 0 || index >= _itens.length) {
+      return;
+    }
+    _itens.removeAt(index);
+    notifyListeners();
+  }
+
+  void refresh() {
+    notifyListeners();
+  }
+
+  DataGridRow _row(ExpedicaoConferirItemConsultaModel i) {
+    return DataGridRow(
               cells: [
                 DataGridCell<Widget>(
                   columnName: 'indicator',
@@ -131,8 +165,7 @@ class ConferirSource extends DataGridSource {
                   value: i.quantidadeConferida,
                 ),
               ],
-            ))
-        .toList();
+            );
   }
 
   @override
@@ -142,39 +175,50 @@ class ConferirSource extends DataGridSource {
   DataGridRowAdapter buildRow(DataGridRow row) {
     final columnValueItem = row.getCells()[3].value?.toString() ?? '';
     final item = controller.findItem(columnValueItem);
+    final cells = row.getCells();
+    final focused = item != null && item.item == controller.highlightedItem;
 
     var dataGridRowAdapter = DataGridRowAdapter(
         color: item == null
             ? Colors.white
             : controller.rowColor(row, item),
-        cells: row.getCells().map<Widget>((cell) {
-          if (cell.value is double) {
-            return ConferirGridCell.defaultMoneyCell(cell.value);
-          }
-
-          if (cell.value is int) {
-            return ConferirGridCell.defaultIntCell(cell.value);
-          }
-
-          if (cell.value is Widget) {
-            return ConferirGridCell.defaultWidgetCell(cell.value);
-          }
-
-          if (cell.value is Image) {
-            return ConferirGridCell.defaultImageCell(cell.value);
-          }
-
-          if (cell.columnName == 'item' ||
-              cell.columnName == 'codUnidadeMedida') {
-            return ConferirGridCell.defaultCells(
-              cell.value,
-              alignment: Alignment.center,
-            );
-          }
-
-          return ConferirGridCell.defaultCells(cell.value);
-        }).toList());
+        cells: [
+          for (var i = 0; i < cells.length; i++)
+            ConferirGridCell.withFocusBorder(
+              _cell(cells[i]),
+              focused: focused,
+              isFirst: i == 0,
+              isLast: i == cells.length - 1,
+            ),
+        ]);
 
     return dataGridRowAdapter;
+  }
+
+  Widget _cell(DataGridCell<dynamic> cell) {
+    if (cell.value is double) {
+      return ConferirGridCell.defaultMoneyCell(cell.value);
+    }
+
+    if (cell.value is int) {
+      return ConferirGridCell.defaultIntCell(cell.value);
+    }
+
+    if (cell.value is Widget) {
+      return ConferirGridCell.defaultWidgetCell(cell.value);
+    }
+
+    if (cell.value is Image) {
+      return ConferirGridCell.defaultImageCell(cell.value);
+    }
+
+    if (cell.columnName == 'item' || cell.columnName == 'codUnidadeMedida') {
+      return ConferirGridCell.defaultCells(
+        cell.value,
+        alignment: Alignment.center,
+      );
+    }
+
+    return ConferirGridCell.defaultCells(cell.value);
   }
 }

@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:media_kit/media_kit.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:app_expedicao/src/app/app_theme.dart';
@@ -31,6 +30,8 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   void initState() {
+    super.initState();
+
     if (widget.args.isNotEmpty) {
       final executavel =
           ProcessoExecutavelModel.fromBase64(widget.args.join(''));
@@ -38,12 +39,9 @@ class _MyAppState extends State<MyApp> {
       Get.put(executavel);
     }
 
-    MediaKit.ensureInitialized();
-
     Get.put(AppClientHttp());
     Get.put(AppSocketConfig());
     Get.put(AppEventState());
-    super.initState();
   }
 
   @override

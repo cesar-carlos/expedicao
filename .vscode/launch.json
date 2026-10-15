@@ -12,18 +12,6 @@
       "args": ["one", "two"]
     },
     {
-      "name": "Data7 Web (debug mode)",
-      "request": "launch",
-      "type": "dart",
-      "deviceId": "chrome"
-    },
-    {
-      "name": "Data7 Linux (debug mode)",
-      "request": "launch",
-      "type": "dart",
-      "deviceId": "linux"
-    },
-    {
       "name": "app_expedicao",
       "request": "launch",
       "type": "dart"
@@ -41,11 +29,4 @@
       "flutterMode": "release"
     }
   ]
-
-  // "compounds": [
-  //   {
-  //     "name": "DUAL APP (debug mode)",
-  //     "configurations": ["Data7 Windows (debug mode)", "Data7 Web (debug mode)"]
-  //   }
-  // ]
 }

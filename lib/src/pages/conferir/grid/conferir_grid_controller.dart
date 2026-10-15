@@ -6,6 +6,7 @@ import 'package:app_expedicao/src/app/app_color.dart';
 import 'package:app_expedicao/src/app/app_data_grid.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_item_consulta_model.dart';
+import 'package:app_expedicao/src/pages/conferir/grid/conferir_grid_source.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_item_unidade_medida_consulta_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_repository.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
@@ -13,6 +14,7 @@ import 'package:bootstrap_icons/bootstrap_icons.dart';
 
 class ConferirGridController extends GetxController {
   static const gridName = 'conferirGrid';
+  static const footerId = 'conferirGridFooter';
 
   final iconSize = 19.0;
   bool _selectionMode = true;
@@ -20,8 +22,13 @@ class ConferirGridController extends GetxController {
   final Rx<String> _changeListListen = ''.obs;
 
   final List<ExpedicaoConferirItemConsultaModel> _itens = [];
+  final List<ExpedicaoConferirItemConsultaModel> _itensSort = [];
+  final List<ConferirSource> _sources = [];
   final List<ExpedicaoConferirItemUnidadeMedidaConsultaModel> _itemUnids = [];
   final dataGridController = DataGridController();
+  final dataGridControllerConferencia = DataGridController();
+
+  String? highlightedItem;
 
   Rx<String> get changeListListen => _changeListListen;
 
@@ -31,58 +38,112 @@ class ConferirGridController extends GetxController {
   int get selectedIndex => dataGridController.selectedIndex;
 
   List<ExpedicaoConferirItemConsultaModel> get itens => _itens;
-  List<ExpedicaoConferirItemConsultaModel> get itensSort =>
-      _itens.toList()..sort((a, b) => a.item.compareTo(b.item));
+  List<ExpedicaoConferirItemConsultaModel> get itensSort => _itensSort;
+
+  void attachSource(ConferirSource source) {
+    if (_sources.contains(source)) {
+      return;
+    }
+    _sources.add(source);
+    source.setRows(_itensSort);
+  }
+
+  void detachSource(ConferirSource source) {
+    _sources.remove(source);
+  }
 
 
   @override
   void onClose() {
     dataGridController.dispose();
+    dataGridControllerConferencia.dispose();
     _changeListListen.close();
     super.onClose();
   }
 
   void addGrid(ExpedicaoConferirItemConsultaModel item) {
-    _changeListListen.value = DateTime.now().toString();
     _itens.add(item);
+    final index = _sortedInsertIndex(item.item);
+    _itensSort.insert(index, item);
+    for (final source in _sources) {
+      source.insertRow(index, item);
+    }
+    _bumpListListen();
+    update([footerId]);
   }
 
   void addAllGrid(List<ExpedicaoConferirItemConsultaModel> itens) {
-    _changeListListen.value = DateTime.now().toString();
     _itens.addAll(itens);
+    _rebuildSort();
+    _syncAll();
+    _bumpListListen();
+    update([footerId]);
   }
 
   void updateGrid(ExpedicaoConferirItemConsultaModel item) {
-    _changeListListen.value = DateTime.now().toString();
     final index = _itens.indexWhere((el) => el.item == item.item);
     if (index < 0) {
       return;
     }
+
+    final previous = _itens[index];
     _itens[index] = item;
+    final sortIndex = _itensSort.indexWhere((el) => el.item == item.item);
+    if (sortIndex < 0) {
+      return;
+    }
+    _itensSort[sortIndex] = item;
+    _syncRow(sortIndex);
+
+    final wasComplete = previous.quantidade == previous.quantidadeConferida;
+    final nowComplete = item.quantidade == item.quantidadeConferida;
+    if (wasComplete != nowComplete) {
+      _bumpListListen();
+    }
   }
 
   void updateAllGrid(List<ExpedicaoConferirItemConsultaModel> itens) {
-    _changeListListen.value = DateTime.now().toString();
     for (var el in itens) {
       final index = _itens.indexWhere((i) => i.item == el.item);
       if (index < 0) {
         continue;
       }
       _itens[index] = el;
+      final sortIndex = _itensSort.indexWhere((i) => i.item == el.item);
+      if (sortIndex >= 0) {
+        _itensSort[sortIndex] = el;
+      }
     }
+    _syncAll();
+    _bumpListListen();
   }
 
   void removeGrid(ExpedicaoConferirItemConsultaModel item) {
-    _changeListListen.value = DateTime.now().toString();
+    final sortIndex = _itensSort.indexWhere((el) => el.item == item.item);
     _itens.removeWhere((el) =>
         el.codEmpresa == item.codEmpresa &&
         el.codConferir == item.codConferir &&
         el.item == item.item);
+    if (sortIndex >= 0) {
+      _itensSort.removeAt(sortIndex);
+      for (final source in _sources) {
+        source.removeRowAt(sortIndex);
+      }
+    }
+    if (highlightedItem == item.item) {
+      highlightedItem = null;
+    }
+    _bumpListListen();
+    update([footerId]);
   }
 
   void removeAllGrid() {
-    _changeListListen.value = DateTime.now().toString();
     _itens.clear();
+    _itensSort.clear();
+    highlightedItem = null;
+    _syncAll();
+    _bumpListListen();
+    update([footerId]);
   }
 
   void addUnidade(ExpedicaoConferirItemUnidadeMedidaConsultaModel item) {
@@ -120,12 +181,147 @@ class ConferirGridController extends GetxController {
         el.item == item.item);
   }
 
-  void setSelectedRow(int index, {bool scroll = true}) {
-    dataGridController.selectAndScrollToRow(
+  bool _applyingSelection = false;
+  bool get applyingSelection => _applyingSelection;
+
+  void setSelectedRow(
+    int index, {
+    bool scroll = true,
+    bool scrollMain = true,
+    bool scrollConferencia = true,
+    bool canAnimate = true,
+  }) {
+    _applySelectedRow(
+      dataGridController,
+      index,
+      scroll: scroll && scrollMain,
+      canAnimate: canAnimate,
+    );
+    _applySelectedRow(
+      dataGridControllerConferencia,
+      index,
+      scroll: scroll && scrollConferencia,
+      canAnimate: canAnimate,
+    );
+  }
+
+  /// Um único foco de row: scan posiciona e rola; clique do usuário só troca a row.
+  /// [scrollMain] rola a grid da tela Conferir (atrás do modal).
+  /// [scrollConferencia] rola a grid visível dentro do modal de conferência.
+  void highlightItem(
+    String item, {
+    bool scroll = true,
+    bool scrollMain = true,
+    bool scrollConferencia = true,
+  }) {
+    if (highlightedItem == item && !scroll) {
+      return;
+    }
+
+    _applyingSelection = true;
+    highlightedItem = item;
+    _refreshVisible();
+    setSelectedRow(
+      findIndexItem(item),
+      scroll: scroll,
+      scrollMain: scrollMain,
+      scrollConferencia: scrollConferencia,
+    );
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _applyingSelection = false;
+    });
+  }
+
+  void ensureHighlightedVisible({
+    bool scrollMain = false,
+    bool scrollConferencia = true,
+  }) {
+    final item = highlightedItem;
+    if (item == null) {
+      return;
+    }
+
+    setSelectedRow(
+      findIndexItem(item),
+      scrollMain: scrollMain,
+      scrollConferencia: scrollConferencia,
+      canAnimate: false,
+    );
+  }
+
+  void clearHighlight() {
+    highlightedItem = null;
+    dataGridController.clearSelection();
+    dataGridControllerConferencia.clearSelection();
+    _refreshVisible();
+  }
+
+  void _applySelectedRow(
+    DataGridController target,
+    int index, {
+    bool scroll = true,
+    bool canAnimate = true,
+  }) {
+    final rowCount = itensSort.length;
+    if (index < 0 || index >= rowCount) {
+      return;
+    }
+
+    target.selectAndScrollToRow(
       index,
       scroll: scroll,
-      rowCount: itensSort.length,
+      canAnimate: canAnimate,
+      rowCount: rowCount,
     );
+  }
+
+  int _sortedInsertIndex(String item) {
+    var index = 0;
+    while (index < _itensSort.length &&
+        _itensSort[index].item.compareTo(item) < 0) {
+      index++;
+    }
+    return index;
+  }
+
+  void _rebuildSort() {
+    _itensSort
+      ..clear()
+      ..addAll(_itens)
+      ..sort((a, b) => a.item.compareTo(b.item));
+  }
+
+  void _syncAll() {
+    for (final source in _sources) {
+      source.setRows(_itensSort);
+    }
+  }
+
+  void _syncRow(int index) {
+    if (index < 0 || index >= _itensSort.length) {
+      _syncAll();
+      return;
+    }
+
+    final item = _itensSort[index];
+    for (final source in _sources) {
+      if (source.rows.length == _itensSort.length) {
+        source.replaceRow(index, item);
+      } else {
+        source.setRows(_itensSort);
+      }
+    }
+  }
+
+  void _refreshVisible() {
+    for (final source in _sources) {
+      source.refresh();
+    }
+  }
+
+  void _bumpListListen() {
+    _changeListListen.value = DateTime.now().toString();
   }
 
   double totalQuantity() {
@@ -190,6 +386,10 @@ class ConferirGridController extends GetxController {
 
   int findIndexCodProduto(int codProduto) {
     return itensSort.indexWhere((el) => el.codProduto == codProduto);
+  }
+
+  int findIndexItem(String item) {
+    return itensSort.indexWhere((el) => el.item == item);
   }
 
   ExpedicaoConferirItemConsultaModel? findBarCode(String barCode) {

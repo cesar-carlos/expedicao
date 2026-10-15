@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:animated_text_kit/animated_text_kit.dart';
+
+import 'package:app_expedicao/src/app/app_color.dart';
 
 class CarregandoWidget extends StatelessWidget {
   final VoidCallback? onTap;
@@ -9,26 +10,18 @@ class CarregandoWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
+      color: AppColor.backgroundColor,
       child: InkWell(
         onTap: onTap,
-        child: SizedBox.expand(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
+        child: const Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('Carregando'),
-              SizedBox(
-                width: 30,
-                child: AnimatedTextKit(
-                  isRepeatingAnimation: true,
-                  repeatForever: true,
-                  pause: const Duration(milliseconds: 1300),
-                  animatedTexts: [
-                    TyperAnimatedText('.'),
-                    TyperAnimatedText('..'),
-                    TyperAnimatedText('...'),
-                  ],
-                ),
+              CircularProgressIndicator(color: Colors.white),
+              SizedBox(height: 16),
+              Text(
+                'Carregando...',
+                style: TextStyle(color: Colors.white, fontSize: 18),
               ),
             ],
           ),

@@ -136,8 +136,12 @@ class ConferenciaPage {
                             child: DefaultTabController(
                               length: 2,
                               initialIndex: controller.viewMode ? 0 : 1,
-                              animationDuration: Duration(milliseconds: 500),
-                              child: Column(children: [
+                              animationDuration: const Duration(
+                                milliseconds: 500,
+                              ),
+                              child: _ConferenciaTabScope(
+                                onChanged: controller.onVisibleTabChanged,
+                                child: Column(children: [
                                 Container(
                                   color: Colors.white,
                                   constraints:
@@ -194,7 +198,9 @@ class ConferenciaPage {
                                     ),
                                     Container(
                                       color: Colors.white70,
-                                      child: ConferirGrid(),
+                                      child: const ConferirGrid(
+                                        forConferencia: true,
+                                      ),
                                     ),
                                   ]),
                                 ),
@@ -239,6 +245,7 @@ class ConferenciaPage {
                                   ],
                                 ),
                               ]),
+                              ),
                             ),
                           ),
                         )
@@ -253,4 +260,83 @@ class ConferenciaPage {
       },
     );
   }
+}
+
+class _ConferenciaTabScope extends StatefulWidget {
+  const _ConferenciaTabScope({
+    required this.onChanged,
+    required this.child,
+  });
+
+  final ValueChanged<int> onChanged;
+  final Widget child;
+
+  @override
+  State<_ConferenciaTabScope> createState() => _ConferenciaTabScopeState();
+}
+
+class _ConferenciaTabScopeState extends State<_ConferenciaTabScope> {
+  TabController? _tabController;
+  int? _scheduledIndex;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final next = DefaultTabController.of(context);
+    if (_tabController == next) {
+      return;
+    }
+
+    _tabController?.animation?.removeStatusListener(_onAnimationStatus);
+    _tabController?.removeListener(_onTab);
+    _tabController = next;
+    _tabController!.addListener(_onTab);
+    _tabController!.animation?.addStatusListener(_onAnimationStatus);
+  }
+
+  void _onTab() {
+    final tabController = _tabController;
+    if (tabController == null || tabController.indexIsChanging) {
+      return;
+    }
+
+    _scrollWhenSettled(tabController.index);
+  }
+
+  void _onAnimationStatus(AnimationStatus status) {
+    if (status != AnimationStatus.completed) {
+      return;
+    }
+
+    final index = _tabController?.index;
+    if (index == null) {
+      return;
+    }
+
+    _scrollWhenSettled(index);
+  }
+
+  void _scrollWhenSettled(int index) {
+    if (_scheduledIndex == index) {
+      return;
+    }
+    _scheduledIndex = index;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || _tabController?.index != index || _scheduledIndex != index) {
+        return;
+      }
+      _scheduledIndex = null;
+      widget.onChanged(index);
+    });
+  }
+
+  @override
+  void dispose() {
+    _tabController?.animation?.removeStatusListener(_onAnimationStatus);
+    _tabController?.removeListener(_onTab);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }

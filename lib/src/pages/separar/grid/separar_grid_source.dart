@@ -10,9 +10,43 @@ class SepararSource extends DataGridSource {
   final controller = Get.find<SepararGridController>();
   List<DataGridRow> _itens = [];
 
-  SepararSource(List<ExpedicaoSepararItemConsultaModel> itens) {
-    _itens = itens
-        .map<DataGridRow>((i) => DataGridRow(
+  void setRows(List<ExpedicaoSepararItemConsultaModel> itens) {
+    _itens = itens.map(_row).toList();
+    notifyListeners();
+  }
+
+  void insertRow(int index, ExpedicaoSepararItemConsultaModel item) {
+    final row = _row(item);
+    if (index < 0 || index > _itens.length) {
+      _itens.add(row);
+    } else {
+      _itens.insert(index, row);
+    }
+    notifyListeners();
+  }
+
+  void replaceRow(int index, ExpedicaoSepararItemConsultaModel item) {
+    if (index < 0 || index >= _itens.length) {
+      return;
+    }
+    _itens[index] = _row(item);
+    notifyListeners();
+  }
+
+  void removeRowAt(int index) {
+    if (index < 0 || index >= _itens.length) {
+      return;
+    }
+    _itens.removeAt(index);
+    notifyListeners();
+  }
+
+  void refresh() {
+    notifyListeners();
+  }
+
+  DataGridRow _row(ExpedicaoSepararItemConsultaModel i) {
+    return DataGridRow(
               cells: [
                 DataGridCell<Widget>(
                   columnName: 'indicator',
@@ -157,8 +191,7 @@ class SepararSource extends DataGridSource {
                   value: i.quantidadeSeparacao,
                 ),
               ],
-            ))
-        .toList();
+            );
   }
 
   @override

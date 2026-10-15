@@ -8,7 +8,9 @@ class SepararGridFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<SepararGridController>(builder: (controller) {
+    return GetBuilder<SepararGridController>(
+      id: SepararGridController.footerId,
+      builder: (controller) {
       return Container(
         height: 30,
         color: Colors.grey[200],

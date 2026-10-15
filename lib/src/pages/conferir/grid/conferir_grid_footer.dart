@@ -8,7 +8,9 @@ class ConferirGridFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<ConferirGridController>(builder: (controller) {
+    return GetBuilder<ConferirGridController>(
+      id: ConferirGridController.footerId,
+      builder: (controller) {
       return Container(
         height: 30,
         color: Colors.grey[200],

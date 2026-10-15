@@ -7,6 +7,7 @@ import 'package:app_expedicao/src/app/app_color.dart';
 import 'package:app_expedicao/src/app/app_data_grid.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';
+import 'package:app_expedicao/src/pages/separar/grid/separar_grid_source.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_item_unidade_medida_consulta_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_repository.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
@@ -14,6 +15,7 @@ import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 
 class SepararGridController extends GetxController {
   static const gridName = 'separarGrid';
+  static const footerId = 'separarGridFooter';
 
   final iconSize = 19.0;
 
@@ -21,6 +23,8 @@ class SepararGridController extends GetxController {
   Color selectedRowColor = AppColor.gridRowSelectedRowColor;
 
   final List<ExpedicaoSepararItemConsultaModel> _itens = [];
+  final List<ExpedicaoSepararItemConsultaModel> _itensSort = [];
+  final List<SepararSource> _sources = [];
   final List<ExpedicaoSepararItemUnidadeMedidaConsultaModel> _itemUnids = [];
 
   final _processoExecutavel = Get.find<ProcessoExecutavelModel>();
@@ -33,8 +37,19 @@ class SepararGridController extends GetxController {
   int get selectedIndex => dataGridController.selectedIndex;
 
   List<ExpedicaoSepararItemConsultaModel> get itens => _itens;
-  List<ExpedicaoSepararItemConsultaModel> get itensSort =>
-      _itens.toList()..sort((a, b) => a.item.compareTo(b.item));
+  List<ExpedicaoSepararItemConsultaModel> get itensSort => _itensSort;
+
+  void attachSource(SepararSource source) {
+    if (_sources.contains(source)) {
+      return;
+    }
+    _sources.add(source);
+    source.setRows(_itensSort);
+  }
+
+  void detachSource(SepararSource source) {
+    _sources.remove(source);
+  }
 
 
   @override
@@ -60,12 +75,21 @@ class SepararGridController extends GetxController {
 
   void addGrid(ExpedicaoSepararItemConsultaModel item) {
     _itens.add(item);
+    final index = _sortedInsertIndex(item.item);
+    _itensSort.insert(index, item);
+    for (final source in _sources) {
+      source.insertRow(index, item);
+    }
     isComplitListiner.value = isComplit();
+    update([footerId]);
   }
 
   void addAllGrid(List<ExpedicaoSepararItemConsultaModel> itens) {
     _itens.addAll(itens);
+    _rebuildSort();
+    _syncAll();
     isComplitListiner.value = isComplit();
+    update([footerId]);
   }
 
   void updateGrid(ExpedicaoSepararItemConsultaModel item) {
@@ -73,8 +97,21 @@ class SepararGridController extends GetxController {
     if (index < 0) {
       return;
     }
+
+    final previous = _itens[index];
     _itens[index] = item;
-    isComplitListiner.value = isComplit();
+    final sortIndex = _itensSort.indexWhere((el) => el.item == item.item);
+    if (sortIndex < 0) {
+      return;
+    }
+    _itensSort[sortIndex] = item;
+    _syncRow(sortIndex);
+
+    final wasComplete = previous.quantidade == previous.quantidadeSeparacao;
+    final nowComplete = item.quantidade == item.quantidadeSeparacao;
+    if (wasComplete != nowComplete) {
+      isComplitListiner.value = isComplit();
+    }
   }
 
   void updateAllGrid(List<ExpedicaoSepararItemConsultaModel> itens) {
@@ -84,24 +121,43 @@ class SepararGridController extends GetxController {
         continue;
       }
       _itens[index] = el;
+      final sortIndex = _itensSort.indexWhere((i) => i.item == el.item);
+      if (sortIndex >= 0) {
+        _itensSort[sortIndex] = el;
+      }
     }
 
+    _syncAll();
     isComplitListiner.value = isComplit();
   }
 
   void removeGrid(ExpedicaoSepararItemConsultaModel item) {
+    final sortIndex = _itensSort.indexWhere((el) => el.item == item.item);
     _itens.removeWhere((el) =>
         el.codEmpresa == item.codEmpresa &&
         el.codSepararEstoque == item.codSepararEstoque &&
         el.item == item.item);
+    if (sortIndex >= 0) {
+      _itensSort.removeAt(sortIndex);
+      for (final source in _sources) {
+        source.removeRowAt(sortIndex);
+      }
+    }
+    if (highlightedItem == item.item) {
+      highlightedItem = null;
+    }
 
     isComplitListiner.value = isComplit();
+    update([footerId]);
   }
 
   void removeAllGrid() {
     _itens.clear();
-
+    _itensSort.clear();
+    highlightedItem = null;
+    _syncAll();
     isComplitListiner.value = false;
+    update([footerId]);
   }
 
   void addUnidade(ExpedicaoSepararItemUnidadeMedidaConsultaModel item) {
@@ -175,7 +231,7 @@ class SepararGridController extends GetxController {
 
     _applyingSelection = true;
     highlightedItem = item;
-    update();
+    _refreshVisible();
     setSelectedRow(
       findIndexItem(item),
       scroll: scroll,
@@ -203,6 +259,50 @@ class SepararGridController extends GetxController {
       scroll: scroll,
       rowCount: rowCount,
     );
+  }
+
+  int _sortedInsertIndex(String item) {
+    var index = 0;
+    while (index < _itensSort.length &&
+        _itensSort[index].item.compareTo(item) < 0) {
+      index++;
+    }
+    return index;
+  }
+
+  void _rebuildSort() {
+    _itensSort
+      ..clear()
+      ..addAll(_itens)
+      ..sort((a, b) => a.item.compareTo(b.item));
+  }
+
+  void _syncAll() {
+    for (final source in _sources) {
+      source.setRows(_itensSort);
+    }
+  }
+
+  void _syncRow(int index) {
+    if (index < 0 || index >= _itensSort.length) {
+      _syncAll();
+      return;
+    }
+
+    final item = _itensSort[index];
+    for (final source in _sources) {
+      if (source.rows.length == _itensSort.length) {
+        source.replaceRow(index, item);
+      } else {
+        source.setRows(_itensSort);
+      }
+    }
+  }
+
+  void _refreshVisible() {
+    for (final source in _sources) {
+      source.refresh();
+    }
   }
 
   double totalQuantity() {

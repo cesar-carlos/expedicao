@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:get/get.dart';
 
 import 'package:app_expedicao/src/routes/app_router.dart';
@@ -17,30 +19,44 @@ import 'package:app_expedicao/src/model/usuario_consulta.dart';
 import 'package:app_expedicao/src/app/app_api_file_init.dart';
 
 class SplashController extends GetxController {
-  final _isLoad = false.obs;
   final _socketClient = Get.find<AppSocketConfig>();
+  StreamSubscription<bool>? _socketWorker;
+  bool _showingReconnectDialog = false;
 
   late ProcessoExecutavelModel? _processoExecutavel;
   late ExpedicaoSepararConsultaModel? _separarConsulta;
   late ExpedicaoConferirConsultaModel? _conferirConsulta;
   late UsuarioConsultaMoldel? _usuarioLogado;
 
-  bool get isLoad => _isLoad.value;
+  @override
+  void onInit() {
+    super.onInit();
+    _litener();
+    _loading();
+  }
 
   @override
-  Future<void> onInit() async {
-    super.onInit();
-    await _loading();
-    _litener();
+  void onClose() {
+    _socketWorker?.cancel();
+    super.onClose();
   }
 
   Future<void> _loading() async {
-    _isLoad.value = false;
-    await Future.delayed(const Duration(seconds: 1));
-
     final existsfileConfApi = await _existsfileConfApi();
     if (!existsfileConfApi) {
       Get.offNamed(AppRouter.login);
+      return;
+    }
+
+    final conectado = await _socketClient.waitUntilConnected();
+    if (!conectado) {
+      Get.offNamed(
+        AppRouter.splashError,
+        arguments: ErrorMessage(
+          title: 'Erro',
+          message: 'verifique a conexão com o servidor',
+        ),
+      );
       return;
     }
 
@@ -62,11 +78,11 @@ class SplashController extends GetxController {
       Get.put(_processoExecutavel!);
     }
 
-    _usuarioLogado =
-        await UsuarioService.selectConsulta(_processoExecutavel!.codUsuario);
-
-    //CONFIG DATABASE
-    final existsfileConfDataBase = await _existsfileConfDataBase();
+    final usuarioFuture =
+        UsuarioService.selectConsulta(_processoExecutavel!.codUsuario);
+    final databaseFuture = _existsfileConfDataBase();
+    _usuarioLogado = await usuarioFuture;
+    final existsfileConfDataBase = await databaseFuture;
     if (!existsfileConfDataBase || _processoExecutavel == null) {
       Get.offNamed(AppRouter.login);
       return;
@@ -122,23 +138,26 @@ class SplashController extends GetxController {
       }
     }
 
-    _isLoad.value = false;
     nextPage();
   }
 
   void _litener() {
-    _socketClient.isConnect.listen(
-      (event) {
-        if (event) _loading();
-        LoadingSeverDialogWidget.show(
-          canCloseWindow: false,
-          context: Get.context!,
-        );
-      },
-    );
+    _socketWorker = _socketClient.isConnect.listen((connected) {
+      if (connected || _showingReconnectDialog) return;
+
+      final context = Get.context;
+      if (context == null) return;
+
+      _showingReconnectDialog = true;
+      LoadingSeverDialogWidget.show(
+        canCloseWindow: false,
+        context: context,
+      ).whenComplete(() {
+        _showingReconnectDialog = false;
+      });
+    });
   }
 
-  // ignore: unused_element
   Future<bool> _existsfileConfDataBase() async {
     final hasConfg = await AppServerFileInit.hasConfg();
     return hasConfg;

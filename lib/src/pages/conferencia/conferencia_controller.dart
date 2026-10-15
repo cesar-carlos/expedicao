@@ -26,11 +26,8 @@ import 'package:app_expedicao/src/pages/conferido_carrinhos/conferido_carrinhos_
 import 'package:app_expedicao/src/pages/common/message_dialog/message_dialog_view.dart';
 import 'package:app_expedicao/src/pages/conferir/grid/conferir_grid_controller.dart';
 import 'package:app_expedicao/src/service/conferencia_adicionar_item_service.dart';
-import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 import 'package:app_expedicao/src/service/conferir_consultas_services.dart';
-import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
 import 'package:app_expedicao/src/service/cancelamento_service.dart';
-import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 import 'package:app_expedicao/src/app/app_raw_keyboard.dart';
 
 class ConferenciaController extends GetxController {
@@ -39,12 +36,11 @@ class ConferenciaController extends GetxController {
   late FocusNode formFocusNode;
   final RxBool _viewMode = false.obs;
 
-  // ignore: unused_field
-  ExpedicaoCarrinhoPercursoModel? _carrinhoPercurso;
   final ExpedicaoCarrinhoPercursoEstagioConsultaModel percursoEstagioConsulta;
   final List<RepositoryEventListenerModel> _pageListerner = [];
 
   StreamSubscription<String>? _changeListListenWorker;
+  bool _cartIndicatorComplit = false;
 
   late ConferirGridController _conferirGridController;
   late ConferenciaCarrinhoGridController _conferenciaGridController;
@@ -96,6 +92,15 @@ class ConferenciaController extends GetxController {
     );
   }
 
+  void _syncCartIndicator() {
+    final complit = isComplitCart;
+    if (complit == _cartIndicatorComplit) {
+      return;
+    }
+    _cartIndicatorComplit = complit;
+    update();
+  }
+
   @override
   onInit() {
     super.onInit();
@@ -120,7 +125,6 @@ class ConferenciaController extends GetxController {
       codConferir: percursoEstagioConsulta.codOrigem,
     );
 
-    _fillCarrinhoPercurso();
     _fillGridConferirItens();
     _fillGridConferidoItens();
   }
@@ -136,8 +140,14 @@ class ConferenciaController extends GetxController {
     _listenFocusNode();
     _liteners();
 
-    _changeListListenWorker = _conferirGridController.changeListListen.listen((event) {
-      update();
+    _cartIndicatorComplit = isComplitCart;
+    _changeListListenWorker = _conferirGridController.changeListListen.listen((
+      _,
+    ) {
+      _syncCartIndicator();
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _syncCartIndicator();
     });
   }
 
@@ -219,18 +229,6 @@ class ConferenciaController extends GetxController {
     });
   }
 
-  Future<void> _fillCarrinhoPercurso() async {
-    final queryBuilder = QueryBuilder()
-        .equals('CodEmpresa', percursoEstagioConsulta.codEmpresa)
-        .equals(
-            'CodCarrinhoPercurso', percursoEstagioConsulta.codCarrinhoPercurso);
-
-    final carrinhosPercurso =
-        await CarrinhoPercursoServices().select(queryBuilder);
-    if (carrinhosPercurso.isEmpty) return;
-    _carrinhoPercurso = carrinhosPercurso.last;
-  }
-
   Future<void> _fillGridConferirItens() async {
     final conferirItens = await _conferirConsultasServices.itensConferir();
 
@@ -246,7 +244,6 @@ class ConferenciaController extends GetxController {
 
     _conferirGridController.addAllGrid(conferirItensCarrinho);
     _conferirGridController.addAllUnidade(conferirItensInids);
-    _conferirGridController.update();
   }
 
   Future<void> _fillGridConferidoItens() async {
@@ -260,7 +257,6 @@ class ConferenciaController extends GetxController {
         .toList();
 
     _conferenciaGridController.addAllGrid(conferidoItensCarrinho);
-    _conferenciaGridController.update();
   }
 
   bool get viewMode {
@@ -425,12 +421,10 @@ class ConferenciaController extends GetxController {
           itemSeparar.quantidadeConferida + conferenciaItemConsulta.quantidade,
     ));
 
-    _conferenciaGridController.update();
-    _conferirGridController.update();
-    _conferirGridController.setSelectedRow(
-      _conferirGridController
-          .findIndexCodProduto(conferenciaItemConsulta.codProduto),
-      scroll: false,
+    _conferenciaGridController.highlightItem(conferenciaItemConsulta.item);
+    _conferirGridController.highlightItem(
+      itemSeparar.item,
+      scrollMain: false,
     );
 
     scanController.text = '';
@@ -500,7 +494,7 @@ class ConferenciaController extends GetxController {
         }
 
         _conferenciaGridController.update();
-        _conferirGridController.update();
+        _conferirGridController.clearHighlight();
       }
 
       if (scanFocusNode.canRequestFocus) {
@@ -565,8 +559,8 @@ class ConferenciaController extends GetxController {
           }
 
           _conferirGridController.updateAllGrid(itensGridConferir);
-          _conferenciaGridController.update();
-          _conferirGridController.update();
+          _conferirGridController.clearHighlight();
+          _conferenciaGridController.clearHighlight();
           scanFocusNode.requestFocus();
         },
       );
@@ -618,8 +612,7 @@ class ConferenciaController extends GetxController {
 
       _conferirGridController.updateAllGrid(itensGridConferir);
       _conferenciaGridController.removeAllGrid();
-
-      _conferirGridController.update();
+      _conferirGridController.clearHighlight();
       _conferenciaGridController.update();
       scanFocusNode.requestFocus();
     }
@@ -636,6 +629,15 @@ class ConferenciaController extends GetxController {
   }
 
   Future<void> onSobraCarrinho() async {}
+
+  void onVisibleTabChanged(int index) {
+    if (index == 0) {
+      _conferenciaGridController.ensureHighlightedVisible();
+      return;
+    }
+
+    _conferirGridController.ensureHighlightedVisible(scrollMain: false);
+  }
 
   ExpedicaoConferirItemConsultaModel? _findItemConferirGrid(int codProduto) {
     final el = _conferirGridController.findCodProduto(codProduto);

@@ -1,6 +1,32 @@
 import 'package:flutter/material.dart';
 
+import 'package:app_expedicao/src/app/app_color.dart';
+
 class ConferirGridCell {
+  static Widget withFocusBorder(
+    Widget child, {
+    required bool focused,
+    required bool isFirst,
+    required bool isLast,
+  }) {
+    if (!focused) {
+      return child;
+    }
+
+    const side = BorderSide(color: AppColor.backGroundBar, width: 2);
+    return Container(
+      foregroundDecoration: BoxDecoration(
+        border: Border(
+          top: side,
+          bottom: side,
+          left: isFirst ? side : BorderSide.none,
+          right: isLast ? side : BorderSide.none,
+        ),
+      ),
+      child: child,
+    );
+  }
+
   static TextStyle textStyleCell() {
     return const TextStyle(
       color: Colors.black,

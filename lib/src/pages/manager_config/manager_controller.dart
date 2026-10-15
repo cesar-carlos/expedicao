@@ -5,7 +5,7 @@ import 'package:brasil_fields/brasil_fields.dart' as brasil_fields;
 
 class ManagerController extends GetxController {
   final formKey = GlobalKey<FormState>();
-  FilePickerResult? _file;
+  PlatformFile? _file;
 
   final cnpjController = TextEditingController();
   final clientId = TextEditingController();
@@ -60,7 +60,7 @@ class ManagerController extends GetxController {
   }
 
   Future<void> selectFile() async {
-    _file = await FilePicker.pickFiles(
+    _file = await FilePicker.pickFile(
       dialogTitle: 'Selecione o cerificado',
       type: FileType.custom,
       allowedExtensions: ['p12'],

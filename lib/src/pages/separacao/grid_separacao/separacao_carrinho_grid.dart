@@ -11,36 +11,58 @@ import 'package:app_expedicao/src/pages/separacao/grid_separacao/separacao_carri
 import 'package:app_expedicao/src/pages/separacao/grid_separacao/separacao_carrinho_grid_event.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
 
-class SeparacaoCarrinhoGrid extends StatelessWidget {
+class SeparacaoCarrinhoGrid extends StatefulWidget {
   final ExpedicaoCarrinhoPercursoEstagioConsultaModel percursoEstagioConsulta;
+
   const SeparacaoCarrinhoGrid(this.percursoEstagioConsulta, {super.key});
 
   @override
+  State<SeparacaoCarrinhoGrid> createState() => _SeparacaoCarrinhoGridState();
+}
+
+class _SeparacaoCarrinhoGridState extends State<SeparacaoCarrinhoGrid> {
+  final _columns = SeparacaoCarrinhoGridColumns().columns;
+  final _source = SeparacaoCarrinhoGridSource();
+  late final SfDataGridThemeData _theme;
+
+  @override
+  void initState() {
+    super.initState();
+    _theme = SeparacaoCarrinhoGridTheme().theme;
+    Get.find<SeparacaoCarrinhoGridController>().attachSource(_source);
+  }
+
+  @override
+  void dispose() {
+    if (Get.isRegistered<SeparacaoCarrinhoGridController>()) {
+      Get.find<SeparacaoCarrinhoGridController>().detachSource(_source);
+    }
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return GetBuilder<SeparacaoCarrinhoGridController>(
-      builder: (controller) {
-        return SfDataGridTheme(
-          data: SeparacaoCarrinhoGridTheme().theme,
-          child: SfDataGrid(
-            columnWidthMode: ColumnWidthMode.fill,
-            controller: controller.dataGridController,
-            source: SeparacaoCarrinhoGridSource(controller.itensSort),
-            onCellDoubleTap: SeparacaoCarrinhoGridEvent.onCellDoubleTap,
-            columns: SeparacaoCarrinhoGridColumns().columns,
-            selectionMode: SelectionMode.single,
-            navigationMode: GridNavigationMode.row,
-            footer: SeparacaoCarrinhoGridFooter(
-              codCarrinho: percursoEstagioConsulta.codCarrinho,
-              item: percursoEstagioConsulta.item,
-            ),
-            highlightRowOnHover: false,
-            showColumnHeaderIconOnHover: true,
-            isScrollbarAlwaysShown: true,
-            headerRowHeight: 40,
-            rowHeight: 40,
-          ),
-        );
-      },
+    final controller = Get.find<SeparacaoCarrinhoGridController>();
+    return SfDataGridTheme(
+      data: _theme,
+      child: SfDataGrid(
+        columnWidthMode: ColumnWidthMode.fill,
+        controller: controller.dataGridController,
+        source: _source,
+        onCellDoubleTap: SeparacaoCarrinhoGridEvent.onCellDoubleTap,
+        columns: _columns,
+        selectionMode: SelectionMode.single,
+        navigationMode: GridNavigationMode.row,
+        footer: SeparacaoCarrinhoGridFooter(
+          codCarrinho: widget.percursoEstagioConsulta.codCarrinho,
+          item: widget.percursoEstagioConsulta.item,
+        ),
+        highlightRowOnHover: false,
+        showColumnHeaderIconOnHover: true,
+        isScrollbarAlwaysShown: true,
+        headerRowHeight: 40,
+        rowHeight: 40,
+      ),
     );
   }
 }

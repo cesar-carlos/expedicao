@@ -97,8 +97,10 @@ class ConferirController extends GetxController {
   @override
   onReady() async {
     formFocusNode.requestFocus();
-    await _fillCarrinhoConferir();
-    await _fillCarrinhoPercurso();
+    await Future.wait([
+      _fillCarrinhoConferir(),
+      _fillCarrinhoPercurso(),
+    ]);
     _liteners();
     super.onReady();
   }

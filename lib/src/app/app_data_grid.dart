@@ -11,6 +11,7 @@ extension AppDataGridController on DataGridController {
   void selectAndScrollToRow(
     int index, {
     bool scroll = true,
+    bool canAnimate = true,
     int? rowCount,
   }) {
     if (!_isValidRowIndex(index, rowCount)) {
@@ -40,7 +41,7 @@ extension AppDataGridController on DataGridController {
         try {
           scrollToRow(
             index.toDouble(),
-            canAnimate: true,
+            canAnimate: canAnimate,
             position: DataGridScrollPosition.center,
           );
         } on AssertionError {

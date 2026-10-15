@@ -17,6 +17,5 @@
   },
   "explorer.compactFolders": false,
   "debug.toolBarLocation": "commandCenter",
-  "cmake.sourceDirectory": "D:/Developer/Data7/Expedicao/Flutter/app_expedicao/linux",
   "postman.settings.dotenv-detection-notification-visibility": false
 }

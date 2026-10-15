@@ -12,9 +12,43 @@ class SeparacaoCarrinhoGridSource extends DataGridSource {
   var controller = Get.find<SeparacaoCarrinhoGridController>();
   List<DataGridRow> _itens = [];
 
-  SeparacaoCarrinhoGridSource(List<ExpedicaSeparacaoItemConsultaModel> itens) {
-    _itens = itens
-        .map<DataGridRow>((i) => DataGridRow(cells: [
+  void setRows(List<ExpedicaSeparacaoItemConsultaModel> itens) {
+    _itens = itens.map(_row).toList();
+    notifyListeners();
+  }
+
+  void insertRow(int index, ExpedicaSeparacaoItemConsultaModel item) {
+    final row = _row(item);
+    if (index < 0 || index > _itens.length) {
+      _itens.add(row);
+    } else {
+      _itens.insert(index, row);
+    }
+    notifyListeners();
+  }
+
+  void replaceRow(int index, ExpedicaSeparacaoItemConsultaModel item) {
+    if (index < 0 || index >= _itens.length) {
+      return;
+    }
+    _itens[index] = _row(item);
+    notifyListeners();
+  }
+
+  void removeRowAt(int index) {
+    if (index < 0 || index >= _itens.length) {
+      return;
+    }
+    _itens.removeAt(index);
+    notifyListeners();
+  }
+
+  void refresh() {
+    notifyListeners();
+  }
+
+  DataGridRow _row(ExpedicaSeparacaoItemConsultaModel i) {
+    return DataGridRow(cells: [
               DataGridCell<int>(
                 columnName: 'codEmpresa',
                 value: i.codEmpresa,
@@ -172,8 +206,7 @@ class SeparacaoCarrinhoGridSource extends DataGridSource {
                   ),
                 ]),
               ),
-            ]))
-        .toList();
+            ]);
   }
 
   @override

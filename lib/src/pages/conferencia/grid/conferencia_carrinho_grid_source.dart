@@ -12,10 +12,43 @@ class ConferenciaCarrinhoGridSource extends DataGridSource {
   var controller = Get.find<ConferenciaCarrinhoGridController>();
   List<DataGridRow> _itens = [];
 
-  ConferenciaCarrinhoGridSource(
-      List<ExpedicaConferenciaItemConsultaModel> itens) {
-    _itens = itens
-        .map<DataGridRow>((i) => DataGridRow(cells: [
+  void setRows(List<ExpedicaConferenciaItemConsultaModel> itens) {
+    _itens = itens.map(_row).toList();
+    notifyListeners();
+  }
+
+  void insertRow(int index, ExpedicaConferenciaItemConsultaModel item) {
+    final row = _row(item);
+    if (index < 0 || index > _itens.length) {
+      _itens.add(row);
+    } else {
+      _itens.insert(index, row);
+    }
+    notifyListeners();
+  }
+
+  void replaceRow(int index, ExpedicaConferenciaItemConsultaModel item) {
+    if (index < 0 || index >= _itens.length) {
+      return;
+    }
+    _itens[index] = _row(item);
+    notifyListeners();
+  }
+
+  void removeRowAt(int index) {
+    if (index < 0 || index >= _itens.length) {
+      return;
+    }
+    _itens.removeAt(index);
+    notifyListeners();
+  }
+
+  void refresh() {
+    notifyListeners();
+  }
+
+  DataGridRow _row(ExpedicaConferenciaItemConsultaModel i) {
+    return DataGridRow(cells: [
               DataGridCell<int>(
                 columnName: 'codEmpresa',
                 value: i.codEmpresa,
@@ -165,8 +198,7 @@ class ConferenciaCarrinhoGridSource extends DataGridSource {
                   ),
                 ]),
               ),
-            ]))
-        .toList();
+            ]);
   }
 
   @override
@@ -174,32 +206,45 @@ class ConferenciaCarrinhoGridSource extends DataGridSource {
 
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
-    final selectedRow = controller.selectedoRows;
-    if (selectedRow.contains(row)) {}
+    final cells = row.getCells();
+    final itemCell = cells.where((cell) => cell.columnName == 'item');
+    final item = itemCell.isEmpty ? null : itemCell.first.value?.toString();
+    final focused = item != null && item == controller.highlightedItem;
 
     return DataGridRowAdapter(
-        color: Colors.white,
-        cells: row.getCells().map<Widget>((cell) {
-          if (cell.value is double) {
-            return ConferenciaCarrinhoGridCells.defaultMoneyCell(cell.value);
-          }
+      color: Colors.white,
+      cells: [
+        for (var i = 0; i < cells.length; i++)
+          ConferenciaCarrinhoGridCells.withFocusBorder(
+            _cell(cells[i]),
+            focused: focused,
+            isFirst: i == 0,
+            isLast: i == cells.length - 1,
+          ),
+      ],
+    );
+  }
 
-          if (cell.value is int) {
-            return ConferenciaCarrinhoGridCells.defaultIntCell(cell.value);
-          }
+  Widget _cell(DataGridCell<dynamic> cell) {
+    if (cell.value is double) {
+      return ConferenciaCarrinhoGridCells.defaultMoneyCell(cell.value);
+    }
 
-          if (cell.value is Widget) {
-            return ConferenciaCarrinhoGridCells.defaultWidgetCell(cell.value);
-          }
+    if (cell.value is int) {
+      return ConferenciaCarrinhoGridCells.defaultIntCell(cell.value);
+    }
 
-          if (cell.columnName == 'item' ||
-              cell.columnName == 'codUnidadeMedida') {
-            return ConferenciaCarrinhoGridCells.defaultCells(
-              cell.value,
-              alignment: Alignment.center,
-            );
-          }
-          return ConferenciaCarrinhoGridCells.defaultCells(cell.value);
-        }).toList());
+    if (cell.value is Widget) {
+      return ConferenciaCarrinhoGridCells.defaultWidgetCell(cell.value);
+    }
+
+    if (cell.columnName == 'item' || cell.columnName == 'codUnidadeMedida') {
+      return ConferenciaCarrinhoGridCells.defaultCells(
+        cell.value,
+        alignment: Alignment.center,
+      );
+    }
+
+    return ConferenciaCarrinhoGridCells.defaultCells(cell.value);
   }
 }

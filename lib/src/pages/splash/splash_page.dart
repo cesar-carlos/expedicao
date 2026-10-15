@@ -9,25 +9,8 @@ class SplashPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<SplashController>(builder: (controller) {
-      return SizedBox.expand(
-        child: ListenableBuilder(
-          listenable: controller,
-          builder: (BuildContext context, Widget? child) {
-            if (controller.isLoad) return const CarregandoWidget();
-
-            return const Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    Colors.white,
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
-      );
-    });
+    return GetBuilder<SplashController>(
+      builder: (_) => const CarregandoWidget(),
+    );
   }
 }

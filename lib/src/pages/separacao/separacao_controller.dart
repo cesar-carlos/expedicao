@@ -32,9 +32,7 @@ import 'package:app_expedicao/src/pages/common/message_dialog/message_dialog_vie
 import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_services.dart';
 import 'package:app_expedicao/src/service/separacao_adicionar_item_service.dart';
-import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
-import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 import 'package:app_expedicao/src/service/cancelamento_service.dart';
@@ -50,8 +48,6 @@ class SeparacaoController extends GetxController {
     indicator.value = colorIndicator;
   }
 
-  // ignore: unused_field
-  ExpedicaoCarrinhoPercursoModel? _carrinhoPercurso;
   late ExpedicaoCarrinhoPercursoEstagioConsultaModel percursoEstagioConsulta;
   final List<RepositoryEventListenerModel> _pageListerner = [];
 
@@ -133,7 +129,6 @@ class SeparacaoController extends GetxController {
       codSepararEstoque: _processoExecutavel.codOrigem,
     );
 
-    _fillCarrinhoPercurso();
     _fillGridSeparacaoItens();
 
     _separarGridController.isComplitListiner.listen((value) {
@@ -233,21 +228,6 @@ class SeparacaoController extends GetxController {
     });
   }
 
-  Future<void> _fillCarrinhoPercurso() async {
-    final queryBuilder = QueryBuilder()
-        .equals('CodEmpresa', percursoEstagioConsulta.codEmpresa)
-        .equals(
-          'CodCarrinhoPercurso',
-          percursoEstagioConsulta.codCarrinhoPercurso,
-        );
-
-    final carrinhosPercurso = await CarrinhoPercursoServices().select(
-      queryBuilder,
-    );
-    if (carrinhosPercurso.isEmpty) return;
-    _carrinhoPercurso = carrinhosPercurso.last;
-  }
-
   Future<void> _fillGridSeparacaoItens() async {
     final separar = await _separarConsultaServices.separar();
     final separacaoItens = await _separarConsultaServices.itensSeparacao();
@@ -270,7 +250,6 @@ class SeparacaoController extends GetxController {
       _viewMode.value = true;
     }
 
-    _separarGridController.update();
     update();
   }
 
@@ -494,7 +473,6 @@ class SeparacaoController extends GetxController {
       );
       _separarGridController.highlightItem(itemSeparar.item, scrollMain: false);
 
-      _separacaoGridController.update();
       _separacaoGridController.setSelectedRow(
         _separacaoGridController.findIndexItem(separacaoItemConsulta.item),
         scroll: false,
@@ -596,9 +574,6 @@ class SeparacaoController extends GetxController {
                 );
               }
 
-              _separacaoGridController.update();
-              _separarGridController.update();
-
               return true;
             } catch (err) {
               return false;
@@ -672,8 +647,6 @@ class SeparacaoController extends GetxController {
           }
 
           _separarGridController.updateAllGrid(itensGridSeparar);
-          _separacaoGridController.update();
-          _separarGridController.update();
         },
       );
     }
@@ -724,8 +697,6 @@ class SeparacaoController extends GetxController {
 
       _separarGridController.updateAllGrid(itensGridSeparar);
       _separacaoGridController.removeAllGrid();
-      _separacaoGridController.update();
-      _separarGridController.update();
     }
 
     scanFocusNode.requestFocus();
@@ -1034,7 +1005,6 @@ class SeparacaoController extends GetxController {
             }
 
             _separacaoGridController.addGrid(itemConsulta);
-            _separacaoGridController.update();
           }
         }
       },
@@ -1047,7 +1017,6 @@ class SeparacaoController extends GetxController {
         for (var el in data.mutation) {
           final sep = ExpedicaSeparacaoItemConsultaModel.fromJson(el);
           _separacaoGridController.removeGrid(sep);
-          _separacaoGridController.update();
         }
       },
     );

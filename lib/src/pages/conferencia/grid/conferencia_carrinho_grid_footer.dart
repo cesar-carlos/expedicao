@@ -15,7 +15,9 @@ class ConferenciaCarrinhoGridFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<ConferenciaCarrinhoGridController>(builder: (controller) {
+    return GetBuilder<ConferenciaCarrinhoGridController>(
+      id: ConferenciaCarrinhoGridController.footerId,
+      builder: (controller) {
       return Container(
         height: 30,
         color: Colors.grey[200],

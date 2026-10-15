@@ -1,29 +1,65 @@
+import 'dart:async';
+
 import 'package:get/get.dart';
 
 import 'package:socket_io_client/socket_io_client.dart' as io;
 import 'package:app_expedicao/src/app/app_api_file_init.dart';
 
 class AppSocketConfig extends GetxController {
-  late String _baseUrl;
+  String _baseUrl = '';
   final Rx<bool> _isConnected = false.obs;
   late io.Socket _socket;
+  bool _socketStarted = false;
 
   @override
   Future<void> onInit() async {
     await confg();
-    initSocket();
+    if (_baseUrl.isNotEmpty) initSocket();
     super.onInit();
   }
 
   Future<void> confg() async {
     final apiServerModel = await AppApiFileInit.getConfg();
-    _baseUrl = 'http://${apiServerModel!.hostServer}:${apiServerModel.port}';
+    if (apiServerModel == null) return;
+
+    _baseUrl = 'http://${apiServerModel.hostServer}:${apiServerModel.port}';
   }
 
   Rx<bool> get isConnect => _isConnected;
   io.Socket get socket => _socket;
 
+  bool get _hasSession => _socketStarted && _socket.id != null;
+
+  /// Espera o handshake terminar. Sem isso, `socket.id` ainda é nulo.
+  Future<bool> waitUntilConnected({
+    Duration timeout = const Duration(seconds: 15),
+  }) async {
+    if (_hasSession) return true;
+    if (!_socketStarted) return false;
+
+    final ready = Completer<bool>();
+    final subscription = _isConnected.listen((connected) {
+      if (connected && _hasSession && !ready.isCompleted) {
+        ready.complete(true);
+      }
+    });
+    final poll = Timer.periodic(const Duration(milliseconds: 50), (_) {
+      if (_hasSession && !ready.isCompleted) ready.complete(true);
+    });
+
+    try {
+      return await ready.future.timeout(
+        timeout,
+        onTimeout: () => _hasSession,
+      );
+    } finally {
+      poll.cancel();
+      await subscription.cancel();
+    }
+  }
+
   void initSocket() {
+    _socketStarted = true;
     _socket = io.io(_baseUrl, <String, dynamic>{
       'autoConnect': true,
       'transports': ['websocket'],
@@ -61,7 +97,7 @@ class AppSocketConfig extends GetxController {
 
   @override
   void onClose() {
-    _socket.dispose();
+    if (_socketStarted) _socket.dispose();
     _isConnected.close();
     super.onClose();
   }

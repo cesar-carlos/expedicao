@@ -15,7 +15,9 @@ class SeparacaoCarrinhoGridFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<SeparacaoCarrinhoGridController>(builder: (controller) {
+    return GetBuilder<SeparacaoCarrinhoGridController>(
+      id: SeparacaoCarrinhoGridController.footerId,
+      builder: (controller) {
       return Container(
         height: 30,
         color: Colors.grey[200],
