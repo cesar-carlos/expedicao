@@ -107,12 +107,20 @@ class SepararConsultaServices {
   }
 
   Future<List<ExpedicaoCarrinhoPercursoEstagioConsultaModel>>
-  carrinhosPercurso() async {
+  carrinhosPercurso({int? codCarrinhoPercurso, String? item}) async {
     try {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', codEmpresa)
           .equals('Origem', ExpedicaoOrigemModel.separacao)
           .equals('CodOrigem', codSepararEstoque);
+
+      if (codCarrinhoPercurso != null) {
+        queryBuilder.equals('CodCarrinhoPercurso', codCarrinhoPercurso);
+      }
+
+      if (item != null && item.isNotEmpty) {
+        queryBuilder.equals('Item', item);
+      }
 
       return await carrinhoPercursoEstagioConsultaRepository.select(
         queryBuilder,

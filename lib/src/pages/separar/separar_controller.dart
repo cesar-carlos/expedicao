@@ -204,16 +204,24 @@ class SepararController extends GetxController {
   }
 
   Future<void> iniciarSeparacao() async {
-    _iniciada = !_iniciada;
-
     if (_carrinhoPercurso == null) await _fillCarrinhoPercurso();
 
-    final separar = ExpedicaoSepararModel.fromConsulta(_separarConsulta);
-    await SepararServices(separar).iniciar();
+    final separacaoJaIniciada =
+        _expedicaoSituacao == ExpedicaoSituacaoModel.separando &&
+        _carrinhoPercurso != null;
 
-    _expedicaoSituacao = ExpedicaoSituacaoModel.separando;
-    _separarConsulta.situacao = ExpedicaoSituacaoModel.separando;
-    update();
+    if (!separacaoJaIniciada) {
+      final separar = ExpedicaoSepararModel.fromConsulta(_separarConsulta);
+      await SepararServices(separar).iniciar();
+
+      _expedicaoSituacao = ExpedicaoSituacaoModel.separando;
+      _separarConsulta.situacao = ExpedicaoSituacaoModel.separando;
+
+      if (_carrinhoPercurso == null) await _fillCarrinhoPercurso();
+      update();
+    }
+
+    _iniciada = _carrinhoPercurso != null;
   }
 
   Future<void> pausarSeparacao() async {
@@ -276,7 +284,6 @@ class SepararController extends GetxController {
       process: () async {
         try {
           await iniciarSeparacao();
-          await _fillCarrinhoPercurso();
 
           final carrinho = ExpedicaoCarrinhoModel.fromConsulta(carrinhoConsulta)
               .copyWith(situacao: ExpedicaoCarrinhoSituacaoModel.emSeparacao);
@@ -288,9 +295,10 @@ class SepararController extends GetxController {
 
           if (percursoEstagio != null) {
             final percursoEstagioConsulta =
-                (await _separarConsultaServices.carrinhosPercurso())
-                    .where((el) => el.item == percursoEstagio.item)
-                    .toList();
+                (await _separarConsultaServices.carrinhosPercurso(
+                  codCarrinhoPercurso: percursoEstagio.codCarrinhoPercurso,
+                  item: percursoEstagio.item,
+                )).where((el) => el.item == percursoEstagio.item).toList();
 
             _separarCarrinhosController.addCart(percursoEstagioConsulta.last);
             _separarCarrinhosController.update();

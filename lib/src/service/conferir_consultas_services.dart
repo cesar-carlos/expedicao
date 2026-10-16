@@ -56,14 +56,15 @@ class ConferirConsultaServices {
   }
 
   Future<List<ExpedicaoCarrinhoConferirConsultaModel>>
-      carrinhosConferir() async {
+  carrinhosConferir() async {
     try {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', codEmpresa)
           .equals('CodConferir', codConferir);
 
-      final response =
-          await conferirCarrinhoConsultaRepository.select(queryBuilder);
+      final response = await conferirCarrinhoConsultaRepository.select(
+        queryBuilder,
+      );
       return response;
     } catch (e) {
       throw Exception('Erro ao buscar carrinhos de conferência: $e');
@@ -71,15 +72,17 @@ class ConferirConsultaServices {
   }
 
   Future<ExpedicaoCarrinhoConferirConsultaModel> carrinhoConferir(
-      int codCarrinho) async {
+    int codCarrinho,
+  ) async {
     try {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', codEmpresa)
           .equals('CodConferir', codConferir)
           .equals('CodCarrinho', codCarrinho);
 
-      final response =
-          await conferirCarrinhoConsultaRepository.select(queryBuilder);
+      final response = await conferirCarrinhoConsultaRepository.select(
+        queryBuilder,
+      );
 
       if (response.isEmpty) {
         throw Exception('Carrinho não encontrado');
@@ -107,15 +110,16 @@ class ConferirConsultaServices {
   }
 
   Future<List<ExpedicaoConferirItemUnidadeMedidaConsultaModel>>
-      itensConferirUnidades() async {
+  itensConferirUnidades() async {
     try {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', codEmpresa)
           .equals('CodConferir', codConferir)
           .paginate(limit: 2500);
 
-      return await conferirItemUnidadeMedidaConsultaRepository
-          .select(queryBuilder);
+      return await conferirItemUnidadeMedidaConsultaRepository.select(
+        queryBuilder,
+      );
     } catch (e) {
       throw Exception('Erro ao buscar itens de conferência com unidades: $e');
     }
@@ -127,8 +131,9 @@ class ConferirConsultaServices {
           .equals('CodEmpresa', codEmpresa)
           .equals('CodConferir', codConferir);
 
-      final result =
-          await conferenciaItemConsultaRepository.select(queryBuilder);
+      final result = await conferenciaItemConsultaRepository.select(
+        queryBuilder,
+      );
       return result;
     } catch (e) {
       throw Exception('Erro ao buscar itens de conferência: $e');
@@ -136,15 +141,24 @@ class ConferirConsultaServices {
   }
 
   Future<List<ExpedicaoCarrinhoPercursoEstagioConsultaModel>>
-      carrinhosPercurso() async {
+  carrinhosPercurso({int? codCarrinhoPercurso, String? item}) async {
     try {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', codEmpresa)
           .equals('Origem', ExpedicaoOrigemModel.conferencia)
           .equals('CodOrigem', codConferir);
 
-      final result =
-          await carrinhoPercursoEstagioConsultaRepository.select(queryBuilder);
+      if (codCarrinhoPercurso != null) {
+        queryBuilder.equals('CodCarrinhoPercurso', codCarrinhoPercurso);
+      }
+
+      if (item != null && item.isNotEmpty) {
+        queryBuilder.equals('Item', item);
+      }
+
+      final result = await carrinhoPercursoEstagioConsultaRepository.select(
+        queryBuilder,
+      );
       return result;
     } catch (e) {
       throw Exception('Erro ao buscar carrinhos de percurso: $e');
@@ -152,7 +166,8 @@ class ConferirConsultaServices {
   }
 
   Future<List<ExpedicaConferenciaItemConsultaModel>> itensCarrinho(
-      int codCarrinho) async {
+    int codCarrinho,
+  ) async {
     try {
       final itensConferenciaList = await itensConferencia();
 
@@ -167,8 +182,9 @@ class ConferirConsultaServices {
   Future<bool> isComplete() async {
     try {
       final itensConferirList = await itensConferir();
-      return itensConferirList
-          .every((el) => el.quantidade == el.quantidadeConferida);
+      return itensConferirList.every(
+        (el) => el.quantidade == el.quantidadeConferida,
+      );
     } catch (e) {
       throw Exception('Erro ao verificar completude da conferência: $e');
     }

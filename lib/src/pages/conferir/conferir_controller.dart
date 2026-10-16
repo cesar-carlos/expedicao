@@ -97,10 +97,7 @@ class ConferirController extends GetxController {
   @override
   onReady() async {
     formFocusNode.requestFocus();
-    await Future.wait([
-      _fillCarrinhoConferir(),
-      _fillCarrinhoPercurso(),
-    ]);
+    await Future.wait([_fillCarrinhoConferir(), _fillCarrinhoPercurso()]);
     _liteners();
     super.onReady();
   }
@@ -178,8 +175,8 @@ class ConferirController extends GetxController {
   }
 
   Future<void> _fillCarrinhoConferir() async {
-    final carrinhoConferirConsulta =
-        await _conferirConsultaServices.carrinhosConferir();
+    final carrinhoConferirConsulta = await _conferirConsultaServices
+        .carrinhosConferir();
     _conferirCarrinhosController.addAllCarrinho(carrinhoConferirConsulta);
 
     _conferirCarrinhosController.update();
@@ -191,8 +188,9 @@ class ConferirController extends GetxController {
         .equals('Origem', _conferirConsulta.origem)
         .equals('CodOrigem', _conferirConsulta.codOrigem);
 
-    final carrinhoPercursos =
-        await CarrinhoPercursoServices().select(queryBuilder);
+    final carrinhoPercursos = await CarrinhoPercursoServices().select(
+      queryBuilder,
+    );
 
     if (carrinhoPercursos.isNotEmpty) {
       _carrinhoPercurso = carrinhoPercursos.first;
@@ -200,7 +198,6 @@ class ConferirController extends GetxController {
   }
 
   Future<void> iniciarConferencia() async {
-    _iniciada = !_iniciada;
     if (_carrinhoPercurso == null) await _fillCarrinhoPercurso();
 
     final conferir = ExpedicaoConferirModel.fromConsulta(_conferirConsulta);
@@ -208,10 +205,14 @@ class ConferirController extends GetxController {
 
     if (_expedicaoSituacao == ExpedicaoSituacaoModel.emPausa ||
         _expedicaoSituacao == ExpedicaoSituacaoModel.aguardando) {
-      _conferirConsulta.situacao = ExpedicaoSituacaoModel.emConverencia;
       await ConferirServices(conferir).iniciar();
+      if (_carrinhoPercurso == null) await _fillCarrinhoPercurso();
+      _expedicaoSituacao = ExpedicaoSituacaoModel.emConverencia;
+      _conferirConsulta.situacao = ExpedicaoSituacaoModel.emConverencia;
       update();
     }
+
+    _iniciada = _carrinhoPercurso != null;
   }
 
   Future<void> pausarConferencia() async {
@@ -265,9 +266,10 @@ class ConferirController extends GetxController {
 
     if (_expedicaoSituacao == ExpedicaoSituacaoModel.entregue) {
       await MessageDialogView.show(
-          context: Get.context!,
-          message: 'Conferencia entregue!',
-          detail: 'Conferencia entregue, não é possível adicionar carrinhos.');
+        context: Get.context!,
+        message: 'Conferencia entregue!',
+        detail: 'Conferencia entregue, não é possível adicionar carrinhos.',
+      );
 
       return;
     }
@@ -284,49 +286,51 @@ class ConferirController extends GetxController {
       _processando = true;
       try {
         await LoadingProcessDialogGenericWidget.show<bool>(
-        context: Get.context!,
-        process: () async {
-          try {
-            await iniciarConferencia();
+          context: Get.context!,
+          process: () async {
+            try {
+              await iniciarConferencia();
 
-            final carrinho = ExpedicaoCarrinhoModel(
-              codEmpresa: carrinhoConsulta.codEmpresa,
-              codCarrinho: carrinhoConsulta.codCarrinho,
-              descricao: carrinhoConsulta.descricaoCarrinho,
-              ativo: carrinhoConsulta.ativo,
-              codigoBarras: carrinhoConsulta.codigoBarras,
-              situacao: ExpedicaoCarrinhoSituacaoModel.emConferencia,
-            );
-
-            final percursoEstagio =
-                await CarrinhoPercursoEstagioAdicionarService(
-              carrinho: carrinho,
-              carrinhoPercurso: _carrinhoPercurso!,
-            ).execute();
-
-            if (percursoEstagio != null) {
-              final percursoEstagioConsulta =
-                  (await _conferirConsultaServices.carrinhosPercurso())
-                      .where((el) => el.item == percursoEstagio.item)
-                      .toList();
-
-              _conferidoCarrinhosController
-                  .addCarrinho(percursoEstagioConsulta.last);
-
-              _conferidoCarrinhosController.editCart(
-                percursoEstagioConsulta.last,
+              final carrinho = ExpedicaoCarrinhoModel(
+                codEmpresa: carrinhoConsulta.codEmpresa,
+                codCarrinho: carrinhoConsulta.codCarrinho,
+                descricao: carrinhoConsulta.descricaoCarrinho,
+                ativo: carrinhoConsulta.ativo,
+                codigoBarras: carrinhoConsulta.codigoBarras,
+                situacao: ExpedicaoCarrinhoSituacaoModel.emConferencia,
               );
 
-              _conferidoCarrinhosController.update();
-              update();
-            }
+              final percursoEstagio =
+                  await CarrinhoPercursoEstagioAdicionarService(
+                    carrinho: carrinho,
+                    carrinhoPercurso: _carrinhoPercurso!,
+                  ).execute();
 
-            return true;
-          } catch (err) {
-            return false;
-          }
-        },
-      );
+              if (percursoEstagio != null) {
+                final percursoEstagioConsulta =
+                    (await _conferirConsultaServices.carrinhosPercurso(
+                      codCarrinhoPercurso: percursoEstagio.codCarrinhoPercurso,
+                      item: percursoEstagio.item,
+                    )).where((el) => el.item == percursoEstagio.item).toList();
+
+                _conferidoCarrinhosController.addCarrinho(
+                  percursoEstagioConsulta.last,
+                );
+
+                _conferidoCarrinhosController.editCart(
+                  percursoEstagioConsulta.last,
+                );
+
+                _conferidoCarrinhosController.update();
+                update();
+              }
+
+              return true;
+            } catch (err) {
+              return false;
+            }
+          },
+        );
       } finally {
         _processando = false;
       }
@@ -427,7 +431,7 @@ class ConferirController extends GetxController {
       ExpedicaoSituacaoModel.embalando,
       ExpedicaoSituacaoModel.embalado,
       ExpedicaoSituacaoModel.emEntrega,
-      ExpedicaoSituacaoModel.entregue
+      ExpedicaoSituacaoModel.entregue,
     ].contains(_expedicaoSituacao);
 
     if (notValidFinalize) {

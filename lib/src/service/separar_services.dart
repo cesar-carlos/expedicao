@@ -25,6 +25,10 @@ class SepararServices {
         await _iniciarPercurso();
       }
 
+      if (separar.situacao == ExpedicaoSituacaoModel.separando) {
+        return;
+      }
+
       final newSeparar = separar.copyWith(
         situacao: ExpedicaoSituacaoModel.separando,
       );
@@ -76,8 +80,9 @@ class SepararServices {
           .equals('CodOrigem', separar.codSepararEstoque)
           .notEquals('Situacao', ExpedicaoSituacaoModel.cancelada);
 
-      final carrinhoPercurso =
-          await carrinhoPercursoRepository.select(queryBuilder);
+      final carrinhoPercurso = await carrinhoPercursoRepository.select(
+        queryBuilder,
+      );
       return carrinhoPercurso.isNotEmpty;
     } catch (e) {
       throw Exception('Erro ao verificar percurso existente: $e');

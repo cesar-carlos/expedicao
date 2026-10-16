@@ -13,6 +13,8 @@ import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 
 class CarrinhoPercursoEstagioAdicionarService {
+  static final Map<String, ExpedicaoEstagioModel?> _estagioAtivoPorOrigem = {};
+
   final _processo = Get.find<ProcessoExecutavelModel>();
 
   final ExpedicaoCarrinhoModel carrinho;
@@ -31,8 +33,9 @@ class CarrinhoPercursoEstagioAdicionarService {
       final creatEstagio = await _createPercursoEstagio();
       await carrinhoRepository.update(carrinho);
 
-      final newEstagio =
-          await carrinhoPercursoEstagioRepository.insert(creatEstagio);
+      final newEstagio = await carrinhoPercursoEstagioRepository.insert(
+        creatEstagio,
+      );
 
       if (newEstagio.isNotEmpty) {
         return newEstagio.first;
@@ -81,16 +84,26 @@ class CarrinhoPercursoEstagioAdicionarService {
   }
 
   Future<ExpedicaoEstagioModel?> _findcodPercursoEstagio() async {
+    final origem = _processo.origem;
+    if (_estagioAtivoPorOrigem.containsKey(origem)) {
+      return _estagioAtivoPorOrigem[origem];
+    }
+
     try {
-      final queryBuilder =
-          QueryBuilder().like('Origem', _processo.origem).equals('Ativo', 'S');
+      final queryBuilder = QueryBuilder()
+          .like('Origem', origem)
+          .equals('Ativo', 'S');
 
       final estagios = await expedicaoEstagioRepository.select(queryBuilder);
 
-      if (estagios.isEmpty) return null;
+      ExpedicaoEstagioModel? estagio;
+      if (estagios.isNotEmpty) {
+        estagios.sort((a, b) => a.sequencia.compareTo(b.sequencia));
+        estagio = estagios.first;
+      }
 
-      estagios.sort((a, b) => a.sequencia.compareTo(b.sequencia));
-      return estagios.first;
+      _estagioAtivoPorOrigem[origem] = estagio;
+      return estagio;
     } catch (e) {
       throw Exception('Erro ao buscar percurso estágio: $e');
     }
