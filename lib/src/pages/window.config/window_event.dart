@@ -1,7 +1,9 @@
-import 'dart:io';
+import 'dart:async';
+
 import 'package:get/get.dart';
 
 import 'package:window_manager/window_manager.dart';
+import 'package:app_expedicao/src/app/app_encerrar.dart';
 import 'package:app_expedicao/src/app/app_event_state.dart';
 
 class WindowEvent implements WindowListener {
@@ -9,13 +11,9 @@ class WindowEvent implements WindowListener {
   void onWindowBlur() {}
 
   @override
-  void onWindowClose() async {
-    final appEventState = Get.find<AppEventState>();
-
-    if (appEventState.canCloseWindow) {
-      windowManager.destroy();
-      exit(0);
-    }
+  void onWindowClose() {
+    if (!Get.find<AppEventState>().canCloseWindow) return;
+    unawaited(AppEncerrar.agora());
   }
 
   @override

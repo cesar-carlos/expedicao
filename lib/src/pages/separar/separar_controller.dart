@@ -1,10 +1,10 @@
 import 'dart:async';
-import 'dart:io' as io;
 
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:app_expedicao/src/app/app_encerrar.dart';
 import 'package:app_expedicao/src/routes/app_router.dart';
 import 'package:app_expedicao/src/service/carrinho_service.dart';
 import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
@@ -168,7 +168,7 @@ class SepararController extends GetxController {
           message: 'Deseja realmente sair?',
           detail: 'A tela será fechada e a separação não será  cancelada.',
         ).then((value) {
-          if (value != null && value) io.exit(0);
+          if (value != null && value) unawaited(AppEncerrar.agora());
         });
         return KeyEventResult.handled;
       }

@@ -75,6 +75,13 @@ class AppSocketConfig extends GetxController {
     _socket.connect();
   }
 
+  /// Envia o disconnect e espera o pacote sair antes do processo morrer.
+  Future<void> desconectar() async {
+    if (!_socketStarted || _socket.disconnected) return;
+    _socket.disconnect();
+    await Future<void>.delayed(const Duration(milliseconds: 200));
+  }
+
   void onConnect() {
     _socket.onConnect((_) {
       _isConnected.value = true;
