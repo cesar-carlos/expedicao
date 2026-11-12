@@ -23,10 +23,12 @@ Fonte no servidor: `D:\Developer\Node\data7-api-pix Campo\docs\contratos`. Dois 
 | Envelope de mutação | `lib/src/model/send_mutation_socket_model.dart`, `send_mutations_socket_model.dart` |
 | `Where` / `OrderBy` / página | `lib/src/model/pagination/query_builder.dart` |
 | `LIMIT` / `OFFSET` / `PAGE` | `lib/src/model/pagination/pagination.dart` |
-| Conexão | `lib/src/app/app_socket_config.dart` |
+| Junta páginas de 500 | `lib/src/model/pagination/paged_query.dart` (`QueryBuilder.allRows`) |
+| Conexão | `lib/src/app/app_socket_config.dart` (`queryMapped` / `mutateMapped`) |
+| HTTP | `lib/src/app/app_client_http.dart` |
 | Erro | `lib/src/app/app_error.dart` |
-| Pedido de lista | `lib/src/repository/**/*_repository.dart` — `socket.emit('${socket.id} <evento>', …)` |
-| Broadcast | `lib/src/repository/**/*_event_repository.dart` — `socket.on('<evento>.listen', …)` |
+| Pedido de lista | `lib/src/repository/**/*_repository.dart` — `queryMapped` / `mutateMapped` |
+| Broadcast | `lib/src/repository/socket_event_repository.dart` — `*_event_repository.dart` escuta `<evento>.listen` |
 | Snackbar | `LoadingProcessDialogGenericWidget` usa `AppError.display` |
 
 ## Três papéis

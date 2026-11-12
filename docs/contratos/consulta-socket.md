@@ -15,7 +15,7 @@ O cliente envia por `AppSocketConfig.queryMapped` / `mutateMapped` (`request`). 
   "Session": "<socket.id>",
   "ResponseIn": "<uuid>",
   "Where": "CodEmpresa = 1 AND CodConferir = 290 AND CodCarrinho = 94",
-  "Pagination": "LIMIT=200&OFFSET=0&PAGE=1",
+  "Pagination": "LIMIT=500&OFFSET=0&PAGE=1",
   "OrderBy": "order_by=Item&order_direction=ASC"
 }
 ```
@@ -93,4 +93,6 @@ Escuta periódica `separar.consulta.listen`: intervalo padrão 8 s, limite 20 (n
 
 `AppSocketConfig` usa `transports: ['websocket']`, `autoConnect: true`. Sem token. URL: `http://<host>:<porta>` do arquivo de configuração da API.
 
-Antes de emitir, `ensureStarted` espera o handshake. Sem `socket.id` o canal de pedido fica inválido. `listen` reassocia os handlers depois de um reconnect (`reconnectFromConfig` após salvar a API). O pedido tem timeout de 30s.
+Antes de emitir, `ensureStarted` espera o handshake. Sem `socket.id` o canal de pedido fica inválido. `listen` reassocia os handlers depois de um reconnect (`reconnectFromConfig` após salvar a API). Pedido parado espera 30s; queda da conexão aborta na hora (`_failPending`). HTTP: `connectTimeout` 8s, `receiveTimeout` 20s (`AppClientHttp`).
+
+Listen: `SocketEventRepository` decodifica o pacote uma vez e ignora evento da própria sessão, salvo `allEvent: true`.

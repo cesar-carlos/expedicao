@@ -30,7 +30,7 @@ Regras:
 `Pagination.toQueryString()`:
 
 ```text
-LIMIT=200&OFFSET=0&PAGE=1
+LIMIT=500&OFFSET=0&PAGE=1
 ```
 
 `QueryBuilder.paginate(limit:, offset:, page:)` grava o objeto. `buildPagination()` devolve a query string. Se ninguém chamou `.paginate()`, a string é vazia e `queryMapped` **omite** o campo. O servidor então aplica 1500.
@@ -49,8 +49,10 @@ Padrão do `QueryBuilder.paginate` em Dart é `limit: 10`. Não confundir com o 
 | Unidade de medida (`itensSapararUnidades` / `itensConferirUnidades`) | `allRows(thenBy: ItemUnidadeMedida)` | Sem página o servidor devolve tudo num payload; com `allRows` busca 500 a 500 e junta |
 | Listas de item do documento (`addAll`, cancelar/remover, armazenar, conferir da separação) | `allRows()` | Mesmo risco de corte em 1500 |
 | Carrinhos do documento (`carrinhosPercurso`, `carrinhosConferir`, agrupar) | `allRows()` | Grid de carrinho e agrupar todos. Agrupamento ordena por `ItemCarrinhoPercurso` (não tem `Item`) |
+| Estágio — view e tabela (`carrinhosPercurso`, cancelar/editar/recuperar, `_liberarCarrinhos`) | `allRows()` / `withAllRows(CodCarrinhoPercurso, Item)` | Grade e linha de gravação sem cortar em 1500 |
 | Wrappers (`CarrinhoService`, `CarrinhoPercursoServices`, `CarrinhoPercursoEstagioServices`, `consulta` do agrupar) | `withAllRows()` | Clona o builder para não vazar `OrderBy` quando o mesmo `QueryBuilder` vai para outra tabela |
-| Lookup (processo, usuário, produto, cabeçalho) | uma página, ou omite | `allRows` no repositório puxa a tabela inteira e estoura o teto de 200 páginas |
+| Scan do carrinho (`carrinho.consulta` por `CodigoBarras`) | omite | Um código; o servidor aplica 1500. Não usar `allRows` |
+| Lookup (processo `paginate(limit: 1)`, usuário, produto, cabeçalho) | uma página, ou omite | `allRows` no repositório puxa a tabela inteira e estoura o teto de 200 páginas |
 
 ### Unidade de medida
 

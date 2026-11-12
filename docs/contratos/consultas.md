@@ -67,18 +67,59 @@ Scan emite `conferir.item.update.listen` para a quantidade conferida atualizar n
 
 | Evento | Repositório | Nota |
 | --- | --- | --- |
-| `carrinho.consulta` | `CarrinhoConsultaRepository` | |
-| `carrinho.select` | `CarrinhoRepository` | |
+| `carrinho.consulta` | `CarrinhoConsultaRepository` | View do cadastro + percurso atual. Scan do diálogo |
+| `carrinho.select` | `CarrinhoRepository` | Tabela. Situação do cadastro (`LIBERADO`, `EM SEPARACAO`…) |
 | `carrinho.percurso.select` | `CarrinhoPercursoRepository` | Cabeçalho (`SE` + `CodSepararEstoque`) |
-| `carrinho.percurso.estagio.consulta` | `CarrinhoPercursoEstagioConsultaRepository` | |
-| `carrinho.percurso.estagio.select` | `CarrinhoPercursoEstagioRepository` | Insert `CO`/`CONFERINDO` ao ler o carrinho |
-| `carrinho.percurso.agrupamento.consulta` | `CarrinhoPercursoAgrupamentoConsultaRepository` | |
-| `carrinho.percurso.agrupamento.select` | `CarrinhoPercursoAgrupamentoRepository` | |
+| `carrinho.percurso.estagio.consulta` | `CarrinhoPercursoEstagioConsultaRepository` | Grade de carrinhos do documento (view) |
+| `carrinho.percurso.estagio.select` | `CarrinhoPercursoEstagioRepository` | Linha de gravação. Cancelar, editar, recuperar |
+| `carrinho.percurso.agrupamento.consulta` | `CarrinhoPercursoAgrupamentoConsultaRepository` | Scan e grade do agrupar |
+| `carrinho.percurso.agrupamento.select` | `CarrinhoPercursoAgrupamentoRepository` | Tabela do agrupamento |
 | `expedicao.percurso.estagio.select` | `ExpedicaoEstagioRepository` | Só `select`. O servidor **não** emite `*.listen` nesta feature |
 
 `carrinho.percurso.consulta` no servidor reusa o SQL de estágio. Este coletor pede `carrinho.percurso.estagio.consulta`.
 
 Listen: `carrinho.*.listen`, `carrinho.percurso.estagio.*.listen`, `carrinho.percurso.agrupamento.*.listen`. Estágio update também emite `carrinho.percurso.update.listen`.
+
+Abrir estágio `CO` / `CONFERINDO` é `carrinho.percurso.estagio.insert` (`CarrinhoPercursoEstagioAdicionarService`), não o `select` nem `conferir.insert`.
+
+### Scan do carrinho — o que consulta
+
+O diálogo (`CarrinhoController.getCarrinho`) emite `carrinho.consulta` com `CodEmpresa` + `CodigoBarras`. A view já traz o ponto atual:
+
+- `Situacao` — cadastro (`LIBERADO`, `EM SEPARACAO`, `CONFERIDO`…)
+- `Origem` / `CodOrigem` — documento em que o carrinho está
+- `DescricaoPercursoEstagio` — estágio (vem no JSON; o diálogo **não** mostra)
+- `NomeSetorEstoque`
+
+A tela mostra Situação, Local (`Origem`) e Setor. O scan **não** navega até esse documento. É um portão da tela aberta: *este carrinho pode entrar aqui?*
+
+| Origem da tela | Depois do `carrinho.consulta` |
+| --- | --- |
+| Separação | Só aceita `Situacao = LIBERADO`. Ocupado em outro ponto → recusa |
+| Conferência | Segunda consulta `carrinho.conferir.consulta` (`ConferenciaSituacaoCarrinhoService`): o código precisa existir **neste** conferir. Recusa `LIBERADO` / `CONFERIDO` / `CONFERINDO` / `AGRUPADO` em `SituacaoCarrinhoConferencia` |
+| Agrupar | Outro scan (`faindCart`): `carrinho.percurso.agrupamento.consulta` já filtrado pelo documento. Preenche situação e estágio só desse agrupamento |
+
+Não há um `getSituacao(codCarrinho)` genérico fora desses fluxos. Cadastro: `CarrinhoService.consulta` / `select`. Conferência do documento: `ConferenciaSituacaoCarrinhoService`.
+
+### `carrinho.percurso.estagio` — quem consulta o quê
+
+**View** (`*.consulta`) — lista da grade e recarga depois de gravar. Sempre `allRows()`.
+
+| Chamada | `WHERE` | Uso |
+| --- | --- | --- |
+| `SepararConsultaServices.carrinhosPercurso` | `CodEmpresa` + `Origem = SE` + `CodOrigem` (+ `CodCarrinhoPercurso` / `Item`) | Grade, `existsOpenCart()`, validar ao finalizar, recarregar o estágio adicionado |
+| `ConferirConsultaServices.carrinhosPercurso` | Igual, com `Origem = CO` e `CodOrigem` do conferir | Grade de conferidos, `existsOpenCart()`, recarregar depois de adicionar |
+
+`CarrinhoPercursoServices.consultaPercurso` reusa o mesmo evento (`OrderBy` `CodCarrinhoPercurso, Item`) e **não é chamado**.
+
+**Tabela** (`*.select`) — linha de gravação. `CarrinhoPercursoEstagioServices.select` aplica `withAllRows()`.
+
+| Chamada | `WHERE` | Uso |
+| --- | --- | --- |
+| Recuperar carrinho (separar) | `CodEmpresa` + `CodCarrinho` | Último estágio; precisa ter estado em percurso |
+| Recuperar itens (separação) | `CodEmpresa` + `CodCarrinho` | Penúltimo estágio cancelado |
+| Cancelar / editar / carregar (separado e conferido) | `CodEmpresa` + `CodCarrinhoPercurso` + `CodCarrinho` + `Item` (+ estágio no cancelar) | Confirmar usuário e gravar |
+| Armazenar `_liberarCarrinhos` | `CodEmpresa` + `CodCarrinhoPercurso` + `Situacao = SEPARADO` | Quais carrinhos liberar |
 
 ## Produto, usuário, setor, armazenagem
 
@@ -107,7 +148,7 @@ Canal de pedido: `${socket.id} produto.conversao.unidade.consulta`.
 
 O fallback de resposta (se faltar `ResponseIn`) ainda é o nome antigo `estoque.produto.conversao.unidade.consulta`.
 
-Este coletor hoje emite `estoque.produto.conversao.unidade.consulta` (`EstoqueProdutoConversaoUnidadeConsultaRepository`). Esse não é o sufixo registrado. Preferir o nome do servidor: `produto.conversao.unidade.consulta`. Filtro de scan: coluna `Codigo`.
+Este coletor emite `produto.conversao.unidade.consulta` (`EstoqueProdutoConversaoUnidadeConsultaRepository`). Filtro de scan: coluna `Codigo`.
 
 ## `WHERE` obrigatório na janela do carrinho
 

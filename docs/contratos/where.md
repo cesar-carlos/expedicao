@@ -49,7 +49,12 @@ Extensão `QueryBuilderExtension.search` gera `LIKE '%termo%'`. Não usar isso e
 | `separar.usuario.setor.consulta` | `CodEmpresa + CodUsuario + CodSetorEstoque` | `IX_SeparacaoUsuarioSetor_Usuario` |
 | `conferir.item.consulta` | `CodEmpresa + CodConferir + CodCarrinho` | `IX_ItemConferir_Percurso` (join no estágio) |
 | `conferencia.item.consulta` | `CodEmpresa + CodConferir + CodCarrinho` | `IX_ItemConferencia_Percurso` |
+| `carrinho.consulta` | `CodEmpresa` + `CodigoBarras` (scan) ou `CodCarrinho` | PK do carrinho |
+| `carrinho.select` | `CodEmpresa` + `CodCarrinho` | PK. Situação do cadastro |
 | `carrinho.conferir.consulta` | `CodEmpresa + CodConferir` (+ `CodCarrinho`) | PK do carrinho + `IX_CarrinhoPercursoEstagio_CarrinhoAtual` |
+| `carrinho.percurso.estagio.consulta` | `CodEmpresa` + `Origem` + `CodOrigem` (+ `CodCarrinhoPercurso` / `Item`) | `IX_CarrinhoPercursoEstagio_CarrinhoAtual` |
+| `carrinho.percurso.estagio.select` | `CodEmpresa` + `CodCarrinho`, ou chave `CodCarrinhoPercurso` + `Item` | PK do estágio |
+| `carrinho.percurso.agrupamento.consulta` | `CodEmpresa` + `Origem` + `CodOrigem` + `CodigoBarrasCarrinho` | Scan do agrupar |
 | `estoque.produto.consulta` | `CodigoBarras1` / `CodigoBarras2` | `IX_Produto_CodigoBarras1/2` |
 | `produto.conversao.unidade.consulta` | `Codigo` | `IX_ConversaoUnidadeMedida_Codigo` |
 

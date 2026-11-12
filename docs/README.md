@@ -13,7 +13,7 @@ Leia nesta ordem:
 2. [Consulta Socket.IO](./contratos/consulta-socket.md) — envelope `Where` / `Pagination` / `OrderBy` / `Mutation`
 3. [Paginação](./contratos/paginacao.md) — `LIMIT` 1500, `OFFSET/FETCH`, unidade de medida
 4. [Where](./contratos/where.md) — `QueryBuilder` neste app (ainda string SQL) e o que o servidor aceita
-5. [Consultas](./contratos/consultas.md) — catálogo dos eventos que este app emite e escuta
+5. [Consultas](./contratos/consultas.md) — catálogo dos eventos; scan do carrinho e `carrinho.percurso.estagio`
 6. [Erros](./contratos/erros.md) — prefixo `[50014]` / `[SQL-CONN]`, `AppError`, snackbar
 7. [Consulta HTTP](./contratos/consulta-http.md) — login, usuários e versão (não usam Socket.IO)
 
