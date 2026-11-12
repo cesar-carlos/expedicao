@@ -6,6 +6,7 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import 'package:app_expedicao/src/app/app_data_grid.dart';
 import 'package:app_expedicao/src/app/app_color.dart';
+import 'package:app_expedicao/src/app/app_helper.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_agrupamento_consulta_model.dart';
 import 'package:app_expedicao/src/pages/carrinho_agrupar/grid/carrinhos_agrupar_grid_source.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
@@ -48,7 +49,11 @@ class CarrinhosAgruparGridController extends GetxController {
 
   void updateGrid(ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel item) {
     final index = _itens.indexWhere(
-        (el) => el.itemCarrinhoPercurso == item.itemCarrinhoPercurso);
+      (el) => AppHelper.sameGridItem(
+        el.itemCarrinhoPercurso,
+        item.itemCarrinhoPercurso,
+      ),
+    );
     if (index == -1) return;
     _itens[index] = item;
   }
@@ -56,37 +61,49 @@ class CarrinhosAgruparGridController extends GetxController {
   void updateAllGrid(
       List<ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel> itens) {
     for (var el in itens) {
-      final index = _itens
-          .indexWhere((i) => i.itemCarrinhoPercurso == el.itemCarrinhoPercurso);
+      final index = _itens.indexWhere(
+        (i) => AppHelper.sameGridItem(
+          i.itemCarrinhoPercurso,
+          el.itemCarrinhoPercurso,
+        ),
+      );
 
-      if (index == -1) return;
+      if (index == -1) continue;
       _itens[index] = el;
     }
   }
 
   void updateGridSituationItem(String item, String situacao) {
-    final index = _itens.indexWhere((el) => el.itemCarrinhoPercurso == item);
+    final index = _itens.indexWhere(
+      (el) => AppHelper.sameGridItem(el.itemCarrinhoPercurso, item),
+    );
     if (index == -1) return;
     _itens[index] = _itens[index].copyWith(situacao: situacao);
   }
 
   ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel? findCodigoBarras(
       String codigoBarras) {
-    final item = _itens.firstWhereOrNull(
-      (el) => el.codigoBarrasCarrinho == codigoBarras,
+    return _itens.firstWhereOrNull(
+      (el) => AppHelper.sameBarCode(el.codigoBarrasCarrinho, codigoBarras),
     );
-
-    return item;
   }
 
   void removeGrid(ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel item) {
     _itens.removeWhere((el) =>
         el.codEmpresa == item.codEmpresa &&
         el.codCarrinho == item.codCarrinho &&
-        el.itemCarrinhoPercurso == item.itemCarrinhoPercurso);
+        AppHelper.sameGridItem(
+          el.itemCarrinhoPercurso,
+          item.itemCarrinhoPercurso,
+        ));
 
     if (highlightedItem != null &&
-        !_itens.any((el) => el.itemCarrinhoPercurso == highlightedItem)) {
+        !_itens.any(
+          (el) => AppHelper.sameGridItem(
+            el.itemCarrinhoPercurso,
+            highlightedItem,
+          ),
+        )) {
       highlightedItem = null;
     }
   }
@@ -184,7 +201,9 @@ class CarrinhosAgruparGridController extends GetxController {
   }
 
   int findIndexItem(String item) {
-    return _itens.indexWhere((el) => el.itemCarrinhoPercurso == item);
+    return _itens.indexWhere(
+      (el) => AppHelper.sameGridItem(el.itemCarrinhoPercurso, item),
+    );
   }
 
   ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel? get selectedItem {
@@ -192,8 +211,9 @@ class CarrinhosAgruparGridController extends GetxController {
       return null;
     }
 
-    final match =
-        _itens.where((el) => el.itemCarrinhoPercurso == highlightedItem);
+    final match = _itens.where(
+      (el) => AppHelper.sameGridItem(el.itemCarrinhoPercurso, highlightedItem),
+    );
     if (match.isEmpty) {
       return null;
     }
@@ -266,7 +286,8 @@ class CarrinhosAgruparGridController extends GetxController {
   }
 
   Color rowColor(ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel item) {
-    if (highlightedItem != null && item.itemCarrinhoPercurso == highlightedItem) {
+    if (highlightedItem != null &&
+        AppHelper.sameGridItem(item.itemCarrinhoPercurso, highlightedItem)) {
       return AppColor.gridRowSelectedRowColor;
     }
 

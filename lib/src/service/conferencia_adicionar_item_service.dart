@@ -12,6 +12,7 @@ import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_cons
 import 'package:app_expedicao/src/model/expedicao_item_situacao_model.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 import 'package:app_expedicao/src/app/app_error.dart';
+import 'package:app_expedicao/src/app/app_helper.dart';
 
 class ConferenciaAdicionarItemService {
   final _socket = Get.find<AppSocketConfig>();
@@ -53,12 +54,9 @@ class ConferenciaAdicionarItemService {
 
       if (newConferenciaItem.isEmpty) return null;
 
-      final queryBuilder = QueryBuilder()
-          .equals('CodEmpresa', newConferenciaItem.last.codEmpresa)
-          .equals('CodConferir', newConferenciaItem.last.codConferir)
-          .equals('Item', newConferenciaItem.last.item);
-
-      final list = await conferenciaItemConsultaRepository.select(queryBuilder);
+      final list = await conferenciaItemConsultaRepository.select(
+        _queryConsultaItem(newConferenciaItem.last),
+      );
       if (list.isEmpty) return null;
       return list.last;
     } catch (e) {
@@ -108,22 +106,36 @@ class ConferenciaAdicionarItemService {
         conferenciaItensInsert.add(itemConferencia);
       }
 
+      if (conferenciaItensInsert.isEmpty) {
+        return [];
+      }
+
       final conferenciaItensResponse = await conferenciaItemRepository
           .insertAll(conferenciaItensInsert);
 
-      final List<ExpedicaConferenciaItemConsultaModel> result = [];
-      for (final item in conferenciaItensResponse) {
-        final queryBuilder = QueryBuilder()
-            .equals('CodEmpresa', item.codEmpresa)
-            .equals('CodConferir', item.codConferir)
-            .equals('Item', item.item);
+      if (conferenciaItensResponse.isEmpty) {
+        return [];
+      }
 
-        final items = await conferenciaItemConsultaRepository.select(
-          queryBuilder,
+      final firstItem = conferenciaItensResponse.first;
+      final allItems = await conferenciaItemConsultaRepository.select(
+        QueryBuilder()
+            .equals('CodEmpresa', firstItem.codEmpresa)
+            .equals('CodConferir', firstItem.codConferir)
+            .equals('CodCarrinho', percursoEstagioConsulta.codCarrinho)
+            .allRows(),
+      );
+
+      final result = allItems.where((consulta) {
+        return conferenciaItensResponse.any(
+          (inserted) => AppHelper.sameGridItem(consulta.item, inserted.item),
         );
-        if (items.isNotEmpty) {
-          result.addAll(items);
-        }
+      }).toList();
+
+      if (result.isEmpty) {
+        throw AppError(
+          'Itens gravados, mas a consulta não retornou as linhas.',
+        );
       }
 
       return result;
@@ -159,12 +171,23 @@ class ConferenciaAdicionarItemService {
             'CodCarrinhoPercurso',
             percursoEstagioConsulta.codCarrinhoPercurso,
           )
-          .equals('ItemCarrinhoPercurso', percursoEstagioConsulta.item)
+          .equals(
+            'ItemCarrinhoPercurso',
+            AppHelper.itemSequenceKey(percursoEstagioConsulta.item),
+          )
           .allRows();
 
       return await conferenciaItemRepository.select(queryBuilder);
     } catch (e) {
       throw AppError.fromUnknown(e);
     }
+  }
+
+  QueryBuilder _queryConsultaItem(ExpedicaoConferenciaItemModel item) {
+    return QueryBuilder()
+        .equals('CodEmpresa', item.codEmpresa)
+        .equals('CodConferir', item.codConferir)
+        .equals('CodCarrinho', percursoEstagioConsulta.codCarrinho)
+        .equals('Item', AppHelper.itemSequenceKey(item.item));
   }
 }

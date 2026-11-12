@@ -5,6 +5,7 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import 'package:app_expedicao/src/app/app_color.dart';
 import 'package:app_expedicao/src/app/app_data_grid.dart';
+import 'package:app_expedicao/src/app/app_helper.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_item_consulta_model.dart';
 import 'package:app_expedicao/src/pages/separar/grid/separar_grid_source.dart';
@@ -58,13 +59,10 @@ class SepararGridController extends GetxController {
   }
 
   List<ExpedicaoSepararItemConsultaModel> getItensSort(int? codSetorEstoque) {
-    if (codSetorEstoque == null) return itensSort;
+    if (!AppHelper.setorDefinido(codSetorEstoque)) return itensSort;
 
     return itensSort.where((el) {
-      if (el.codSetorEstoque == 0) return true;
-      if (el.codSetorEstoque == codSetorEstoque) return true;
-
-      return false;
+      return AppHelper.setorPermitido(codSetorEstoque, el.codSetorEstoque);
     }).toList();
   }
 
@@ -343,9 +341,7 @@ class SepararGridController extends GetxController {
   }
 
   bool existsBarCode(String barCode) {
-    final el = _itemUnids.where((el) => el.codigoBarras == barCode).toList();
-    if (el.isEmpty) return false;
-    return true;
+    return _itemUnids.any((el) => AppHelper.sameBarCode(el.codigoBarras, barCode));
   }
 
   bool existsCodProduto(int codProduto) {
@@ -355,11 +351,19 @@ class SepararGridController extends GetxController {
   }
 
   int? findCodProdutoFromBarCode(String barCode) {
-    final el = _itemUnids.where((el) => el.codigoBarras == barCode);
-    if (el.isEmpty) {
-      return null;
+    return findUnidadeByCodigo(barCode)?.codProduto;
+  }
+
+  ExpedicaoSepararItemUnidadeMedidaConsultaModel? findUnidadeByCodigo(
+    String codigo,
+  ) {
+    ExpedicaoSepararItemUnidadeMedidaConsultaModel? padrao;
+    for (final el in _itemUnids) {
+      if (!AppHelper.sameBarCode(el.codigoBarras, codigo)) continue;
+      if (el.unidadeMedidaPadrao != 'S') return el;
+      padrao ??= el;
     }
-    return el.first.codProduto;
+    return padrao;
   }
 
   int findIndexCodProduto(int codProduto) {
@@ -371,12 +375,17 @@ class SepararGridController extends GetxController {
   }
 
   ExpedicaoSepararItemConsultaModel? findBarCode(String barCode) {
-    final unidades = _itemUnids.where((el) => el.codigoBarras == barCode);
-    if (unidades.isEmpty) {
-      return null;
+    final unidade = findUnidadeByCodigo(barCode);
+    if (unidade != null) {
+      final el = _itens.where((el) => el.codProduto == unidade.codProduto);
+      if (el.isNotEmpty) return el.first;
     }
 
-    final el = _itens.where((el) => el.item == unidades.first.item);
+    final el = _itens.where(
+      (el) =>
+          AppHelper.sameBarCode(el.codigoBarras, barCode) ||
+          AppHelper.sameBarCode(el.codigoBarras2, barCode),
+    );
     if (el.isEmpty) {
       return null;
     }
@@ -471,10 +480,11 @@ class SepararGridController extends GetxController {
       );
     }
 
-    if (_processoExecutavel.codSetorEstoque != null) {
-      if (item.codSetorEstoque != _processoExecutavel.codSetorEstoque) {
-        return Icon(BootstrapIcons.ban, color: Colors.red, size: iconSize);
-      }
+    if (!AppHelper.setorPermitido(
+      _processoExecutavel.codSetorEstoque,
+      item.codSetorEstoque,
+    )) {
+      return Icon(BootstrapIcons.ban, color: Colors.red, size: iconSize);
     }
 
     return Icon(

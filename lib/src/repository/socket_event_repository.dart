@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 
 import 'package:app_expedicao/src/app/app_socket_config.dart';
+import 'package:app_expedicao/src/app/app_socket_listen_log.dart';
 import 'package:app_expedicao/src/contract/event_contract.dart';
 import 'package:app_expedicao/src/model/basic_event_model.dart';
 import 'package:app_expedicao/src/model/repository_event_listener_model.dart';
@@ -15,11 +16,13 @@ class SocketEventRepository implements EventContract {
 
   void bind(String channel, Event event) {
     _socket.listen(channel, (data) {
+      AppSocketListenLog.received(channel, data);
       dispatch(
         listeners: _listeners,
         event: event,
         data: data,
         sessionId: _socket.sessionId,
+        channel: channel,
       );
     });
   }
@@ -30,13 +33,29 @@ class SocketEventRepository implements EventContract {
     required Event event,
     required dynamic data,
     required String? sessionId,
+    String channel = '',
   }) {
+    final basicEvent = BasicEventModel.parse(data);
+    AppSocketListenLog.parsed(
+      channel: channel,
+      event: event.name,
+      session: basicEvent.session,
+      ownSession: sessionId,
+      mutationCount: basicEvent.mutation.length,
+      situacoes: AppSocketListenLog.situacoesOf(basicEvent.mutation),
+    );
+
     if (listeners.isEmpty) return;
 
-    final basicEvent = BasicEventModel.parse(data);
     for (final listener in List<RepositoryEventListenerModel>.of(listeners)) {
       if (listener.event != event) continue;
-      if (basicEvent.session == sessionId && !listener.allEvent) continue;
+      if (basicEvent.session == sessionId && !listener.allEvent) {
+        AppSocketListenLog.droppedOwnSession(
+          channel: channel,
+          event: event.name,
+        );
+        continue;
+      }
       listener.callback(basicEvent);
     }
   }

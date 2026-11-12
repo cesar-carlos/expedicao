@@ -27,16 +27,16 @@ class ConferidoCarrinhoGridController extends GetxController {
   bool get applyingSelection => _applyingSelection;
 
   void Function(ExpedicaoCarrinhoPercursoEstagioConsultaModel item)?
-      onPressedRemove;
+  onPressedRemove;
 
   void Function(ExpedicaoCarrinhoPercursoEstagioConsultaModel item)?
-      onPressedEdit;
+  onPressedEdit;
 
   void Function(ExpedicaoCarrinhoPercursoEstagioConsultaModel item)?
-      onPressedGroup;
+  onPressedGroup;
 
   void Function(ExpedicaoCarrinhoPercursoEstagioConsultaModel item)?
-      onPressedSave;
+  onPressedSave;
 
   @override
   void onClose() {
@@ -45,6 +45,15 @@ class ConferidoCarrinhoGridController extends GetxController {
   }
 
   void addGrid(ExpedicaoCarrinhoPercursoEstagioConsultaModel item) {
+    final alreadyInGrid = _itens.any(
+      (el) =>
+          el.codCarrinhoPercurso == item.codCarrinhoPercurso &&
+          el.item == item.item,
+    );
+    if (alreadyInGrid) {
+      updateGrid(item);
+      return;
+    }
     _itens.add(item);
   }
 
@@ -59,7 +68,8 @@ class ConferidoCarrinhoGridController extends GetxController {
   }
 
   void updateAllGrid(
-      List<ExpedicaoCarrinhoPercursoEstagioConsultaModel> itens) {
+    List<ExpedicaoCarrinhoPercursoEstagioConsultaModel> itens,
+  ) {
     for (var el in itens) {
       final index = _itens.indexWhere((i) => i.item == el.item);
       if (index == -1) return;
@@ -74,10 +84,12 @@ class ConferidoCarrinhoGridController extends GetxController {
   }
 
   void removeGrid(ExpedicaoCarrinhoPercursoEstagioConsultaModel item) {
-    _itens.removeWhere((el) =>
-        el.codEmpresa == item.codEmpresa &&
-        el.codCarrinho == item.codCarrinho &&
-        el.item == item.item);
+    _itens.removeWhere(
+      (el) =>
+          el.codEmpresa == item.codEmpresa &&
+          el.codCarrinho == item.codCarrinho &&
+          el.item == item.item,
+    );
 
     if (highlightedItem != null &&
         !_itens.any((el) => el.item == highlightedItem)) {
@@ -130,11 +142,7 @@ class ConferidoCarrinhoGridController extends GetxController {
         break;
     }
 
-    return Icon(
-      size: iconSize,
-      Icons.delete,
-      color: color,
-    );
+    return Icon(size: iconSize, Icons.delete, color: color);
   }
 
   Icon iconEdit(ExpedicaoCarrinhoPercursoEstagioConsultaModel item) {
@@ -145,7 +153,7 @@ class ConferidoCarrinhoGridController extends GetxController {
       ExpedicaoSituacaoModel.cancelada,
       ExpedicaoSituacaoModel.agrupado,
       ExpedicaoSituacaoModel.emEntrega,
-      ExpedicaoSituacaoModel.embalando
+      ExpedicaoSituacaoModel.embalando,
     ].contains(item.situacao);
 
     switch (item.situacao) {
@@ -181,11 +189,7 @@ class ConferidoCarrinhoGridController extends GetxController {
         break;
     }
 
-    return Icon(
-      size: iconSize - 1.0,
-      BootstrapIcons.save2_fill,
-      color: color,
-    );
+    return Icon(size: iconSize - 1.0, BootstrapIcons.save2_fill, color: color);
   }
 
   Icon iconSave(ExpedicaoCarrinhoPercursoEstagioConsultaModel item) {
@@ -201,11 +205,7 @@ class ConferidoCarrinhoGridController extends GetxController {
         break;
     }
 
-    return Icon(
-      size: iconSize,
-      Icons.save,
-      color: color,
-    );
+    return Icon(size: iconSize, Icons.save, color: color);
   }
 
   Widget iconIndicator(ExpedicaoCarrinhoPercursoEstagioConsultaModel item) {
@@ -213,11 +213,7 @@ class ConferidoCarrinhoGridController extends GetxController {
 
     switch (item.situacao) {
       case ExpedicaoSituacaoModel.cancelada:
-        return Icon(
-          size: iconSize,
-          BootstrapIcons.cart_x_fill,
-          color: color,
-        );
+        return Icon(size: iconSize, BootstrapIcons.cart_x_fill, color: color);
       case ExpedicaoSituacaoModel.conferido:
       case ExpedicaoSituacaoModel.emEntrega:
       case ExpedicaoSituacaoModel.embalando:
@@ -234,11 +230,7 @@ class ConferidoCarrinhoGridController extends GetxController {
         );
 
       default:
-        return Icon(
-          size: iconSize,
-          BootstrapIcons.cart_fill,
-          color: color,
-        );
+        return Icon(size: iconSize, BootstrapIcons.cart_fill, color: color);
     }
   }
 
@@ -286,8 +278,9 @@ class ConferidoCarrinhoGridController extends GetxController {
       return;
     }
 
-    var current =
-        highlightedItem == null ? -1 : findIndexItem(highlightedItem!);
+    var current = highlightedItem == null
+        ? -1
+        : findIndexItem(highlightedItem!);
     if (current < 0) {
       current = delta > 0 ? -1 : 0;
     }

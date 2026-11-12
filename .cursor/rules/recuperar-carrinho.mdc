@@ -1,0 +1,17 @@
+---
+description: Recuperar carrinho (F11 tela) e Recuperar itens (F11 no carrinho)
+globs: "**/{separar_controller.dart,separacao_controller.dart,separacao_adicionar_item_service.dart,separacao_consulta_service.dart}"
+alwaysApply: false
+---
+
+# Recuperar carrinho / itens
+
+Contrato: `docs/contratos/recuperar-carrinho.md`.
+
+Dois F11. Conferência não tem.
+
+- **Tela inicial**: cadastro `LIBERADO`; último estágio `CANCELADA` + `Origem = SE` + `CodOrigem` deste documento. Não comparar `situacao` com `ExpedicaoOrigemModel.separacao`.
+- **Dentro do carrinho**: cadastro `EM SEPARACAO`; penúltimo estágio `CANCELADA` + `SE` + mesmo documento.
+- Itens: só `CA`. Copiar com `addRecuperados` (lista, setor, teto do pedido). Não `add` cru da quantidade cancelada.
+- `ItemCarrinhoPercurso` no `select`: `itemSequenceKey`.
+- Reabrir (F6) é outro fluxo: mesmo estágio, não copiar itens.

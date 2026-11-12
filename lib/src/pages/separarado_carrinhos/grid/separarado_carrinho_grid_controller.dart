@@ -48,6 +48,15 @@ class SeparadoCarrinhoGridController extends GetxController {
   }
 
   void addGrid(ExpedicaoCarrinhoPercursoEstagioConsultaModel item) {
+    final alreadyInGrid = _itens.any(
+      (el) =>
+          el.codCarrinhoPercurso == item.codCarrinhoPercurso &&
+          el.item == item.item,
+    );
+    if (alreadyInGrid) {
+      updateGrid(item);
+      return;
+    }
     _itens.add(item);
   }
 

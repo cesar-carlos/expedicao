@@ -79,5 +79,37 @@ void main() {
         sessionId: 's',
       );
     });
+
+    test('allEvent recebe o update da própria sessão', () {
+      final received = <String>[];
+      final listeners = [
+        RepositoryEventListenerModel(
+          id: 'situacao',
+          event: Event.update,
+          allEvent: true,
+          callback: (event) {
+            received.add(event.mutation.first['Situacao'] as String);
+          },
+        ),
+      ];
+
+      SocketEventRepository.dispatch(
+        listeners: listeners,
+        event: Event.update,
+        channel: 'separar.update.listen',
+        data: {
+          'Session': 'mine',
+          'ResponseIn': 'r1',
+          'Mutation': {
+            'CodEmpresa': 1,
+            'CodSepararEstoque': 290500,
+            'Situacao': 'SEPARADO',
+          },
+        },
+        sessionId: 'mine',
+      );
+
+      expect(received, ['SEPARADO']);
+    });
   });
 }

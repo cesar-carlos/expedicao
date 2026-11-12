@@ -1,62 +1,19 @@
-import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
-import 'package:app_expedicao/src/app/app_error.dart';
-import 'package:app_expedicao/src/app/app_event_state.dart';
+import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog_generic_widget.dart';
 
 class LoadingProcessDialogWidget {
   static Future<void> show({
     required bool canCloseWindow,
     required BuildContext context,
     required Future<void> Function() process,
-  }) async {
-    return await showDialog<void>(
-      barrierDismissible: false,
+  }) {
+    return LoadingProcessDialogGenericWidget.show<bool>(
+      canCloseWindow: canCloseWindow,
       context: context,
-      builder: (_) {
-        final appEventState = Get.find<AppEventState>();
-        appEventState.canCloseWindow = canCloseWindow;
-
-        return PopScope(
-          canPop: false,
-          child: StatefulBuilder(
-            builder: (_, _) {
-              WidgetsBinding.instance.addPostFrameCallback((_) async {
-                try {
-                  await process();
-                  Get.back();
-                } catch (e) {
-                  Get.back();
-                  final appError = AppError.fromUnknown(e);
-                  Get.snackbar(
-                    appError.title,
-                    appError.userDetail,
-                    maxWidth: 500,
-                    borderRadius: 7,
-                    backgroundColor: Colors.red[600],
-                    colorText: Colors.white,
-                    duration: const Duration(seconds: 15),
-                    snackPosition: SnackPosition.BOTTOM,
-                    margin: const EdgeInsets.only(bottom: 40),
-                    mainButton: TextButton(
-                      onPressed: () => Get.back(),
-                      child: const Text('OK',
-                          style: TextStyle(color: Colors.white)),
-                    ),
-                  );
-                } finally {
-                  appEventState.canCloseWindow = true;
-                }
-              });
-
-              return const Center(
-                child: CircularProgressIndicator(
-                  color: Colors.white,
-                ),
-              );
-            },
-          ),
-        );
+      process: () async {
+        await process();
+        return true;
       },
     );
   }

@@ -12,9 +12,10 @@ class LoadingProcessDialogGenericWidget {
     required Future<T> Function() process,
     bool canCloseWindow = false,
   }) async {
-    Completer<T> completer = Completer<T>();
+    final completer = Completer<T>();
     final appEventState = Get.find<AppEventState>();
     appEventState.canCloseWindow = canCloseWindow;
+    var processStarted = false;
 
     await showDialog<void>(
       barrierDismissible: false,
@@ -22,63 +23,66 @@ class LoadingProcessDialogGenericWidget {
       builder: (dialogContext) {
         return PopScope(
           canPop: false,
-          child: StatefulBuilder(builder: (_, setState) {
-            WidgetsBinding.instance.addPostFrameCallback((_) async {
-              try {
-                T result = await process();
-                if (!completer.isCompleted) {
-                  completer.complete(result);
+          child: Builder(
+            builder: (_) {
+              WidgetsBinding.instance.addPostFrameCallback((_) async {
+                if (processStarted) {
+                  return;
                 }
+                processStarted = true;
 
-                if (dialogContext.mounted) {
-                  Navigator.of(dialogContext).pop();
-                }
-              } catch (e) {
-                if (dialogContext.mounted) {
-                  Navigator.of(dialogContext).pop();
-                }
+                try {
+                  final result = await process();
+                  if (!completer.isCompleted) {
+                    completer.complete(result);
+                  }
 
-                final appError = AppError.fromUnknown(e);
-                Get.snackbar(
-                  appError.title,
-                  appError.userDetail,
-                  maxWidth: 500,
-                  borderRadius: 7,
-                  backgroundColor: Colors.red[600],
-                  colorText: Colors.white,
-                  duration: const Duration(seconds: 15),
-                  snackPosition: SnackPosition.BOTTOM,
-                  margin: const EdgeInsets.only(bottom: 40),
-                  mainButton: TextButton(
-                    onPressed: () {
-                      Get.closeCurrentSnackbar();
-                      if (!completer.isCompleted) {
-                        completer.completeError(AppError.fromUnknown(e));
-                      }
-                    },
-                    child: const Text(
-                      'OK',
-                      style: TextStyle(
-                        color: Colors.white,
+                  if (dialogContext.mounted) {
+                    Navigator.of(dialogContext).pop();
+                  }
+                } catch (e) {
+                  if (dialogContext.mounted) {
+                    Navigator.of(dialogContext).pop();
+                  }
+
+                  final appError = AppError.fromUnknown(e);
+                  Get.snackbar(
+                    appError.title,
+                    appError.userDetail,
+                    maxWidth: 500,
+                    borderRadius: 7,
+                    backgroundColor: Colors.red[600],
+                    colorText: Colors.white,
+                    duration: const Duration(seconds: 15),
+                    snackPosition: SnackPosition.BOTTOM,
+                    margin: const EdgeInsets.only(bottom: 40),
+                    mainButton: TextButton(
+                      onPressed: () {
+                        Get.closeCurrentSnackbar();
+                        if (!completer.isCompleted) {
+                          completer.completeError(AppError.fromUnknown(e));
+                        }
+                      },
+                      child: const Text(
+                        'OK',
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
-                  ),
-                );
+                  );
 
-                if (!completer.isCompleted) {
-                  completer.completeError(AppError.fromUnknown(e));
+                  if (!completer.isCompleted) {
+                    completer.completeError(AppError.fromUnknown(e));
+                  }
+                } finally {
+                  appEventState.canCloseWindow = true;
                 }
-              } finally {
-                appEventState.canCloseWindow = true;
-              }
-            });
+              });
 
-            return const Center(
-              child: CircularProgressIndicator(
-                color: Colors.white,
-              ),
-            );
-          }),
+              return const Center(
+                child: CircularProgressIndicator(color: Colors.white),
+              );
+            },
+          ),
         );
       },
     );

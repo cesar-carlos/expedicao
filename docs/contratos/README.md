@@ -12,8 +12,15 @@ Fonte no servidor: `D:\Developer\Node\data7-api-pix Campo\docs\contratos`. Dois 
 2. [Paginação](./paginacao.md) — sem `LIMIT` o servidor corta em 1500
 3. [Where](./where.md) — `QueryBuilder.buildSqlWhere()` e operadores
 4. [Consultas](./consultas.md) — eventos `*.consulta` / `*.select` / `*.listen` usados aqui
-5. [Erros](./erros.md) — `AppError.fromSocket` / `display`
-6. [Consulta HTTP](./consulta-http.md) — `Page`, `Offset`, `Limit`
+5. [Conversão de unidade](./conversao-unidade.md) — `Codigo` no banco, `CodigoBarras` no JSON; carga do documento; bip
+6. [Listen da situação](./listen-situacao.md) — inventário de todos os `*.listen`; insert/quantidade `allEvent: false`; faixa `allEvent: true`
+7. [Chave de Item](./item-chave.md) — `itemSequenceKey` / `sameGridItem`; excluir e separar/conferir tudo
+8. [Setor de estoque](./setor-estoque.md) — separação `CodSetorEstoque`; conferência `CodSetorConferencia`; `null`/`0` libera
+9. [Recuperar carrinho](./recuperar-carrinho.md) — F11 tela inicial (último estágio cancelado) vs F11 no carrinho (penúltimo)
+10. [Agrupar carrinho](./agrupar-carrinho.md) — F6 destino / F7 assistente; só conferência; não move item
+11. [Modais](./modais.md) — `Navigator.pop` / `DialogCloseGuard`; `Get.back()` não fecha loading
+12. [Erros](./erros.md) — `AppError.fromSocket` / `display`
+13. [Consulta HTTP](./consulta-http.md) — `Page`, `Offset`, `Limit`
 
 ## Código neste app
 
@@ -29,6 +36,13 @@ Fonte no servidor: `D:\Developer\Node\data7-api-pix Campo\docs\contratos`. Dois 
 | Erro | `lib/src/app/app_error.dart` |
 | Pedido de lista | `lib/src/repository/**/*_repository.dart` — `queryMapped` / `mutateMapped` |
 | Broadcast | `lib/src/repository/socket_event_repository.dart` — `*_event_repository.dart` escuta `<evento>.listen` |
+| Situação + `allEvent` | `lib/src/app/app_socket_listen_log.dart`, `aplicarSituacao` em `SepararController` / `ConferirController` |
+| `Item` `00001` vs `1` | `lib/src/app/app_helper.dart` (`itemSequenceKey`, `sameGridItem`) |
+| Conversão `Codigo` | `AppHelper.conversaoCodigo` / `sameBarCode`; `_itemUnids` no grid |
+| Setor estoque / conferência | `AppHelper.setorPermitido`; usuário `codSetorEstoque` ou `codSetorConferencia` |
+| Recuperar carrinho / itens | `SeparacaoAdicionarItemService.addRecuperados`; F11 tela vs F11 no carrinho |
+| Agrupar carrinho | `CarrinhoPercursoEstagioAgruparService`; F6 destino, F7 assistente |
+| Fechar modal | `lib/src/app/app_dialog_close.dart` — não usar `Get.back()` no loading |
 | Snackbar | `LoadingProcessDialogGenericWidget` usa `AppError.display` |
 
 ## Três papéis

@@ -1,0 +1,18 @@
+---
+description: Bip de ConversaoUnidadeMedida.Codigo na separação e conferência
+globs: "**/{separacao_controller.dart,conferencia_controller.dart,separar_grid_controller.dart,conferir_grid_controller.dart,*unidade*medida*,*conversao_unidade*,app_helper.dart}"
+alwaysApply: false
+---
+
+# Conversão de unidade
+
+Contrato: `docs/contratos/conversao-unidade.md`.
+
+No banco a coluna é `ConversaoUnidadeMedida.Codigo`. A view aliasa `cum.Codigo AS CodigoBarras`. Dart: `codigoBarras` (`AppHelper.conversaoCodigo` aceita `CodigoBarras` ou `Codigo`).
+
+- Comparar com `AppHelper.sameBarCode` (trim). Não usar `==` cru.
+- **Não** usar `AppHelper.isBarCode` (tamanho > 6) para achar conversão. `Codigo` pode ser curto.
+- Scan: `findUnidadeByCodigo` (prefere `UnidadeMedidaPadrao != 'S'`) → item por `CodProduto` → senão `findCodProduto`.
+- Fator **antes** do limite: tipo `M` multiplica; outro divide.
+- Carga: documento inteiro (`CodEmpresa` + `CodSepararEstoque` / `CodConferir`), `allRows` 500, memória `_itemUnids`. Sem `CodCarrinho`. Separação carrega na tela inicial e o carrinho reusa; conferência busca ao abrir o carrinho.
+- Bip do carrinho **não** usa `produto.conversao.unidade.consulta`.

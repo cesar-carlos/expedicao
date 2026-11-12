@@ -4,6 +4,7 @@ import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 import 'package:app_expedicao/src/app/app_error.dart';
+import 'package:app_expedicao/src/app/app_helper.dart';
 
 class SeparacaoRemoverItemService {
   final ExpedicaoCarrinhoPercursoEstagioConsultaModel percursoEstagioConsulta;
@@ -14,12 +15,19 @@ class SeparacaoRemoverItemService {
 
   Future<void> remove({required String item}) async {
     try {
+      final itemKey = AppHelper.itemSequenceKey(item);
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', percursoEstagioConsulta.codEmpresa)
           .equals('CodSepararEstoque', percursoEstagioConsulta.codOrigem)
-          .equals('Item', item);
+          .equals('Item', itemKey);
 
       final response = await separacaoItemRepository.select(queryBuilder);
+      if (response.isEmpty) {
+        throw AppError(
+          'Item não encontrado para exclusão.',
+          details: 'Item=$itemKey',
+        );
+      }
 
       for (var el in response) {
         await separacaoItemRepository.delete(el);

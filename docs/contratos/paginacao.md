@@ -46,9 +46,9 @@ Padrão do `QueryBuilder.paginate` em Dart é `limit: 10`. Não confundir com o 
 | Chamada | Limit | Motivo |
 | --- | --- | --- |
 | `itensSaparar` / `itensSeparacao` / `itensConferir` / `itensConferencia` | `allRows()` em páginas de 500 | Documento grande sem cortar em 1500 nem travar a fila |
-| Unidade de medida (`itensSapararUnidades` / `itensConferirUnidades`) | `allRows(thenBy: ItemUnidadeMedida)` | Sem página o servidor devolve tudo num payload; com `allRows` busca 500 a 500 e junta |
+| Unidade de medida (`itensSapararUnidades` / `itensConferirUnidades`) | `allRows(thenBy: ItemUnidadeMedida)` | Documento inteiro (sem `CodCarrinho`). Sem página o servidor devolve tudo num payload; com `allRows` busca 500 a 500, junta e guarda em `_itemUnids`. [Conversão](./conversao-unidade.md) |
 | Listas de item do documento (`addAll`, cancelar/remover, armazenar, conferir da separação) | `allRows()` | Mesmo risco de corte em 1500 |
-| Carrinhos do documento (`carrinhosPercurso`, `carrinhosConferir`, agrupar) | `allRows()` | Grid de carrinho e agrupar todos. Agrupamento ordena por `ItemCarrinhoPercurso` (não tem `Item`) |
+| Carrinhos do documento (`carrinhosPercurso`, `carrinhosConferir`, agrupar) | `allRows()` | Grid de carrinho e agrupar todos. Agrupamento ordena por `ItemCarrinhoPercurso` (não tem `Item`). [Agrupar](./agrupar-carrinho.md) |
 | Estágio — view e tabela (`carrinhosPercurso`, cancelar/editar/recuperar, `_liberarCarrinhos`) | `allRows()` / `withAllRows(CodCarrinhoPercurso, Item)` | Grade e linha de gravação sem cortar em 1500 |
 | Wrappers (`CarrinhoService`, `CarrinhoPercursoServices`, `CarrinhoPercursoEstagioServices`, `consulta` do agrupar) | `withAllRows()` | Clona o builder para não vazar `OrderBy` quando o mesmo `QueryBuilder` vai para outra tabela |
 | Scan do carrinho (`carrinho.consulta` por `CodigoBarras`) | omite | Um código; o servidor aplica 1500. Não usar `allRows` |
@@ -66,6 +66,8 @@ Eventos:
 - `conferir.item.unidade.medida.consulta`
 
 Não chamar `.paginate()` sozinho nesses eventos: uma página isolada corta conversões no meio do item.
+
+O `Where` é o documento (`CodSepararEstoque` / `CodConferir`), não o carrinho. Depois de juntar as páginas a lista fica em memória (`_itemUnids`). Separação carrega na tela inicial e o carrinho reusa; conferência busca ao abrir o carrinho.
 
 ## Janela do carrinho (regra 14)
 

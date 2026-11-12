@@ -9,6 +9,9 @@ class EstoqueProdutoConversaoUnidadeConsultaModel {
   final String unidadeMedidaPadrao;
   final String tipoFatorConversao;
   final double fatorConversao;
+
+  /// `ConversaoUnidadeMedida.Codigo` (JSON `CodigoBarras` ou `Codigo`).
+  /// Na linha padrão da view é `Produto.CodigoBarras1`.
   final String? codigoBarras;
   final double? precoVenda;
   final double? precoVenda2;
@@ -87,7 +90,7 @@ class EstoqueProdutoConversaoUnidadeConsultaModel {
                 json['FatorConversao'].toString().trim().isEmpty
             ? 1.0
             : AppHelper.stringToDouble(json['FatorConversao'].toString()),
-        codigoBarras: json['CodigoBarras'],
+        codigoBarras: AppHelper.conversaoCodigo(json),
         precoVenda: AppHelper.stringToDouble(json['PrecoVenda']),
         precoVenda2: AppHelper.stringToDouble(json['PrecoVenda2']),
         precoVenda3: AppHelper.stringToDouble(json['PrecoVenda3']),

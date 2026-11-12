@@ -1,0 +1,17 @@
+---
+description: Chave de Item — grade vs tabela (00001)
+globs: "**/{*item*model.dart,*adicionar*service.dart,*remover*service.dart,*cancelar*service.dart,app_helper.dart,*grid_controller.dart}"
+alwaysApply: false
+---
+
+# Chave de `Item`
+
+Contrato: `docs/contratos/item-chave.md`. Listen: `docs/contratos/listen-situacao.md`.
+
+A tabela guarda `'00001'` (`FORMAT(..., '00000')`). A consulta da grade usa `gridItemKey` (`'1'`).
+
+- Comparar na grade: `AppHelper.sameGridItem`. Não `==`.
+- `select` / `delete` / `update` / `toJson` / `fromConsulta` da **tabela**: `AppHelper.itemSequenceKey`.
+- `select` vazio no excluir: lançar erro. Não chamar `removeGrid` se a mutação não rodou.
+- Separar tudo / conferir tudo casam insert com consulta via `sameGridItem`. `'00001' == '1'` deixa a tela parada (o listen próprio está `allEvent: false`).
+- `cancelarAllItensCart()` exige `await`.

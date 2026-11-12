@@ -11,6 +11,7 @@ import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_cons
 import 'package:app_expedicao/src/model/expedicao_item_situacao_model.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 import 'package:app_expedicao/src/app/app_error.dart';
+import 'package:app_expedicao/src/app/app_helper.dart';
 
 class SeparacaoAdicionarItemService {
   final _socket = Get.find<AppSocketConfig>();
@@ -55,7 +56,10 @@ class SeparacaoAdicionarItemService {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', newSeparacaoItem.first.codEmpresa)
           .equals('CodSepararEstoque', newSeparacaoItem.first.codSepararEstoque)
-          .equals('Item', newSeparacaoItem.first.item);
+          .equals(
+            'Item',
+            AppHelper.itemSequenceKey(newSeparacaoItem.first.item),
+          );
 
       final list = await separacaoItemConsultaRepository.select(queryBuilder);
       if (list.isEmpty) return null;
@@ -121,27 +125,111 @@ class SeparacaoAdicionarItemService {
         separacaoItensInsert,
       );
 
-      if (separacaoItensResponse.isNotEmpty) {
-        final firstItem = separacaoItensResponse.first;
-        final queryBuilder = QueryBuilder()
-            .equals('CodEmpresa', firstItem.codEmpresa)
-            .equals('CodSepararEstoque', firstItem.codSepararEstoque)
-            .allRows();
-
-        final allItems = await separacaoItemConsultaRepository.select(
-          queryBuilder,
-        );
-
-        final insertedItems = allItems.where((item) {
-          return separacaoItensResponse.any(
-            (inserted) => inserted.item == item.item,
-          );
-        }).toList();
-
-        return insertedItems;
+      if (separacaoItensResponse.isEmpty) {
+        return [];
       }
 
-      return [];
+      final firstItem = separacaoItensResponse.first;
+      final consultaQuery = QueryBuilder()
+          .equals('CodEmpresa', firstItem.codEmpresa)
+          .equals('CodSepararEstoque', firstItem.codSepararEstoque)
+          .equals(
+            'CodCarrinhoPercurso',
+            percursoEstagioConsulta.codCarrinhoPercurso,
+          )
+          .equals(
+            'ItemCarrinhoPercurso',
+            AppHelper.itemSequenceKey(percursoEstagioConsulta.item),
+          )
+          .allRows();
+
+      final allItems = await separacaoItemConsultaRepository.select(
+        consultaQuery,
+      );
+
+      final insertedItems = allItems.where((item) {
+        return separacaoItensResponse.any(
+          (inserted) => AppHelper.sameGridItem(inserted.item, item.item),
+        );
+      }).toList();
+
+      if (insertedItems.isEmpty) {
+        throw AppError(
+          'Itens gravados, mas a consulta não retornou as linhas.',
+        );
+      }
+
+      return insertedItems;
+    } catch (e) {
+      throw AppError.fromUnknown(e);
+    }
+  }
+
+  /// Re-adds items from a cancelled cart stage into [percursoEstagioConsulta].
+  ///
+  /// Skips products not on the order, outside the user's sector, or already
+  /// fully separated. Caps quantity so the order is not exceeded.
+  Future<List<ExpedicaSeparacaoItemConsultaModel>> addRecuperados(
+    List<ExpedicaoSeparacaoItemModel> itensRecuperado,
+  ) async {
+    try {
+      final queryBuilder = QueryBuilder()
+          .equals('CodEmpresa', percursoEstagioConsulta.codEmpresa)
+          .equals('CodSepararEstoque', percursoEstagioConsulta.codOrigem)
+          .allRows();
+
+      final separarItens = await separarItemRepository.select(queryBuilder);
+      final separacaoItens = await separacaoItemRepository.select(queryBuilder);
+      final extraSeparada = <String, double>{};
+      final added = <ExpedicaSeparacaoItemConsultaModel>[];
+
+      for (final item in itensRecuperado) {
+        if (item.situacao != ExpedicaoItemSituacaoModel.cancelado) {
+          continue;
+        }
+
+        final pedido = separarItens.where((el) {
+          return el.codProduto == item.codProduto &&
+              el.codUnidadeMedida == item.codUnidadeMedida;
+        }).firstOrNull;
+
+        if (pedido == null) continue;
+
+        if (!AppHelper.setorPermitido(
+          _processo.codSetorEstoque,
+          pedido.codSetorEstoque,
+        )) {
+          continue;
+        }
+
+        final qtdJaSeparada = separacaoItens
+            .where((el) {
+              return el.codProduto == item.codProduto &&
+                  el.codUnidadeMedida == item.codUnidadeMedida &&
+                  el.situacao != ExpedicaoItemSituacaoModel.cancelado;
+            })
+            .fold<double>(0, (acm, el) => acm + el.quantidade);
+
+        final chave = '${item.codProduto}|${item.codUnidadeMedida}';
+        final qtd = AppHelper.quantidadeRecuperar(
+          quantidadeCancelada: item.quantidade,
+          quantidadePedido: pedido.quantidade,
+          quantidadeJaSeparada: qtdJaSeparada + (extraSeparada[chave] ?? 0),
+        );
+        if (qtd <= 0) continue;
+
+        final inserted = await add(
+          codProduto: item.codProduto,
+          codUnidadeMedida: item.codUnidadeMedida,
+          quantidade: qtd,
+        );
+        if (inserted == null) continue;
+
+        extraSeparada[chave] = (extraSeparada[chave] ?? 0) + qtd;
+        added.add(inserted);
+      }
+
+      return added;
     } catch (e) {
       throw AppError.fromUnknown(e);
     }

@@ -78,10 +78,13 @@ Listen cruzado (sai de **outro** handler):
 | Canal | Quem emite | Quando |
 | --- | --- | --- |
 | `separar.update.listen` | `carrinho.percurso.estagio` insert/update | estágio muda a separação |
+| `conferir.update.listen` | `conferir.update` e `PUT /expedicao/conferir/notify` | situação da conferência |
 | `carrinho.percurso.update.listen` | `carrinho.percurso.estagio` update | estágio muda o percurso |
 | `separar.item.consulta.update.listen` | `separacao.item` insert/update/delete | item no carrinho altera o item a separar |
 | `conferir.item.update.listen` | `conferencia.item` insert/update/delete | scan altera o item a conferir |
 | `separar.consulta.listen` | timer do processo | poll periódico. **Não** usa este envelope de pedido |
+
+Situação e grade: [listen da situação](./listen-situacao.md). Insert/delete da própria sessão ficam de fora (`allEvent: false`). Update de situação entra (`allEvent: true`). `Item` `00001` vs `1`: [chave de Item](./item-chave.md). Overlay de processo: [modais](./modais.md).
 
 Payload de listen: `BasicEventModel.parse` aceita string ou Map, `Mutation`/`Data` como lista ou objeto, ou o DTO solto.
 
@@ -95,4 +98,4 @@ Escuta periódica `separar.consulta.listen`: intervalo padrão 8 s, limite 20 (n
 
 Antes de emitir, `ensureStarted` espera o handshake. Sem `socket.id` o canal de pedido fica inválido. `listen` reassocia os handlers depois de um reconnect (`reconnectFromConfig` após salvar a API). Pedido parado espera 30s; queda da conexão aborta na hora (`_failPending`). HTTP: `connectTimeout` 8s, `receiveTimeout` 20s (`AppClientHttp`).
 
-Listen: `SocketEventRepository` decodifica o pacote uma vez e ignora evento da própria sessão, salvo `allEvent: true`.
+Listen: `SocketEventRepository` decodifica o pacote uma vez e ignora evento da própria sessão, salvo `allEvent: true`. Tabela do que pode ser `true`: [listen da situação](./listen-situacao.md). `Item` da mutação: [chave de Item](./item-chave.md).

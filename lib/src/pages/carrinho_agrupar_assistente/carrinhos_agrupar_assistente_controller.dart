@@ -104,7 +104,7 @@ class CarrinhosAgruparAssistenteController extends GetxController {
               .equals('CodEmpresa', input.codEmpresa)
               .equals('Origem', input.origem)
               .equals('CodOrigem', input.codOrigem)
-              .like('CodigoBarrasCarrinho', codigoCarrinho.trim())
+              .equals('CodigoBarrasCarrinho', codigoCarrinho.trim())
               .notEquals('Situacao', ExpedicaoSituacaoModel.cancelada);
 
           final result = await CarrinhoPercursoEstagioAgruparService.consulta(

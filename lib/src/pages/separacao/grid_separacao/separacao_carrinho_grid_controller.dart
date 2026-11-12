@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import 'package:app_expedicao/src/app/app_data_grid.dart';
+import 'package:app_expedicao/src/app/app_helper.dart';
 import 'package:app_expedicao/src/model/expedicao_separacao_item_consulta_model.dart';
 import 'package:app_expedicao/src/pages/separacao/grid_separacao/separacao_carrinho_grid_source.dart';
 
@@ -35,7 +36,7 @@ class SeparacaoCarrinhoGridController extends GetxController {
   void Function(ExpedicaSeparacaoItemConsultaModel item)? onPressedRemoveItem;
 
   void addGrid(ExpedicaSeparacaoItemConsultaModel item) {
-    if (_itens.any((el) => el.item == item.item)) {
+    if (_itens.any((el) => AppHelper.sameGridItem(el.item, item.item))) {
       return;
     }
     _itens.add(item);
@@ -48,19 +49,35 @@ class SeparacaoCarrinhoGridController extends GetxController {
   }
 
   void addAllGrid(List<ExpedicaSeparacaoItemConsultaModel> itens) {
-    _itens.addAll(itens);
+    final existing = _itens.map((el) => el.item).toSet();
+    var added = false;
+    for (final item in itens) {
+      if (existing.any((el) => AppHelper.sameGridItem(el, item.item))) {
+        continue;
+      }
+      existing.add(item.item);
+      _itens.add(item);
+      added = true;
+    }
+    if (!added) {
+      return;
+    }
     _rebuildSort();
     _syncAll();
     update([footerId]);
   }
 
   void updateGrid(ExpedicaSeparacaoItemConsultaModel item) {
-    final index = _itens.indexWhere((el) => el.item == item.item);
+    final index = _itens.indexWhere(
+      (el) => AppHelper.sameGridItem(el.item, item.item),
+    );
     if (index < 0) {
       return;
     }
     _itens[index] = item;
-    final sortIndex = _itensSort.indexWhere((el) => el.item == item.item);
+    final sortIndex = _itensSort.indexWhere(
+      (el) => AppHelper.sameGridItem(el.item, item.item),
+    );
     if (sortIndex < 0) {
       return;
     }
@@ -92,10 +109,12 @@ class SeparacaoCarrinhoGridController extends GetxController {
   void removeGrid(ExpedicaSeparacaoItemConsultaModel item) {
     dataGridController.clearSelection();
     final sortIndex = _itensSort.indexWhere((el) => el.item == item.item);
-    _itens.removeWhere((el) =>
-        el.codEmpresa == item.codEmpresa &&
-        el.codSepararEstoque == item.codSepararEstoque &&
-        el.item == item.item);
+    _itens.removeWhere(
+      (el) =>
+          el.codEmpresa == item.codEmpresa &&
+          el.codSepararEstoque == item.codSepararEstoque &&
+          el.item == item.item,
+    );
     if (sortIndex >= 0) {
       _itensSort.removeAt(sortIndex);
       for (final source in _sources) {

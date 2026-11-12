@@ -3,6 +3,7 @@ import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_cons
 import 'package:app_expedicao/src/model/expedicao_conferencia_item_model.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 import 'package:app_expedicao/src/app/app_error.dart';
+import 'package:app_expedicao/src/app/app_helper.dart';
 
 class ConferenciaRemoverItemService {
   final conferenciaItemRepository = ConferenciaItemRepository();
@@ -12,12 +13,19 @@ class ConferenciaRemoverItemService {
 
   Future<void> remove({required String item}) async {
     try {
+      final itemKey = AppHelper.itemSequenceKey(item);
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', percursoEstagioConsulta.codEmpresa)
           .equals('CodConferir', percursoEstagioConsulta.codOrigem)
-          .equals('Item', item);
+          .equals('Item', itemKey);
 
       final response = await conferenciaItemRepository.select(queryBuilder);
+      if (response.isEmpty) {
+        throw AppError(
+          'Item não encontrado para exclusão.',
+          details: 'Item=$itemKey',
+        );
+      }
 
       for (var el in response) {
         await conferenciaItemRepository.delete(el);
@@ -55,7 +63,10 @@ class ConferenciaRemoverItemService {
             'CodCarrinhoPercurso',
             percursoEstagioConsulta.codCarrinhoPercurso,
           )
-          .equals('ItemCarrinhoPercurso', percursoEstagioConsulta.item)
+          .equals(
+            'ItemCarrinhoPercurso',
+            AppHelper.itemSequenceKey(percursoEstagioConsulta.item),
+          )
           .allRows();
 
       return await conferenciaItemRepository.select(queryBuilder);

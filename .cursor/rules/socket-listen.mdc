@@ -1,0 +1,34 @@
+---
+description: Listen Socket.IO — allEvent, situação e grade sem duplicar
+globs: "**/{*controller.dart,*event_repository.dart,socket_event_repository.dart,app_socket_listen_log.dart}"
+alwaysApply: false
+---
+
+# Listen Socket.IO
+
+Contrato: `docs/contratos/listen-situacao.md`. `Item`: `docs/contratos/item-chave.md`. Overlay: `docs/contratos/modais.md`.
+
+## `allEvent`
+
+O servidor emite `*.listen` para **todos** os sockets, inclusive quem gravou. Default `allEvent: false` ignora a própria sessão.
+
+- **Insert/delete** de carrinho ou item: `allEvent: false`. A mutação já fez `addGrid` / `removeGrid`. `true` duplica a linha.
+- **Update de quantidade** (`separar.item.consulta.update.listen`, `conferir.item.update.listen`): `allEvent: false`. O bip / separar tudo / conferir tudo já somou.
+- **Update de situação** (`separar.update.listen`, `conferir.update.listen`, `carrinho.percurso.estagio.update.listen`): `allEvent: true`. Sem isso a faixa não muda ao salvar o último carrinho.
+
+Não “consertar” duplicata só com `alreadyInGrid` no listen de insert e deixar `allEvent: true`: o listen pode chegar antes do `addCart` local.
+
+Separar tudo / conferir tudo **não** dependem do listen. A resposta local tem de achar as linhas com `sameGridItem`.
+
+## Grade e situação
+
+- `addGrid` de carrinho recusa chave repetida (`codCarrinhoPercurso` + `item`).
+- Update de situação: ler `CodEmpresa`, `CodSepararEstoque` / `CodConferir`, `Situacao`. Não `fromJson` do DTO da tabela na view.
+- No `for` da mutation: `continue`, nunca `return`.
+- Separação: `SepararController.aplicarSituacao`. Conferência: `ConferirController.aplicarSituacao` (a faixa é `ConferirCarrinhosController`).
+- Item de separação/conferência: ignorar se `AppSocketListenLog.isOwnSession` (envelope `Session` ou `SessionId` da linha).
+- Dialog “finalizado por outro usuário” só se `session != socket.id`.
+
+## Overlay
+
+Não usar `Get.back()` para fechar loading com `PopScope(canPop: false)`. `Navigator.of(dialogContext).pop()` ou `DialogCloseGuard.popPage`.

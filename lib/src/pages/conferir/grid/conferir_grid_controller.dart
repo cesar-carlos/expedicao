@@ -4,7 +4,9 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import 'package:app_expedicao/src/app/app_color.dart';
 import 'package:app_expedicao/src/app/app_data_grid.dart';
+import 'package:app_expedicao/src/app/app_helper.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
+import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_item_consulta_model.dart';
 import 'package:app_expedicao/src/pages/conferir/grid/conferir_grid_source.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_item_unidade_medida_consulta_model.dart';
@@ -25,6 +27,7 @@ class ConferirGridController extends GetxController {
   final List<ExpedicaoConferirItemConsultaModel> _itensSort = [];
   final List<ConferirSource> _sources = [];
   final List<ExpedicaoConferirItemUnidadeMedidaConsultaModel> _itemUnids = [];
+  final _processoExecutavel = Get.find<ProcessoExecutavelModel>();
   final dataGridController = DataGridController();
   final dataGridControllerConferencia = DataGridController();
 
@@ -371,9 +374,7 @@ class ConferirGridController extends GetxController {
   }
 
   bool existsBarCode(String barCode) {
-    final el = _itemUnids.where((el) => el.codigoBarras == barCode).toList();
-    if (el.isEmpty) return false;
-    return true;
+    return _itemUnids.any((el) => AppHelper.sameBarCode(el.codigoBarras, barCode));
   }
 
   bool existsCodProduto(int codProduto) {
@@ -383,11 +384,19 @@ class ConferirGridController extends GetxController {
   }
 
   int? findcodProdutoFromBarCode(String barCode) {
-    final el = _itemUnids.where((el) => el.codigoBarras == barCode);
-    if (el.isEmpty) {
-      return null;
+    return findUnidadeByCodigo(barCode)?.codProduto;
+  }
+
+  ExpedicaoConferirItemUnidadeMedidaConsultaModel? findUnidadeByCodigo(
+    String codigo,
+  ) {
+    ExpedicaoConferirItemUnidadeMedidaConsultaModel? padrao;
+    for (final el in _itemUnids) {
+      if (!AppHelper.sameBarCode(el.codigoBarras, codigo)) continue;
+      if (el.unidadeMedidaPadrao != 'S') return el;
+      padrao ??= el;
     }
-    return el.first.codProduto;
+    return padrao;
   }
 
   int findIndexCodProduto(int codProduto) {
@@ -399,12 +408,17 @@ class ConferirGridController extends GetxController {
   }
 
   ExpedicaoConferirItemConsultaModel? findBarCode(String barCode) {
-    final unidades = _itemUnids
-        .where((el) => el.codigoBarras == barCode)
-        .toList();
-    if (unidades.isEmpty) return null;
+    final unidade = findUnidadeByCodigo(barCode);
+    if (unidade != null) {
+      final el = _itens.where((el) => el.codProduto == unidade.codProduto);
+      if (el.isNotEmpty) return el.first;
+    }
 
-    final el = _itens.where((el) => el.item == unidades.first.item).toList();
+    final el = _itens.where(
+      (el) =>
+          AppHelper.sameBarCode(el.codigoBarras, barCode) ||
+          AppHelper.sameBarCode(el.codigoBarras2, barCode),
+    );
     if (el.isEmpty) return null;
     return el.first;
   }
@@ -488,6 +502,13 @@ class ConferirGridController extends GetxController {
         color: Colors.red,
         size: iconSize,
       );
+    }
+
+    if (!AppHelper.setorPermitido(
+      _processoExecutavel.codSetorConferencia,
+      item.codSetorEstoque,
+    )) {
+      return Icon(BootstrapIcons.ban, color: Colors.red, size: iconSize);
     }
 
     return Icon(BootstrapIcons.box, color: Colors.blue, size: iconSize);

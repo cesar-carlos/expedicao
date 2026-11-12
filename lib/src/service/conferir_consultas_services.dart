@@ -6,6 +6,7 @@ import 'package:app_expedicao/src/repository/expedicao_conferir/conferir_carrinh
 import 'package:app_expedicao/src/repository/expedicao_conferencia_item/conferencia_item_consulta_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_estagio_consulta_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_conferir_item/conferir_item_unidade_consulta_repository.dart';
+import 'package:app_expedicao/src/repository/expedicao_conferir_item/conferir_item_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_conferir_item/conferir_item_consulta_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_conferir/conferir_consulta_repository.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
@@ -25,6 +26,7 @@ class ConferirConsultaServices {
       ConferirCarrinhoConsultaRepository();
 
   final conferirItemConsultaRepository = ConferirItemConsultaRepository();
+  final conferirItemRepository = ConferirItemRepository();
 
   final conferirItemUnidadeMedidaConsultaRepository =
       ConferirItemUnidadeMedidaConsultaRepository();
@@ -97,16 +99,13 @@ class ConferirConsultaServices {
   }
 
   Future<List<ExpedicaoConferirItemConsultaModel>> itensConferir({
-    int? codCarrinho,
+    required int codCarrinho,
   }) async {
     try {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', codEmpresa)
-          .equals('CodConferir', codConferir);
-
-      if (codCarrinho != null) {
-        queryBuilder.equals('CodCarrinho', codCarrinho);
-      }
+          .equals('CodConferir', codConferir)
+          .equals('CodCarrinho', codCarrinho);
 
       return await conferirItemConsultaRepository.select(
         queryBuilder.allRows(),
@@ -133,16 +132,13 @@ class ConferirConsultaServices {
   }
 
   Future<List<ExpedicaConferenciaItemConsultaModel>> itensConferencia({
-    int? codCarrinho,
+    required int codCarrinho,
   }) async {
     try {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', codEmpresa)
-          .equals('CodConferir', codConferir);
-
-      if (codCarrinho != null) {
-        queryBuilder.equals('CodCarrinho', codCarrinho);
-      }
+          .equals('CodConferir', codConferir)
+          .equals('CodCarrinho', codCarrinho);
 
       final result = await conferenciaItemConsultaRepository.select(
         queryBuilder.allRows(),
@@ -190,7 +186,14 @@ class ConferirConsultaServices {
 
   Future<bool> isComplete() async {
     try {
-      final itensConferirList = await itensConferir();
+      final queryBuilder = QueryBuilder()
+          .equals('CodEmpresa', codEmpresa)
+          .equals('CodConferir', codConferir)
+          .allRows();
+
+      final itensConferirList = await conferirItemRepository.select(
+        queryBuilder,
+      );
       if (itensConferirList.isEmpty) return false;
       return itensConferirList.every(
         (el) => el.quantidade == el.quantidadeConferida,

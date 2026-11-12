@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:app_expedicao/src/app/app_error_alert.dart';
+import 'package:app_expedicao/src/app/app_helper.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_agrupamento_model.dart';
@@ -54,7 +55,10 @@ class CarrinhoPercursoEstagioAgruparService {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', codEmpresa)
           .equals('CodCarrinhoPercurso', codCarrinhoPercurso)
-          .equals('ItemCarrinhoPercurso', itemCarrinhoPercurso);
+          .equals(
+            'ItemCarrinhoPercurso',
+            AppHelper.itemSequenceKey(itemCarrinhoPercurso),
+          );
 
       final result = await carrinhoPercursoAgrupamentoConsultaRepository.select(
         queryBuilder,
@@ -94,12 +98,32 @@ class CarrinhoPercursoEstagioAgruparService {
     ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel carrinhoAgrupar,
   ) async {
     try {
+      if (carrinhoAgrupar.codCarrinho == carrinhoAgrupador.codCarrinho) {
+        throw AppErrorAlert('Não é possível agrupar o carrinho em si mesmo');
+      }
+
+      if (carrinhoAgrupar.carrinhoAgrupador == 'S') {
+        throw AppErrorAlert(
+          'Carrinho agrupador não pode ser agrupado em outro',
+        );
+      }
+
+      if (carrinhoAgrupar.situacao != ExpedicaoSituacaoModel.conferido) {
+        throw AppErrorAlert(
+          'Não é possível agrupar um carrinho que esteja ${carrinhoAgrupar.situacao}',
+        );
+      }
+
+      final itemCarrinhoPercurso = AppHelper.itemSequenceKey(
+        carrinhoAgrupar.itemCarrinhoPercurso,
+      );
+
       final agrupado = ExpedicaoCarrinhoPercursoAgrupamentoModel(
         codEmpresa: carrinhoAgrupar.codEmpresa,
         codCarrinhoPercurso: carrinhoAgrupar.codCarrinhoPercurso,
-        item: '00000',
+        item: AppHelper.itemSequenceKey(''),
         origem: carrinhoAgrupar.origem,
-        itemCarrinhoPercurso: carrinhoAgrupar.itemCarrinhoPercurso,
+        itemCarrinhoPercurso: itemCarrinhoPercurso,
         situacao: ExpedicaoSituacaoModel.agrupado,
         codCarrinhoAgrupador: carrinhoAgrupador.codCarrinho,
         dataLancamento: DateTime.now(),
@@ -125,7 +149,7 @@ class CarrinhoPercursoEstagioAgruparService {
       final percursoEstagioQueryBuilder = QueryBuilder()
           .equals('CodEmpresa', carrinhoAgrupar.codEmpresa)
           .equals('CodCarrinhoPercurso', carrinhoAgrupar.codCarrinhoPercurso)
-          .equals('Item', carrinhoAgrupar.itemCarrinhoPercurso);
+          .equals('Item', itemCarrinhoPercurso);
 
       final percursoEstagioModel = await carrinhoPercursoEstagioRepository
           .select(percursoEstagioQueryBuilder);
@@ -196,6 +220,17 @@ class CarrinhoPercursoEstagioAgruparService {
     ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel carrinhoAgrupado,
   ) async {
     try {
+      if (carrinhoAgrupado.situacao != ExpedicaoSituacaoModel.agrupado) {
+        throw AppErrorAlert(
+          'Não é possível desagrupar um carrinho que esteja ${carrinhoAgrupado.situacao}',
+        );
+      }
+
+      final itemAgrupamento = carrinhoAgrupado.itemAgrupamento;
+      if (itemAgrupamento == null || itemAgrupamento.trim().isEmpty) {
+        throw AppErrorAlert('Agrupamento não encontrado');
+      }
+
       final carrinhoQueryBuilder = QueryBuilder()
           .equals('CodEmpresa', carrinhoAgrupado.codEmpresa)
           .equals('CodCarrinho', carrinhoAgrupado.codCarrinho);
@@ -221,7 +256,7 @@ class CarrinhoPercursoEstagioAgruparService {
       final agrupadosQueryBuilder = QueryBuilder()
           .equals('CodEmpresa', carrinhoAgrupado.codEmpresa)
           .equals('CodCarrinhoPercurso', carrinhoAgrupado.codCarrinhoPercurso)
-          .equals('Item', carrinhoAgrupado.itemAgrupamento);
+          .equals('Item', AppHelper.itemSequenceKey(itemAgrupamento));
 
       final agrupados = await carrinhoPercursoAgrupamentoRepository.select(
         agrupadosQueryBuilder,
@@ -234,7 +269,10 @@ class CarrinhoPercursoEstagioAgruparService {
       final carrinhosPercursoEstagioQueryBuilder = QueryBuilder()
           .equals('CodEmpresa', carrinhoAgrupado.codEmpresa)
           .equals('CodCarrinhoPercurso', carrinhoAgrupado.codCarrinhoPercurso)
-          .equals('Item', carrinhoAgrupado.itemCarrinhoPercurso);
+          .equals(
+            'Item',
+            AppHelper.itemSequenceKey(carrinhoAgrupado.itemCarrinhoPercurso),
+          );
 
       final carrinhosPercursoEstagio = await carrinhoPercursoEstagioRepository
           .select(carrinhosPercursoEstagioQueryBuilder);

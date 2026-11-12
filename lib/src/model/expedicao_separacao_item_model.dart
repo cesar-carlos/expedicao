@@ -69,11 +69,12 @@ class ExpedicaoSeparacaoItemModel {
   }
 
   factory ExpedicaoSeparacaoItemModel.fromConsulta(
-      ExpedicaSeparacaoItemConsultaModel model) {
+    ExpedicaSeparacaoItemConsultaModel model,
+  ) {
     return ExpedicaoSeparacaoItemModel(
       codEmpresa: model.codEmpresa,
       codSepararEstoque: model.codSepararEstoque,
-      item: model.item,
+      item: AppHelper.itemSequenceKey(model.item),
       sessionId: model.sessionId,
       situacao: model.situacao,
       codCarrinhoPercurso: model.codCarrinhoPercurso,
@@ -93,7 +94,7 @@ class ExpedicaoSeparacaoItemModel {
       return ExpedicaoSeparacaoItemModel(
         codEmpresa: json['CodEmpresa'],
         codSepararEstoque: json['CodSepararEstoque'],
-        item: json['Item'],
+        item: AppHelper.itemSequenceKey(json['Item']),
         sessionId: json['SessionId'],
         situacao: json['Situacao'],
         codCarrinhoPercurso: json['CodCarrinhoPercurso'],
@@ -115,7 +116,7 @@ class ExpedicaoSeparacaoItemModel {
     return {
       "CodEmpresa": codEmpresa,
       "CodSepararEstoque": codSepararEstoque,
-      "Item": item,
+      "Item": AppHelper.itemSequenceKey(item),
       "SessionId": sessionId,
       "Situacao": situacao,
       "CodCarrinhoPercurso": codCarrinhoPercurso,

@@ -136,13 +136,14 @@ class ExpedicaConferenciaItemConsultaModel {
   }
 
   factory ExpedicaConferenciaItemConsultaModel.fromJson(
-      Map<String, dynamic> json) {
+    Map<String, dynamic> json,
+  ) {
     try {
       return ExpedicaConferenciaItemConsultaModel(
         codEmpresa: json['CodEmpresa'],
         codConferir: json['CodConferir'],
-        item: json['Item'],
-        sessionId: json['SessionId'],
+        item: AppHelper.gridItemKey(json['Item']),
+        sessionId: json['SessionId']?.toString() ?? '',
         situacao: json['Situacao'],
         codCarrinho: json['CodCarrinho'],
         nomeCarrinho: json['NomeCarrinho'],

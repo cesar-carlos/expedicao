@@ -69,15 +69,18 @@ class ExpedicaoConferenciaItemModel {
   }
 
   factory ExpedicaoConferenciaItemModel.fromConsulta(
-      ExpedicaConferenciaItemConsultaModel model) {
+    ExpedicaConferenciaItemConsultaModel model,
+  ) {
     return ExpedicaoConferenciaItemModel(
       codEmpresa: model.codEmpresa,
       codConferir: model.codConferir,
-      item: model.item,
+      item: AppHelper.itemSequenceKey(model.item),
       sessionId: model.sessionId,
       situacao: model.situacao,
       codCarrinhoPercurso: model.codCarrinhoPercurso,
-      itemCarrinhoPercurso: model.itemCarrinhoPercurso,
+      itemCarrinhoPercurso: AppHelper.itemSequenceKey(
+        model.itemCarrinhoPercurso,
+      ),
       codConferente: model.codConferente,
       nomeConferente: model.nomeConferente,
       dataConferencia: model.dataConferencia,
@@ -93,11 +96,13 @@ class ExpedicaoConferenciaItemModel {
       return ExpedicaoConferenciaItemModel(
         codEmpresa: json['CodEmpresa'],
         codConferir: json['CodConferir'],
-        item: json['Item'],
+        item: AppHelper.itemSequenceKey(json['Item']),
         sessionId: json['SessionId'],
         situacao: json['Situacao'],
         codCarrinhoPercurso: json['CodCarrinhoPercurso'],
-        itemCarrinhoPercurso: json['ItemCarrinhoPercurso'],
+        itemCarrinhoPercurso: AppHelper.itemSequenceKey(
+          json['ItemCarrinhoPercurso'],
+        ),
         codConferente: json['CodConferente'],
         nomeConferente: json['NomeConferente'],
         dataConferencia: AppHelper.tryStringToDate(json['DataConferencia']),
@@ -115,11 +120,11 @@ class ExpedicaoConferenciaItemModel {
     return {
       'CodEmpresa': codEmpresa,
       'CodConferir': codConferir,
-      'Item': item,
+      'Item': AppHelper.itemSequenceKey(item),
       'SessionId': sessionId,
       'Situacao': situacao,
       'CodCarrinhoPercurso': codCarrinhoPercurso,
-      'ItemCarrinhoPercurso': itemCarrinhoPercurso,
+      'ItemCarrinhoPercurso': AppHelper.itemSequenceKey(itemCarrinhoPercurso),
       'CodConferente': codConferente,
       'NomeConferente': nomeConferente,
       'DataConferencia': dataConferencia.toIso8601String(),

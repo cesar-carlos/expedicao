@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import 'package:app_expedicao/src/app/app_data_grid.dart';
+import 'package:app_expedicao/src/app/app_helper.dart';
 import 'package:app_expedicao/src/pages/conferencia/grid/conferencia_carrinho_grid_source.dart';
 import 'package:app_expedicao/src/model/expedicao_conferencia_item_consulta_model.dart';
 
@@ -38,7 +39,6 @@ class ConferenciaCarrinhoGridController extends GetxController {
   void Function(ExpedicaConferenciaItemConsultaModel item)? onPressedEditItem;
   void Function(ExpedicaConferenciaItemConsultaModel item)? onPressedRemoveItem;
 
-
   @override
   void onClose() {
     super.onClose();
@@ -46,6 +46,9 @@ class ConferenciaCarrinhoGridController extends GetxController {
   }
 
   void addGrid(ExpedicaConferenciaItemConsultaModel item) {
+    if (_itens.any((el) => AppHelper.sameGridItem(el.item, item.item))) {
+      return;
+    }
     _itens.add(item);
     final index = _sortedInsertIndex(item.item);
     _itensSort.insert(index, item);
@@ -56,19 +59,35 @@ class ConferenciaCarrinhoGridController extends GetxController {
   }
 
   void addAllGrid(List<ExpedicaConferenciaItemConsultaModel> itens) {
-    _itens.addAll(itens);
+    final existing = _itens.map((el) => el.item).toSet();
+    var added = false;
+    for (final item in itens) {
+      if (existing.any((el) => AppHelper.sameGridItem(el, item.item))) {
+        continue;
+      }
+      existing.add(item.item);
+      _itens.add(item);
+      added = true;
+    }
+    if (!added) {
+      return;
+    }
     _rebuildSort();
     _syncAll();
     update([footerId]);
   }
 
   void updateGrid(ExpedicaConferenciaItemConsultaModel item) {
-    final index = _itens.indexWhere((el) => el.item == item.item);
+    final index = _itens.indexWhere(
+      (el) => AppHelper.sameGridItem(el.item, item.item),
+    );
     if (index < 0) {
       return;
     }
     _itens[index] = item;
-    final sortIndex = _itensSort.indexWhere((el) => el.item == item.item);
+    final sortIndex = _itensSort.indexWhere(
+      (el) => AppHelper.sameGridItem(el.item, item.item),
+    );
     if (sortIndex < 0) {
       return;
     }
@@ -84,12 +103,16 @@ class ConferenciaCarrinhoGridController extends GetxController {
 
   void updateAllGrid(List<ExpedicaConferenciaItemConsultaModel> itens) {
     for (var el in itens) {
-      final index = _itens.indexWhere((i) => i.item == el.item);
+      final index = _itens.indexWhere(
+        (i) => AppHelper.sameGridItem(i.item, el.item),
+      );
       if (index < 0) {
         continue;
       }
       _itens[index] = el;
-      final sortIndex = _itensSort.indexWhere((i) => i.item == el.item);
+      final sortIndex = _itensSort.indexWhere(
+        (i) => AppHelper.sameGridItem(i.item, el.item),
+      );
       if (sortIndex >= 0) {
         _itensSort[sortIndex] = el;
       }
@@ -98,15 +121,19 @@ class ConferenciaCarrinhoGridController extends GetxController {
   }
 
   void removeGrid(ExpedicaConferenciaItemConsultaModel item) {
-    if (highlightedItem == item.item) {
+    if (AppHelper.sameGridItem(highlightedItem, item.item)) {
       highlightedItem = null;
     }
     dataGridController.clearSelection();
-    final sortIndex = _itensSort.indexWhere((el) => el.item == item.item);
-    _itens.removeWhere((el) =>
-        el.codEmpresa == item.codEmpresa &&
-        el.codConferir == item.codConferir &&
-        el.item == item.item);
+    final sortIndex = _itensSort.indexWhere(
+      (el) => AppHelper.sameGridItem(el.item, item.item),
+    );
+    _itens.removeWhere(
+      (el) =>
+          el.codEmpresa == item.codEmpresa &&
+          el.codConferir == item.codConferir &&
+          AppHelper.sameGridItem(el.item, item.item),
+    );
     if (sortIndex >= 0) {
       _itensSort.removeAt(sortIndex);
       for (final source in _sources) {
@@ -126,17 +153,17 @@ class ConferenciaCarrinhoGridController extends GetxController {
   }
 
   int findIndexItem(String item) {
-    return _itensSort.indexWhere((el) => el.item == item);
+    return _itensSort.indexWhere((el) => AppHelper.sameGridItem(el.item, item));
   }
 
-  void highlightItem(String item, {bool scroll = true, bool canAnimate = true}) {
+  void highlightItem(
+    String item, {
+    bool scroll = true,
+    bool canAnimate = true,
+  }) {
     highlightedItem = item;
     _refreshVisible();
-    setSelectedRow(
-      findIndexItem(item),
-      scroll: scroll,
-      canAnimate: canAnimate,
-    );
+    setSelectedRow(findIndexItem(item), scroll: scroll, canAnimate: canAnimate);
   }
 
   void ensureHighlightedVisible() {
@@ -154,11 +181,7 @@ class ConferenciaCarrinhoGridController extends GetxController {
     _refreshVisible();
   }
 
-  void setSelectedRow(
-    int index, {
-    bool scroll = true,
-    bool canAnimate = true,
-  }) {
+  void setSelectedRow(int index, {bool scroll = true, bool canAnimate = true}) {
     dataGridController.selectAndScrollToRow(
       index,
       scroll: scroll,

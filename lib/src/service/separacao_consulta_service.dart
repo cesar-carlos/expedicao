@@ -2,6 +2,7 @@ import 'package:app_expedicao/src/model/expedicao_separacao_item_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_repository.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 import 'package:app_expedicao/src/app/app_error.dart';
+import 'package:app_expedicao/src/app/app_helper.dart';
 
 class SeparacaoConsultaService {
   static Future<List<ExpedicaoSeparacaoItemModel>> getSeparacaoItens({
@@ -32,7 +33,10 @@ class SeparacaoConsultaService {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', codEmpresa)
           .equals('CodCarrinhoPercurso', codCarrinhoPercurso)
-          .equals('ItemCarrinhoPercurso', itemCarrinhoPercurso)
+          .equals(
+            'ItemCarrinhoPercurso',
+            AppHelper.itemSequenceKey(itemCarrinhoPercurso),
+          )
           .allRows();
 
       final separacaoItens = await separacaoItemRepository.select(queryBuilder);

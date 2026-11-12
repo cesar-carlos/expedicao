@@ -6,6 +6,7 @@ import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_cons
 import 'package:app_expedicao/src/model/expedicao_item_situacao_model.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 import 'package:app_expedicao/src/app/app_error.dart';
+import 'package:app_expedicao/src/app/app_helper.dart';
 
 class SeparacaoCancelarItemService {
   final ExpedicaoCarrinhoPercursoEstagioConsultaModel percursoEstagioConsulta;
@@ -19,7 +20,7 @@ class SeparacaoCancelarItemService {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', percursoEstagioConsulta.codEmpresa)
           .equals('CodSepararEstoque', percursoEstagioConsulta.codOrigem)
-          .equals('Item', item);
+          .equals('Item', AppHelper.itemSequenceKey(item));
 
       final response = await separacaoItemRepository.select(queryBuilder);
 

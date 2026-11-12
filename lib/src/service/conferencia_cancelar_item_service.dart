@@ -4,6 +4,7 @@ import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_cons
 import 'package:app_expedicao/src/model/expedicao_conferencia_item_model.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 import 'package:app_expedicao/src/app/app_error.dart';
+import 'package:app_expedicao/src/app/app_helper.dart';
 
 class ConferenciaCancelarItemService {
   final conferenciaItemRepository = ConferenciaItemRepository();
@@ -16,9 +17,15 @@ class ConferenciaCancelarItemService {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', percursoEstagioConsulta.codEmpresa)
           .equals('CodConferir', percursoEstagioConsulta.codOrigem)
-          .equals('Item', item);
+          .equals('Item', AppHelper.itemSequenceKey(item));
 
       final response = await conferenciaItemRepository.select(queryBuilder);
+      if (response.isEmpty) {
+        throw AppError(
+          'Item não encontrado para cancelamento.',
+          details: 'Item=${AppHelper.itemSequenceKey(item)}',
+        );
+      }
 
       for (var el in response) {
         final newItem = el.copyWith(
@@ -68,7 +75,10 @@ class ConferenciaCancelarItemService {
             'CodCarrinhoPercurso',
             percursoEstagioConsulta.codCarrinhoPercurso,
           )
-          .equals('ItemCarrinhoPercurso', percursoEstagioConsulta.item)
+          .equals(
+            'ItemCarrinhoPercurso',
+            AppHelper.itemSequenceKey(percursoEstagioConsulta.item),
+          )
           .allRows();
 
       return await conferenciaItemRepository.select(queryBuilder);

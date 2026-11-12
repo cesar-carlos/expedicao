@@ -32,6 +32,8 @@ import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
 import 'package:app_expedicao/src/service/separar_consultas_services.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/pages/separacao/separacao_page.dart';
+import 'package:app_expedicao/src/pages/separar/separar_controller.dart';
+import 'package:app_expedicao/src/app/app_socket_listen_log.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 
 class _SaveCartResultado {
@@ -423,7 +425,8 @@ class SeparadoCarrinhosController extends GetxController {
       await MessageDialogView.show(
         context: Get.context!,
         message: resultado.message ?? 'Não foi possível salvar o carrinho',
-        detail: resultado.detail ??
+        detail:
+            resultado.detail ??
             'Tente novamente. Se o problema continuar, verifique a conexão.',
       );
       return false;
@@ -499,6 +502,7 @@ class SeparadoCarrinhosController extends GetxController {
 
     _separadoCarrinhoGridController.updateGrid(newCarrinhoPercursoConsulta);
     _separadoCarrinhoGridController.update();
+    await _sincronizarSituacaoSeparacaoSeguro();
 
     return const _SaveCartResultado.ok();
   }
@@ -697,6 +701,7 @@ class SeparadoCarrinhosController extends GetxController {
 
     _separadoCarrinhoGridController.updateGrid(item.reabrir());
     _separadoCarrinhoGridController.update();
+    await _sincronizarSituacaoSeparacaoSeguro();
 
     return const _SaveCartResultado.ok();
   }
@@ -709,6 +714,35 @@ class SeparadoCarrinhosController extends GetxController {
 
     _separarConsulta.situacao = atual.situacao;
     return true;
+  }
+
+  Future<void> _sincronizarSituacaoSeparacaoSeguro() async {
+    try {
+      await _sincronizarSituacaoSeparacao();
+    } catch (error) {
+      AppSocketListenLog.error('SeparadoCarrinhosController.situacao', error);
+    }
+  }
+
+  Future<void> _sincronizarSituacaoSeparacao() async {
+    final ok = await _atualizarSituacaoSeparacao();
+    if (!ok) {
+      AppSocketListenLog.error(
+        'SeparadoCarrinhosController.situacao',
+        'consulta da separação retornou vazia',
+      );
+      return;
+    }
+
+    AppSocketListenLog.applied(
+      origem: 'SeparadoCarrinhosController.consulta',
+      situacao: _separarConsulta.situacao,
+    );
+
+    if (Get.isRegistered<SepararController>()) {
+      Get.find<SepararController>().aplicarSituacao(_separarConsulta.situacao);
+    }
+    update();
   }
 
   Future<
@@ -904,17 +938,40 @@ class SeparadoCarrinhosController extends GetxController {
       RepositoryEventListenerModel(
         id: uuid.v4(),
         event: Event.insert,
+        allEvent: false,
         callback: (data) async {
           for (var el in data.mutation) {
-            final car = ExpedicaoCarrinhoPercursoEstagioConsultaModel.fromJson(
-              el,
-            );
+            try {
+              final car =
+                  ExpedicaoCarrinhoPercursoEstagioConsultaModel.fromJson(el);
 
-            if (car.codEmpresa == _processoExecutavel.codEmpresa &&
-                car.origem == _processoExecutavel.origem &&
-                car.codOrigem == _processoExecutavel.codOrigem) {
-              _separadoCarrinhoGridController.addGrid(car);
+              if (car.codEmpresa != _processoExecutavel.codEmpresa ||
+                  car.origem != _processoExecutavel.origem ||
+                  car.codOrigem != _processoExecutavel.codOrigem) {
+                continue;
+              }
+
+              final alreadyInGrid = _separadoCarrinhoGridController.itens.any(
+                (el) =>
+                    el.codCarrinhoPercurso == car.codCarrinhoPercurso &&
+                    el.item == car.item,
+              );
+              if (alreadyInGrid) {
+                _separadoCarrinhoGridController.updateGrid(car);
+              } else {
+                _separadoCarrinhoGridController.addGrid(car);
+              }
               _separadoCarrinhoGridController.update();
+              AppSocketListenLog.applied(
+                origem: 'SeparadoCarrinhosController.insert',
+                situacao: car.situacao,
+                extra: 'carrinho=${car.codCarrinho} item=${car.item}',
+              );
+            } catch (error) {
+              AppSocketListenLog.error(
+                'SeparadoCarrinhosController.insert',
+                error,
+              );
             }
           }
         },
@@ -926,17 +983,31 @@ class SeparadoCarrinhosController extends GetxController {
       RepositoryEventListenerModel(
         id: uuid.v4(),
         event: Event.update,
+        allEvent: true,
         callback: (data) async {
           for (var el in data.mutation) {
-            final car = ExpedicaoCarrinhoPercursoEstagioConsultaModel.fromJson(
-              el,
-            );
+            try {
+              final car =
+                  ExpedicaoCarrinhoPercursoEstagioConsultaModel.fromJson(el);
 
-            if (car.codEmpresa == _processoExecutavel.codEmpresa &&
-                car.origem == _processoExecutavel.origem &&
-                car.codOrigem == _processoExecutavel.codOrigem) {
+              if (car.codEmpresa != _processoExecutavel.codEmpresa ||
+                  car.origem != _processoExecutavel.origem ||
+                  car.codOrigem != _processoExecutavel.codOrigem) {
+                continue;
+              }
+
               _separadoCarrinhoGridController.updateGrid(car);
               _separadoCarrinhoGridController.update();
+              AppSocketListenLog.applied(
+                origem: 'SeparadoCarrinhosController.update',
+                situacao: car.situacao,
+                extra: 'carrinho=${car.codCarrinho} item=${car.item}',
+              );
+            } catch (error) {
+              AppSocketListenLog.error(
+                'SeparadoCarrinhosController.update',
+                error,
+              );
             }
           }
         },
@@ -948,17 +1019,31 @@ class SeparadoCarrinhosController extends GetxController {
       RepositoryEventListenerModel(
         id: uuid.v4(),
         event: Event.delete,
+        allEvent: false,
         callback: (data) async {
           for (var el in data.mutation) {
-            final car = ExpedicaoCarrinhoPercursoEstagioConsultaModel.fromJson(
-              el,
-            );
+            try {
+              final car =
+                  ExpedicaoCarrinhoPercursoEstagioConsultaModel.fromJson(el);
 
-            if (car.codEmpresa == _processoExecutavel.codEmpresa &&
-                car.origem == _processoExecutavel.origem &&
-                car.codOrigem == _processoExecutavel.codOrigem) {
+              if (car.codEmpresa != _processoExecutavel.codEmpresa ||
+                  car.origem != _processoExecutavel.origem ||
+                  car.codOrigem != _processoExecutavel.codOrigem) {
+                continue;
+              }
+
               _separadoCarrinhoGridController.removeGrid(car);
               _separadoCarrinhoGridController.update();
+              AppSocketListenLog.applied(
+                origem: 'SeparadoCarrinhosController.delete',
+                situacao: car.situacao,
+                extra: 'carrinho=${car.codCarrinho} item=${car.item}',
+              );
+            } catch (error) {
+              AppSocketListenLog.error(
+                'SeparadoCarrinhosController.delete',
+                error,
+              );
             }
           }
         },

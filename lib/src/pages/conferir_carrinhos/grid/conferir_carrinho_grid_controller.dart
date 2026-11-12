@@ -20,11 +20,17 @@ class ConferirCarrinhoGridController extends GetxController {
   List<ExpedicaoCarrinhoConferirConsultaModel> get itensSort => _itens.toList()
     ..sort((a, b) => b.itemCarrinhoPercurso.compareTo(a.itemCarrinhoPercurso));
 
-
   void Function(ExpedicaoCarrinhoConferirConsultaModel item)? onPressedRemove;
   void Function(ExpedicaoCarrinhoConferirConsultaModel item)? onPressedSave;
 
   void addGrid(ExpedicaoCarrinhoConferirConsultaModel item) {
+    final alreadyInGrid = _itens.any(
+      (el) => el.itemCarrinhoPercurso == item.itemCarrinhoPercurso,
+    );
+    if (alreadyInGrid) {
+      updateGrid(item);
+      return;
+    }
     _itens.add(item);
   }
 
@@ -34,14 +40,19 @@ class ConferirCarrinhoGridController extends GetxController {
 
   void updateGrid(ExpedicaoCarrinhoConferirConsultaModel item) {
     final index = _itens.indexWhere(
-        (el) => el.itemCarrinhoPercurso == item.itemCarrinhoPercurso);
+      (el) => el.itemCarrinhoPercurso == item.itemCarrinhoPercurso,
+    );
+    if (index < 0) {
+      return;
+    }
     _itens[index] = item;
   }
 
   void updateAllGrid(List<ExpedicaoCarrinhoConferirConsultaModel> itens) {
     for (var el in itens) {
-      final index = _itens
-          .indexWhere((i) => i.itemCarrinhoPercurso == el.itemCarrinhoPercurso);
+      final index = _itens.indexWhere(
+        (i) => i.itemCarrinhoPercurso == el.itemCarrinhoPercurso,
+      );
       _itens[index] = el;
     }
   }
@@ -58,10 +69,12 @@ class ConferirCarrinhoGridController extends GetxController {
   }
 
   void removeGrid(ExpedicaoCarrinhoConferirConsultaModel item) {
-    _itens.removeWhere((el) =>
-        el.codEmpresa == item.codEmpresa &&
-        el.codCarrinho == item.codCarrinho &&
-        el.itemCarrinhoPercurso == item.itemCarrinhoPercurso);
+    _itens.removeWhere(
+      (el) =>
+          el.codEmpresa == item.codEmpresa &&
+          el.codCarrinho == item.codCarrinho &&
+          el.itemCarrinhoPercurso == item.itemCarrinhoPercurso,
+    );
   }
 
   void removeAllGrid() {
@@ -172,11 +185,7 @@ class ConferirCarrinhoGridController extends GetxController {
         color = Colors.grey;
     }
 
-    return Icon(
-      size: 19,
-      Icons.delete,
-      color: color,
-    );
+    return Icon(size: 19, Icons.delete, color: color);
   }
 
   Icon iconSave(ExpedicaoCarrinhoConferirConsultaModel item) {
@@ -189,18 +198,11 @@ class ConferirCarrinhoGridController extends GetxController {
         color = Colors.green;
     }
 
-    return Icon(
-      size: 19,
-      Icons.save,
-      color: color,
-    );
+    return Icon(size: 19, Icons.save, color: color);
   }
 
   void setSelectedRow(int index) {
-    dataGridController.selectAndScrollToRow(
-      index,
-      rowCount: itensSort.length,
-    );
+    dataGridController.selectAndScrollToRow(index, rowCount: itensSort.length);
   }
 
   Icon iconIndicator(ExpedicaoCarrinhoConferirConsultaModel item) {

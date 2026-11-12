@@ -49,13 +49,16 @@ class ExpedicaoConferirItemModel {
   }
 
   factory ExpedicaoConferirItemModel.fromConsulta(
-      ExpedicaoConferirItemConsultaModel item) {
+    ExpedicaoConferirItemConsultaModel item,
+  ) {
     return ExpedicaoConferirItemModel(
       codEmpresa: item.codEmpresa,
       codConferir: item.codConferir,
-      item: item.item,
+      item: AppHelper.itemSequenceKey(item.item),
       codCarrinhoPercurso: item.codCarrinhoPercurso,
-      itemCarrinhoPercurso: item.itemCarrinhoPercurso,
+      itemCarrinhoPercurso: AppHelper.itemSequenceKey(
+        item.itemCarrinhoPercurso,
+      ),
       codProduto: item.codProduto,
       codUnidadeMedida: item.codUnidadeMedida,
       quantidade: item.quantidade,
@@ -68,14 +71,17 @@ class ExpedicaoConferirItemModel {
       return ExpedicaoConferirItemModel(
         codEmpresa: json['CodEmpresa'],
         codConferir: json['CodConferir'],
-        item: json['Item'],
+        item: AppHelper.itemSequenceKey(json['Item']),
         codCarrinhoPercurso: json['CodCarrinhoPercurso'],
-        itemCarrinhoPercurso: json['ItemCarrinhoPercurso'],
+        itemCarrinhoPercurso: AppHelper.itemSequenceKey(
+          json['ItemCarrinhoPercurso'],
+        ),
         codProduto: json['CodProduto'],
         codUnidadeMedida: json['CodUnidadeMedida'],
         quantidade: AppHelper.stringToDouble(json['Quantidade']),
-        quantidadeConferida:
-            AppHelper.stringToDouble(json['QuantidadeConferida']),
+        quantidadeConferida: AppHelper.stringToDouble(
+          json['QuantidadeConferida'],
+        ),
       );
     } catch (_) {
       rethrow;
@@ -86,9 +92,11 @@ class ExpedicaoConferirItemModel {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['CodEmpresa'] = codEmpresa;
     data['CodConferir'] = codConferir;
-    data['Item'] = item;
+    data['Item'] = AppHelper.itemSequenceKey(item);
     data['CodCarrinhoPercurso'] = codCarrinhoPercurso;
-    data['ItemCarrinhoPercurso'] = itemCarrinhoPercurso;
+    data['ItemCarrinhoPercurso'] = AppHelper.itemSequenceKey(
+      itemCarrinhoPercurso,
+    );
     data['CodProduto'] = codProduto;
     data['CodUnidadeMedida'] = codUnidadeMedida;
     data['Quantidade'] = quantidade.toStringAsFixed(4);

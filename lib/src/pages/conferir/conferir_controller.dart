@@ -33,6 +33,7 @@ import 'package:app_expedicao/src/service/carrinho_percurso_services.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_model.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
+import 'package:app_expedicao/src/app/app_socket_listen_log.dart';
 import 'package:app_expedicao/src/app/app_raw_keyboard.dart';
 
 class ConferirController extends GetxController {
@@ -76,6 +77,31 @@ class ConferirController extends GetxController {
     }
 
     return ExpedicaoSituacaoModel.situacao[_expedicaoSituacao] ?? '';
+  }
+
+  void aplicarSituacao(String situacao) {
+    if (situacao.isEmpty) return;
+    if (_expedicaoSituacao == situacao &&
+        _conferirConsulta.situacao == situacao) {
+      AppSocketListenLog.applied(
+        origem: 'ConferirController',
+        situacao: situacao,
+        extra: 'sem mudanca',
+      );
+      return;
+    }
+
+    _expedicaoSituacao = situacao;
+    _conferirConsulta.situacao = situacao;
+    AppSocketListenLog.applied(
+      origem: 'ConferirController',
+      situacao: situacao,
+    );
+    update();
+
+    if (Get.isRegistered<ConferirCarrinhosController>()) {
+      Get.find<ConferirCarrinhosController>().aplicarSituacao(situacao);
+    }
   }
 
   @override
@@ -207,9 +233,7 @@ class ConferirController extends GetxController {
         _expedicaoSituacao == ExpedicaoSituacaoModel.aguardando) {
       await ConferirServices(conferir).iniciar();
       if (_carrinhoPercurso == null) await _fillCarrinhoPercurso();
-      _expedicaoSituacao = ExpedicaoSituacaoModel.emConverencia;
-      _conferirConsulta.situacao = ExpedicaoSituacaoModel.emConverencia;
-      update();
+      aplicarSituacao(ExpedicaoSituacaoModel.emConverencia);
     }
 
     _iniciada = _carrinhoPercurso != null;
@@ -500,9 +524,7 @@ class ConferirController extends GetxController {
       codConferir: _conferirConsulta.codConferir,
     ).execute();
 
-    _expedicaoSituacao = ExpedicaoSituacaoModel.conferido;
-    _conferirConsulta.situacao = ExpedicaoSituacaoModel.conferido;
-    update();
+    aplicarSituacao(ExpedicaoSituacaoModel.conferido);
   }
 
   void _liteners() {
@@ -512,16 +534,20 @@ class ConferirController extends GetxController {
     final conferir = RepositoryEventListenerModel(
       id: uuid.v4(),
       event: Event.update,
+      allEvent: true,
       callback: (data) async {
         for (var el in data.mutation) {
-          final event = ExpedicaoConferirConsultaModel.fromJson(el);
+          final codEmpresa = AppSocketListenLog.asInt(el['CodEmpresa']);
+          final codConferir = AppSocketListenLog.asInt(el['CodConferir']);
+          final situacao = AppSocketListenLog.asString(el['Situacao']);
 
-          if (_conferirConsulta.codEmpresa == event.codEmpresa &&
-              _conferirConsulta.codConferir == event.codConferir) {
-            _expedicaoSituacao = event.situacao;
-            _conferirConsulta.situacao = event.situacao;
-            update();
+          if (codEmpresa != _conferirConsulta.codEmpresa ||
+              codConferir != _conferirConsulta.codConferir ||
+              situacao == null) {
+            continue;
           }
+
+          aplicarSituacao(situacao);
         }
       },
     );

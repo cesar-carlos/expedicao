@@ -197,7 +197,7 @@ class ExpedicaoSepararItemUnidadeMedidaConsultaModel {
   final String unidadeMedidaDescricao;
   final String tipoFatorConversao; // 'M' ou outro
   final double fatorConversao;
-  final String? codigoBarras;
+  final String? codigoBarras; // ConversaoUnidadeMedida.Codigo (alias SQL CodigoBarras)
 }
 ```
 
@@ -216,13 +216,16 @@ if (!_separarGridController.existsBarCode(scanValue.trim()) &&
 
 ### **2. Validação de Setor de Estoque**
 
+Contrato completo: [setor-estoque.md](../contratos/setor-estoque.md).
+
+Bloqueia só se **usuário e item** tiverem setor **maior que zero** e os códigos forem diferentes. `null` ou `0` no usuário ou no item libera. Separação usa `codSetorEstoque` no usuário; conferência usa `codSetorConferencia`. O item é sempre `codSetorEstoque`.
+
 ```dart
-// Verifica se o produto está no setor correto do usuário
-if (itemSepararConsulta.codSetorEstoque !=
-        _processoExecutavel.codSetorEstoque &&
-    itemSepararConsulta.codSetorEstoque != null &&
-    _processoExecutavel.codSetorEstoque != null) {
-  // ERRO: Produto fora do setor estoque
+if (!AppHelper.setorPermitido(
+      _processoExecutavel.codSetorEstoque, // ou codSetorConferencia
+      item.codSetorEstoque,
+    )) {
+  // ERRO: Produto fora do setor
 }
 ```
 
@@ -238,12 +241,21 @@ if ((qtdConferencia + itemSepararConsulta.quantidadeSeparacao) >
 
 ### **4. Conversão de Unidades de Medida**
 
+Contrato: [conversao-unidade.md](../contratos/conversao-unidade.md).
+
+No banco: `ConversaoUnidadeMedida.Codigo`. No modelo: `codigoBarras` (alias SQL `CodigoBarras`). Carga na tela inicial (`itensSapararUnidades`), documento inteiro, páginas de 500, memória em `_itemUnids`. O carrinho reusa.
+
+O scan tenta `Codigo` **antes** de `CodProduto`. Não usar `isBarCode` (tamanho > 6) para achar conversão. Aplicar o fator **antes** de validar quantidade restante.
+
 ```dart
-// Aplica conversão baseada no tipo de fator
-if (unidadeMedida.tipoFatorConversao != 'M') {
-  qtdConferencia = qtdConfDigitada / unidadeMedida.fatorConversao;
-} else {
-  qtdConferencia = qtdConfDigitada * unidadeMedida.fatorConversao;
+final unidadeMedida = _separarGridController.findUnidadeByCodigo(scanValue);
+if (unidadeMedida != null &&
+    unidadeMedida.codProduto == itemSepararConsulta.codProduto) {
+  if (unidadeMedida.tipoFatorConversao != 'M') {
+    qtdConferencia = qtdConfDigitada / unidadeMedida.fatorConversao;
+  } else {
+    qtdConferencia = qtdConfDigitada * unidadeMedida.fatorConversao;
+  }
 }
 ```
 
@@ -343,7 +355,7 @@ abstract class ExpedicaoItemSituacaoModel {
 
 1. Usuário escaneia código de barras ou digita código do produto
 2. Sistema valida se produto existe na lista de separação
-3. Sistema verifica setor de estoque
+3. Sistema verifica setor (`AppHelper.setorPermitido`: usuário `codSetorEstoque`, item `codSetorEstoque`; `null` ou `0` libera)
 4. Usuário informa quantidade
 5. Sistema aplica conversão de unidades se necessário
 6. Sistema valida se quantidade não excede o necessário
@@ -351,7 +363,7 @@ abstract class ExpedicaoItemSituacaoModel {
 
 ### **4. Operações em Lote**
 
-- **Separar Tudo (F7)**: Separa todos os itens pendentes automaticamente
+- **Separar Tudo (F7)**: Separa todos os itens pendentes automaticamente (**não** filtra setor)
 - **Reconferir Tudo (F8)**: Remove todos os itens do carrinho para reconferência
 - **Recuperar Itens (F11)**: Recupera itens de carrinhos cancelados
 
@@ -375,16 +387,22 @@ abstract class ExpedicaoItemSituacaoModel {
 
 ### **2. Recuperação de Itens**
 
-- Permite recuperar itens de carrinhos cancelados
-- Valida se carrinho estava em separação
-- Verifica se origem é separação
-- Recupera apenas itens que ainda estão na lista de separação
+Contrato: [recuperar-carrinho.md](../contratos/recuperar-carrinho.md).
+
+- **F11 tela inicial**: bipa carrinho `LIBERADO` cujo último estágio está `CANCELADA` + `SE` neste documento
+- **F11 dentro do carrinho**: copia o penúltimo estágio cancelado para o carrinho aberto (`EM SEPARACAO`)
+- Só itens `CA`; setor e teto do pedido em `addRecuperados`
+- Não é Reabrir (F6)
 
 ### **3. Validação de Setor**
 
-- Usuário só pode separar produtos do seu setor
-- Validação tanto na adição quanto na remoção
-- Controle de acesso por setor de estoque
+Contrato: [setor-estoque.md](../contratos/setor-estoque.md).
+
+- Usuário só separa produtos do próprio setor (`ProcessoExecutavelModel.codSetorEstoque`)
+- Conferência usa a mesma regra com `codSetorConferencia` no usuário e `codSetorEstoque` no item
+- Libera se o usuário **ou** o item estiver sem setor (`null` ou `0`; só `> 0` conta)
+- Vale no scan e na exclusão do item no carrinho (`AppHelper.setorPermitido`)
+- *Separar tudo* / *Conferir tudo* **não** filtram setor hoje
 
 ### **4. Controle de Sessão**
 
@@ -399,6 +417,12 @@ abstract class ExpedicaoItemSituacaoModel {
 - Notificações de mudanças de estado
 
 ## 📡 Sistema de Eventos e Listeners
+
+A regra vigente de `allEvent`, situação e grade **não** está neste arquivo (trechos abaixo misturam `SEPARANDO` com carrinho finalizado). Use:
+
+- [Listen da situação](../contratos/listen-situacao.md)
+- [Chave de Item](../contratos/item-chave.md)
+- [Modais](../contratos/modais.md)
 
 ### **Arquitetura de Eventos**
 
@@ -873,7 +897,7 @@ lib/
 ### **Pontos Críticos**
 
 1. **Validação de Quantidade**: Sempre verificar se não excede o necessário
-2. **Setor de Estoque**: Controle rigoroso de acesso por setor
+2. **Setor de Estoque**: `AppHelper.setorPermitido`. Contrato: [setor-estoque.md](../contratos/setor-estoque.md)
 3. **Conversão de Unidades**: Aplicar corretamente baseado no tipo de fator
 4. **Estados**: Manter consistência entre diferentes estados
 5. **Performance**: Otimizar consultas e carregamento de dados

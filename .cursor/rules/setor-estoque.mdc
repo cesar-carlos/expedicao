@@ -1,0 +1,28 @@
+---
+description: Setor — estoque na separação, conferência no conferir
+globs: "**/{separacao_controller.dart,conferencia_controller.dart,separar_grid_controller.dart,conferir_grid_controller.dart,*adicionar*service.dart,processo_executavel_model.dart,app_helper.dart}"
+alwaysApply: false
+---
+
+# Setor de estoque e conferência
+
+Contrato: `docs/contratos/setor-estoque.md`.
+
+```dart
+AppHelper.setorPermitido(setorUsuario, setorItem)
+```
+
+Setor válido é **maior que zero**. `null` e `0` são indefinido (`setorDefinido`).
+
+`true` se qualquer lado for indefinido, ou se os códigos definidos forem iguais. Recusar exige os **dois** `> 0` e diferentes. Não usar `item != usuario` sozinho (`0 != 5` recusa item sem setor).
+
+| Fluxo | `setorUsuario` | `setorItem` |
+| --- | --- | --- |
+| Separação | `ProcessoExecutavelModel.codSetorEstoque` | `item.codSetorEstoque` |
+| Conferência | `ProcessoExecutavelModel.codSetorConferencia` | `item.codSetorEstoque` |
+
+- Setor do usuário vem do processo (`processo.executavel.select`), não do cadastro de usuário.
+- Vale no scan e no excluir. Na conferência o item do carrinho não tem setor: buscar o produto na lista a conferir.
+- A grade mostra todos os itens. Não filtrar `separar.consulta` / `conferir.item.consulta` com o setor do usuário.
+- Conferir tudo / separar tudo hoje **não** filtram. Qualquer filtro novo no lote usa `setorPermitido`.
+- Não filtrar com `LIKE` em `CodSetoresEstoque`.

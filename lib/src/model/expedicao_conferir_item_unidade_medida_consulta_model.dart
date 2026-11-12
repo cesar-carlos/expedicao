@@ -11,6 +11,9 @@ class ExpedicaoConferirItemUnidadeMedidaConsultaModel {
   final String unidadeMedidaPadrao;
   final String tipoFatorConversao;
   final double fatorConversao;
+
+  /// `ConversaoUnidadeMedida.Codigo` (JSON `CodigoBarras` ou `Codigo`).
+  /// Na linha padrão da view é `Produto.CodigoBarras1`.
   final String? codigoBarras;
   final String? observacao;
 
@@ -77,7 +80,7 @@ class ExpedicaoConferirItemUnidadeMedidaConsultaModel {
                 json['FatorConversao'].toString().trim().isEmpty
             ? 1.0
             : AppHelper.stringToDouble(json['FatorConversao'].toString()),
-        codigoBarras: json['CodigoBarras'],
+        codigoBarras: AppHelper.conversaoCodigo(json),
         observacao: json['Observacao'],
       );
     } catch (_) {

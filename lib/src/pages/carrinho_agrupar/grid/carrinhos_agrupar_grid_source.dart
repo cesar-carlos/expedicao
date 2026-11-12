@@ -112,7 +112,9 @@ class CarrinhosAgruparGridSource extends DataGridSource {
     final item = itemValue == null
         ? null
         : controller.itens
-            .where((el) => el.itemCarrinhoPercurso == itemValue)
+            .where(
+              (el) => AppHelper.sameGridItem(el.itemCarrinhoPercurso, itemValue),
+            )
             .firstOrNull;
 
     return DataGridRowAdapter(

@@ -26,12 +26,31 @@ class DialogCloseGuard {
     }
 
     scheduleMicrotask(() {
-      if (context != null && context.mounted) {
-        Navigator.of(context).pop<T>(result);
-        return;
-      }
-
-      Get.back(result: result);
+      popPage<T>(
+        result: result,
+        context: context,
+        canCloseWindow: canCloseWindow,
+      );
     });
+  }
+
+  /// Fecha o `showDialog` do Navigator. `Get.back()` não serve: com snackbar
+  /// aberto ele só fecha o snackbar, e com `PopScope(canPop: false)` não dá pop.
+  static void popPage<T>({
+    T? result,
+    BuildContext? context,
+    bool canCloseWindow = true,
+  }) {
+    if (Get.isRegistered<AppEventState>()) {
+      Get.find<AppEventState>().canCloseWindow = canCloseWindow;
+    }
+
+    final ctx = context ?? Get.context;
+    if (ctx != null && ctx.mounted) {
+      Navigator.of(ctx).pop<T>(result);
+      return;
+    }
+
+    Get.back(result: result);
   }
 }
