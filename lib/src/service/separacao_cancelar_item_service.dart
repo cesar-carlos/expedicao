@@ -5,15 +5,14 @@ import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_item_situacao_model.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
+import 'package:app_expedicao/src/app/app_error.dart';
 
 class SeparacaoCancelarItemService {
   final ExpedicaoCarrinhoPercursoEstagioConsultaModel percursoEstagioConsulta;
   final separacaoItemConsultaRepository = SeparacaoItemConsultaRepository();
   final separacaoItemRepository = SeparacaoItemRepository();
 
-  SeparacaoCancelarItemService({
-    required this.percursoEstagioConsulta,
-  });
+  SeparacaoCancelarItemService({required this.percursoEstagioConsulta});
 
   Future<void> cancelar({required String item}) async {
     try {
@@ -32,7 +31,7 @@ class SeparacaoCancelarItemService {
         await separacaoItemRepository.update(newItem);
       }
     } catch (e) {
-      throw Exception('Erro ao cancelar item da separação: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -40,14 +39,12 @@ class SeparacaoCancelarItemService {
     try {
       final separacaoItens = await _getSeparacaoItens();
       final newItens = separacaoItens.map((el) {
-        return el.copyWith(
-          situacao: ExpedicaoItemSituacaoModel.cancelado,
-        );
+        return el.copyWith(situacao: ExpedicaoItemSituacaoModel.cancelado);
       }).toList();
 
       await separacaoItemRepository.updateAll(newItens);
     } catch (e) {
-      throw Exception('Erro ao cancelar todos os itens da separação: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -55,30 +52,32 @@ class SeparacaoCancelarItemService {
     try {
       final separacaoItens = await _getSeparacaoItensCarrinho();
       final newItens = separacaoItens.map((el) {
-        return ExpedicaoSeparacaoItemModel.fromConsulta(el).copyWith(
-          situacao: ExpedicaoItemSituacaoModel.cancelado,
-        );
+        return ExpedicaoSeparacaoItemModel.fromConsulta(el)
+            .copyWith(situacao: ExpedicaoItemSituacaoModel.cancelado);
       }).toList();
 
       await separacaoItemRepository.updateAll(newItens);
     } catch (e) {
-      throw Exception('Erro ao cancelar itens do carrinho: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
   Future<List<ExpedicaSeparacaoItemConsultaModel>>
-      _getSeparacaoItensCarrinho() async {
+  _getSeparacaoItensCarrinho() async {
     try {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', percursoEstagioConsulta.codEmpresa)
           .equals('CodSepararEstoque', percursoEstagioConsulta.codOrigem)
-          .equals('CodCarrinhoPercurso',
-              percursoEstagioConsulta.codCarrinhoPercurso)
-          .equals('ItemCarrinhoPercurso', percursoEstagioConsulta.item);
+          .equals(
+            'CodCarrinhoPercurso',
+            percursoEstagioConsulta.codCarrinhoPercurso,
+          )
+          .equals('ItemCarrinhoPercurso', percursoEstagioConsulta.item)
+          .allRows();
 
       return await separacaoItemConsultaRepository.select(queryBuilder);
     } catch (e) {
-      throw Exception('Erro ao buscar itens do carrinho: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -86,11 +85,12 @@ class SeparacaoCancelarItemService {
     try {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', percursoEstagioConsulta.codEmpresa)
-          .equals('CodSepararEstoque', percursoEstagioConsulta.codOrigem);
+          .equals('CodSepararEstoque', percursoEstagioConsulta.codOrigem)
+          .allRows();
 
       return await separacaoItemRepository.select(queryBuilder);
     } catch (e) {
-      throw Exception('Erro ao buscar itens da separação: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 }

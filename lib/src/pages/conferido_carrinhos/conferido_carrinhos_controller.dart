@@ -195,10 +195,12 @@ class ConferidoCarrinhosController extends GetxController {
 
             return true;
           } catch (err) {
-            return false;
+            rethrow;
           }
         },
       );
+      } catch (_) {
+        // O snackbar do loading já mostrou AppError.display.
       } finally {
         _processando = false;
       }
@@ -370,8 +372,12 @@ class ConferidoCarrinhosController extends GetxController {
       return false;
     }
 
-    final itensConferir = await _conferirConsultaServices.itensConferir();
-    final itensConferencia = await _conferirConsultaServices.itensConferencia();
+    final itensConferir = await _conferirConsultaServices.itensConferir(
+      codCarrinho: item.codCarrinho,
+    );
+    final itensConferencia = await _conferirConsultaServices.itensConferencia(
+      codCarrinho: item.codCarrinho,
+    );
 
     final itensConferenciaCarrinho = itensConferencia
         .where((el) =>
@@ -383,7 +389,8 @@ class ConferidoCarrinhosController extends GetxController {
       (el) => el.codCarrinho == item.codCarrinho,
     );
 
-    final isComplitCart = itensConferirCarrinho.every((el) => el.isComplited());
+    final isComplitCart = itensConferirCarrinho.isNotEmpty &&
+        itensConferirCarrinho.every((el) => el.isComplited());
 
     if (itensConferenciaCarrinho.isEmpty) {
       await MessageDialogView.show(
@@ -531,10 +538,12 @@ class ConferidoCarrinhosController extends GetxController {
 
             return true;
           } catch (err) {
-            return false;
+            rethrow;
           }
         },
       );
+      } catch (_) {
+        return false;
       } finally {
         _processando = false;
       }

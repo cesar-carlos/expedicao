@@ -1,6 +1,7 @@
 import 'package:app_expedicao/src/model/expedicao_cancelamento_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_cancelamento/cancelamento_repository.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
+import 'package:app_expedicao/src/app/app_error.dart';
 
 class CancelamentoService {
   final cancelamentoRepository = CancelamentoRepository();
@@ -17,7 +18,8 @@ class CancelamentoService {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', codEmpresa)
           .equals('Origem', origem)
-          .equals('CodOrigem', codOrigem);
+          .equals('CodOrigem', codOrigem)
+          .allRows(orderField: 'CodCancelamento');
 
       if (itemOrigem != null) {
         queryBuilder.equals('ItemOrigem', itemOrigem);
@@ -26,7 +28,7 @@ class CancelamentoService {
       final result = await cancelamentoRepository.select(queryBuilder);
       return result;
     } catch (e) {
-      throw Exception('Erro ao buscar cancelamentos por origem: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -49,7 +51,7 @@ class CancelamentoService {
 
       return result.first;
     } catch (e) {
-      throw Exception('Erro ao buscar cancelamento por origem com item: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 }

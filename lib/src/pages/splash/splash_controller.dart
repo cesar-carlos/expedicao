@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:get/get.dart';
 
 import 'package:app_expedicao/src/routes/app_router.dart';
@@ -9,7 +7,6 @@ import 'package:app_expedicao/src/service/usuario_service.dart';
 import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
 import 'package:app_expedicao/src/service/separar_consultas_services.dart';
 import 'package:app_expedicao/src/service/conferir_consultas_services.dart';
-import 'package:app_expedicao/src/pages/common/widget/loading_sever_dialog_widget.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_consulta_model.dart';
 import 'package:app_expedicao/src/service/processo_executavel_service.dart';
@@ -20,8 +17,6 @@ import 'package:app_expedicao/src/app/app_api_file_init.dart';
 
 class SplashController extends GetxController {
   final _socketClient = Get.find<AppSocketConfig>();
-  StreamSubscription<bool>? _socketWorker;
-  bool _showingReconnectDialog = false;
 
   late ProcessoExecutavelModel? _processoExecutavel;
   late ExpedicaoSepararConsultaModel? _separarConsulta;
@@ -31,30 +26,23 @@ class SplashController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    _litener();
     _loading();
-  }
-
-  @override
-  void onClose() {
-    _socketWorker?.cancel();
-    super.onClose();
   }
 
   Future<void> _loading() async {
     final existsfileConfApi = await _existsfileConfApi();
     if (!existsfileConfApi) {
-      Get.offNamed(AppRouter.login);
+      _leave(AppRouter.login);
       return;
     }
 
-    final conectado = await _socketClient.waitUntilConnected();
+    final conectado = await _socketClient.ensureStarted();
     if (!conectado) {
-      Get.offNamed(
+      _leave(
         AppRouter.splashError,
         arguments: ErrorMessage(
-          title: 'Erro',
-          message: 'verifique a conexão com o servidor',
+          title: 'Erro de conexão',
+          message: 'Não foi possível conectar ao servidor. Verifique a rede e o endereço da API.',
         ),
       );
       return;
@@ -71,20 +59,21 @@ class SplashController extends GetxController {
           message: 'verifique a conexão com o servidor',
         );
 
-        Get.offNamed(AppRouter.splashError, arguments: errorMessage);
+        _leave(AppRouter.splashError, arguments: errorMessage);
         return;
       }
 
-      Get.put(_processoExecutavel!);
+      _putPermanent(_processoExecutavel!);
     }
 
-    final usuarioFuture =
-        UsuarioService.selectConsulta(_processoExecutavel!.codUsuario);
+    final usuarioFuture = UsuarioService.selectConsulta(
+      _processoExecutavel!.codUsuario,
+    );
     final databaseFuture = _existsfileConfDataBase();
     _usuarioLogado = await usuarioFuture;
     final existsfileConfDataBase = await databaseFuture;
     if (!existsfileConfDataBase || _processoExecutavel == null) {
-      Get.offNamed(AppRouter.login);
+      _leave(AppRouter.login);
       return;
     }
 
@@ -94,11 +83,11 @@ class SplashController extends GetxController {
         message: 'Usuario Logado não encontrado',
       );
 
-      Get.offNamed(AppRouter.splashError, arguments: errorMessage);
+      _leave(AppRouter.splashError, arguments: errorMessage);
       return;
     }
 
-    Get.put<UsuarioConsultaMoldel>(_usuarioLogado!);
+    _putPermanent<UsuarioConsultaMoldel>(_usuarioLogado!);
 
     if (_processoExecutavel!.origem == ExpedicaoOrigemModel.separacao) {
       final separarConsultaServices = SepararConsultaServices(
@@ -114,7 +103,7 @@ class SplashController extends GetxController {
           message: 'Separar estoque não encontrado',
         );
 
-        Get.offNamed(AppRouter.splashError, arguments: errorMessage);
+        _leave(AppRouter.splashError, arguments: errorMessage);
         return;
       }
     }
@@ -133,29 +122,12 @@ class SplashController extends GetxController {
           message: 'Conferir estoque não encontrado',
         );
 
-        Get.offNamed(AppRouter.splashError, arguments: errorMessage);
+        _leave(AppRouter.splashError, arguments: errorMessage);
         return;
       }
     }
 
     nextPage();
-  }
-
-  void _litener() {
-    _socketWorker = _socketClient.isConnect.listen((connected) {
-      if (connected || _showingReconnectDialog) return;
-
-      final context = Get.context;
-      if (context == null) return;
-
-      _showingReconnectDialog = true;
-      LoadingSeverDialogWidget.show(
-        canCloseWindow: false,
-        context: context,
-      ).whenComplete(() {
-        _showingReconnectDialog = false;
-      });
-    });
   }
 
   Future<bool> _existsfileConfDataBase() async {
@@ -169,21 +141,30 @@ class SplashController extends GetxController {
   }
 
   void nextPage() async {
-    Get.put<ProcessoExecutavelModel>(_processoExecutavel!);
+    _putPermanent<ProcessoExecutavelModel>(_processoExecutavel!);
 
     //SEPARAR
     if (_processoExecutavel!.origem == ExpedicaoOrigemModel.separacao) {
-      Get.offNamed(AppRouter.separar, arguments: _separarConsulta);
+      _leave(AppRouter.separar, arguments: _separarConsulta);
       return;
     }
 
     //CONFERENCIA
     if (_processoExecutavel!.origem == ExpedicaoOrigemModel.conferencia) {
-      Get.offNamed(AppRouter.conferir, arguments: _conferirConsulta);
+      _leave(AppRouter.conferir, arguments: _conferirConsulta);
       return;
     }
 
     //NOT FOUND
-    Get.offNamed(AppRouter.notfind);
+    _leave(AppRouter.notfind);
+  }
+
+  void _leave(String route, {dynamic arguments}) {
+    Get.offAllNamed(route, arguments: arguments);
+  }
+
+  void _putPermanent<T>(T instance) {
+    if (Get.isRegistered<T>()) return;
+    Get.put<T>(instance, permanent: true);
   }
 }

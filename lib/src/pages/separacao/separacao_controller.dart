@@ -120,7 +120,7 @@ class SeparacaoController extends GetxController {
     quantidadeController = TextEditingController(text: '1,000');
 
     formFocusNode = FocusNode();
-    scanFocusNode = FocusNode()..requestFocus();
+    scanFocusNode = FocusNode();
     quantidadeFocusNode = FocusNode();
     displayFocusNode = FocusNode();
 
@@ -143,7 +143,11 @@ class SeparacaoController extends GetxController {
   void onReady() async {
     super.onReady();
 
-    if (_viewMode.value) formFocusNode.requestFocus();
+    if (_viewMode.value) {
+      formFocusNode.requestFocus();
+    } else {
+      scanFocusNode.requestFocus();
+    }
 
     _onEditItemSeparacaoGrid();
     _onRemoveItemSeparacaoGrid();
@@ -436,8 +440,8 @@ class SeparacaoController extends GetxController {
         await MessageDialogView.show(
           canCloseWindow: false,
           context: Get.context!,
-          message: 'Erro ao adicionar item!',
-          detail: 'Não foi possivel adicionar o item ao carrinho!',
+          message: 'Não foi possível adicionar o item',
+          detail: 'O servidor não devolveu o item separado. Tente novamente. Se o problema continuar, verifique a conexão.',
         );
 
         displayController.text = '';
@@ -485,11 +489,7 @@ class SeparacaoController extends GetxController {
       AppAudioHelper().play('/success.wav');
     } catch (e) {
       AppAudioHelper().play('/error.wav');
-      await MessageDialogView.show(
-        context: Get.context!,
-        message: 'Erro ao adicionar item!',
-        detail: e.toString(),
-      );
+      await MessageDialogView.showError(context: Get.context!, error: e);
       scanFocusNode.requestFocus();
     }
   }
@@ -551,35 +551,39 @@ class SeparacaoController extends GetxController {
       );
 
       if (confirmation != null && confirmation) {
-        await LoadingProcessDialogGenericWidget.show<bool>(
-          context: Get.context!,
-          process: () async {
-            try {
-              await SeparacaoRemoverItemService(
-                percursoEstagioConsulta: percursoEstagioConsulta,
-              ).remove(item: el.item);
+        try {
+          await LoadingProcessDialogGenericWidget.show<bool>(
+            context: Get.context!,
+            process: () async {
+              try {
+                await SeparacaoRemoverItemService(
+                  percursoEstagioConsulta: percursoEstagioConsulta,
+                ).remove(item: el.item);
 
-              _separacaoGridController.removeGrid(el);
+                _separacaoGridController.removeGrid(el);
 
-              final itemSeparar = _findItemSepararGrid(el.codProduto);
-              if (itemSeparar != null) {
-                final quantidadeSeparacao =
-                    itemSeparar.quantidadeSeparacao - el.quantidade;
-                _separarGridController.updateGrid(
-                  itemSeparar.copyWith(
-                    quantidadeSeparacao: quantidadeSeparacao < 0
-                        ? 0.00
-                        : quantidadeSeparacao,
-                  ),
-                );
+                final itemSeparar = _findItemSepararGrid(el.codProduto);
+                if (itemSeparar != null) {
+                  final quantidadeSeparacao =
+                      itemSeparar.quantidadeSeparacao - el.quantidade;
+                  _separarGridController.updateGrid(
+                    itemSeparar.copyWith(
+                      quantidadeSeparacao: quantidadeSeparacao < 0
+                          ? 0.00
+                          : quantidadeSeparacao,
+                    ),
+                  );
+                }
+
+                return true;
+              } catch (err) {
+                rethrow;
               }
-
-              return true;
-            } catch (err) {
-              return false;
-            }
-          },
-        );
+            },
+          );
+        } catch (_) {
+          // O snackbar do loading já mostrou AppError.display.
+        }
       }
 
       if (scanFocusNode.canRequestFocus) {
@@ -805,10 +809,14 @@ class SeparacaoController extends GetxController {
         return;
       }
 
-      await adicionarItensRecuperadoSeparacao(
-        percursoEstagioConsulta,
-        separacaoItens,
-      );
+      try {
+        await adicionarItensRecuperadoSeparacao(
+          percursoEstagioConsulta,
+          separacaoItens,
+        );
+      } catch (_) {
+        return;
+      }
     }
   }
 
@@ -819,37 +827,33 @@ class SeparacaoController extends GetxController {
     return await LoadingProcessDialogGenericWidget.show<bool>(
       context: Get.context!,
       process: () async {
-        try {
-          final separarItens = await _separarConsultaServices.itensSaparar();
+        final separarItens = await _separarConsultaServices.itensSaparar();
 
-          final carrinhoPercursoAdicionarItemService =
-              SeparacaoAdicionarItemService(
-                percursoEstagioConsulta: percursoEstagio,
-              );
+        final carrinhoPercursoAdicionarItemService =
+            SeparacaoAdicionarItemService(
+              percursoEstagioConsulta: percursoEstagio,
+            );
 
-          for (var item in separacaoItensRecuperado) {
-            final existsSepararItem = separarItens.any((el) {
-              return el.codProduto == item.codProduto &&
-                  el.codUnidadeMedida == item.codUnidadeMedida;
-            });
+        for (var item in separacaoItensRecuperado) {
+          final existsSepararItem = separarItens.any((el) {
+            return el.codProduto == item.codProduto &&
+                el.codUnidadeMedida == item.codUnidadeMedida;
+          });
 
-            if (existsSepararItem) {
-              await carrinhoPercursoAdicionarItemService.add(
-                codProduto: item.codProduto,
-                codUnidadeMedida: item.codUnidadeMedida,
-                quantidade: item.quantidade,
-              );
-            }
+          if (existsSepararItem) {
+            await carrinhoPercursoAdicionarItemService.add(
+              codProduto: item.codProduto,
+              codUnidadeMedida: item.codUnidadeMedida,
+              quantidade: item.quantidade,
+            );
           }
-
-          final newSepararItens = await _separarConsultaServices.itensSaparar();
-          _separarGridController.updateAllGrid(newSepararItens);
-
-          await _fillGridSeparacaoItens();
-          return true;
-        } catch (err) {
-          return false;
         }
+
+        final newSepararItens = await _separarConsultaServices.itensSaparar();
+        _separarGridController.updateAllGrid(newSepararItens);
+
+        await _fillGridSeparacaoItens();
+        return true;
       },
     );
   }
@@ -1057,8 +1061,11 @@ class SeparacaoController extends GetxController {
     final carrinhoPercursoEvent =
         CarrinhoPercursoEstagioEventRepository.instancia;
     final separacaoItemEvent = SeparacaoItemEventRepository.instancia;
+    final separarEvent = SepararEventRepository.instancia;
 
     carrinhoPercursoEvent.removeListeners(_pageListerner);
     separacaoItemEvent.removeListeners(_pageListerner);
+    separarEvent.removeListeners(_pageListerner);
+    _pageListerner.clear();
   }
 }

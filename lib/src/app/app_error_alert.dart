@@ -1,24 +1,12 @@
-class AppErrorAlert extends Error {
-  final String message;
-  final int? locationCode;
-  final String? location;
-  final String? details;
+import 'package:app_expedicao/src/app/app_error.dart';
 
+class AppErrorAlert extends AppError {
   AppErrorAlert(
-    this.message, {
-    this.locationCode,
-    this.location,
-    this.details,
-  });
+    super.message, {
+    int? locationCode,
+    super.location,
+    super.details,
+  }) : super(code: locationCode);
 
-  @override
-  String toString() {
-    return '''
-      AppError{
-        message: $message, 
-        locationCode: $locationCode,
-        location: $location,
-        details: $details}
-    ''';
-  }
+  int? get locationCode => code;
 }

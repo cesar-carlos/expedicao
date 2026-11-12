@@ -2,6 +2,7 @@ import 'package:app_expedicao/src/app/app_dialog.dart';
 import 'package:app_expedicao/src/model/estoque_produto_consulta_model.dart';
 import 'package:app_expedicao/src/repository/estoque_produto/produto_consulta_repository.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
+import 'package:app_expedicao/src/app/app_error.dart';
 
 class ProdutoService {
   final produtoConsultaRepository = EstoqueProdutoConsultaRepository();
@@ -30,7 +31,7 @@ class ProdutoService {
         );
       }
     } catch (e) {
-      throw Exception('Erro ao consultar produto por código: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -56,7 +57,7 @@ class ProdutoService {
         );
       }
     } catch (e) {
-      throw Exception('Erro ao consultar produto por código de barras: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 }

@@ -1,167 +1,41 @@
-import 'dart:async';
-import 'dart:convert';
-
 import 'package:get/get.dart';
-import 'package:uuid/uuid.dart';
 
-import 'package:app_expedicao/src/app/app_error.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
-import 'package:app_expedicao/src/model/send_mutation_socket_model.dart';
-import 'package:app_expedicao/src/model/send_query_socket_model.dart';
-import 'package:app_expedicao/src/model/expedicao_carrinho_model.dart';
 import 'package:app_expedicao/src/app/app_socket_config.dart';
+import 'package:app_expedicao/src/model/expedicao_carrinho_model.dart';
 
 class CarrinhoRepository {
-  final uuid = const Uuid();
-  var socket = Get.find<AppSocketConfig>().socket;
+  final _socket = Get.find<AppSocketConfig>();
 
   Future<List<ExpedicaoCarrinhoModel>> select(QueryBuilder queryBuilder) {
-    final event = '${socket.id} carrinho.select';
-    final completer = Completer<List<ExpedicaoCarrinhoModel>>();
-    final responseIn = uuid.v4();
-
-    final send = SendQuerySocketModel(
-      session: socket.id!,
-      responseIn: responseIn,
-      where: queryBuilder.buildSqlWhere(),
-      pagination: queryBuilder.buildPagination(),
-      orderBy: queryBuilder.buildOrderByQuery(),
+    return _socket.queryMapped(
+      eventSuffix: 'carrinho.select',
+      queryBuilder: queryBuilder,
+      fromJson: ExpedicaoCarrinhoModel.fromJson,
     );
-
-    socket.emit(event, jsonEncode(send.toJson()));
-    socket.on(responseIn, (receiver) {
-      try {
-        final respose = jsonDecode(receiver);
-        final error = respose?['Error'];
-        final data = respose?['Data'] ?? [];
-
-        if (error != null) throw error;
-
-        final list = data.map<ExpedicaoCarrinhoModel>((json) {
-          return ExpedicaoCarrinhoModel.fromJson(json);
-        }).toList();
-
-        completer.complete(list);
-      } catch (e) {
-        completer.completeError(AppError(e.toString()));
-        return completer.future;
-      } finally {
-        socket.off(responseIn);
-      }
-    });
-
-    return completer.future;
   }
 
   Future<List<ExpedicaoCarrinhoModel>> insert(ExpedicaoCarrinhoModel entity) {
-    final event = '${socket.id} carrinho.insert';
-    final completer = Completer<List<ExpedicaoCarrinhoModel>>();
-    final responseIn = uuid.v4();
-
-    final send = SendMutationSocketModel(
-      session: socket.id!,
-      responseIn: responseIn,
+    return _socket.mutateMapped(
+      eventSuffix: 'carrinho.insert',
       mutation: entity.toJson(),
+      fromJson: ExpedicaoCarrinhoModel.fromJson,
     );
-
-    socket.emit(event, jsonEncode(send.toJson()));
-    socket.on(responseIn, (receiver) {
-      try {
-        final respose = jsonDecode(receiver);
-        final mutation = respose?['Mutation'] ?? [];
-        final error = respose?['Error'];
-
-        if (error != null) throw error;
-
-        final list = mutation.map<ExpedicaoCarrinhoModel>((json) {
-          return ExpedicaoCarrinhoModel.fromJson(json);
-        }).toList();
-
-        completer.complete(list);
-      } catch (e) {
-        completer.completeError(AppError(e.toString()));
-        return completer.future;
-      } finally {
-        socket.off(responseIn);
-      }
-    });
-
-    return completer.future;
   }
 
   Future<List<ExpedicaoCarrinhoModel>> update(ExpedicaoCarrinhoModel entity) {
-    final event = '${socket.id} carrinho.update';
-    final completer = Completer<List<ExpedicaoCarrinhoModel>>();
-    final responseIn = uuid.v4();
-
-    final send = SendMutationSocketModel(
-      session: socket.id!,
-      responseIn: responseIn,
+    return _socket.mutateMapped(
+      eventSuffix: 'carrinho.update',
       mutation: entity.toJson(),
+      fromJson: ExpedicaoCarrinhoModel.fromJson,
     );
-
-    try {
-      socket.emit(event, jsonEncode(send.toJson()));
-      socket.on(responseIn, (receiver) {
-        final respose = jsonDecode(receiver);
-        final mutation = respose?['Mutation'] ?? [];
-        final error = respose?['Error'];
-        socket.off(responseIn);
-
-        if (error != null) {
-          completer.completeError(error);
-          return;
-        }
-
-        final list = mutation.map<ExpedicaoCarrinhoModel>((json) {
-          return ExpedicaoCarrinhoModel.fromJson(json);
-        }).toList();
-
-        completer.complete(list);
-        return;
-      });
-
-      return completer.future;
-    } catch (e) {
-      socket.off(responseIn);
-      completer.completeError(AppError(e.toString()));
-      return completer.future;
-    }
   }
 
   Future<List<ExpedicaoCarrinhoModel>> delete(ExpedicaoCarrinhoModel entity) {
-    final event = '${socket.id} carrinho.delete';
-    final completer = Completer<List<ExpedicaoCarrinhoModel>>();
-    final responseIn = uuid.v4();
-
-    final send = SendMutationSocketModel(
-      session: socket.id!,
-      responseIn: responseIn,
+    return _socket.mutateMapped(
+      eventSuffix: 'carrinho.delete',
       mutation: entity.toJson(),
+      fromJson: ExpedicaoCarrinhoModel.fromJson,
     );
-
-    socket.emit(event, jsonEncode(send.toJson()));
-    socket.on(responseIn, (receiver) {
-      try {
-        final respose = jsonDecode(receiver);
-        final mutation = respose?['Mutation'] ?? [];
-        final error = respose?['Error'];
-
-        if (error != null) throw error;
-
-        final list = mutation.map<ExpedicaoCarrinhoModel>((json) {
-          return ExpedicaoCarrinhoModel.fromJson(json);
-        }).toList();
-
-        completer.complete(list);
-      } catch (e) {
-        completer.completeError(AppError(e.toString()));
-        return completer.future;
-      } finally {
-        socket.off(responseIn);
-      }
-    });
-
-    return completer.future;
   }
 }

@@ -1,4 +1,5 @@
 import 'package:app_expedicao/src/app/app_color.dart';
+import 'package:app_expedicao/src/app/app_error.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
@@ -10,6 +11,20 @@ import 'package:app_expedicao/src/app/app_raw_keyboard.dart';
 class MessageDialogView {
   static const double _widthForm = 370;
   static const double _heightForm = 220;
+
+  static Future<bool?> showError({
+    required BuildContext context,
+    required Object error,
+    bool canCloseWindow = false,
+  }) {
+    final appError = AppError.fromUnknown(error);
+    return show(
+      context: context,
+      message: appError.title,
+      detail: appError.userDetail,
+      canCloseWindow: canCloseWindow,
+    );
+  }
 
   static Future<bool?> show({
     required BuildContext context,

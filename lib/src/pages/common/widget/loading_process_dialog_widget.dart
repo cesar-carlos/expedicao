@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
+import 'package:app_expedicao/src/app/app_error.dart';
 import 'package:app_expedicao/src/app/app_event_state.dart';
 
 class LoadingProcessDialogWidget {
@@ -26,9 +27,10 @@ class LoadingProcessDialogWidget {
                   Get.back();
                 } catch (e) {
                   Get.back();
+                  final appError = AppError.fromUnknown(e);
                   Get.snackbar(
-                    'Processo erro',
-                    e.toString(),
+                    appError.title,
+                    appError.userDetail,
                     maxWidth: 500,
                     borderRadius: 7,
                     backgroundColor: Colors.red[600],

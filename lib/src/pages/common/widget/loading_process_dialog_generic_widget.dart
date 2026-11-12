@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
+import 'package:app_expedicao/src/app/app_error.dart';
 import 'package:app_expedicao/src/app/app_event_state.dart';
 
 class LoadingProcessDialogGenericWidget {
@@ -37,9 +38,10 @@ class LoadingProcessDialogGenericWidget {
                   Navigator.of(dialogContext).pop();
                 }
 
+                final appError = AppError.fromUnknown(e);
                 Get.snackbar(
-                  'Processo erro',
-                  e.toString(),
+                  appError.title,
+                  appError.userDetail,
                   maxWidth: 500,
                   borderRadius: 7,
                   backgroundColor: Colors.red[600],
@@ -51,7 +53,7 @@ class LoadingProcessDialogGenericWidget {
                     onPressed: () {
                       Get.closeCurrentSnackbar();
                       if (!completer.isCompleted) {
-                        completer.completeError(e);
+                        completer.completeError(AppError.fromUnknown(e));
                       }
                     },
                     child: const Text(
@@ -64,7 +66,7 @@ class LoadingProcessDialogGenericWidget {
                 );
 
                 if (!completer.isCompleted) {
-                  completer.completeError(e);
+                  completer.completeError(AppError.fromUnknown(e));
                 }
               } finally {
                 appEventState.canCloseWindow = true;

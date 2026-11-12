@@ -5,6 +5,7 @@ import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinh
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_estagio_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_repository.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
+import 'package:app_expedicao/src/app/app_error.dart';
 
 class CarrinhoPercursoServices {
   final repositoryConsulta = CarrinhoPercursoEstagioConsultaRepository();
@@ -16,9 +17,14 @@ class CarrinhoPercursoServices {
     QueryBuilder? queryBuilder,
   ]) async {
     try {
-      return await repositoryConsulta.select(queryBuilder ?? QueryBuilder());
+      return await repositoryConsulta.select(
+        (queryBuilder ?? QueryBuilder()).withAllRows(
+          orderField: 'CodCarrinhoPercurso',
+          thenBy: ['Item'],
+        ),
+      );
     } catch (e) {
-      throw Exception('Erro ao consultar percursos de carrinho: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -26,11 +32,14 @@ class CarrinhoPercursoServices {
     QueryBuilder? queryBuilder,
   ]) async {
     try {
-      final response =
-          await repositoryPercurso.select(queryBuilder ?? QueryBuilder());
+      final response = await repositoryPercurso.select(
+        (queryBuilder ?? QueryBuilder()).withAllRows(
+          orderField: 'CodCarrinhoPercurso',
+        ),
+      );
       return response;
     } catch (e) {
-      throw Exception('Erro ao selecionar carrinhos de percurso: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 }

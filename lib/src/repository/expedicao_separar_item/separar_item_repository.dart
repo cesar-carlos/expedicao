@@ -1,278 +1,77 @@
-import 'dart:async';
-import 'dart:convert';
-
 import 'package:get/get.dart';
-import 'package:uuid/uuid.dart';
 
-import 'package:app_expedicao/src/app/app_error.dart';
-import 'package:app_expedicao/src/model/send_mutation_socket_model.dart';
-import 'package:app_expedicao/src/model/send_mutations_socket_model.dart';
-import 'package:app_expedicao/src/model/expedicao_separar_item_model.dart';
-import 'package:app_expedicao/src/model/send_query_socket_model.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 import 'package:app_expedicao/src/app/app_socket_config.dart';
+import 'package:app_expedicao/src/model/expedicao_separar_item_model.dart';
 
 class SepararItemRepository {
-  final uuid = const Uuid();
-  var socket = Get.find<AppSocketConfig>().socket;
+  final _socket = Get.find<AppSocketConfig>();
 
   Future<List<ExpedicaoSepararItemModel>> select(QueryBuilder queryBuilder) {
-    final event = '${socket.id} separar.item.select';
-    final completer = Completer<List<ExpedicaoSepararItemModel>>();
-    final responseIn = uuid.v4();
-
-    final send = SendQuerySocketModel(
-      session: socket.id!,
-      responseIn: responseIn,
-      where: queryBuilder.buildSqlWhere(),
-      pagination: queryBuilder.buildPagination(),
-      orderBy: queryBuilder.buildOrderByQuery(),
+    return _socket.queryMapped(
+      eventSuffix: 'separar.item.select',
+      queryBuilder: queryBuilder,
+      fromJson: ExpedicaoSepararItemModel.fromJson,
     );
-
-    socket.emit(event, jsonEncode(send.toJson()));
-    socket.on(responseIn, (receiver) {
-      try {
-        final respose = jsonDecode(receiver);
-        final error = respose?['Error'];
-        final data = respose?['Data'] ?? [];
-
-        if (error != null) throw error;
-
-        final list = data.map<ExpedicaoSepararItemModel>((json) {
-          return ExpedicaoSepararItemModel.fromJson(json);
-        }).toList();
-
-        completer.complete(list);
-      } catch (e) {
-        completer.completeError(AppError(e.toString()));
-        return completer.future;
-      } finally {
-        socket.off(responseIn);
-      }
-    });
-
-    return completer.future;
   }
 
   Future<List<ExpedicaoSepararItemModel>> insert(
-      ExpedicaoSepararItemModel entity) {
-    final event = '${socket.id} separar.item.insert';
-    final completer = Completer<List<ExpedicaoSepararItemModel>>();
-    final responseIn = uuid.v4();
-
-    final send = SendMutationSocketModel(
-      session: socket.id!,
-      responseIn: responseIn,
+    ExpedicaoSepararItemModel entity,
+  ) {
+    return _socket.mutateMapped(
+      eventSuffix: 'separar.item.insert',
       mutation: entity.toJson(),
+      fromJson: ExpedicaoSepararItemModel.fromJson,
     );
-
-    socket.emit(event, jsonEncode(send.toJson()));
-    socket.on(responseIn, (receiver) {
-      try {
-        final respose = jsonDecode(receiver);
-        final mutation = respose?['Mutation'] ?? [];
-        final error = respose?['Error'];
-
-        if (error != null) throw error;
-
-        final list = mutation.map<ExpedicaoSepararItemModel>((json) {
-          return ExpedicaoSepararItemModel.fromJson(json);
-        }).toList();
-
-        completer.complete(list);
-      } catch (e) {
-        completer.completeError(AppError(e.toString()));
-        return completer.future;
-      } finally {
-        socket.off(responseIn);
-      }
-    });
-
-    return completer.future;
   }
 
   Future<List<ExpedicaoSepararItemModel>> insertAll(
-      List<ExpedicaoSepararItemModel> entitys) {
-    final event = '${socket.id} separar.item.insert';
-    final completer = Completer<List<ExpedicaoSepararItemModel>>();
-    final responseIn = uuid.v4();
-
-    final send = SendMutationsSocketModel(
-      session: socket.id!,
-      responseIn: responseIn,
+    List<ExpedicaoSepararItemModel> entitys,
+  ) {
+    return _socket.mutateMapped(
+      eventSuffix: 'separar.item.insert',
       mutation: entitys.map((el) => el.toJson()).toList(),
+      fromJson: ExpedicaoSepararItemModel.fromJson,
     );
-
-    socket.emit(event, jsonEncode(send.toJson()));
-    socket.on(responseIn, (receiver) {
-      try {
-        final respose = jsonDecode(receiver);
-        final mutation = respose?['Mutation'] ?? [];
-        final error = respose?['Error'];
-
-        if (error != null) throw error;
-
-        final list = mutation.map<ExpedicaoSepararItemModel>((json) {
-          return ExpedicaoSepararItemModel.fromJson(json);
-        }).toList();
-
-        completer.complete(list);
-      } catch (e) {
-        completer.completeError(AppError(e.toString()));
-        return completer.future;
-      } finally {
-        socket.off(responseIn);
-      }
-    });
-
-    return completer.future;
   }
 
   Future<List<ExpedicaoSepararItemModel>> update(
-      ExpedicaoSepararItemModel entity) {
-    final event = '${socket.id} separar.item.update';
-    final completer = Completer<List<ExpedicaoSepararItemModel>>();
-    final responseIn = uuid.v4();
-
-    final send = SendMutationSocketModel(
-      session: socket.id!,
-      responseIn: responseIn,
+    ExpedicaoSepararItemModel entity,
+  ) {
+    return _socket.mutateMapped(
+      eventSuffix: 'separar.item.update',
       mutation: entity.toJson(),
+      fromJson: ExpedicaoSepararItemModel.fromJson,
     );
-
-    socket.emit(event, jsonEncode(send.toJson()));
-    socket.on(responseIn, (receiver) {
-      try {
-        final respose = jsonDecode(receiver);
-        final mutation = respose?['Mutation'] ?? [];
-        final error = respose?['Error'];
-
-        if (error != null) throw error;
-
-        final list = mutation.map<ExpedicaoSepararItemModel>((json) {
-          return ExpedicaoSepararItemModel.fromJson(json);
-        }).toList();
-
-        completer.complete(list);
-      } catch (e) {
-        completer.completeError(AppError(e.toString()));
-        return completer.future;
-      } finally {
-        socket.off(responseIn);
-      }
-    });
-
-    return completer.future;
   }
 
   Future<List<ExpedicaoSepararItemModel>> updateAll(
-      List<ExpedicaoSepararItemModel> entitys) {
-    final event = '${socket.id} separar.item.update';
-    final completer = Completer<List<ExpedicaoSepararItemModel>>();
-    final responseIn = uuid.v4();
-
-    final send = SendMutationsSocketModel(
-      session: socket.id!,
-      responseIn: responseIn,
-      mutation: entitys.map((el) => el.toJson()).toList(),
+    List<ExpedicaoSepararItemModel> entity,
+  ) {
+    return _socket.mutateMapped(
+      eventSuffix: 'separar.item.update',
+      mutation: entity.map((el) => el.toJson()).toList(),
+      fromJson: ExpedicaoSepararItemModel.fromJson,
     );
-
-    socket.emit(event, jsonEncode(send.toJson()));
-    socket.on(responseIn, (receiver) {
-      try {
-        final respose = jsonDecode(receiver);
-        final mutation = respose?['Mutation'] ?? [];
-        final error = respose?['Error'];
-
-        if (error != null) throw error;
-
-        final list = mutation.map<ExpedicaoSepararItemModel>((json) {
-          return ExpedicaoSepararItemModel.fromJson(json);
-        }).toList();
-
-        completer.complete(list);
-      } catch (e) {
-        completer.completeError(AppError(e.toString()));
-        return completer.future;
-      } finally {
-        socket.off(responseIn);
-      }
-    });
-
-    return completer.future;
   }
 
   Future<List<ExpedicaoSepararItemModel>> delete(
-      ExpedicaoSepararItemModel entity) {
-    final event = '${socket.id} separar.item.delete';
-    final completer = Completer<List<ExpedicaoSepararItemModel>>();
-    final responseIn = uuid.v4();
-
-    final send = SendMutationSocketModel(
-      session: socket.id!,
-      responseIn: responseIn,
+    ExpedicaoSepararItemModel entity,
+  ) {
+    return _socket.mutateMapped(
+      eventSuffix: 'separar.item.delete',
       mutation: entity.toJson(),
+      fromJson: ExpedicaoSepararItemModel.fromJson,
     );
-
-    socket.emit(event, jsonEncode(send.toJson()));
-    socket.on(responseIn, (receiver) {
-      try {
-        final respose = jsonDecode(receiver);
-        final mutation = respose?['Mutation'] ?? [];
-        final error = respose?['Error'];
-
-        if (error != null) throw error;
-
-        final list = mutation.map<ExpedicaoSepararItemModel>((json) {
-          return ExpedicaoSepararItemModel.fromJson(json);
-        }).toList();
-
-        completer.complete(list);
-      } catch (e) {
-        completer.completeError(AppError(e.toString()));
-        return completer.future;
-      } finally {
-        socket.off(responseIn);
-      }
-    });
-
-    return completer.future;
   }
 
   Future<List<ExpedicaoSepararItemModel>> deleteAll(
-      List<ExpedicaoSepararItemModel> entitys) {
-    final event = '${socket.id} separar.item.delete';
-    final completer = Completer<List<ExpedicaoSepararItemModel>>();
-    final responseIn = uuid.v4();
-
-    final send = SendMutationsSocketModel(
-      session: socket.id!,
-      responseIn: responseIn,
-      mutation: entitys.map((el) => el.toJson()).toList(),
+    List<ExpedicaoSepararItemModel> entity,
+  ) {
+    return _socket.mutateMapped(
+      eventSuffix: 'separar.item.delete',
+      mutation: entity.map((el) => el.toJson()).toList(),
+      fromJson: ExpedicaoSepararItemModel.fromJson,
     );
-
-    socket.emit(event, jsonEncode(send.toJson()));
-    socket.on(responseIn, (receiver) {
-      try {
-        final respose = jsonDecode(receiver);
-        final mutation = respose?['Mutation'] ?? [];
-        final error = respose?['Error'];
-
-        if (error != null) throw error;
-
-        final list = mutation.map<ExpedicaoSepararItemModel>((json) {
-          return ExpedicaoSepararItemModel.fromJson(json);
-        }).toList();
-
-        completer.complete(list);
-      } catch (e) {
-        completer.completeError(AppError(e.toString()));
-        return completer.future;
-      } finally {
-        socket.off(responseIn);
-      }
-    });
-
-    return completer.future;
   }
 }

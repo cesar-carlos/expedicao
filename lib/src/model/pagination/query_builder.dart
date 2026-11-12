@@ -7,6 +7,8 @@ class QueryBuilder {
   Pagination? _pagination;
   final List<QueryParam> _params = [];
   final List<OrderBy> _orderBy = [];
+  bool _fetchAllPages = false;
+  int _fetchPageSize = Pagination.fetchPageSize;
 
   /// Adds a parameter to the query
   QueryBuilder addParam<P>(String key, P value, {String operator = '='}) {
@@ -49,6 +51,57 @@ class QueryBuilder {
   QueryBuilder paginate({int limit = 10, int? offset, int page = 1}) {
     _pagination = Pagination(limit: limit, offset: offset, page: page);
     return this;
+  }
+
+  /// Pede a lista inteira em páginas. Sem isto o servidor corta em 1500,
+  /// ou, na unidade de medida, devolve tudo num único payload.
+  ///
+  /// [thenBy] entra depois de [orderField] para o OFFSET não pular linha
+  /// quando o primeiro campo se repete (ex.: várias conversões do mesmo Item).
+  QueryBuilder allRows({
+    String orderField = 'Item',
+    List<String> thenBy = const [],
+    int pageSize = Pagination.fetchPageSize,
+  }) {
+    _fetchAllPages = true;
+    _fetchPageSize = pageSize < 1 ? 1 : pageSize;
+    if (_orderBy.isEmpty) {
+      orderByAsc(orderField);
+      for (final field in thenBy) {
+        if (field.isNotEmpty) {
+          orderByAsc(field);
+        }
+      }
+    }
+    return this;
+  }
+
+  QueryBuilder copy() {
+    final clone = QueryBuilder();
+    clone._params.addAll(_params);
+    clone._orderBy.addAll(_orderBy);
+    clone._pagination = _pagination;
+    clone._fetchAllPages = _fetchAllPages;
+    clone._fetchPageSize = _fetchPageSize;
+    return clone;
+  }
+
+  /// Clona e aplica [allRows] se ainda não houver página.
+  /// Não altera o builder original — vários `select` reusam o mesmo.
+  QueryBuilder withAllRows({
+    String orderField = 'Item',
+    List<String> thenBy = const [],
+    int pageSize = Pagination.fetchPageSize,
+  }) {
+    final query = copy();
+    if (query._fetchAllPages || query._pagination != null) {
+      return query;
+    }
+    return query.allRows(
+      orderField: orderField,
+      thenBy: thenBy,
+      pageSize: pageSize,
+    );
   }
 
   /// Adds ORDER BY clause
@@ -144,6 +197,10 @@ class QueryBuilder {
   /// Gets pagination if set
   Pagination? get pagination => _pagination;
 
+  bool get fetchAllPages => _fetchAllPages;
+
+  int get fetchPageSize => _fetchPageSize;
+
   /// Gets ORDER BY clauses
   List<OrderBy> get orderByClauses => List.unmodifiable(_orderBy);
 
@@ -152,6 +209,8 @@ class QueryBuilder {
     _params.clear();
     _pagination = null;
     _orderBy.clear();
+    _fetchAllPages = false;
+    _fetchPageSize = Pagination.fetchPageSize;
   }
 
   /// Formats a value for query string

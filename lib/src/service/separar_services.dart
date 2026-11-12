@@ -8,6 +8,7 @@ import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separar_model.dart';
 import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
+import 'package:app_expedicao/src/app/app_error.dart';
 
 class SepararServices {
   final ExpedicaoSepararModel separar;
@@ -35,7 +36,7 @@ class SepararServices {
 
       await separarRepository.update(newSeparar);
     } catch (e) {
-      throw Exception('Erro ao iniciar separação: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -44,11 +45,12 @@ class SepararServices {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', separar.codEmpresa)
           .equals('CodSepararEstoque', separar.codSepararEstoque)
-          .equals('Situacao', ExpedicaoItemSituacaoModel.separado);
+          .equals('Situacao', ExpedicaoItemSituacaoModel.separado)
+          .allRows();
 
       return await separacaoItemRepository.select(queryBuilder);
     } catch (e) {
-      throw Exception('Erro ao buscar itens de separação: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -68,7 +70,7 @@ class SepararServices {
     try {
       await SepararRepository().update(separar);
     } catch (e) {
-      throw Exception('Erro ao atualizar separação: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -85,7 +87,7 @@ class SepararServices {
       );
       return carrinhoPercurso.isNotEmpty;
     } catch (e) {
-      throw Exception('Erro ao verificar percurso existente: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -98,7 +100,7 @@ class SepararServices {
         situacao: ExpedicaoSituacaoModel.emSeparacao,
       ).execute();
     } catch (e) {
-      throw Exception('Erro ao iniciar percurso: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 }

@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:get/get.dart';
 
 import 'package:app_expedicao/src/app/app_error.dart';
@@ -58,7 +59,7 @@ class ArmazenarSeparacaoAdicionarService {
       await _liberarCarrinhos(carrinhoPercurso);
     } catch (e) {
       if (e is AppError) rethrow;
-      throw Exception('Erro ao adicionar armazenamento de separação: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -77,20 +78,25 @@ class ArmazenarSeparacaoAdicionarService {
       return result.first;
     } catch (e) {
       if (e is AppError) rethrow;
-      throw Exception('Erro ao buscar separação: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
   Future<List<ExpedicaSeparacaoItemResumoConsultaModel>>
-      _findItensSeparacao() async {
+  _findItensSeparacao() async {
     try {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', carrinhoPercurso.codEmpresa)
           .equals('CodSepararEstoque', carrinhoPercurso.codOrigem)
-          .equals('Situacao', ExpedicaoSituacaoModel.separado);
+          .equals('Situacao', ExpedicaoSituacaoModel.separado)
+          .allRows(
+            orderField: 'CodProduto',
+            thenBy: ['ItemCarrinhoPercurso', 'CodUnidadeMedida'],
+          );
 
-      final result =
-          await separacaoItemResumoConsultaRepository.select(queryBuilder);
+      final result = await separacaoItemResumoConsultaRepository.select(
+        queryBuilder,
+      );
 
       if (result.isEmpty) {
         throw AppError('Nenhum item Separacao encontrado');
@@ -99,7 +105,7 @@ class ArmazenarSeparacaoAdicionarService {
       return result;
     } catch (e) {
       if (e is AppError) rethrow;
-      throw Exception('Erro ao buscar itens de separação: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -127,28 +133,31 @@ class ArmazenarSeparacaoAdicionarService {
     final newItens = <ExpedicaoArmazenarItem>[];
 
     for (var item in itens) {
-      newItens.add(ExpedicaoArmazenarItem(
-        codEmpresa: armazenar.codEmpresa,
-        codArmazenar: armazenar.codArmazenar,
-        item: '00000',
-        situacao: ExpedicaoSituacaoModel.aguardando,
-        codcarrinhoPercurso: item.codCarrinhoPercurso,
-        itemcarrinhoPercurso: item.itemCarrinhoPercurso,
-        codLocalArmazenagem: item.codLocalArmazenagem,
-        codProduto: item.codProduto,
-        nomeProduto: item.nomeProduto,
-        codUnidadeMedida: item.codUnidadeMedida,
-        codProdutoEndereco: item.codProdutoEndereco,
-        codigoBarras: item.codigoBarras,
-        quantidade: item.quantidade,
-      ));
+      newItens.add(
+        ExpedicaoArmazenarItem(
+          codEmpresa: armazenar.codEmpresa,
+          codArmazenar: armazenar.codArmazenar,
+          item: '00000',
+          situacao: ExpedicaoSituacaoModel.aguardando,
+          codcarrinhoPercurso: item.codCarrinhoPercurso,
+          itemcarrinhoPercurso: item.itemCarrinhoPercurso,
+          codLocalArmazenagem: item.codLocalArmazenagem,
+          codProduto: item.codProduto,
+          nomeProduto: item.nomeProduto,
+          codUnidadeMedida: item.codUnidadeMedida,
+          codProdutoEndereco: item.codProdutoEndereco,
+          codigoBarras: item.codigoBarras,
+          quantidade: item.quantidade,
+        ),
+      );
     }
 
     return newItens;
   }
 
   Future<void> _finalizarCarrinhoPercurso(
-      ExpedicaoCarrinhoPercursoModel model) async {
+    ExpedicaoCarrinhoPercursoModel model,
+  ) async {
     try {
       final newCarrinhoPercurso = model.copyWith(
         situacao: ExpedicaoSituacaoModel.finalizada,
@@ -158,7 +167,7 @@ class ArmazenarSeparacaoAdicionarService {
 
       await carrinhoPercursoRepository.update(newCarrinhoPercurso);
     } catch (e) {
-      throw Exception('Erro ao finalizar carrinho percurso: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -167,19 +176,22 @@ class ArmazenarSeparacaoAdicionarService {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', model.codEmpresa)
           .equals('CodCarrinhoPercurso', model.codCarrinhoPercurso)
-          .equals('Situacao', ExpedicaoSituacaoModel.separado);
+          .equals('Situacao', ExpedicaoSituacaoModel.separado)
+          .allRows();
 
-      final carrinhosPercursoEstagio =
-          await carrinhoPercursoEstagioRepository.select(queryBuilder);
+      final carrinhosPercursoEstagio = await carrinhoPercursoEstagioRepository
+          .select(queryBuilder);
 
-      final codCarrinhos =
-          carrinhosPercursoEstagio.map((e) => e.codCarrinho).toList();
+      final codCarrinhos = carrinhosPercursoEstagio
+          .map((e) => e.codCarrinho)
+          .toList();
 
       if (codCarrinhos.isEmpty) return;
 
       final carrinhosQueryBuilder = QueryBuilder()
           .equals('CodEmpresa', model.codEmpresa)
-          .inList('CodCarrinho', codCarrinhos);
+          .inList('CodCarrinho', codCarrinhos)
+          .allRows(orderField: 'CodCarrinho');
 
       final carrinhos = await carrinhoRepository.select(carrinhosQueryBuilder);
 
@@ -191,7 +203,7 @@ class ArmazenarSeparacaoAdicionarService {
         await carrinhoRepository.update(newCarrinho);
       }
     } catch (e) {
-      throw Exception('Erro ao liberar carrinhos: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 }

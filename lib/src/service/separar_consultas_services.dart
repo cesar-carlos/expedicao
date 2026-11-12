@@ -13,6 +13,7 @@ import 'package:app_expedicao/src/model/expedicao_item_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 import 'package:app_expedicao/src/service/separacao_carrinho_validacao.dart';
+import 'package:app_expedicao/src/app/app_error.dart';
 
 class SepararConsultaServices {
   final int codEmpresa;
@@ -44,7 +45,7 @@ class SepararConsultaServices {
 
       return response.last;
     } catch (e) {
-      throw Exception('Erro ao buscar separação: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -52,11 +53,12 @@ class SepararConsultaServices {
     try {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', codEmpresa)
-          .equals('CodSepararEstoque', codSepararEstoque);
+          .equals('CodSepararEstoque', codSepararEstoque)
+          .allRows();
 
       return await separarItemConsultaRepository.select(queryBuilder);
     } catch (e) {
-      throw Exception('Erro ao buscar itens para separar: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -65,13 +67,14 @@ class SepararConsultaServices {
     try {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', codEmpresa)
-          .equals('CodSepararEstoque', codSepararEstoque);
+          .equals('CodSepararEstoque', codSepararEstoque)
+          .allRows(thenBy: ['ItemUnidadeMedida']);
 
       return await separarItemUnidadeMedidaConsultaRepository.select(
         queryBuilder,
       );
     } catch (e) {
-      throw Exception('Erro ao buscar unidades de medida dos itens: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -79,11 +82,12 @@ class SepararConsultaServices {
     try {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', codEmpresa)
-          .equals('CodSepararEstoque', codSepararEstoque);
+          .equals('CodSepararEstoque', codSepararEstoque)
+          .allRows();
 
       return await separacaoItemConsultaRepository.select(queryBuilder);
     } catch (e) {
-      throw Exception('Erro ao buscar itens de separação: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -92,17 +96,20 @@ class SepararConsultaServices {
     String? itemCarrinhoPercurso,
   }) async {
     try {
-      final itensSeparacaoList = await itensSeparacao();
+      final queryBuilder = QueryBuilder()
+          .equals('CodEmpresa', codEmpresa)
+          .equals('CodSepararEstoque', codSepararEstoque)
+          .equals('CodCarrinho', codCarrinho);
 
-      return itensSeparacaoList.where((el) {
-        final mesmoCarrinho = el.codCarrinho == codCarrinho;
-        final mesmoPercurso =
-            itemCarrinhoPercurso == null ||
-            el.itemCarrinhoPercurso == itemCarrinhoPercurso;
-        return mesmoCarrinho && mesmoPercurso;
-      }).toList();
+      if (itemCarrinhoPercurso != null && itemCarrinhoPercurso.isNotEmpty) {
+        queryBuilder.equals('ItemCarrinhoPercurso', itemCarrinhoPercurso);
+      }
+
+      return await separacaoItemConsultaRepository.select(
+        queryBuilder.allRows(),
+      );
     } catch (e) {
-      throw Exception('Erro ao buscar itens do carrinho: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -123,10 +130,10 @@ class SepararConsultaServices {
       }
 
       return await carrinhoPercursoEstagioConsultaRepository.select(
-        queryBuilder,
+        queryBuilder.allRows(),
       );
     } catch (e) {
-      throw Exception('Erro ao buscar carrinhos do percurso: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -137,7 +144,7 @@ class SepararConsultaServices {
         (el) => el.quantidade == el.quantidadeSeparacao,
       );
     } catch (e) {
-      throw Exception('Erro ao verificar se separação está completa: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -171,7 +178,7 @@ class SepararConsultaServices {
         somenteItensDoCarrinho: itensSeparadosCarrinho.map(_toQuantidadeItem),
       );
     } catch (e) {
-      throw Exception('Erro ao validar carrinho: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -208,7 +215,7 @@ class SepararConsultaServices {
         (el) => situacoesAbertas.contains(el.situacao),
       );
     } catch (e) {
-      throw Exception('Erro ao verificar se existe carrinho aberto: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 }

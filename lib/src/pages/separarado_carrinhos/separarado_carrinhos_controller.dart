@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
+import 'package:app_expedicao/src/app/app_error.dart';
 import 'package:app_expedicao/src/model/usuario_consulta.dart';
 import 'package:app_expedicao/src/service/carrinho_service.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
@@ -45,6 +46,11 @@ class _SaveCartResultado {
     this.detail, {
     this.atualizarItens = false,
   }) : sucesso = false;
+
+  factory _SaveCartResultado.fromError(Object err) {
+    final error = AppError.fromUnknown(err);
+    return _SaveCartResultado.erro(error.title, error.userDetail);
+  }
 
   final bool sucesso;
   final String? message;
@@ -169,7 +175,7 @@ class SeparadoCarrinhosController extends GetxController {
               );
 
           if (carrinho.isEmpty || carrinhosPercursoEstagio.isEmpty) {
-            throw Exception(
+            throw AppError(
               'Carrinho não encontrado na tabela percurso estagio!',
             );
           }
@@ -178,7 +184,7 @@ class SeparadoCarrinhosController extends GetxController {
           if (carrinhoPercursoEstagio.codUsuarioInicio !=
                   _processoExecutavel.codUsuario &&
               _usuarioLogado.excluiCarrinhoOutroUsuario != 'S') {
-            throw Exception(
+            throw AppError(
               'Carrinho não pode ser cancelado. Solicite para o usuario ${carrinhoPercursoEstagio.nomeUsuarioInicio} fazer o cancelamento!',
             );
           }
@@ -397,18 +403,12 @@ class SeparadoCarrinhosController extends GetxController {
               try {
                 return await _persistirSaveCart(item);
               } catch (err) {
-                return _SaveCartResultado.erro(
-                  'Erro ao salvar carrinho!',
-                  err.toString(),
-                );
+                return _SaveCartResultado.fromError(err);
               }
             },
           );
     } catch (err) {
-      resultado = _SaveCartResultado.erro(
-        'Erro ao salvar carrinho!',
-        err.toString(),
-      );
+      resultado = _SaveCartResultado.fromError(err);
     } finally {
       _processando = false;
     }
@@ -422,8 +422,9 @@ class SeparadoCarrinhosController extends GetxController {
     if (!resultado.sucesso) {
       await MessageDialogView.show(
         context: Get.context!,
-        message: resultado.message ?? 'Erro ao salvar carrinho!',
-        detail: resultado.detail ?? 'Não foi possível salvar o carrinho.',
+        message: resultado.message ?? 'Não foi possível salvar o carrinho',
+        detail: resultado.detail ??
+            'Tente novamente. Se o problema continuar, verifique a conexão.',
       );
       return false;
     }
@@ -613,18 +614,12 @@ class SeparadoCarrinhosController extends GetxController {
               try {
                 return await _persistirReopenCart(item);
               } catch (err) {
-                return _SaveCartResultado.erro(
-                  'Erro ao reabrir carrinho!',
-                  err.toString(),
-                );
+                return _SaveCartResultado.fromError(err);
               }
             },
           );
     } catch (err) {
-      resultado = _SaveCartResultado.erro(
-        'Erro ao reabrir carrinho!',
-        err.toString(),
-      );
+      resultado = _SaveCartResultado.fromError(err);
     } finally {
       _processando = false;
     }
@@ -632,7 +627,7 @@ class SeparadoCarrinhosController extends GetxController {
     if (!resultado.sucesso) {
       await MessageDialogView.show(
         context: Get.context!,
-        message: resultado.message ?? 'Erro ao reabrir carrinho!',
+        message: resultado.message ?? 'Não foi possível reabrir o carrinho',
         detail: resultado.detail ?? 'Não foi possível reabrir o carrinho.',
       );
       return false;

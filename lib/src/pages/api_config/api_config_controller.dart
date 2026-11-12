@@ -1,7 +1,8 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
+import 'package:app_expedicao/src/app/app_client_http.dart';
+import 'package:app_expedicao/src/app/app_socket_config.dart';
 import 'package:app_expedicao/src/app/app_Api_file_init.dart';
 import 'package:app_expedicao/src/pages/common/widget/message_dialog_widget.dart';
 import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog_generic_widget.dart';
@@ -49,7 +50,6 @@ class ApiConfigController extends GetxController {
   Future<bool> testApi() async {
     String host = apiNameController.text.trim();
     String port = portController.text.replaceAll('.', '');
-    var url = Uri.http('$host:$port', '/health');
 
     if (host.isEmpty || port.isEmpty) {
       customDialog(
@@ -62,22 +62,17 @@ class ApiConfigController extends GetxController {
       return false;
     }
 
-    return await LoadingProcessDialogGenericWidget.show<bool>(
-      canCloseWindow: false,
-      context: Get.context!,
-      process: () async {
-        try {
-          final response = await http.get(url);
-          if (response.statusCode == 200) {
-            return true;
-          } else {
-            return false;
-          }
-        } catch (err) {
-          throw Exception(err);
-        }
-      },
-    );
+    try {
+      return await LoadingProcessDialogGenericWidget.show<bool>(
+        canCloseWindow: false,
+        context: Get.context!,
+        process: () {
+          return Get.find<AppClientHttp>().ping(host: host, port: port);
+        },
+      );
+    } catch (_) {
+      return false;
+    }
   }
 
   void voltar() {
@@ -95,6 +90,12 @@ class ApiConfigController extends GetxController {
       if (!respose) return;
 
       await AppApiFileInit.setConfg(apiServerModel);
+      if (Get.isRegistered<AppClientHttp>()) {
+        await Get.find<AppClientHttp>().applyConfig();
+      }
+      if (Get.isRegistered<AppSocketConfig>()) {
+        await Get.find<AppSocketConfig>().reconnectFromConfig();
+      }
       Get.toNamed(AppRouter.serverConfig);
     }
   }

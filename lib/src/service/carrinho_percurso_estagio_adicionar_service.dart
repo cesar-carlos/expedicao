@@ -11,6 +11,7 @@ import 'package:app_expedicao/src/model/expedicao_carrinho_model.dart';
 import 'package:app_expedicao/src/model/expedicao_estagio_model.dart';
 import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
+import 'package:app_expedicao/src/app/app_error.dart';
 
 class CarrinhoPercursoEstagioAdicionarService {
   static final Map<String, ExpedicaoEstagioModel?> _estagioAtivoPorOrigem = {};
@@ -43,7 +44,7 @@ class CarrinhoPercursoEstagioAdicionarService {
 
       return null;
     } catch (e) {
-      throw Exception('Erro ao adicionar carrinho percurso estágio: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -68,7 +69,7 @@ class CarrinhoPercursoEstagioAdicionarService {
         nomeUsuarioInicio: _processo.nomeUsuario,
       );
     } catch (e) {
-      throw Exception('Erro ao criar percurso estágio: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -105,7 +106,7 @@ class CarrinhoPercursoEstagioAdicionarService {
       _estagioAtivoPorOrigem[origem] = estagio;
       return estagio;
     } catch (e) {
-      throw Exception('Erro ao buscar percurso estágio: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 }

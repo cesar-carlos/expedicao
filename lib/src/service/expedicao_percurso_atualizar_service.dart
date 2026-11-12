@@ -2,6 +2,7 @@ import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_repository.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
+import 'package:app_expedicao/src/app/app_error.dart';
 
 class ExpedicaoPercursoAtualizarService {
   final int codEmpresa;
@@ -29,7 +30,7 @@ class ExpedicaoPercursoAtualizarService {
           await carrinhoPercursoRepository.select(queryBuilder);
 
       if (carrinhosPercurso.isEmpty) {
-        throw Exception('Percurso não encontrado');
+        throw AppError('Percurso não encontrado');
       }
 
       final carrinhoPercurso =
@@ -39,15 +40,12 @@ class ExpedicaoPercursoAtualizarService {
           await carrinhoPercursoRepository.update(carrinhoPercurso);
 
       if (response.isEmpty) {
-        throw Exception('Erro ao atualizar percurso');
+        throw AppError('Erro ao atualizar percurso');
       }
 
       return response.first;
     } catch (e) {
-      if (e is Exception && e.toString().contains('Percurso não encontrado')) {
-        rethrow;
-      }
-      throw Exception('Erro ao atualizar percurso de expedição: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 }

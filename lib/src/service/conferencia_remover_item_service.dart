@@ -2,14 +2,13 @@ import 'package:app_expedicao/src/repository/expedicao_conferencia_item/conferen
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferencia_item_model.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
+import 'package:app_expedicao/src/app/app_error.dart';
 
 class ConferenciaRemoverItemService {
   final conferenciaItemRepository = ConferenciaItemRepository();
   final ExpedicaoCarrinhoPercursoEstagioConsultaModel percursoEstagioConsulta;
 
-  ConferenciaRemoverItemService({
-    required this.percursoEstagioConsulta,
-  });
+  ConferenciaRemoverItemService({required this.percursoEstagioConsulta});
 
   Future<void> remove({required String item}) async {
     try {
@@ -24,7 +23,7 @@ class ConferenciaRemoverItemService {
         await conferenciaItemRepository.delete(el);
       }
     } catch (e) {
-      throw Exception('Erro ao remover item da conferência: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -33,7 +32,7 @@ class ConferenciaRemoverItemService {
       final conferenciaItens = await _getConferenciaItens();
       await conferenciaItemRepository.deleteAll(conferenciaItens);
     } catch (e) {
-      throw Exception('Erro ao remover todos os itens da conferência: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -42,24 +41,26 @@ class ConferenciaRemoverItemService {
       final conferenciaItens = await _getConferenciaItensCarrinho();
       await conferenciaItemRepository.deleteAll(conferenciaItens);
     } catch (e) {
-      throw Exception(
-          'Erro ao remover todos os itens do carrinho da conferência: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
   Future<List<ExpedicaoConferenciaItemModel>>
-      _getConferenciaItensCarrinho() async {
+  _getConferenciaItensCarrinho() async {
     try {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', percursoEstagioConsulta.codEmpresa)
           .equals('CodConferir', percursoEstagioConsulta.codOrigem)
-          .equals('CodCarrinhoPercurso',
-              percursoEstagioConsulta.codCarrinhoPercurso)
-          .equals('ItemCarrinhoPercurso', percursoEstagioConsulta.item);
+          .equals(
+            'CodCarrinhoPercurso',
+            percursoEstagioConsulta.codCarrinhoPercurso,
+          )
+          .equals('ItemCarrinhoPercurso', percursoEstagioConsulta.item)
+          .allRows();
 
       return await conferenciaItemRepository.select(queryBuilder);
     } catch (e) {
-      throw Exception('Erro ao buscar itens de conferência do carrinho: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -67,11 +68,12 @@ class ConferenciaRemoverItemService {
     try {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', percursoEstagioConsulta.codEmpresa)
-          .equals('CodConferir', percursoEstagioConsulta.codOrigem);
+          .equals('CodConferir', percursoEstagioConsulta.codOrigem)
+          .allRows();
 
       return await conferenciaItemRepository.select(queryBuilder);
     } catch (e) {
-      throw Exception('Erro ao buscar itens de conferência: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 }

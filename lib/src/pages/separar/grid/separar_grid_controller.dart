@@ -51,7 +51,6 @@ class SepararGridController extends GetxController {
     _sources.remove(source);
   }
 
-
   @override
   void onClose() {
     isComplitListiner.close();
@@ -133,10 +132,12 @@ class SepararGridController extends GetxController {
 
   void removeGrid(ExpedicaoSepararItemConsultaModel item) {
     final sortIndex = _itensSort.indexWhere((el) => el.item == item.item);
-    _itens.removeWhere((el) =>
-        el.codEmpresa == item.codEmpresa &&
-        el.codSepararEstoque == item.codSepararEstoque &&
-        el.item == item.item);
+    _itens.removeWhere(
+      (el) =>
+          el.codEmpresa == item.codEmpresa &&
+          el.codSepararEstoque == item.codSepararEstoque &&
+          el.item == item.item,
+    );
     if (sortIndex >= 0) {
       _itensSort.removeAt(sortIndex);
       for (final source in _sources) {
@@ -165,7 +166,8 @@ class SepararGridController extends GetxController {
   }
 
   void addAllUnidade(
-      List<ExpedicaoSepararItemUnidadeMedidaConsultaModel> itens) {
+    List<ExpedicaoSepararItemUnidadeMedidaConsultaModel> itens,
+  ) {
     _itemUnids.addAll(itens);
   }
 
@@ -178,7 +180,8 @@ class SepararGridController extends GetxController {
   }
 
   void updateAllUnidade(
-      List<ExpedicaoSepararItemUnidadeMedidaConsultaModel> itens) {
+    List<ExpedicaoSepararItemUnidadeMedidaConsultaModel> itens,
+  ) {
     for (var el in itens) {
       final index = _itemUnids.indexWhere((i) => i.item == el.item);
       if (index < 0) {
@@ -189,10 +192,12 @@ class SepararGridController extends GetxController {
   }
 
   void removeUnidade(ExpedicaoSepararItemUnidadeMedidaConsultaModel item) {
-    _itemUnids.removeWhere((el) =>
-        el.codEmpresa == item.codEmpresa &&
-        el.codSepararEstoque == item.codSepararEstoque &&
-        el.item == item.item);
+    _itemUnids.removeWhere(
+      (el) =>
+          el.codEmpresa == item.codEmpresa &&
+          el.codSepararEstoque == item.codSepararEstoque &&
+          el.item == item.item,
+    );
   }
 
   bool _applyingSelection = false;
@@ -204,11 +209,7 @@ class SepararGridController extends GetxController {
     bool scrollMain = true,
     bool scrollSeparacao = true,
   }) {
-    _applySelectedRow(
-      dataGridController,
-      index,
-      scroll: scroll && scrollMain,
-    );
+    _applySelectedRow(dataGridController, index, scroll: scroll && scrollMain);
     _applySelectedRow(
       dataGridControllerSeparacao,
       index,
@@ -254,11 +255,7 @@ class SepararGridController extends GetxController {
       return;
     }
 
-    target.selectAndScrollToRow(
-      index,
-      scroll: scroll,
-      rowCount: rowCount,
-    );
+    target.selectAndScrollToRow(index, scroll: scroll, rowCount: rowCount);
   }
 
   int _sortedInsertIndex(String item) {
@@ -395,7 +392,8 @@ class SepararGridController extends GetxController {
   }
 
   List<ExpedicaoSepararItemUnidadeMedidaConsultaModel>? findUnidadesProduto(
-      int codProduto) {
+    int codProduto,
+  ) {
     final el = _itemUnids.where((el) => el.codProduto == codProduto).toList();
     return el;
   }
@@ -410,7 +408,8 @@ class SepararGridController extends GetxController {
           .equals('CodEmpresa', el.codEmpresa)
           .equals('CodSepararEstoque', el.codSepararEstoque)
           .equals('CodProduto', el.codProduto)
-          .notEquals('Situacao', ExpedicaoSituacaoModel.cancelada);
+          .notEquals('Situacao', ExpedicaoSituacaoModel.cancelada)
+          .allRows();
 
       final separacaoItens = await repository.select(queryBuilder);
 
@@ -420,7 +419,9 @@ class SepararGridController extends GetxController {
       }
 
       double totalSeparado = separacaoItens.fold<double>(
-          0.00, (previousValue, element) => previousValue + element.quantidade);
+        0.00,
+        (previousValue, element) => previousValue + element.quantidade,
+      );
 
       separarItem.add(el.copyWith(quantidadeSeparacao: totalSeparado));
     }
@@ -472,11 +473,7 @@ class SepararGridController extends GetxController {
 
     if (_processoExecutavel.codSetorEstoque != null) {
       if (item.codSetorEstoque != _processoExecutavel.codSetorEstoque) {
-        return Icon(
-          BootstrapIcons.ban,
-          color: Colors.red,
-          size: iconSize,
-        );
+        return Icon(BootstrapIcons.ban, color: Colors.red, size: iconSize);
       }
     }
 

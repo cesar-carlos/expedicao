@@ -9,6 +9,7 @@ import 'package:app_expedicao/src/repository/expedicao_carrinhos/carrinho_reposi
 import 'package:app_expedicao/src/model/expedicao_cancelamento_model.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_model.dart';
+import 'package:app_expedicao/src/app/app_error.dart';
 
 class CarrinhoPercursoEstagioCancelarService {
   final _processo = Get.find<ProcessoExecutavelModel>();
@@ -36,7 +37,7 @@ class CarrinhoPercursoEstagioCancelarService {
       await carrinhoPercursoEstagioRepository.update(newPercursoEstagio);
       await carrinhoRepository.update(carrinho);
     } catch (e) {
-      throw Exception('Erro ao cancelar carrinho de percurso estágio: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -56,7 +57,7 @@ class CarrinhoPercursoEstagioCancelarService {
         observacaoCancelamento: null,
       );
     } catch (e) {
-      throw Exception('Erro ao criar registro de cancelamento: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 }

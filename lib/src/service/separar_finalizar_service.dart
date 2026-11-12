@@ -56,7 +56,7 @@ class SepararFinalizarService {
       //   await _addArmazenar(newCarrinhoPercurso);
       // }
     } catch (e) {
-      throw Exception('Erro ao finalizar separação: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -76,7 +76,7 @@ class SepararFinalizarService {
       return models.first;
     } catch (e) {
       if (e is AppError) rethrow;
-      throw Exception('Erro ao buscar separação: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -96,7 +96,7 @@ class SepararFinalizarService {
       return models.first;
     } catch (e) {
       if (e is AppError) rethrow;
-      throw Exception('Erro ao buscar tipo de operação: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -104,7 +104,7 @@ class SepararFinalizarService {
     try {
       await ConferirSeparacaoAdicionarService(model).execute();
     } catch (e) {
-      throw Exception('Erro ao criar conferência: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -112,7 +112,7 @@ class SepararFinalizarService {
     try {
       await ArmazenarSeparacaoAdicionarService(model).execute();
     } catch (e) {
-      throw Exception('Erro ao criar armazenamento: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 }

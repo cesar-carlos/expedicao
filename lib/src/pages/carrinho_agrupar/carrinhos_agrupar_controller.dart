@@ -467,18 +467,17 @@ class CarrinhosAgruparController extends GetxController {
             _carrinhosAgruparGridController.update();
             return true;
           } on AppErrorAlert catch (err) {
-            await MessageDialogView.show(
+            await MessageDialogView.showError(
               context: Get.context!,
-              message: err.message,
-              detail: err.details ?? '',
+              error: err,
             );
 
-            return false;
-          } catch (err) {
             return false;
           }
         },
       );
+    } catch (_) {
+      // O snackbar do loading já mostrou AppError.display.
     } finally {
       _processando = false;
     }
@@ -505,18 +504,17 @@ class CarrinhosAgruparController extends GetxController {
             _carrinhosAgruparGridController.update();
             return true;
           } on AppErrorAlert catch (err) {
-            await MessageDialogView.show(
+            await MessageDialogView.showError(
               context: Get.context!,
-              message: err.message,
-              detail: err.details ?? '',
+              error: err,
             );
 
-            return false;
-          } catch (err) {
             return false;
           }
         },
       );
+    } catch (_) {
+      // O snackbar do loading já mostrou AppError.display.
     } finally {
       _processando = false;
     }
@@ -559,18 +557,17 @@ class CarrinhosAgruparController extends GetxController {
             _carrinhosAgruparGridController.update();
             return true;
           } on AppErrorAlert catch (err) {
-            await MessageDialogView.show(
+            await MessageDialogView.showError(
               context: Get.context!,
-              message: err.message,
-              detail: err.details ?? '',
+              error: err,
             );
 
-            return false;
-          } catch (err) {
             return false;
           }
         },
       );
+    } catch (_) {
+      // O snackbar do loading já mostrou AppError.display.
     } finally {
       _processando = false;
     }
@@ -596,18 +593,17 @@ class CarrinhosAgruparController extends GetxController {
             _carrinhosAgruparGridController.update();
             return true;
           } on AppErrorAlert catch (err) {
-            await MessageDialogView.show(
+            await MessageDialogView.showError(
               context: Get.context!,
-              message: err.message,
-              detail: err.details ?? '',
+              error: err,
             );
 
-            return false;
-          } catch (err) {
             return false;
           }
         },
       );
+    } catch (_) {
+      // O snackbar do loading já mostrou AppError.display.
     } finally {
       _processando = false;
     }

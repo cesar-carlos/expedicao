@@ -13,6 +13,7 @@ import 'package:app_expedicao/src/model/expedicao_cancelamento_model.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
+import 'package:app_expedicao/src/app/app_error.dart';
 
 class CarrinhoPercursoEstagioAgruparService {
   final int codEmpresa;
@@ -34,13 +35,15 @@ class CarrinhoPercursoEstagioAgruparService {
   });
 
   static Future<List<ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel>>
-      consulta([QueryBuilder? queryBuilder]) async {
+  consulta([QueryBuilder? queryBuilder]) async {
     try {
       return await CarrinhoPercursoAgrupamentoConsultaRepository().select(
-        queryBuilder ?? QueryBuilder(),
+        (queryBuilder ?? QueryBuilder()).withAllRows(
+          orderField: 'ItemCarrinhoPercurso',
+        ),
       );
     } catch (e) {
-      throw Exception('Erro ao consultar agrupamentos: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -53,18 +56,19 @@ class CarrinhoPercursoEstagioAgruparService {
           .equals('CodCarrinhoPercurso', codCarrinhoPercurso)
           .equals('ItemCarrinhoPercurso', itemCarrinhoPercurso);
 
-      final result = await carrinhoPercursoAgrupamentoConsultaRepository
-          .select(queryBuilder);
+      final result = await carrinhoPercursoAgrupamentoConsultaRepository.select(
+        queryBuilder,
+      );
 
       if (result.isEmpty) return null;
       return result.first;
     } catch (e) {
-      throw Exception('Erro ao buscar carrinho percurso: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
   Future<List<ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel>>
-      carrinhosPercurso(
+  carrinhosPercurso(
     ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel carrinhoAgrupador,
   ) async {
     try {
@@ -73,13 +77,15 @@ class CarrinhoPercursoEstagioAgruparService {
           .equals('CodCarrinhoPercurso', carrinhoAgrupador.codCarrinhoPercurso)
           .equals('Origem', carrinhoAgrupador.origem)
           .notEquals('CodCarrinho', carrinhoAgrupador.codCarrinho)
-          .notEquals('Situacao', ExpedicaoSituacaoModel.cancelada);
+          .notEquals('Situacao', ExpedicaoSituacaoModel.cancelada)
+          .allRows(orderField: 'ItemCarrinhoPercurso');
 
-      final result = await carrinhoPercursoAgrupamentoConsultaRepository
-          .select(queryBuilder);
+      final result = await carrinhoPercursoAgrupamentoConsultaRepository.select(
+        queryBuilder,
+      );
       return result;
     } catch (e) {
-      throw Exception('Erro ao buscar carrinhos percurso para agrupamento: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -137,12 +143,12 @@ class CarrinhoPercursoEstagioAgruparService {
       await carrinhoPercursoAgrupamentoRepository.insert(agrupado);
     } catch (e) {
       if (e is AppErrorAlert) rethrow;
-      throw Exception('Erro ao agrupar carrinho: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
   Future<List<ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel>>
-      agruparTodosCarrinho(
+  agruparTodosCarrinho(
     ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel carrinhoAgrupador,
   ) async {
     try {
@@ -152,11 +158,13 @@ class CarrinhoPercursoEstagioAgruparService {
           .equals('Origem', carrinhoAgrupador.origem)
           .notEquals('CodCarrinho', carrinhoAgrupador.codCarrinho)
           .equals('CarrinhoAgrupador', 'N')
-          .equals('Situacao', ExpedicaoSituacaoModel.conferido);
+          .equals('Situacao', ExpedicaoSituacaoModel.conferido)
+          .allRows(orderField: 'ItemCarrinhoPercurso');
 
       final carrinhoPercursoAgrupamentoConsulta =
-          await carrinhoPercursoAgrupamentoConsultaRepository
-              .select(queryBuilder);
+          await carrinhoPercursoAgrupamentoConsultaRepository.select(
+            queryBuilder,
+          );
 
       if (carrinhoPercursoAgrupamentoConsulta.isEmpty) {
         throw AppErrorAlert('Não há carrinhos para agrupar');
@@ -172,13 +180,15 @@ class CarrinhoPercursoEstagioAgruparService {
           .equals('Origem', carrinhoAgrupador.origem)
           .notEquals('CodCarrinho', carrinhoAgrupador.codCarrinho)
           .equals('Situacao', ExpedicaoSituacaoModel.agrupado)
-          .equals('CodCarrinhoAgrupador', carrinhoAgrupador.codCarrinho);
+          .equals('CodCarrinhoAgrupador', carrinhoAgrupador.codCarrinho)
+          .allRows(orderField: 'ItemCarrinhoPercurso');
 
-      return await carrinhoPercursoAgrupamentoConsultaRepository
-          .select(newQueryBuilder);
+      return await carrinhoPercursoAgrupamentoConsultaRepository.select(
+        newQueryBuilder,
+      );
     } catch (e) {
       if (e is AppErrorAlert) rethrow;
-      throw Exception('Erro ao agrupar todos os carrinhos: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -208,13 +218,14 @@ class CarrinhoPercursoEstagioAgruparService {
         situacao: ExpedicaoCarrinhoSituacaoModel.conferido,
       );
 
-      final agrupadosParams = '''
-        CodEmpresa = ${carrinhoAgrupado.codEmpresa}
-          AND CodCarrinhoPercurso = ${carrinhoAgrupado.codCarrinhoPercurso}
-          AND Item = '${carrinhoAgrupado.itemAgrupamento}' ''';
+      final agrupadosQueryBuilder = QueryBuilder()
+          .equals('CodEmpresa', carrinhoAgrupado.codEmpresa)
+          .equals('CodCarrinhoPercurso', carrinhoAgrupado.codCarrinhoPercurso)
+          .equals('Item', carrinhoAgrupado.itemAgrupamento);
 
-      final agrupados =
-          await carrinhoPercursoAgrupamentoRepository.select(agrupadosParams);
+      final agrupados = await carrinhoPercursoAgrupamentoRepository.select(
+        agrupadosQueryBuilder,
+      );
 
       if (agrupados.isEmpty) {
         throw AppErrorAlert('Carrinho não encontrado');
@@ -258,12 +269,12 @@ class CarrinhoPercursoEstagioAgruparService {
       await carrinhoRepository.update(newCarrinho);
     } catch (e) {
       if (e is AppErrorAlert) rethrow;
-      throw Exception('Erro ao cancelar agrupamento: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
   Future<List<ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel>>
-      cancelarTodosAgrupamento(
+  cancelarTodosAgrupamento(
     ExpedicaoCarrinhoPercursoAgrupamentoConsultaModel carrinhoAgrupador,
   ) async {
     try {
@@ -273,11 +284,13 @@ class CarrinhoPercursoEstagioAgruparService {
           .equals('Origem', carrinhoAgrupador.origem)
           .notEquals('CodCarrinho', carrinhoAgrupador.codCarrinho)
           .equals('Situacao', ExpedicaoSituacaoModel.agrupado)
-          .equals('CodCarrinhoAgrupador', carrinhoAgrupador.codCarrinho);
+          .equals('CodCarrinhoAgrupador', carrinhoAgrupador.codCarrinho)
+          .allRows(orderField: 'ItemCarrinhoPercurso');
 
       final carrinhoPercursoAgrupamentoConsulta =
-          await carrinhoPercursoAgrupamentoConsultaRepository
-              .select(queryBuilder);
+          await carrinhoPercursoAgrupamentoConsultaRepository.select(
+            queryBuilder,
+          );
 
       if (carrinhoPercursoAgrupamentoConsulta.isEmpty) {
         throw AppErrorAlert('Não há carrinhos para cancelar agrupamento');
@@ -292,13 +305,15 @@ class CarrinhoPercursoEstagioAgruparService {
           .equals('CodCarrinhoPercurso', carrinhoAgrupador.codCarrinhoPercurso)
           .equals('Origem', carrinhoAgrupador.origem)
           .notEquals('CodCarrinho', carrinhoAgrupador.codCarrinho)
-          .equals('Situacao', ExpedicaoSituacaoModel.conferido);
+          .equals('Situacao', ExpedicaoSituacaoModel.conferido)
+          .allRows(orderField: 'ItemCarrinhoPercurso');
 
-      return await carrinhoPercursoAgrupamentoConsultaRepository
-          .select(basicQueryBuilder);
+      return await carrinhoPercursoAgrupamentoConsultaRepository.select(
+        basicQueryBuilder,
+      );
     } catch (e) {
       if (e is AppErrorAlert) rethrow;
-      throw Exception('Erro ao cancelar todos os agrupamentos: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 }

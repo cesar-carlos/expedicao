@@ -3,15 +3,14 @@ import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_repository.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
+import 'package:app_expedicao/src/app/app_error.dart';
 
 class SeparacaoRemoverItemService {
   final ExpedicaoCarrinhoPercursoEstagioConsultaModel percursoEstagioConsulta;
   final separacaoItemConsultaRepository = SeparacaoItemConsultaRepository();
   final separacaoItemRepository = SeparacaoItemRepository();
 
-  SeparacaoRemoverItemService({
-    required this.percursoEstagioConsulta,
-  });
+  SeparacaoRemoverItemService({required this.percursoEstagioConsulta});
 
   Future<void> remove({required String item}) async {
     try {
@@ -26,7 +25,7 @@ class SeparacaoRemoverItemService {
         await separacaoItemRepository.delete(el);
       }
     } catch (e) {
-      throw Exception('Erro ao remover item da separação: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -34,12 +33,13 @@ class SeparacaoRemoverItemService {
     try {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', percursoEstagioConsulta.codEmpresa)
-          .equals('CodSepararEstoque', percursoEstagioConsulta.codOrigem);
+          .equals('CodSepararEstoque', percursoEstagioConsulta.codOrigem)
+          .allRows();
 
       final response = await separacaoItemRepository.select(queryBuilder);
       await separacaoItemRepository.deleteAll(response);
     } catch (e) {
-      throw Exception('Erro ao remover todos os itens da separação: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -48,12 +48,15 @@ class SeparacaoRemoverItemService {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', percursoEstagioConsulta.codEmpresa)
           .equals('CodSepararEstoque', percursoEstagioConsulta.codOrigem)
-          .equals('CodCarrinhoPercurso',
-              percursoEstagioConsulta.codCarrinhoPercurso)
-          .equals('ItemCarrinhoPercurso', percursoEstagioConsulta.item);
+          .equals(
+            'CodCarrinhoPercurso',
+            percursoEstagioConsulta.codCarrinhoPercurso,
+          )
+          .equals('ItemCarrinhoPercurso', percursoEstagioConsulta.item)
+          .allRows();
 
-      final separacaoItensConsulta =
-          await separacaoItemConsultaRepository.select(queryBuilder);
+      final separacaoItensConsulta = await separacaoItemConsultaRepository
+          .select(queryBuilder);
 
       final itensDel = separacaoItensConsulta.map((el) {
         return ExpedicaoSeparacaoItemModel.fromConsulta(el);
@@ -61,7 +64,7 @@ class SeparacaoRemoverItemService {
 
       await separacaoItemRepository.deleteAll(itensDel);
     } catch (e) {
-      throw Exception('Erro ao remover itens do carrinho: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 }

@@ -10,9 +10,10 @@ import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_item_situacao_model.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
+import 'package:app_expedicao/src/app/app_error.dart';
 
 class SeparacaoAdicionarItemService {
-  final _socket = Get.find<AppSocketConfig>().socket;
+  final _socket = Get.find<AppSocketConfig>();
   final _processo = Get.find<ProcessoExecutavelModel>();
 
   final separacaoItemRepository = SeparacaoItemRepository();
@@ -20,9 +21,7 @@ class SeparacaoAdicionarItemService {
   final separacaoItemConsultaRepository = SeparacaoItemConsultaRepository();
   final separarItemRepository = SepararItemRepository();
 
-  SeparacaoAdicionarItemService({
-    required this.percursoEstagioConsulta,
-  });
+  SeparacaoAdicionarItemService({required this.percursoEstagioConsulta});
 
   Future<ExpedicaSeparacaoItemConsultaModel?> add({
     required int codProduto,
@@ -34,7 +33,7 @@ class SeparacaoAdicionarItemService {
         codEmpresa: percursoEstagioConsulta.codEmpresa,
         codSepararEstoque: percursoEstagioConsulta.codOrigem,
         item: '',
-        sessionId: _socket.id ?? '',
+        sessionId: _socket.sessionId ?? '',
         situacao: ExpedicaoItemSituacaoModel.separado,
         codCarrinhoPercurso: percursoEstagioConsulta.codCarrinhoPercurso,
         itemCarrinhoPercurso: percursoEstagioConsulta.item,
@@ -47,8 +46,9 @@ class SeparacaoAdicionarItemService {
         quantidade: quantidade,
       );
 
-      final newSeparacaoItem =
-          await separacaoItemRepository.insert(itemSeparacao);
+      final newSeparacaoItem = await separacaoItemRepository.insert(
+        itemSeparacao,
+      );
 
       if (newSeparacaoItem.isEmpty) return null;
 
@@ -61,7 +61,7 @@ class SeparacaoAdicionarItemService {
       if (list.isEmpty) return null;
       return list.first;
     } catch (e) {
-      throw Exception('Erro ao adicionar item à separação: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -69,7 +69,8 @@ class SeparacaoAdicionarItemService {
     try {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', percursoEstagioConsulta.codEmpresa)
-          .equals('CodSepararEstoque', percursoEstagioConsulta.codOrigem);
+          .equals('CodSepararEstoque', percursoEstagioConsulta.codOrigem)
+          .allRows();
 
       final separarItens = await separarItemRepository.select(queryBuilder);
       final separacaoItens = await separacaoItemRepository.select(queryBuilder);
@@ -85,7 +86,9 @@ class SeparacaoAdicionarItemService {
         }).toList();
 
         final qtdSeparadaProduto = separacaoItensFiltrado.fold<double>(
-            0.00, (acm, el) => acm + el.quantidade);
+          0.00,
+          (acm, el) => acm + el.quantidade,
+        );
 
         final double qtdSeparar = (item.quantidade - qtdSeparadaProduto);
         if (qtdSeparar <= 0) continue;
@@ -94,7 +97,7 @@ class SeparacaoAdicionarItemService {
           codEmpresa: percursoEstagioConsulta.codEmpresa,
           codSepararEstoque: percursoEstagioConsulta.codOrigem,
           item: '',
-          sessionId: _socket.id ?? '',
+          sessionId: _socket.sessionId ?? '',
           situacao: ExpedicaoItemSituacaoModel.separado,
           codCarrinhoPercurso: percursoEstagioConsulta.codCarrinhoPercurso,
           itemCarrinhoPercurso: percursoEstagioConsulta.item,
@@ -114,21 +117,25 @@ class SeparacaoAdicionarItemService {
         return [];
       }
 
-      final separacaoItensResponse =
-          await separacaoItemRepository.insertAll(separacaoItensInsert);
+      final separacaoItensResponse = await separacaoItemRepository.insertAll(
+        separacaoItensInsert,
+      );
 
       if (separacaoItensResponse.isNotEmpty) {
         final firstItem = separacaoItensResponse.first;
         final queryBuilder = QueryBuilder()
             .equals('CodEmpresa', firstItem.codEmpresa)
-            .equals('CodSepararEstoque', firstItem.codSepararEstoque);
+            .equals('CodSepararEstoque', firstItem.codSepararEstoque)
+            .allRows();
 
-        final allItems =
-            await separacaoItemConsultaRepository.select(queryBuilder);
+        final allItems = await separacaoItemConsultaRepository.select(
+          queryBuilder,
+        );
 
         final insertedItems = allItems.where((item) {
-          return separacaoItensResponse
-              .any((inserted) => inserted.item == item.item);
+          return separacaoItensResponse.any(
+            (inserted) => inserted.item == item.item,
+          );
         }).toList();
 
         return insertedItems;
@@ -136,7 +143,7 @@ class SeparacaoAdicionarItemService {
 
       return [];
     } catch (e) {
-      throw Exception('Erro ao adicionar todos os itens à separação: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 }

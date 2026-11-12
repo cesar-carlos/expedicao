@@ -4,15 +4,24 @@ import 'package:app_expedicao/src/app/app_error.dart';
 import 'package:app_expedicao/src/app/app_api_file_init.dart';
 
 class AppClientHttp {
-  final client = Dio();
+  static const connectTimeout = Duration(seconds: 8);
+  static const receiveTimeout = Duration(seconds: 20);
+
+  final client = Dio(
+    BaseOptions(
+      connectTimeout: connectTimeout,
+      receiveTimeout: receiveTimeout,
+      sendTimeout: receiveTimeout,
+    ),
+  );
   AppError? appError;
   late final Future<void> _ready;
 
   AppClientHttp() {
-    _ready = confg();
+    _ready = applyConfig();
   }
 
-  Future<void> confg() async {
+  Future<void> applyConfig() async {
     final apiServerModel = await AppApiFileInit.getConfg();
     if (apiServerModel == null) return;
 
@@ -25,21 +34,40 @@ class AppClientHttp {
       await _ready;
       appError = null;
       return await client.get<T>(endPoint);
+    } on AppError catch (err) {
+      appError = err;
+      rethrow;
     } on DioException catch (err) {
-      //TODO: Tratar erros status code
-      appError = AppError(
-        'Erro na requisição',
+      appError = AppError.fromUnknown(
+        err.response?.data ?? err.message ?? err,
+        code: err.response?.statusCode,
         details: err.toString(),
       );
+      throw appError!;
     } catch (err) {
-      throw Exception(err);
+      appError = AppError.fromUnknown(err);
+      throw appError!;
     }
+  }
 
-    throw Exception('Erro desconhecido');
+  Future<bool> ping({required String host, required String port}) async {
+    final url = 'http://$host:$port/health';
+    try {
+      final response = await client.get<dynamic>(
+        url,
+        options: Options(
+          receiveTimeout: connectTimeout,
+          sendTimeout: connectTimeout,
+        ),
+      );
+      return response.statusCode == 200;
+    } catch (_) {
+      return false;
+    }
   }
 
   bool get hasError {
-    return appError == null ? false : true;
+    return appError != null;
   }
 
   AppError? getError() {

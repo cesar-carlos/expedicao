@@ -3,6 +3,7 @@ import 'package:app_expedicao/src/repository/expedicao_carrinhos/carrinho_consul
 import 'package:app_expedicao/src/repository/expedicao_carrinhos/carrinho_repository.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_consulta_model.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
+import 'package:app_expedicao/src/app/app_error.dart';
 
 class CarrinhoService {
   final repository = CarrinhoRepository();
@@ -12,9 +13,11 @@ class CarrinhoService {
     QueryBuilder? queryBuilder,
   ]) async {
     try {
-      return await repositoryConsulta.select(queryBuilder ?? QueryBuilder());
+      return await repositoryConsulta.select(
+        (queryBuilder ?? QueryBuilder()).withAllRows(orderField: 'CodCarrinho'),
+      );
     } catch (e) {
-      throw Exception('Erro ao consultar carrinhos: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -22,9 +25,11 @@ class CarrinhoService {
     QueryBuilder? queryBuilder,
   ]) async {
     try {
-      return await repository.select(queryBuilder ?? QueryBuilder());
+      return await repository.select(
+        (queryBuilder ?? QueryBuilder()).withAllRows(orderField: 'CodCarrinho'),
+      );
     } catch (e) {
-      throw Exception('Erro ao selecionar carrinhos: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -34,15 +39,12 @@ class CarrinhoService {
       final result = await repository.insert(newCarrinho);
 
       if (result.isEmpty) {
-        throw Exception('Erro ao inserir carrinho: nenhum registro retornado');
+        throw AppError('Erro ao inserir carrinho: nenhum registro retornado');
       }
 
       return result.first;
     } catch (e) {
-      if (e is Exception && e.toString().contains('Erro ao inserir carrinho')) {
-        rethrow;
-      }
-      throw Exception('Erro ao inserir carrinho: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -51,17 +53,14 @@ class CarrinhoService {
       final result = await repository.update(carrinho);
 
       if (result.isEmpty) {
-        throw Exception(
-            'Erro ao atualizar carrinho: nenhum registro atualizado');
+        throw AppError(
+          'Erro ao atualizar carrinho: nenhum registro atualizado',
+        );
       }
 
       return result.first;
     } catch (e) {
-      if (e is Exception &&
-          e.toString().contains('Erro ao atualizar carrinho')) {
-        rethrow;
-      }
-      throw Exception('Erro ao atualizar carrinho: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -69,7 +68,7 @@ class CarrinhoService {
     try {
       await repository.delete(carrinho);
     } catch (e) {
-      throw Exception('Erro ao excluir carrinho: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 }

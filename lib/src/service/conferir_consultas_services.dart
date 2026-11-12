@@ -13,6 +13,7 @@ import 'package:app_expedicao/src/model/expedicao_conferencia_item_consulta_mode
 import 'package:app_expedicao/src/model/expedicao_conferir_item_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
+import 'package:app_expedicao/src/app/app_error.dart';
 
 class ConferirConsultaServices {
   final int codEmpresa;
@@ -51,7 +52,7 @@ class ConferirConsultaServices {
 
       return response.first;
     } catch (e) {
-      throw Exception('Erro ao buscar conferência: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -60,14 +61,15 @@ class ConferirConsultaServices {
     try {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', codEmpresa)
-          .equals('CodConferir', codConferir);
+          .equals('CodConferir', codConferir)
+          .allRows(orderField: 'ItemCarrinhoPercurso');
 
       final response = await conferirCarrinhoConsultaRepository.select(
         queryBuilder,
       );
       return response;
     } catch (e) {
-      throw Exception('Erro ao buscar carrinhos de conferência: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -85,27 +87,32 @@ class ConferirConsultaServices {
       );
 
       if (response.isEmpty) {
-        throw Exception('Carrinho não encontrado');
+        throw AppError('Carrinho não encontrado');
       }
 
       return response.first;
     } catch (e) {
-      if (e is Exception && e.toString().contains('não encontrado')) {
-        rethrow;
-      }
-      throw Exception('Erro ao buscar carrinho de conferência: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
-  Future<List<ExpedicaoConferirItemConsultaModel>> itensConferir() async {
+  Future<List<ExpedicaoConferirItemConsultaModel>> itensConferir({
+    int? codCarrinho,
+  }) async {
     try {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', codEmpresa)
           .equals('CodConferir', codConferir);
 
-      return await conferirItemConsultaRepository.select(queryBuilder);
+      if (codCarrinho != null) {
+        queryBuilder.equals('CodCarrinho', codCarrinho);
+      }
+
+      return await conferirItemConsultaRepository.select(
+        queryBuilder.allRows(),
+      );
     } catch (e) {
-      throw Exception('Erro ao buscar itens de conferência: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -115,28 +122,34 @@ class ConferirConsultaServices {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', codEmpresa)
           .equals('CodConferir', codConferir)
-          .paginate(limit: 2500);
+          .allRows(thenBy: ['ItemUnidadeMedida']);
 
       return await conferirItemUnidadeMedidaConsultaRepository.select(
         queryBuilder,
       );
     } catch (e) {
-      throw Exception('Erro ao buscar itens de conferência com unidades: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
-  Future<List<ExpedicaConferenciaItemConsultaModel>> itensConferencia() async {
+  Future<List<ExpedicaConferenciaItemConsultaModel>> itensConferencia({
+    int? codCarrinho,
+  }) async {
     try {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', codEmpresa)
           .equals('CodConferir', codConferir);
 
+      if (codCarrinho != null) {
+        queryBuilder.equals('CodCarrinho', codCarrinho);
+      }
+
       final result = await conferenciaItemConsultaRepository.select(
-        queryBuilder,
+        queryBuilder.allRows(),
       );
       return result;
     } catch (e) {
-      throw Exception('Erro ao buscar itens de conferência: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -157,11 +170,11 @@ class ConferirConsultaServices {
       }
 
       final result = await carrinhoPercursoEstagioConsultaRepository.select(
-        queryBuilder,
+        queryBuilder.allRows(),
       );
       return result;
     } catch (e) {
-      throw Exception('Erro ao buscar carrinhos de percurso: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -169,24 +182,21 @@ class ConferirConsultaServices {
     int codCarrinho,
   ) async {
     try {
-      final itensConferenciaList = await itensConferencia();
-
-      return itensConferenciaList.where((el) {
-        return el.codCarrinho == codCarrinho;
-      }).toList();
+      return await itensConferencia(codCarrinho: codCarrinho);
     } catch (e) {
-      throw Exception('Erro ao buscar itens do carrinho: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
   Future<bool> isComplete() async {
     try {
       final itensConferirList = await itensConferir();
+      if (itensConferirList.isEmpty) return false;
       return itensConferirList.every(
         (el) => el.quantidade == el.quantidadeConferida,
       );
     } catch (e) {
-      throw Exception('Erro ao verificar completude da conferência: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -200,7 +210,7 @@ class ConferirConsultaServices {
 
       return carrinhosConferindo.isNotEmpty;
     } catch (e) {
-      throw Exception('Erro ao verificar carrinhos abertos: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 }

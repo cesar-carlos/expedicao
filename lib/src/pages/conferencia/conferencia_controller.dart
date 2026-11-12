@@ -115,7 +115,7 @@ class ConferenciaController extends GetxController {
     _conferenciaGridController = Get.find<ConferenciaCarrinhoGridController>();
     _conferidoCarrinhosController = Get.find<ConferidoCarrinhosController>();
 
-    scanFocusNode = FocusNode()..requestFocus();
+    scanFocusNode = FocusNode();
     quantidadeFocusNode = FocusNode();
     displayFocusNode = FocusNode();
     formFocusNode = FocusNode();
@@ -133,7 +133,11 @@ class ConferenciaController extends GetxController {
   void onReady() async {
     super.onReady();
 
-    if (_viewMode.value) formFocusNode.requestFocus();
+    if (_viewMode.value) {
+      formFocusNode.requestFocus();
+    } else {
+      scanFocusNode.requestFocus();
+    }
 
     _onEditItemConferenciaGrid();
     _onRemoveItemConferenciaGrid();
@@ -230,7 +234,9 @@ class ConferenciaController extends GetxController {
   }
 
   Future<void> _fillGridConferirItens() async {
-    final conferirItens = await _conferirConsultasServices.itensConferir();
+    final conferirItens = await _conferirConsultasServices.itensConferir(
+      codCarrinho: percursoEstagioConsulta.codCarrinho,
+    );
 
     final conferirItensInids =
         await _conferirConsultasServices.itensConferirUnidades();
@@ -247,7 +253,9 @@ class ConferenciaController extends GetxController {
   }
 
   Future<void> _fillGridConferidoItens() async {
-    final conferidoItens = await _conferirConsultasServices.itensConferencia();
+    final conferidoItens = await _conferirConsultasServices.itensConferencia(
+      codCarrinho: percursoEstagioConsulta.codCarrinho,
+    );
 
     final conferidoItensCarrinho = conferidoItens
         .where((el) =>
@@ -378,59 +386,70 @@ class ConferenciaController extends GetxController {
       }
     }
 
-    final conferenciaItemConsulta =
-        await carrinhoPercursoAdicionarItemService.add(
-      codProduto: itemConferirConsulta.codProduto,
-      codUnidadeMedida: itemConferirConsulta.codUnidadeMedida,
-      quantidade: qtdConfDigitada,
-    );
-
-    if (conferenciaItemConsulta == null) {
-      AppAudioHelper().play('/error.wav');
-      await MessageDialogView.show(
-        context: Get.context!,
-        message: 'Erro ao adicionar item!',
-        detail: 'Não foi possivel conferir o item do carrinho!',
+    try {
+      final conferenciaItemConsulta =
+          await carrinhoPercursoAdicionarItemService.add(
+        codProduto: itemConferirConsulta.codProduto,
+        codUnidadeMedida: itemConferirConsulta.codUnidadeMedida,
+        quantidade: qtdConfDigitada,
       );
 
-      displayController.text = '';
-      scanFocusNode.requestFocus();
-      scanController.clear();
-      return;
-    }
+      if (conferenciaItemConsulta == null) {
+        AppAudioHelper().play('/error.wav');
+        await MessageDialogView.show(
+          context: Get.context!,
+          message: 'Não foi possível conferir o item',
+          detail:
+              'O servidor não devolveu o item conferido. Tente novamente. Se o problema continuar, verifique a conexão.',
+        );
 
-    displayController.text = itemConferirConsulta.nomeProduto;
-    _conferenciaGridController.addGrid(conferenciaItemConsulta);
+        displayController.text = '';
+        scanFocusNode.requestFocus();
+        scanController.clear();
+        return;
+      }
 
-    final itemSeparar =
-        _findItemConferirGrid(conferenciaItemConsulta.codProduto);
-    if (itemSeparar == null) {
-      AppAudioHelper().play('/error.wav');
-      await MessageDialogView.show(
-        context: Get.context!,
-        message: 'Erro ao adicionar item!',
-        detail: 'Produto não encontrado na lista de conferência!',
+      displayController.text = itemConferirConsulta.nomeProduto;
+      _conferenciaGridController.addGrid(conferenciaItemConsulta);
+
+      final itemSeparar =
+          _findItemConferirGrid(conferenciaItemConsulta.codProduto);
+      if (itemSeparar == null) {
+        AppAudioHelper().play('/error.wav');
+        await MessageDialogView.show(
+          context: Get.context!,
+          message: 'Produto não encontrado',
+          detail:
+              'O item conferido não está na lista de conferência deste carrinho.',
+        );
+        scanController.text = '';
+        scanFocusNode.requestFocus();
+        return;
+      }
+
+      _conferirGridController.updateGrid(itemSeparar.copyWith(
+        quantidadeConferida:
+            itemSeparar.quantidadeConferida + conferenciaItemConsulta.quantidade,
+      ));
+
+      _conferenciaGridController.highlightItem(conferenciaItemConsulta.item);
+      _conferirGridController.highlightItem(
+        itemSeparar.item,
+        scrollMain: false,
       );
+
       scanController.text = '';
+      quantidadeController.text = '1,000';
+      AppAudioHelper().play('/success.wav');
       scanFocusNode.requestFocus();
-      return;
+    } catch (e) {
+      AppAudioHelper().play('/error.wav');
+      await MessageDialogView.showError(
+        context: Get.context!,
+        error: e,
+      );
+      scanFocusNode.requestFocus();
     }
-
-    _conferirGridController.updateGrid(itemSeparar.copyWith(
-      quantidadeConferida:
-          itemSeparar.quantidadeConferida + conferenciaItemConsulta.quantidade,
-    ));
-
-    _conferenciaGridController.highlightItem(conferenciaItemConsulta.item);
-    _conferirGridController.highlightItem(
-      itemSeparar.item,
-      scrollMain: false,
-    );
-
-    scanController.text = '';
-    quantidadeController.text = '1,000';
-    AppAudioHelper().play('/success.wav');
-    scanFocusNode.requestFocus();
   }
 
   bool validQuantitySeparate(String scanText, double value) {

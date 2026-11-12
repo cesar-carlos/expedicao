@@ -4,6 +4,7 @@ import 'package:app_expedicao/src/repository/expedicao_conferir/conferir_consult
 import 'package:app_expedicao/src/repository/expedicao_conferir/conferir_repository.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 import 'package:app_expedicao/src/app/app_error_alert.dart';
+import 'package:app_expedicao/src/app/app_error.dart';
 
 class ConferirFinalizarService {
   final int codEmpresa;
@@ -42,7 +43,7 @@ class ConferirFinalizarService {
       await carrinhoPercursoRepository.update(carrinhoPercursoFinalizado);
     } catch (e) {
       if (e is AppErrorAlert) rethrow;
-      throw Exception('Erro ao finalizar conferência: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -54,7 +55,7 @@ class ConferirFinalizarService {
 
       return await conferirConsultaRepository.select(queryBuilder);
     } catch (e) {
-      throw Exception('Erro ao buscar conferência para consulta: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -66,7 +67,7 @@ class ConferirFinalizarService {
 
       return await conferirRepository.select(queryBuilder);
     } catch (e) {
-      throw Exception('Erro ao buscar conferência: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -78,7 +79,7 @@ class ConferirFinalizarService {
 
       return await carrinhoPercursoRepository.select(queryBuilder);
     } catch (e) {
-      throw Exception('Erro ao buscar carrinho de percurso: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 }

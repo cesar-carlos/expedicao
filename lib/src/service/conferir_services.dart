@@ -7,6 +7,7 @@ import 'package:app_expedicao/src/service/expedicao_percurso_adicionar_service.d
 import 'package:app_expedicao/src/model/expedicao_conferir_model.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
+import 'package:app_expedicao/src/app/app_error.dart';
 
 class ConferirServices {
   final repositoryConferir = ConferirRepository();
@@ -31,7 +32,7 @@ class ConferirServices {
 
       await repositoryConferir.update(newConferir);
     } catch (e) {
-      throw Exception('Erro ao iniciar conferência: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -53,7 +54,7 @@ class ConferirServices {
     try {
       await ConferirRepository().update(conferir);
     } catch (e) {
-      throw Exception('Erro ao atualizar conferência: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -69,7 +70,7 @@ class ConferirServices {
           await CarrinhoPercursoRepository().select(queryBuilder);
       return carrinhoPercurso.isNotEmpty;
     } catch (e) {
-      throw Exception('Erro ao verificar existência de percurso: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -82,7 +83,7 @@ class ConferirServices {
         situacao: ExpedicaoSituacaoModel.emConverencia,
       ).execute();
     } catch (e) {
-      throw Exception('Erro ao iniciar percurso: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -95,7 +96,7 @@ class ConferirServices {
         situacao: ExpedicaoSituacaoModel.emConverencia,
       ).execute();
     } catch (e) {
-      throw Exception('Erro ao atualizar percurso: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 }

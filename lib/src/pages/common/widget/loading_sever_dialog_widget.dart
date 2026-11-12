@@ -5,10 +5,15 @@ import 'package:app_expedicao/src/app/app_event_state.dart';
 import 'package:app_expedicao/src/app/app_socket_config.dart';
 
 class LoadingSeverDialogWidget {
+  static bool _isShowing = false;
+
   static Future<void> show({
     required bool canCloseWindow,
     required BuildContext context,
   }) {
+    if (_isShowing) return Future.value();
+    _isShowing = true;
+
     Get.find<AppEventState>().canCloseWindow = canCloseWindow;
 
     return showDialog<void>(
@@ -16,7 +21,9 @@ class LoadingSeverDialogWidget {
       barrierColor: Colors.white.withValues(alpha: 0.7),
       context: context,
       builder: (_) => const _LoadingServerDialog(),
-    );
+    ).whenComplete(() {
+      _isShowing = false;
+    });
   }
 }
 
@@ -47,11 +54,26 @@ class _LoadingServerDialogState extends State<_LoadingServerDialog> {
   }
 
   void _close() {
-    if (_closed || !mounted) return;
-
+    if (_closed) return;
     _closed = true;
-    Get.find<AppEventState>().canCloseWindow = true;
-    Navigator.of(context).pop();
+    _connectionWorker?.dispose();
+    _connectionWorker = null;
+
+    if (Get.isRegistered<AppEventState>()) {
+      Get.find<AppEventState>().canCloseWindow = true;
+    }
+
+    if (!mounted) return;
+
+    final route = ModalRoute.of(context);
+    if (route == null || !route.isActive) return;
+
+    final navigator = Navigator.of(context);
+    if (route.isCurrent) {
+      navigator.pop();
+    } else {
+      navigator.removeRoute(route);
+    }
   }
 
   @override

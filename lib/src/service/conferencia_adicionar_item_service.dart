@@ -11,9 +11,10 @@ import 'package:app_expedicao/src/repository/expedicao_conferencia_item/conferen
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_item_situacao_model.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
+import 'package:app_expedicao/src/app/app_error.dart';
 
 class ConferenciaAdicionarItemService {
-  final _socket = Get.find<AppSocketConfig>().socket;
+  final _socket = Get.find<AppSocketConfig>();
 
   final _processo = Get.find<ProcessoExecutavelModel>();
   final ExpedicaoCarrinhoPercursoEstagioConsultaModel percursoEstagioConsulta;
@@ -21,9 +22,7 @@ class ConferenciaAdicionarItemService {
   final conferirItemConsultaRepository = ConferirItemConsultaRepository();
   final conferenciaItemRepository = ConferenciaItemRepository();
 
-  ConferenciaAdicionarItemService({
-    required this.percursoEstagioConsulta,
-  });
+  ConferenciaAdicionarItemService({required this.percursoEstagioConsulta});
 
   Future<ExpedicaConferenciaItemConsultaModel?> add({
     required int codProduto,
@@ -35,7 +34,7 @@ class ConferenciaAdicionarItemService {
         codEmpresa: percursoEstagioConsulta.codEmpresa,
         codConferir: percursoEstagioConsulta.codOrigem,
         item: '',
-        sessionId: _socket.id ?? '',
+        sessionId: _socket.sessionId ?? '',
         situacao: ExpedicaoItemSituacaoModel.conferido,
         codCarrinhoPercurso: percursoEstagioConsulta.codCarrinhoPercurso,
         itemCarrinhoPercurso: percursoEstagioConsulta.item,
@@ -48,8 +47,9 @@ class ConferenciaAdicionarItemService {
         quantidade: quantidade,
       );
 
-      final newConferenciaItem =
-          await conferenciaItemRepository.insert(itemConferencia);
+      final newConferenciaItem = await conferenciaItemRepository.insert(
+        itemConferencia,
+      );
 
       if (newConferenciaItem.isEmpty) return null;
 
@@ -62,7 +62,7 @@ class ConferenciaAdicionarItemService {
       if (list.isEmpty) return null;
       return list.last;
     } catch (e) {
-      throw Exception('Erro ao adicionar item à conferência: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -81,7 +81,9 @@ class ConferenciaAdicionarItemService {
         }).toList();
 
         final qtdConferidaProduto = conferenciaItensFiltrado.fold<double>(
-            0.00, (acm, el) => acm + el.quantidade);
+          0.00,
+          (acm, el) => acm + el.quantidade,
+        );
 
         final double qtdConferir = (item.quantidade - qtdConferidaProduto);
         if (qtdConferir <= 0) continue;
@@ -90,7 +92,7 @@ class ConferenciaAdicionarItemService {
           codEmpresa: percursoEstagioConsulta.codEmpresa,
           codConferir: percursoEstagioConsulta.codOrigem,
           item: '',
-          sessionId: _socket.id ?? '',
+          sessionId: _socket.sessionId ?? '',
           situacao: ExpedicaoItemSituacaoModel.conferido,
           codCarrinhoPercurso: percursoEstagioConsulta.codCarrinhoPercurso,
           itemCarrinhoPercurso: percursoEstagioConsulta.item,
@@ -106,8 +108,8 @@ class ConferenciaAdicionarItemService {
         conferenciaItensInsert.add(itemConferencia);
       }
 
-      final conferenciaItensResponse =
-          await conferenciaItemRepository.insertAll(conferenciaItensInsert);
+      final conferenciaItensResponse = await conferenciaItemRepository
+          .insertAll(conferenciaItensInsert);
 
       final List<ExpedicaConferenciaItemConsultaModel> result = [];
       for (final item in conferenciaItensResponse) {
@@ -116,8 +118,9 @@ class ConferenciaAdicionarItemService {
             .equals('CodConferir', item.codConferir)
             .equals('Item', item.item);
 
-        final items =
-            await conferenciaItemConsultaRepository.select(queryBuilder);
+        final items = await conferenciaItemConsultaRepository.select(
+          queryBuilder,
+        );
         if (items.isNotEmpty) {
           result.addAll(items);
         }
@@ -125,7 +128,7 @@ class ConferenciaAdicionarItemService {
 
       return result;
     } catch (e) {
-      throw Exception('Erro ao adicionar todos os itens à conferência: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -134,30 +137,34 @@ class ConferenciaAdicionarItemService {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', percursoEstagioConsulta.codEmpresa)
           .equals('CodConferir', percursoEstagioConsulta.codOrigem)
-          .equals('CodCarrinho', percursoEstagioConsulta.codCarrinho);
+          .equals('CodCarrinho', percursoEstagioConsulta.codCarrinho)
+          .allRows();
 
       final itens = await conferirItemConsultaRepository.select(queryBuilder);
       return itens
           .map((el) => ExpedicaoConferirItemModel.fromConsulta(el))
           .toList();
     } catch (e) {
-      throw Exception('Erro ao buscar itens de conferir do carrinho: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
   Future<List<ExpedicaoConferenciaItemModel>>
-      _getConferenciaItensCarrinho() async {
+  _getConferenciaItensCarrinho() async {
     try {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', percursoEstagioConsulta.codEmpresa)
           .equals('CodConferir', percursoEstagioConsulta.codOrigem)
-          .equals('CodCarrinhoPercurso',
-              percursoEstagioConsulta.codCarrinhoPercurso)
-          .equals('ItemCarrinhoPercurso', percursoEstagioConsulta.item);
+          .equals(
+            'CodCarrinhoPercurso',
+            percursoEstagioConsulta.codCarrinhoPercurso,
+          )
+          .equals('ItemCarrinhoPercurso', percursoEstagioConsulta.item)
+          .allRows();
 
       return await conferenciaItemRepository.select(queryBuilder);
     } catch (e) {
-      throw Exception('Erro ao buscar itens de conferência do carrinho: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 }

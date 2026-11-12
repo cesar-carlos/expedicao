@@ -52,7 +52,6 @@ class ConferirGridController extends GetxController {
     _sources.remove(source);
   }
 
-
   @override
   void onClose() {
     dataGridController.dispose();
@@ -120,10 +119,12 @@ class ConferirGridController extends GetxController {
 
   void removeGrid(ExpedicaoConferirItemConsultaModel item) {
     final sortIndex = _itensSort.indexWhere((el) => el.item == item.item);
-    _itens.removeWhere((el) =>
-        el.codEmpresa == item.codEmpresa &&
-        el.codConferir == item.codConferir &&
-        el.item == item.item);
+    _itens.removeWhere(
+      (el) =>
+          el.codEmpresa == item.codEmpresa &&
+          el.codConferir == item.codConferir &&
+          el.item == item.item,
+    );
     if (sortIndex >= 0) {
       _itensSort.removeAt(sortIndex);
       for (final source in _sources) {
@@ -151,7 +152,8 @@ class ConferirGridController extends GetxController {
   }
 
   void addAllUnidade(
-      List<ExpedicaoConferirItemUnidadeMedidaConsultaModel> itens) {
+    List<ExpedicaoConferirItemUnidadeMedidaConsultaModel> itens,
+  ) {
     _itemUnids.addAll(itens);
   }
 
@@ -164,7 +166,8 @@ class ConferirGridController extends GetxController {
   }
 
   void updateAllUnidade(
-      List<ExpedicaoConferirItemUnidadeMedidaConsultaModel> itens) {
+    List<ExpedicaoConferirItemUnidadeMedidaConsultaModel> itens,
+  ) {
     for (var el in itens) {
       final index = _itemUnids.indexWhere((i) => i.item == el.item);
       if (index < 0) {
@@ -175,10 +178,12 @@ class ConferirGridController extends GetxController {
   }
 
   void removeUnidade(ExpedicaoConferirItemUnidadeMedidaConsultaModel item) {
-    _itemUnids.removeWhere((el) =>
-        el.codEmpresa == item.codEmpresa &&
-        el.codConferir == item.codConferir &&
-        el.item == item.item);
+    _itemUnids.removeWhere(
+      (el) =>
+          el.codEmpresa == item.codEmpresa &&
+          el.codConferir == item.codConferir &&
+          el.item == item.item,
+    );
   }
 
   bool _applyingSelection = false;
@@ -345,15 +350,16 @@ class ConferirGridController extends GetxController {
   }
 
   bool isComplite() {
+    if (_itens.isEmpty) return false;
     return _itens.every((el) => el.quantidade == el.quantidadeConferida);
   }
 
-  bool isCompliteCart(
-    int codCarrinho,
-  ) {
-    return _itens
+  bool isCompliteCart(int codCarrinho) {
+    final itensCarrinho = _itens
         .where((el) => el.codCarrinho == codCarrinho)
-        .every((el) => el.quantidade == el.quantidadeConferida);
+        .toList();
+    if (itensCarrinho.isEmpty) return false;
+    return itensCarrinho.every((el) => el.quantidade == el.quantidadeConferida);
   }
 
   ExpedicaoConferirItemConsultaModel? findItem(String item) {
@@ -393,8 +399,9 @@ class ConferirGridController extends GetxController {
   }
 
   ExpedicaoConferirItemConsultaModel? findBarCode(String barCode) {
-    final unidades =
-        _itemUnids.where((el) => el.codigoBarras == barCode).toList();
+    final unidades = _itemUnids
+        .where((el) => el.codigoBarras == barCode)
+        .toList();
     if (unidades.isEmpty) return null;
 
     final el = _itens.where((el) => el.item == unidades.first.item).toList();
@@ -409,7 +416,8 @@ class ConferirGridController extends GetxController {
   }
 
   List<ExpedicaoConferirItemUnidadeMedidaConsultaModel>? findUnidadesProduto(
-      int codProduto) {
+    int codProduto,
+  ) {
     final el = _itemUnids.where((el) => el.codProduto == codProduto).toList();
     return el;
   }
@@ -423,7 +431,8 @@ class ConferirGridController extends GetxController {
           .equals('CodEmpresa', el.codEmpresa)
           .equals('CodConferirEstoque', el.codConferir)
           .equals('CodProduto', el.codProduto)
-          .notEquals('Situacao', ExpedicaoSituacaoModel.cancelada);
+          .notEquals('Situacao', ExpedicaoSituacaoModel.cancelada)
+          .allRows();
 
       final separacaoItens = await repository.select(queryBuilder);
 
@@ -433,7 +442,9 @@ class ConferirGridController extends GetxController {
       }
 
       double totalSeparado = separacaoItens.fold<double>(
-          0.00, (previousValue, element) => previousValue + element.quantidade);
+        0.00,
+        (previousValue, element) => previousValue + element.quantidade,
+      );
 
       conferirItem.add(el.copyWith(quantidadeConferida: totalSeparado));
     }
@@ -479,10 +490,6 @@ class ConferirGridController extends GetxController {
       );
     }
 
-    return Icon(
-      BootstrapIcons.box,
-      color: Colors.blue,
-      size: iconSize,
-    );
+    return Icon(BootstrapIcons.box, color: Colors.blue, size: iconSize);
   }
 }

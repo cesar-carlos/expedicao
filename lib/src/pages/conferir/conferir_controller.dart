@@ -327,10 +327,12 @@ class ConferirController extends GetxController {
 
               return true;
             } catch (err) {
-              return false;
+              rethrow;
             }
           },
         );
+      } catch (_) {
+        // A mensagem do THROW da base ja aparece no snackbar do loading.
       } finally {
         _processando = false;
       }

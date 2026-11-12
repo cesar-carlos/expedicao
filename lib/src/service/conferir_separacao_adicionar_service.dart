@@ -34,7 +34,7 @@ class ConferirSeparacaoAdicionarService {
       await conferirItemRepository.insertAll(newItensConferir);
     } catch (e) {
       if (e is AppError) rethrow;
-      throw Exception('Erro ao adicionar conferência de separação: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -44,10 +44,15 @@ class ConferirSeparacaoAdicionarService {
           .equals('CodEmpresa', carrinhoPercurso.codEmpresa)
           .equals('Origem', carrinhoPercurso.origem)
           .equals('CodSepararEstoque', carrinhoPercurso.codOrigem)
-          .equals('Situacao', ExpedicaoSituacaoModel.separado);
+          .equals('Situacao', ExpedicaoSituacaoModel.separado)
+          .allRows(
+            orderField: 'CodProduto',
+            thenBy: ['ItemCarrinhoPercurso', 'CodUnidadeMedida'],
+          );
 
-      final itens =
-          await conferirItemConsultaSeparacaoRepository.select(queryBuilder);
+      final itens = await conferirItemConsultaSeparacaoRepository.select(
+        queryBuilder,
+      );
 
       if (itens.isEmpty) {
         throw AppError('Nenhum item encontrado');
@@ -56,7 +61,7 @@ class ConferirSeparacaoAdicionarService {
       return itens;
     } catch (e) {
       if (e is AppError) rethrow;
-      throw Exception('Erro ao buscar itens separados: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 

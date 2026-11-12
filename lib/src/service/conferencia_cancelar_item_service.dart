@@ -3,14 +3,13 @@ import 'package:app_expedicao/src/repository/expedicao_conferencia_item/conferen
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferencia_item_model.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
+import 'package:app_expedicao/src/app/app_error.dart';
 
 class ConferenciaCancelarItemService {
   final conferenciaItemRepository = ConferenciaItemRepository();
   final ExpedicaoCarrinhoPercursoEstagioConsultaModel percursoEstagioConsulta;
 
-  ConferenciaCancelarItemService({
-    required this.percursoEstagioConsulta,
-  });
+  ConferenciaCancelarItemService({required this.percursoEstagioConsulta});
 
   Future<void> cancelar({required String item}) async {
     try {
@@ -29,7 +28,7 @@ class ConferenciaCancelarItemService {
         await conferenciaItemRepository.update(newItem);
       }
     } catch (e) {
-      throw Exception('Erro ao cancelar item da conferência: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -37,14 +36,12 @@ class ConferenciaCancelarItemService {
     try {
       final conferenciaItens = await _getConferenciaItens();
       final newItens = conferenciaItens.map((el) {
-        return el.copyWith(
-          situacao: ExpedicaoItemSituacaoModel.cancelado,
-        );
+        return el.copyWith(situacao: ExpedicaoItemSituacaoModel.cancelado);
       }).toList();
 
       await conferenciaItemRepository.updateAll(newItens);
     } catch (e) {
-      throw Exception('Erro ao cancelar todos os itens da conferência: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -52,31 +49,31 @@ class ConferenciaCancelarItemService {
     try {
       final conferenciaItens = await _getConferenciaItensCarrinho();
       final newItens = conferenciaItens.map((el) {
-        return el.copyWith(
-          situacao: ExpedicaoItemSituacaoModel.cancelado,
-        );
+        return el.copyWith(situacao: ExpedicaoItemSituacaoModel.cancelado);
       }).toList();
 
       await conferenciaItemRepository.updateAll(newItens);
     } catch (e) {
-      throw Exception(
-          'Erro ao cancelar todos os itens do carrinho da conferência: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
   Future<List<ExpedicaoConferenciaItemModel>>
-      _getConferenciaItensCarrinho() async {
+  _getConferenciaItensCarrinho() async {
     try {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', percursoEstagioConsulta.codEmpresa)
           .equals('CodConferir', percursoEstagioConsulta.codOrigem)
-          .equals('CodCarrinhoPercurso',
-              percursoEstagioConsulta.codCarrinhoPercurso)
-          .equals('ItemCarrinhoPercurso', percursoEstagioConsulta.item);
+          .equals(
+            'CodCarrinhoPercurso',
+            percursoEstagioConsulta.codCarrinhoPercurso,
+          )
+          .equals('ItemCarrinhoPercurso', percursoEstagioConsulta.item)
+          .allRows();
 
       return await conferenciaItemRepository.select(queryBuilder);
     } catch (e) {
-      throw Exception('Erro ao buscar itens de conferência do carrinho: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -84,11 +81,12 @@ class ConferenciaCancelarItemService {
     try {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', percursoEstagioConsulta.codEmpresa)
-          .equals('CodConferir', percursoEstagioConsulta.codOrigem);
+          .equals('CodConferir', percursoEstagioConsulta.codOrigem)
+          .allRows();
 
       return await conferenciaItemRepository.select(queryBuilder);
     } catch (e) {
-      throw Exception('Erro ao buscar itens de conferência: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 }

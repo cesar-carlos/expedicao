@@ -258,18 +258,22 @@ class SepararController extends GetxController {
     );
 
     if (carrinhoConsulta != null) {
-      final carrinhoPercursoEstagioConsulta = await adicionarCarrinho(
-        carrinhoConsulta,
-      );
-
-      if (carrinhoPercursoEstagioConsulta != null) {
-        _separarCarrinhosController.editCart(carrinhoPercursoEstagioConsulta);
-      } else {
-        await MessageDialogView.show(
-          context: Get.context!,
-          message: 'Erro ao adicionar carrinho!',
-          detail: 'Erro ao adicionar carrinho, verifique.',
+      try {
+        final carrinhoPercursoEstagioConsulta = await adicionarCarrinho(
+          carrinhoConsulta,
         );
+
+        if (carrinhoPercursoEstagioConsulta != null) {
+          _separarCarrinhosController.editCart(carrinhoPercursoEstagioConsulta);
+        } else {
+          await MessageDialogView.show(
+            context: Get.context!,
+            message: 'Erro ao adicionar carrinho!',
+            detail: 'Erro ao adicionar carrinho, verifique.',
+          );
+        }
+      } catch (_) {
+        // O snackbar do loading já mostrou AppError.display.
       }
     }
   }
@@ -282,35 +286,31 @@ class SepararController extends GetxController {
     >(
       context: Get.context!,
       process: () async {
-        try {
-          await iniciarSeparacao();
+        await iniciarSeparacao();
 
-          final carrinho = ExpedicaoCarrinhoModel.fromConsulta(carrinhoConsulta)
-              .copyWith(situacao: ExpedicaoCarrinhoSituacaoModel.emSeparacao);
+        final carrinho = ExpedicaoCarrinhoModel.fromConsulta(carrinhoConsulta)
+            .copyWith(situacao: ExpedicaoCarrinhoSituacaoModel.emSeparacao);
 
-          final percursoEstagio = await CarrinhoPercursoEstagioAdicionarService(
-            carrinho: carrinho,
-            carrinhoPercurso: _carrinhoPercurso!,
-          ).execute();
+        final percursoEstagio = await CarrinhoPercursoEstagioAdicionarService(
+          carrinho: carrinho,
+          carrinhoPercurso: _carrinhoPercurso!,
+        ).execute();
 
-          if (percursoEstagio != null) {
-            final percursoEstagioConsulta =
-                (await _separarConsultaServices.carrinhosPercurso(
-                  codCarrinhoPercurso: percursoEstagio.codCarrinhoPercurso,
-                  item: percursoEstagio.item,
-                )).where((el) => el.item == percursoEstagio.item).toList();
+        if (percursoEstagio != null) {
+          final percursoEstagioConsulta =
+              (await _separarConsultaServices.carrinhosPercurso(
+                codCarrinhoPercurso: percursoEstagio.codCarrinhoPercurso,
+                item: percursoEstagio.item,
+              )).where((el) => el.item == percursoEstagio.item).toList();
 
-            _separarCarrinhosController.addCart(percursoEstagioConsulta.last);
-            _separarCarrinhosController.update();
-            update();
+          _separarCarrinhosController.addCart(percursoEstagioConsulta.last);
+          _separarCarrinhosController.update();
+          update();
 
-            return percursoEstagioConsulta.last;
-          }
-
-          return null;
-        } catch (err) {
-          return null;
+          return percursoEstagioConsulta.last;
         }
+
+        return null;
       },
     );
   }
@@ -421,9 +421,15 @@ class SepararController extends GetxController {
             itemCarrinhoPercurso: carrinhoPercuro.item,
           );
 
-      final carrinhoPercursoEstagioConsulta = await adicionarCarrinho(
-        carrinhoConsulta,
-      );
+      final ExpedicaoCarrinhoPercursoEstagioConsultaModel?
+          carrinhoPercursoEstagioConsulta;
+      try {
+        carrinhoPercursoEstagioConsulta = await adicionarCarrinho(
+          carrinhoConsulta,
+        );
+      } catch (_) {
+        return;
+      }
 
       if (carrinhoPercursoEstagioConsulta == null) {
         await MessageDialogView.show(
@@ -435,10 +441,14 @@ class SepararController extends GetxController {
         return;
       }
 
-      await adicionarItensRecuperadoSeparacao(
-        carrinhoPercursoEstagioConsulta,
-        separacaoItens,
-      );
+      try {
+        await adicionarItensRecuperadoSeparacao(
+          carrinhoPercursoEstagioConsulta,
+          separacaoItens,
+        );
+      } catch (_) {
+        return;
+      }
 
       _separarCarrinhosController.editCart(carrinhoPercursoEstagioConsulta);
     }
@@ -451,37 +461,33 @@ class SepararController extends GetxController {
     return await LoadingProcessDialogGenericWidget.show<bool>(
       context: Get.context!,
       process: () async {
-        try {
-          final separarItens = await _separarConsultaServices.itensSaparar();
+        final separarItens = await _separarConsultaServices.itensSaparar();
 
-          final carrinhoPercursoAdicionarItemService =
-              SeparacaoAdicionarItemService(
-                percursoEstagioConsulta: percursoEstagio,
-              );
+        final carrinhoPercursoAdicionarItemService =
+            SeparacaoAdicionarItemService(
+              percursoEstagioConsulta: percursoEstagio,
+            );
 
-          for (var item in separacaoItensRecuperado) {
-            final existsSepararItem = separarItens.any((el) {
-              return el.codProduto == item.codProduto &&
-                  el.codUnidadeMedida == item.codUnidadeMedida;
-            });
+        for (var item in separacaoItensRecuperado) {
+          final existsSepararItem = separarItens.any((el) {
+            return el.codProduto == item.codProduto &&
+                el.codUnidadeMedida == item.codUnidadeMedida;
+          });
 
-            if (existsSepararItem) {
-              await carrinhoPercursoAdicionarItemService.add(
-                codProduto: item.codProduto,
-                codUnidadeMedida: item.codUnidadeMedida,
-                quantidade: item.quantidade,
-              );
-            }
+          if (existsSepararItem) {
+            await carrinhoPercursoAdicionarItemService.add(
+              codProduto: item.codProduto,
+              codUnidadeMedida: item.codUnidadeMedida,
+              quantidade: item.quantidade,
+            );
           }
-
-          final newSepararItens = await _separarConsultaServices.itensSaparar();
-          _separarGridController.updateAllGrid(newSepararItens);
-          _separarGridController.update();
-
-          return true;
-        } catch (err) {
-          return false;
         }
+
+        final newSepararItens = await _separarConsultaServices.itensSaparar();
+        _separarGridController.updateAllGrid(newSepararItens);
+        _separarGridController.update();
+
+        return true;
       },
     );
   }

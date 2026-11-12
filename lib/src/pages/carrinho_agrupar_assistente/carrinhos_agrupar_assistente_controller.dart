@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 import 'package:app_expedicao/src/app/app_dialog_close.dart';
+import 'package:app_expedicao/src/app/app_error.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/service/carrinho_percurso_estagio_agrupar_service.dart';
 import 'package:app_expedicao/src/pages/common/widget/loading_process_dialog_generic_widget.dart';
@@ -112,7 +113,7 @@ class CarrinhosAgruparAssistenteController extends GetxController {
           if (result.isEmpty) return null;
           return result.first;
         } catch (err) {
-          return null;
+          throw AppError.fromUnknown(err);
         }
       },
     );
@@ -146,14 +147,18 @@ class CarrinhosAgruparAssistenteController extends GetxController {
   void onChangedCodigoCarrinho(String text) async {}
 
   void onSubmittedCodigoCarrinho(String text) async {
-    final result = await faindCart(text);
-    final isValid = await validAddCart(result);
+    try {
+      final result = await faindCart(text);
+      final isValid = await validAddCart(result);
 
-    if (isValid) {
-      await fillFormFromExpedicaoCarrinhoPercursoAgrupamentoConsultaModel(
-          result!);
-      focusNodeButtonContinuar.requestFocus();
-    } else {
+      if (isValid) {
+        await fillFormFromExpedicaoCarrinhoPercursoAgrupamentoConsultaModel(
+            result!);
+        focusNodeButtonContinuar.requestFocus();
+      } else {
+        formClear();
+      }
+    } catch (_) {
       formClear();
     }
   }

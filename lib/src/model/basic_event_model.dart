@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class BasicEventModel {
   String session;
   String responseIn;
@@ -11,11 +13,7 @@ class BasicEventModel {
   });
 
   factory BasicEventModel.empty() {
-    return BasicEventModel(
-      session: '',
-      responseIn: '',
-      mutation: [],
-    );
+    return BasicEventModel(session: '', responseIn: '', mutation: []);
   }
 
   BasicEventModel copyWith({
@@ -30,24 +28,47 @@ class BasicEventModel {
     );
   }
 
-  factory BasicEventModel.fromJson(Map<String, dynamic> json) {
+  factory BasicEventModel.parse(dynamic data) {
     try {
-      return BasicEventModel(
-        session: json['Session'],
-        responseIn: json['ResponseIn'],
-        mutation: List<Map<String, dynamic>>.from(json['Mutation']),
-      );
+      final decoded = data is String ? jsonDecode(data) : data;
+      if (decoded is! Map) return BasicEventModel.empty();
+      return BasicEventModel.fromJson(Map<String, dynamic>.from(decoded));
     } catch (_) {
-      rethrow;
+      return BasicEventModel.empty();
     }
   }
 
+  factory BasicEventModel.fromJson(Map<String, dynamic> json) {
+    return BasicEventModel(
+      session: json['Session']?.toString() ?? '',
+      responseIn: json['ResponseIn']?.toString() ?? '',
+      mutation: _mutationOf(json),
+    );
+  }
+
+  static List<Map<String, dynamic>> _mutationOf(Map<String, dynamic> json) {
+    final value = json['Mutation'] ?? json['Data'];
+    if (value is List) {
+      return value
+          .whereType<Map>()
+          .map((row) => Map<String, dynamic>.from(row))
+          .toList();
+    }
+    if (value is Map) {
+      return [Map<String, dynamic>.from(value)];
+    }
+
+    final leftover = Map<String, dynamic>.from(json)
+      ..remove('Session')
+      ..remove('ResponseIn')
+      ..remove('Error')
+      ..remove('Code');
+    if (leftover.isEmpty) return [];
+    return [leftover];
+  }
+
   Map<String, dynamic> toJson() {
-    return {
-      'Session': session,
-      'ResponseIn': responseIn,
-      'Mutation': mutation,
-    };
+    return {'Session': session, 'ResponseIn': responseIn, 'Mutation': mutation};
   }
 
   @override

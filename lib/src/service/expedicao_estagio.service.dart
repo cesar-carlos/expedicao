@@ -2,6 +2,7 @@ import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_estagio/expedicao_estagio_repository.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 import 'package:app_expedicao/src/model/expedicao_estagio_model.dart';
+import 'package:app_expedicao/src/app/app_error.dart';
 
 class ExpedicaoEstagioService {
   final expedicaoEstagioRepository = ExpedicaoEstagioRepository();
@@ -15,15 +16,12 @@ class ExpedicaoEstagioService {
       final estagios = await expedicaoEstagioRepository.select(queryBuilder);
 
       if (estagios.isEmpty) {
-        throw Exception('Estágio de separação não encontrado');
+        throw AppError('Estágio de separação não encontrado');
       }
 
       return estagios.last;
     } catch (e) {
-      if (e is Exception && e.toString().contains('não encontrado')) {
-        rethrow;
-      }
-      throw Exception('Erro ao buscar estágio de separação: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 
@@ -36,15 +34,12 @@ class ExpedicaoEstagioService {
       final estagios = await expedicaoEstagioRepository.select(queryBuilder);
 
       if (estagios.isEmpty) {
-        throw Exception('Estágio de conferência não encontrado');
+        throw AppError('Estágio de conferência não encontrado');
       }
 
       return estagios.last;
     } catch (e) {
-      if (e is Exception && e.toString().contains('não encontrado')) {
-        rethrow;
-      }
-      throw Exception('Erro ao buscar estágio de conferência: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 }

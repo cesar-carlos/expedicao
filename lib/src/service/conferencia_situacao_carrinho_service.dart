@@ -1,6 +1,7 @@
 import 'package:app_expedicao/src/model/expedicao_carrinho_conferir_consulta_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_conferir/conferir_carrinho_consulta_repository.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
+import 'package:app_expedicao/src/app/app_error.dart';
 
 class ConferenciaSituacaoCarrinhoService {
   final int codEmpresa;
@@ -32,7 +33,7 @@ class ConferenciaSituacaoCarrinhoService {
       final carrinho = carrinhos.last;
       return carrinho;
     } catch (e) {
-      throw Exception('Erro ao consultar situação do carrinho: $e');
+      throw AppError.fromUnknown(e);
     }
   }
 }

@@ -68,7 +68,7 @@ class ServerConfigController extends GetxController {
       );
 
       await AppServerFileInit.setConfg(dataBaseServerModel);
-      Get.toNamed(AppRouter.splash);
+      Get.offAllNamed(AppRouter.splash);
     }
   }
 }

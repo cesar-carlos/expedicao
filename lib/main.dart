@@ -4,11 +4,10 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:app_expedicao/src/app/app_theme.dart';
 import 'package:app_expedicao/src/app/app_client_http.dart';
-import 'package:app_expedicao/src/pages/splash/splash_binding.dart';
 import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/pages/window.config/window_manager_config.dart';
-import 'package:app_expedicao/src/pages/splash/splash_page.dart';
 import 'package:app_expedicao/src/routes/app_page_router.dart';
+import 'package:app_expedicao/src/routes/app_router.dart';
 import 'package:app_expedicao/src/app/app_socket_config.dart';
 import 'package:app_expedicao/src/app/app_event_state.dart';
 
@@ -36,12 +35,12 @@ class _MyAppState extends State<MyApp> {
       final executavel =
           ProcessoExecutavelModel.fromBase64(widget.args.join(''));
 
-      Get.put(executavel);
+      Get.put(executavel, permanent: true);
     }
 
-    Get.put(AppClientHttp());
-    Get.put(AppSocketConfig());
-    Get.put(AppEventState());
+    Get.put(AppClientHttp(), permanent: true);
+    Get.put(AppSocketConfig(), permanent: true);
+    Get.put(AppEventState(), permanent: true);
   }
 
   @override
@@ -49,8 +48,7 @@ class _MyAppState extends State<MyApp> {
     return GetMaterialApp(
       title: 'Expedição de Estoque',
       debugShowCheckedModeBanner: false,
-      home: const Scaffold(body: SplashPage()),
-      initialBinding: SplashBinding(),
+      initialRoute: AppRouter.splash,
       getPages: AppPageRouter.pages,
       theme: AppTheme.classicTheme,
     );
