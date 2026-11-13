@@ -98,10 +98,10 @@ Linhas `AGRUPADO` deste destino, depois recarrega os `CONFERIDO`.
 | Del | Desagrupar a linha (selecionada, senão o primeiro `AGRUPADO`). Ignorado se o scan tem foco |
 | F7 | Agrupar tudo |
 | F8 | Desagrupar tudo |
-| ESC | Fecha (mesmo efeito do X) |
-| F12 | **Consome** o evento — não há confirmar; evita finalizar a conferência atrás |
+| ESC | Fecha (mesmo efeito do X e do botão Fechar) |
+| F12 | Fecha o modal — agrupar já gravou; consome o evento para não finalizar a conferência atrás |
 
-Sem badge de F12. Listen `carrinho.percurso.agrupamento.*.listen` **não** atualiza esta grade: a tela usa a resposta da mutação. A grade de conferidos atualiza pelo `carrinho.percurso.estagio.update.listen`.
+Sem badge de F12 no botão Fechar. Listen `carrinho.percurso.agrupamento.*.listen` **não** atualiza esta grade: a tela usa a resposta da mutação. A grade de conferidos atualiza pelo `carrinho.percurso.estagio.update.listen`.
 
 ## `Item` / código de barras
 

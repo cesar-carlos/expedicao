@@ -96,8 +96,9 @@ class CarrinhosAgruparController extends GetxController {
         return KeyEventResult.handled;
       }
 
-      if (event.logicalKey == LogicalKeyboardKey.escape) {
-        DialogCloseGuard.popPage();
+      if (event.logicalKey == LogicalKeyboardKey.escape ||
+          event.logicalKey == LogicalKeyboardKey.f12) {
+        onPressedCloseBar();
         return KeyEventResult.handled;
       }
 
@@ -128,8 +129,7 @@ class CarrinhosAgruparController extends GetxController {
       if (event.logicalKey == LogicalKeyboardKey.f4 ||
           event.logicalKey == LogicalKeyboardKey.f5 ||
           event.logicalKey == LogicalKeyboardKey.f9 ||
-          event.logicalKey == LogicalKeyboardKey.f10 ||
-          event.logicalKey == LogicalKeyboardKey.f12) {
+          event.logicalKey == LogicalKeyboardKey.f10) {
         return KeyEventResult.handled;
       }
 

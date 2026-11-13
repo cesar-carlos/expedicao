@@ -78,6 +78,15 @@ class CarrinhosAgruparPage {
                                   size: 33,
                                 ),
                               ),
+                              ButtonHeadForm(
+                                title: 'Fechar',
+                                onPressed: controller.onPressedCloseBar,
+                                icon: const Icon(
+                                  BootstrapIcons.x_circle_fill,
+                                  color: Colors.white,
+                                  size: 33,
+                                ),
+                              ),
                             ],
                           ),
 
