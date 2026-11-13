@@ -1,3 +1,6 @@
+import 'socket_mutation_action.dart';
+import 'carrinho_recovery_validation.dart';
+
 import 'package:app_expedicao/src/model/expedicao_carrinho_model.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinhos/carrinho_repository.dart';
@@ -13,9 +16,14 @@ class CarrinhoPercursoEstagioReabrirService {
   });
 
   Future<void> execute() async {
-    await CarrinhoRepository().update(carrinho);
-    await CarrinhoPercursoEstagioRepository().update(
-      carrinhoPercursoEstagio.reabrir(),
-    );
+    return runSocketMutation(() async {
+      await CarrinhoRecoveryValidation.assertLatestStage(
+        carrinhoPercursoEstagio,
+      );
+      await CarrinhoRepository().update(carrinho);
+      await CarrinhoPercursoEstagioRepository().update(
+        carrinhoPercursoEstagio.reabrir(),
+      );
+    });
   }
 }

@@ -76,7 +76,7 @@ Scan emite `conferir.item.update.listen` para a quantidade conferida atualizar n
 | `carrinho.percurso.estagio.select` | `CarrinhoPercursoEstagioRepository` | Linha de gravação. Cancelar, editar, recuperar |
 | `carrinho.percurso.agrupamento.consulta` | `CarrinhoPercursoAgrupamentoConsultaRepository` | Scan e grade do agrupar |
 | `carrinho.percurso.agrupamento.select` | `CarrinhoPercursoAgrupamentoRepository` | Tabela do agrupamento |
-| `expedicao.percurso.estagio.select` | `ExpedicaoEstagioRepository` | Só `select`. O servidor **não** emite `*.listen` nesta feature |
+| `expedicao.percurso.estagio.select` | `ExpedicaoEstagioRepository` | Leitura por `select`, sem `consulta`; também registra mutações. O servidor **não** emite `*.listen` nesta feature |
 
 `carrinho.percurso.consulta` no servidor reusa o SQL de estágio. Este coletor pede `carrinho.percurso.estagio.consulta`.
 
@@ -127,14 +127,14 @@ Não há um `getSituacao(codCarrinho)` genérico fora desses fluxos. Cadastro: `
 
 | Evento | Repositório | Nota |
 | --- | --- | --- |
-| `estoque.produto.consulta` | `ProdutoConsultaRepository` | Scan: `CodigoBarras1` / `CodigoBarras2` |
+| `estoque.produto.consulta` | `ProdutoConsultaRepository` | A view expõe `CodigoBarras` (alias de `CodigoBarras1`) e `CodigoBarras2`. `ProdutoService` consulta o primeiro por `CodigoBarras` |
 | `usuario.consulta` / `usuario.select` | `UsuarioConsultaRepository` / `UsuarioRepository` | HTTP paralelo: [consulta HTTP](./consulta-http.md) |
-| `armazenar.select` | `ArmazenarRepository` | Só `select` no servidor |
+| `armazenar.select` | `ArmazenarRepository` | Leitura por `select`, sem `consulta`; também registra mutações |
 | `armazenar.item.select` | `ArmazenarItemRepository` | Também tem `armazenar.item.consulta` no servidor |
-| `tipo.operacao.expedicao.select` | `TipoOperacaoRepository` | Só `select` |
-| `tipo.operacao.armazenagem.select` | `TipoOperacaoArmazenagemRepository` | Só `select` |
-| `processo.executavel.select` | `ProcessoExecutavelRepository` | Só `select`. Traz `CodSetorEstoque` e `CodSetorConferencia` do usuário |
-| `expedicao.cancelamento.select` | `CancelamentoRepository` | Só `select` |
+| `tipo.operacao.expedicao.select` | `TipoOperacaoRepository` | Leitura por `select`; também registra mutações |
+| `tipo.operacao.armazenagem.select` | `TipoOperacaoArmazenagemRepository` | Leitura por `select`; também registra mutações |
+| `processo.executavel.select` | `ProcessoExecutavelRepository` | Leitura por `select`; também registra mutações. Traz `CodSetorEstoque` e `CodSetorConferencia` do usuário |
+| `expedicao.cancelamento.select` | `CancelamentoRepository` | Leitura por `select`; também registra mutações |
 | `setor.estoque.select` | *(não usado neste app)* | Cadastro de setor. A recusa usa o processo + `CodSetorEstoque` do item. [Setor](./setor-estoque.md) |
 | `sequencia.select` | *(não usado neste app)* | Nome **não** é `sequencia.registro.select` |
 
@@ -165,3 +165,26 @@ Usar em `conferir.item.consulta` e `conferencia.item.consulta`. Sem `CodCarrinho
 - Broadcast `*.listen` depois de gravar — o cliente só escuta
 - `separar.consulta.listen` — poll do processo, não usa o envelope de pedido
 - Rotas HTTP `/usuarios` e login — [consulta HTTP](./consulta-http.md)
+
+## Revisão dos serviços e parâmetros — 2026-11-13
+
+Comparação estática com `docs/socket/consultas.md`, `docs/socket/eventos.md`, `docs/socket/conferir.md` e, onde a documentação diverge, `src/aplication/app.socket.config.ts`, handlers, DTOs e SQL do servidor. Os 89 sufixos distintos declarados nos repositórios Dart existem no registro do servidor. Isso verifica os nomes, não comprova a execução de todas as operações.
+
+| Serviço / operação | Parâmetros e comportamento conferidos |
+| --- | --- |
+| Cabeçalho separar / conferir | `CodEmpresa` + `CodSepararEstoque` / `CodConferir` |
+| Itens de separação | Empresa + documento; consultas de carrinho acrescentam carrinho ou percurso + estágio; listas completas usam `allRows` |
+| Itens da janela de conferência | Empresa + conferência + `CodCarrinho`; conversões de unidade usam somente empresa + conferência |
+| Estágios do documento | Empresa + `Origem` (`SE` / `CO`) + `CodOrigem`; ordenação corrigida para `CodCarrinhoPercurso, Item` |
+| Carrinhos a conferir | Empresa + conferência; ordenação corrigida para `CodCarrinhoPercurso, ItemCarrinhoPercurso` |
+| Abertura de estágio | Consulta `Origem` + `Ativo = S`, ordena por `Sequencia, CodPercursoEstagio`, pede uma linha. Sem estágio válido, interrompe antes de atualizar carrinho ou inserir estágio. Não mantém cache entre aberturas |
+| Mutação de estágio | Empresa, percurso, carrinho, estágio, origem/documento do processo, situação, usuário e data/hora. Na conferência, estágio `CO` referencia o percurso da separação `SE` |
+| Atualização de percurso por origem | Empresa + origem + documento, excluindo `CANCELADA`; seleciona explicitamente o maior `CodCarrinhoPercurso` com `LIMIT=1`, em vez de usar o último registro de uma página sem ordem |
+| Insert de separação / conferência | Empresa + documento + percurso + `ItemCarrinhoPercurso`, produto, unidade, quantidade, operador, sessão e data/hora; `Item` vazio para geração no servidor |
+| Update/delete de itens | DTO de gravação obtido por `select` ou convertido da view; chave empresa + documento + `Item`. Ações do carrinho consultam percurso + estágio; métodos do documento mantêm escopo do documento |
+| Agrupar / desagrupar | Empresa + percurso + origem; exclui o carrinho destino, filtra situação; grava estágio, cadastro, agrupamento e cancelamento em pedidos separados |
+| Usuário / produto | `CodUsuario` e `CodProduto` são cadastros globais; não acrescentar `CodEmpresa` sem coluna no contrato. Código de barras do produto usa o alias `CodigoBarras` da view |
+
+As descrições antigas “só select” confundiam ausência de `consulta` com ausência de mutação. O registro e os handlers atuais também oferecem insert/update/delete para estágio, armazenar, tipos de operação, processo e cancelamento; os repositórios correspondentes não devem ser removidos por essa descrição.
+
+Teste local: `test/src/service/service_socket_contract_test.dart` usa serviços e repositórios reais com socket em memória para conferir filtros, ordenação e mutações da abertura/atualização do percurso. Nenhuma API ou base SQL é acessada. Operações compostas continuam sem garantia de transação única ou idempotência; a ordenação composta não oferece isolamento contra alterações concorrentes entre páginas.

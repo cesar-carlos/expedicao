@@ -130,7 +130,10 @@ class SepararConsultaServices {
       }
 
       return await carrinhoPercursoEstagioConsultaRepository.select(
-        queryBuilder.allRows(),
+        queryBuilder.allRows(
+          orderField: 'CodCarrinhoPercurso',
+          thenBy: ['Item'],
+        ),
       );
     } catch (e) {
       throw AppError.fromUnknown(e);

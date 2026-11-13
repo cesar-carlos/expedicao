@@ -18,7 +18,13 @@ Neste app: `lib/src/app/app_error.dart` (`implements Exception`). Alerta de tela
 ```
 
 - `Error` é sempre `string[]`, com **uma** linha no formato `[identificador] mensagem`.
-- `Code` e `RequestId` são metadados. Este coletor pode ignorá-los; a identificação rápida está no texto de `Error`.
+- `Code` e `RequestId` são metadados de classificação/correlação; não indicam commit ou rollback. A identificação rápida está no texto de `Error`. Preservá-los é importante para diagnóstico, sem usá-los como prova de ausência de efeitos.
+
+Erro de negócio em mutação individual pode vir depois de um commit, durante a atualização de totais. A barreira atual não cobre genericamente esse caso. Ver [revisão do tratamento após gravação](./erros-pos-gravacao.md), incluindo diferenças entre commit no banco e confirmação recebida pelo app. “Tente novamente” em mensagem de lock não autoriza replay automático.
+
+O prefixo descreve erros recebidos do servidor. Falhas locais de conexão e timeout de `AppSocketConfig.request` podem não ter prefixo: ao expirar 30 s, o app produz “O servidor não respondeu a tempo. Tente novamente.”. Isso não comprova que recebeu `[SQL-CONN]` nem que uma gravação foi desfeita. Ver [repetição de mutações](./consulta-socket.md#repetição-e-resultado-incerto).
+
+`Consulta Where em SQL cru (legado QueryBuilder)` é warn do servidor, não `Error` do Socket. No supervisor Windows pode aparecer vermelho por sair em stderr; a consulta continua. Ver [Where](./where.md).
 
 ## Como ler o prefixo
 
@@ -67,6 +73,7 @@ A base `Estacao` **ainda pode não** ter os scripts. Sem as triggers o `[50014]`
 | `[SQL-3609]` | A operacao foi recusada pela regra do banco. |
 | `[SQL-8134]` | Operacao numerica invalida. |
 | `[SQL-8152]` | Texto maior do que o campo permite. |
+| `[SQL-8003]` | Muitos itens nesta operacao. Tente novamente. (limite de parâmetros; não confundir com tamanho da página) |
 | `[SQL-CONN]` | Falha de conexao com o banco. |
 
 ## Fluxo neste coletor

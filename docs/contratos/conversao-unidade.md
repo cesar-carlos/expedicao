@@ -2,6 +2,8 @@
 
 O bip no carrinho (separação e conferência) usa a conversão cadastrada em `ConversaoUnidadeMedida`. A coluna no banco é **`Codigo`**, não `CodigoBarras`.
 
+Este caminho é do scan individual. Os lotes **separar tudo/conferir tudo não aplicam essa conversão** e hoje abatem realizados por produto sem filtrar unidade. Ver [revisão dos saldos em lote](./separar-conferir-tudo.md); não presumir que o fator do bip normalize automaticamente as quantidades do pedido.
+
 ## Coluna no banco vs campo no app
 
 | Camada | Nome |

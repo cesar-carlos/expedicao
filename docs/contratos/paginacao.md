@@ -41,6 +41,12 @@ Padrão do `QueryBuilder.paginate` em Dart é `limit: 10`. Não confundir com o 
 
 `Pagination.create` no Dart usa `limit: 50` — outro padrão local, só se o código chamar essa factory.
 
+Entre `.paginate()` e `.allRows()`, prevalece a última chamada: página explícita desliga a coleta de todas as páginas; `allRows()` limpa a paginação explícita anterior. A ordenação já definida é preservada.
+
+`queryMapped` copia o builder e os valores dos filtros antes de iniciar a consulta. Alterar o builder ou a lista usada em um filtro durante a espera não muda as páginas seguintes. Todas as páginas devem usar o mesmo socket e a mesma sessão; se a conexão mudar, o cliente interrompe a coleta com erro e não entrega o resultado parcial como lista completa.
+
+Isso não oferece um snapshot transacional do banco: inserções ou exclusões concorrentes podem deslocar linhas entre páginas por `OFFSET`, mesmo na mesma sessão. A recuperação de conexão relê o documento e repete a leitura quando recebe mudanças durante o carregamento; o contrato do servidor não garante isolamento entre páginas.
+
 ### Onde o coletor manda página explícita hoje
 
 | Chamada | Limit | Motivo |

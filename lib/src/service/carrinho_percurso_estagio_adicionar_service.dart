@@ -1,3 +1,5 @@
+import 'socket_mutation_action.dart';
+
 import 'package:get/get.dart';
 
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
@@ -14,8 +16,6 @@ import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 import 'package:app_expedicao/src/app/app_error.dart';
 
 class CarrinhoPercursoEstagioAdicionarService {
-  static final Map<String, ExpedicaoEstagioModel?> _estagioAtivoPorOrigem = {};
-
   final _processo = Get.find<ProcessoExecutavelModel>();
 
   final ExpedicaoCarrinhoModel carrinho;
@@ -30,22 +30,24 @@ class CarrinhoPercursoEstagioAdicionarService {
   });
 
   Future<ExpedicaoCarrinhoPercursoEstagioModel?> execute() async {
-    try {
-      final creatEstagio = await _createPercursoEstagio();
-      await carrinhoRepository.update(carrinho);
+    return runSocketMutation(() async {
+      try {
+        final creatEstagio = await _createPercursoEstagio();
+        await carrinhoRepository.update(carrinho);
 
-      final newEstagio = await carrinhoPercursoEstagioRepository.insert(
-        creatEstagio,
-      );
+        final newEstagio = await carrinhoPercursoEstagioRepository.insert(
+          creatEstagio,
+        );
 
-      if (newEstagio.isNotEmpty) {
-        return newEstagio.first;
+        if (newEstagio.isNotEmpty) {
+          return newEstagio.first;
+        }
+
+        return null;
+      } catch (e) {
+        throw AppError.fromUnknown(e);
       }
-
-      return null;
-    } catch (e) {
-      throw AppError.fromUnknown(e);
-    }
+    });
   }
 
   Future<ExpedicaoCarrinhoPercursoEstagioModel> _createPercursoEstagio() async {
@@ -60,7 +62,7 @@ class CarrinhoPercursoEstagioAdicionarService {
         item: '',
         origem: _processo.origem,
         codOrigem: _processo.codOrigem,
-        codPercursoEstagio: percurso?.codPercursoEstagio ?? 0,
+        codPercursoEstagio: percurso.codPercursoEstagio,
         codCarrinho: carrinho.codCarrinho,
         situacao: situacao,
         dataInicio: DateTime.now(),
@@ -84,27 +86,25 @@ class CarrinhoPercursoEstagioAdicionarService {
     }
   }
 
-  Future<ExpedicaoEstagioModel?> _findcodPercursoEstagio() async {
+  Future<ExpedicaoEstagioModel> _findcodPercursoEstagio() async {
     final origem = _processo.origem;
-    if (_estagioAtivoPorOrigem.containsKey(origem)) {
-      return _estagioAtivoPorOrigem[origem];
-    }
 
     try {
       final queryBuilder = QueryBuilder()
           .equals('Origem', origem)
-          .equals('Ativo', 'S');
+          .equals('Ativo', 'S')
+          .orderByAsc('Sequencia')
+          .orderByAsc('CodPercursoEstagio')
+          .paginate(limit: 1);
 
       final estagios = await expedicaoEstagioRepository.select(queryBuilder);
 
-      ExpedicaoEstagioModel? estagio;
-      if (estagios.isNotEmpty) {
-        estagios.sort((a, b) => a.sequencia.compareTo(b.sequencia));
-        estagio = estagios.first;
+      if (estagios.isEmpty || estagios.first.codPercursoEstagio <= 0) {
+        throw AppError(
+          'Nenhum estágio ativo encontrado para a origem $origem.',
+        );
       }
-
-      _estagioAtivoPorOrigem[origem] = estagio;
-      return estagio;
+      return estagios.first;
     } catch (e) {
       throw AppError.fromUnknown(e);
     }

@@ -44,6 +44,9 @@ O servidor protege a base **sem** mudar JSON de pedido/resposta das consultas at
 4. **Não** escuta `separar.consulta.listen` e **não** dispara outra `separar.consulta` no tick do listen. A tela usa `Data`/`Mutation` de `separar.update.listen` e dos listens de item.
 5. `[SQL-1222]`: “tente de novo”, não payload inválido. `AppError.display`.
 6. `[SQL-CONN]`: timeout/falha de conexão. Não relançar a mesma consulta em loop imediato.
+7. Warn `Consulta Where em SQL cru (legado QueryBuilder)` não é erro da consulta: o servidor executa e responde `Data`. A fonte atual já usa lista; builds antigos podem continuar gerando o warn, exibido como erro pelo supervisor Windows por ser stderr.
+
+O timeout local de 30 s do desktop pode vencer antes da resposta `[SQL-CONN]` do servidor e produzir mensagem sem prefixo. Não confundir os dois diagnósticos. Dedup de consulta não protege mutações contra repetição; [resultado incerto](./consulta-socket.md#repetição-e-resultado-incerto).
 
 ---
 
@@ -122,7 +125,7 @@ Estas mudanças **não** estão ligadas. Quando forem, o servidor avisa em `prot
 | Cortar `LIMIT` explícito num teto (hoje o servidor respeita) | Página menor que a esperada | `allRows()` pagina de 500; não depende de `LIMIT` enorme |
 | Token no handshake Socket.IO | Conexão recusada | `handshakeAuth` existe e **permanece nulo**. Hoje **não** mandar |
 | Rate limit de `*.consulta` por socket | Pedidos extras atrasam ou recebem erro | Não martelar consulta; confiar no listen e no dedup |
-| Transação SQL opt-in (`transacao: true` ou evento de lote) | Sem o campo, continua autocommit | Não assumir rollback |
+| Transação SQL opt-in (`transacao: true` ou evento de lote) | Ainda sem contrato implementado; mutações atuais são autocommit | Não enviar o campo esperando rollback. Ver [revisão de concorrência](./concorrencia-idempotencia.md) |
 | Desconectar automaticamente quem segura lock / satura o pool | Socket cai | Já escuta `servidor.emergencia.listen` e trata `Acao=desconectar` |
 | `READ_COMMITTED_SNAPSHOT` na `Estacao` | Nenhum no JSON | Só DBA |
 

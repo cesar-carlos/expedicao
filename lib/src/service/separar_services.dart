@@ -1,3 +1,5 @@
+import 'socket_mutation_action.dart';
+
 import 'package:app_expedicao/src/model/expedicao_item_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_separacao_item_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_repository.dart';
@@ -19,25 +21,27 @@ class SepararServices {
   SepararServices(this.separar);
 
   Future<void> iniciar() async {
-    try {
-      final existsPercurso = await _existsPercurso();
+    return runSocketMutation(() async {
+      try {
+        final existsPercurso = await _existsPercurso();
 
-      if (!existsPercurso) {
-        await _iniciarPercurso();
+        if (!existsPercurso) {
+          await _iniciarPercurso();
+        }
+
+        if (separar.situacao == ExpedicaoSituacaoModel.separando) {
+          return;
+        }
+
+        final newSeparar = separar.copyWith(
+          situacao: ExpedicaoSituacaoModel.separando,
+        );
+
+        await separarRepository.update(newSeparar);
+      } catch (e) {
+        throw AppError.fromUnknown(e);
       }
-
-      if (separar.situacao == ExpedicaoSituacaoModel.separando) {
-        return;
-      }
-
-      final newSeparar = separar.copyWith(
-        situacao: ExpedicaoSituacaoModel.separando,
-      );
-
-      await separarRepository.update(newSeparar);
-    } catch (e) {
-      throw AppError.fromUnknown(e);
-    }
+    });
   }
 
   Future<List<ExpedicaoSeparacaoItemModel>> separacaoItem() async {

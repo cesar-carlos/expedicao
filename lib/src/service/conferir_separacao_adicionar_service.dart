@@ -1,3 +1,5 @@
+import 'socket_mutation_action.dart';
+
 import 'package:app_expedicao/src/app/app_error.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_item_model.dart';
@@ -21,21 +23,23 @@ class ConferirSeparacaoAdicionarService {
   ConferirSeparacaoAdicionarService(this.carrinhoPercurso);
 
   Future<void> execute() async {
-    try {
-      final itensSeparacaoConsulta = await _findSeparado();
-      final conferir = _createConferir(itensSeparacaoConsulta.first);
-      final result = await conferirRepository.insert(conferir);
+    return runSocketMutation(() async {
+      try {
+        final itensSeparacaoConsulta = await _findSeparado();
+        final conferir = _createConferir(itensSeparacaoConsulta.first);
+        final result = await conferirRepository.insert(conferir);
 
-      final newItensConferir = _createItensConferir(
-        result.first,
-        itensSeparacaoConsulta,
-      );
+        final newItensConferir = _createItensConferir(
+          result.first,
+          itensSeparacaoConsulta,
+        );
 
-      await conferirItemRepository.insertAll(newItensConferir);
-    } catch (e) {
-      if (e is AppError) rethrow;
-      throw AppError.fromUnknown(e);
-    }
+        await conferirItemRepository.insertAll(newItensConferir);
+      } catch (e) {
+        if (e is AppError) rethrow;
+        throw AppError.fromUnknown(e);
+      }
+    });
   }
 
   Future<List<ExpedicaoSeparadoItemConsultaModel>> _findSeparado() async {

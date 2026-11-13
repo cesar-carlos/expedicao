@@ -11,7 +11,10 @@ Contrato: `docs/contratos/agrupar-carrinho.md`. Só conferência.
 - **F6** na grade de conferidos: o `CONFERIDO` é o **destino**. **F7** assistente bipa o destino neste documento (`equals` em `CodigoBarrasCarrinho`, não `LIKE`).
 - Destino permanece `CONFERIDO`. Origem: estágio `AGRUPADO`, cadastro `LIBERADO`. Não move item.
 - Agrupar só `CONFERIDO` com `CarrinhoAgrupador != 'S'`, que não seja o destino.
-- Desagrupar só se o cadastro ainda está `LIBERADO`. Agrupamento → `CANCELADA`, cancelamento `Origem = AG`.
+- `CarrinhoAgrupador = S` é calculado por vínculos ativos como destino, não é tipo fixo do cadastro.
+- Origem e destino: mesma empresa, percurso, conferência (`CO` + `CodOrigem`); reler view, estágio e cadastro antes de gravar. Ambos precisam continuar no último uso do histórico.
+- Desagrupar exige cadastro `LIBERADO` e vínculo ativo correspondente. `LIBERADO` não prova que o físico não foi reutilizado. Agrupamento → `CANCELADA`, cancelamento `Origem = AG`.
 - `Item` / `ItemCarrinhoPercurso` / `ItemAgrupamento` na tabela: `itemSequenceKey`. Grade: `sameGridItem`. Scan na grade: `sameBarCode`.
 - Insert agrupamento: `Item = '00000'`. Listen do agrupamento não atualiza a grade do modal — usar a resposta da mutação.
+- Recuperação substitui a grade do modal e valida vínculos/estágios; falha parcial mantém bloqueio, sem compensação ou retry automático. Não presumir atomicidade entre consultas e gravações.
 - F12 no modal fecha (mesmo efeito do X/ESC). Consome o evento para não finalizar a conferência atrás. Sem badge de F12.

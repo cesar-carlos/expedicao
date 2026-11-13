@@ -16,6 +16,9 @@ class SocketEventRepository implements EventContract {
 
   void bind(String channel, Event event) {
     _socket.listen(channel, (data) {
+      if (_listeners.isNotEmpty && channel != 'servidor.emergencia.listen') {
+        _socket.recovery.receivedChange();
+      }
       AppSocketListenLog.received(channel, data);
       dispatch(
         listeners: _listeners,

@@ -1,3 +1,5 @@
+import 'socket_mutation_action.dart';
+
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 import 'package:app_expedicao/src/service/expedicao_percurso_atualizar_service.dart';
 import 'package:app_expedicao/src/repository/expedicao_carrinho_percurso/carrinho_percurso_repository.dart';
@@ -18,22 +20,24 @@ class ConferirServices {
   ConferirServices(this.conferir);
 
   Future<void> iniciar() async {
-    try {
-      final newConferir = conferir.copyWith(
-        situacao: ExpedicaoSituacaoModel.emConverencia,
-      );
+    return runSocketMutation(() async {
+      try {
+        final newConferir = conferir.copyWith(
+          situacao: ExpedicaoSituacaoModel.emConverencia,
+        );
 
-      final existsPercurso = await _existsPercurso();
-      if (!existsPercurso) {
-        await _iniciarPercurso();
-      } else {
-        await _atualizarPercurso();
+        final existsPercurso = await _existsPercurso();
+        if (!existsPercurso) {
+          await _iniciarPercurso();
+        } else {
+          await _atualizarPercurso();
+        }
+
+        await repositoryConferir.update(newConferir);
+      } catch (e) {
+        throw AppError.fromUnknown(e);
       }
-
-      await repositoryConferir.update(newConferir);
-    } catch (e) {
-      throw AppError.fromUnknown(e);
-    }
+    });
   }
 
   Future<void> pausa() async {
@@ -42,12 +46,14 @@ class ConferirServices {
 
   Future<void> retomar() async {
     throw UnimplementedError(
-        'Funcionalidade de retomada ainda não implementada');
+      'Funcionalidade de retomada ainda não implementada',
+    );
   }
 
   Future<void> finalizar() async {
     throw UnimplementedError(
-        'Funcionalidade de finalização ainda não implementada');
+      'Funcionalidade de finalização ainda não implementada',
+    );
   }
 
   static Future<void> atualizar(ExpedicaoConferirModel conferir) async {
@@ -66,8 +72,9 @@ class ConferirServices {
           .equals('CodOrigem', conferir.codOrigem)
           .notEquals('Situacao', ExpedicaoSituacaoModel.cancelada);
 
-      final carrinhoPercurso =
-          await CarrinhoPercursoRepository().select(queryBuilder);
+      final carrinhoPercurso = await CarrinhoPercursoRepository().select(
+        queryBuilder,
+      );
       return carrinhoPercurso.isNotEmpty;
     } catch (e) {
       throw AppError.fromUnknown(e);

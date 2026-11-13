@@ -114,6 +114,13 @@ class ConferirCarrinhosController extends GetxController {
     _conferirCarrinhoGridController.update();
   }
 
+  void replaceCarrinhos(List<ExpedicaoCarrinhoConferirConsultaModel> models) {
+    if (isClosed) return;
+    _conferirCarrinhoGridController.removeAllGrid();
+    _conferirCarrinhoGridController.addAllGrid(models);
+    _conferirCarrinhoGridController.update();
+  }
+
   void _liteners() {
     const uuid = Uuid();
 

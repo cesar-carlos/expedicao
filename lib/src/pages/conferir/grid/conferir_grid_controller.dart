@@ -161,7 +161,9 @@ class ConferirGridController extends GetxController {
   void addAllUnidade(
     List<ExpedicaoConferirItemUnidadeMedidaConsultaModel> itens,
   ) {
-    _itemUnids.addAll(itens);
+    _itemUnids
+      ..clear()
+      ..addAll(itens);
   }
 
   void updateUnidade(ExpedicaoConferirItemUnidadeMedidaConsultaModel item) {
@@ -378,7 +380,9 @@ class ConferirGridController extends GetxController {
   }
 
   bool existsBarCode(String barCode) {
-    return _itemUnids.any((el) => AppHelper.sameBarCode(el.codigoBarras, barCode));
+    return _itemUnids.any(
+      (el) => AppHelper.sameBarCode(el.codigoBarras, barCode),
+    );
   }
 
   bool existsCodProduto(int codProduto) {

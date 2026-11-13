@@ -4,6 +4,30 @@ import 'package:app_expedicao/src/model/pagination/pagination.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 
 void main() {
+  test('paginate após allRows passa a buscar apenas a página explícita', () {
+    final query = QueryBuilder().allRows().paginate(limit: 20, page: 2);
+    expect(query.fetchAllPages, isFalse);
+    expect(query.buildPagination(), 'LIMIT=20&OFFSET=20&PAGE=2');
+  });
+
+  test('allRows após paginate remove a página explícita antiga', () {
+    final query = QueryBuilder().paginate(limit: 20, page: 2).allRows();
+    expect(query.fetchAllPages, isTrue);
+    expect(query.pagination, isNull);
+  });
+
+  test('copy preserva valores de IN mesmo se a lista original mudar', () {
+    final values = [1, 2];
+    final original = QueryBuilder().addParam(
+      'CodEmpresa',
+      values,
+      operator: 'IN',
+    );
+    final copy = original.copy();
+    values.add(3);
+    expect(copy.buildWhereList().single['value'], [1, 2]);
+  });
+
   group('QueryBuilder.allRows', () {
     test('marca busca paginada de 500 e ordena por Item', () {
       final query = QueryBuilder().equals('CodEmpresa', 1).allRows();

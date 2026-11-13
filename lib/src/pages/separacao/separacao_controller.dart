@@ -1,4 +1,7 @@
+import '../../service/socket_mutation_action.dart';
+
 import 'package:get/get.dart';
+import 'package:app_expedicao/src/app/app_error.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -157,6 +160,7 @@ class SeparacaoController extends GetxController {
   @override
   void onReady() async {
     super.onReady();
+    Get.find<AppSocketConfig>().recovery.register(this, _reloadAfterConnection);
 
     if (_viewMode.value) {
       formFocusNode.requestFocus();
@@ -172,6 +176,7 @@ class SeparacaoController extends GetxController {
 
   @override
   void onClose() {
+    Get.find<AppSocketConfig>().recovery.unregister(this);
     _viewMode.close();
     scanController.dispose();
     quantidadeController.dispose();
@@ -249,6 +254,36 @@ class SeparacaoController extends GetxController {
     });
   }
 
+  Future<void> _reloadAfterConnection() async {
+    final stages = await CarrinhoPercursoEstagioServices().select(
+      QueryBuilder()
+          .equals('CodEmpresa', percursoEstagioConsulta.codEmpresa)
+          .equals(
+            'CodCarrinhoPercurso',
+            percursoEstagioConsulta.codCarrinhoPercurso,
+          )
+          .equals(
+            'Item',
+            AppHelper.itemSequenceKey(percursoEstagioConsulta.item),
+          ),
+    );
+    if (isClosed) return;
+    if (stages.isEmpty) {
+      _viewMode.value = true;
+      update();
+      throw AppError(
+        'O estágio do carrinho não existe mais. Feche o carrinho e confira o documento.',
+      );
+    }
+    setSituacao = stages.single.situacao;
+    _viewMode.value =
+        !(stages.single.situacao == ExpedicaoSituacaoModel.separando ||
+            stages.single.situacao == ExpedicaoSituacaoModel.emAndamento ||
+            stages.single.situacao == ExpedicaoSituacaoModel.emSeparacao);
+    await _fillGridSeparacaoItens();
+    if (!isClosed) update();
+  }
+
   Future<void> _fillGridSeparacaoItens() async {
     final separar = await _separarConsultaServices.separar();
     final separacaoItens = await _separarConsultaServices.itensSeparacao();
@@ -257,11 +292,16 @@ class SeparacaoController extends GetxController {
       return (el.codEmpresa == percursoEstagioConsulta.codEmpresa &&
           el.codCarrinhoPercurso ==
               percursoEstagioConsulta.codCarrinhoPercurso &&
-          el.itemCarrinhoPercurso == percursoEstagioConsulta.item);
+          AppHelper.sameGridItem(
+            el.itemCarrinhoPercurso,
+            percursoEstagioConsulta.item,
+          ));
     }).toList();
 
+    if (isClosed) return;
     _separacaoGridController.removeAllGrid();
     _separacaoGridController.addAllGrid(separacaoItensFiltrados);
+    _separacaoGridController.update();
     _isComplit = _separarGridController.isComplit();
 
     indicator.value = colorIndicator;
@@ -275,6 +315,13 @@ class SeparacaoController extends GetxController {
   }
 
   bool get viewMode {
+    if (Get.isRegistered<ExpedicaoSepararConsultaModel>()) {
+      final situacao = Get.find<ExpedicaoSepararConsultaModel>().situacao;
+      if (situacao == ExpedicaoSituacaoModel.cancelada ||
+          situacao == ExpedicaoSituacaoModel.separado) {
+        return true;
+      }
+    }
     if (percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.cancelada ||
         percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.separado) {
       _viewMode.value = true;
@@ -310,6 +357,15 @@ class SeparacaoController extends GetxController {
   }
 
   Future<void> _addItemSeparacao() async {
+    try {
+      await Get.find<AppSocketConfig>().recovery.beforeMutation();
+    } catch (e) {
+      if (!isClosed) {
+        await MessageDialogView.showError(context: Get.context!, error: e);
+      }
+      return;
+    }
+    if (isClosed) return;
     final scanValue = scanController.text;
     final textQuantityValue = quantidadeController.text;
 
@@ -856,8 +912,7 @@ class SeparacaoController extends GetxController {
       await MessageDialogView.show(
         context: Get.context!,
         message: 'Carrinho de outro documento!',
-        detail:
-            'O estágio cancelado não pertence a esta separação. Não é possível recuperar.',
+        detail: 'O estágio cancelado não pertence a esta separação. Não é possível recuperar.',
       );
 
       return;
@@ -896,7 +951,7 @@ class SeparacaoController extends GetxController {
   ) async {
     return await LoadingProcessDialogGenericWidget.show<bool>(
       context: Get.context!,
-      process: () async {
+      process: () => runSocketMutation(() async {
         await SeparacaoAdicionarItemService(
           percursoEstagioConsulta: percursoEstagio,
         ).addRecuperados(separacaoItensRecuperado);
@@ -906,7 +961,7 @@ class SeparacaoController extends GetxController {
 
         await _fillGridSeparacaoItens();
         return true;
-      },
+      }),
     );
   }
 

@@ -125,6 +125,14 @@ Depois de salvar/reabrir carrinho a tela consulta o documento (`separar.consulta
 
 Este coletor **não** escuta `separar.consulta.listen` (timer periódico do servidor). Não disparar `separar.consulta` no mesmo tick — a grade usa o `Data`/`Mutation` dos listens de situação e item.
 
+### Limites da sincronização
+
+A trigger 02 cria `Conferir` / `ConferirResumo` / `ItemConferir` diretamente no SQL e **não** emite `conferir.insert.listen` nem `conferir.item.insert.listen`. Também não existe `conferir.consulta.listen` periódico. Para enxergar uma conferência recém-criada, consultar novamente `conferir.consulta` ou `carrinho.conferir.consulta` no fluxo de atualização da lista; não voltar a criar a conferência no cliente.
+
+Insert de estágio emite `separar.update.listen`, mas não `carrinho.percurso.update.listen`; este último sai no **update** do estágio. Delete de estágio não emite `separar.update.listen`. Ao abrir estágio `CO`, o reload de separação filtra origem `SE` e pode emitir `Mutation` vazia; isso não é ordem para apagar a grade.
+
+Reassociar listeners não recupera, por si só, alterações ocorridas enquanto o app estava desconectado. `AppSocketConfig` agora aciona `SocketRecovery` após reconexão: relê o documento e o carrinho aberto, substitui as grades e bloqueia gravação até a conferência do estado. Mudanças recebidas durante a leitura permitem até três passagens para evitar aplicar snapshot desatualizado; falha mantém a pendência. Não há polling por tick do listen. [Recuperação e limites](./consulta-socket.md#recuperação-da-conexão-e-gravação-incerta).
+
 Canal de emergência: [proteções do servidor](./protecoes-servidor.md). `allEvent: true`. Sem prefixar `socket.id`.
 
 Cruzado no servidor: insert/update de estágio também emite `separar.update.listen`. `conferir.update.listen` sai de `conferir.update` e de `PUT /expedicao/conferir/notify`. Envelope: [consulta Socket.IO](./consulta-socket.md). Catálogo: [consultas](./consultas.md). Overlay: [modais](./modais.md). `Item`: [chave de Item](./item-chave.md). Setor: [setor de estoque](./setor-estoque.md).

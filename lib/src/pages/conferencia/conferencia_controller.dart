@@ -1,5 +1,9 @@
 import 'dart:async';
 
+import 'package:app_expedicao/src/app/app_error.dart';
+import 'package:app_expedicao/src/model/pagination/query_builder.dart';
+import 'package:app_expedicao/src/service/carrinho_percurso_estagio_services.dart';
+
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
@@ -143,11 +147,9 @@ class ConferenciaController extends GetxController {
   @override
   void onReady() async {
     super.onReady();
+    Get.find<AppSocketConfig>().recovery.register(this, _reloadAfterConnection);
 
-    await Future.wait([
-      _fillGridConferirItens(),
-      _fillGridConferidoItens(),
-    ]);
+    await Future.wait([_fillGridConferirItens(), _fillGridConferidoItens()]);
 
     if (_viewMode.value) {
       formFocusNode.requestFocus();
@@ -173,6 +175,7 @@ class ConferenciaController extends GetxController {
 
   @override
   void onClose() {
+    Get.find<AppSocketConfig>().recovery.unregister(this);
     // Cancelar o listener antes de deletar o controller
     _changeListListenWorker?.cancel();
 
@@ -252,6 +255,38 @@ class ConferenciaController extends GetxController {
     });
   }
 
+  Future<void> _reloadAfterConnection() async {
+    final stages = await CarrinhoPercursoEstagioServices().select(
+      QueryBuilder()
+          .equals('CodEmpresa', percursoEstagioConsulta.codEmpresa)
+          .equals(
+            'CodCarrinhoPercurso',
+            percursoEstagioConsulta.codCarrinhoPercurso,
+          )
+          .equals(
+            'Item',
+            AppHelper.itemSequenceKey(percursoEstagioConsulta.item),
+          ),
+    );
+    if (isClosed) return;
+    if (stages.isEmpty) {
+      _viewMode.value = true;
+      update();
+      throw AppError(
+        'O estágio do carrinho não existe mais. Feche o carrinho e confira o documento.',
+      );
+    }
+    setSituacao = stages.single.situacao;
+    _viewMode.value =
+        !(stages.single.situacao == ExpedicaoSituacaoModel.conferindo ||
+            stages.single.situacao == ExpedicaoSituacaoModel.emAndamento ||
+            stages.single.situacao == ExpedicaoSituacaoModel.emConverencia);
+    await _fillGridConferirItens();
+    if (isClosed) return;
+    await _fillGridConferidoItens();
+    if (!isClosed) update();
+  }
+
   Future<void> _fillGridConferirItens() async {
     final conferirItens = await _conferirConsultasServices.itensConferir(
       codCarrinho: percursoEstagioConsulta.codCarrinho,
@@ -269,6 +304,8 @@ class ConferenciaController extends GetxController {
         )
         .toList();
 
+    if (isClosed) return;
+    _conferirGridController.removeAllGrid();
     _conferirGridController.addAllGrid(conferirItensCarrinho);
     _conferirGridController.addAllUnidade(conferirItensInids);
   }
@@ -290,10 +327,21 @@ class ConferenciaController extends GetxController {
         )
         .toList();
 
+    if (isClosed) return;
+    _conferenciaGridController.removeAllGrid();
     _conferenciaGridController.addAllGrid(conferidoItensCarrinho);
+    _conferenciaGridController.update();
   }
 
   bool get viewMode {
+    if (Get.isRegistered<ExpedicaoConferirConsultaModel>()) {
+      final situacao = Get.find<ExpedicaoConferirConsultaModel>().situacao;
+      if (situacao == ExpedicaoSituacaoModel.cancelada ||
+          situacao == ExpedicaoSituacaoModel.conferido ||
+          situacao == ExpedicaoSituacaoModel.agrupado) {
+        return true;
+      }
+    }
     if (percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.cancelada ||
         percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.conferido ||
         percursoEstagioConsulta.situacao == ExpedicaoSituacaoModel.agrupado) {
@@ -312,6 +360,15 @@ class ConferenciaController extends GetxController {
   }
 
   Future<void> _addItemConferencia() async {
+    try {
+      await Get.find<AppSocketConfig>().recovery.beforeMutation();
+    } catch (e) {
+      if (!isClosed) {
+        await MessageDialogView.showError(context: Get.context!, error: e);
+      }
+      return;
+    }
+    if (isClosed) return;
     final scanValue = scanController.text;
     final textQuantityValue = quantidadeController.text;
 

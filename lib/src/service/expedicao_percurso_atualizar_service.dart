@@ -24,20 +24,25 @@ class ExpedicaoPercursoAtualizarService {
           .equals('CodEmpresa', codEmpresa)
           .equals('Origem', origem)
           .equals('CodOrigem', codOrigem)
-          .notEquals('Situacao', ExpedicaoSituacaoModel.cancelada);
+          .notEquals('Situacao', ExpedicaoSituacaoModel.cancelada)
+          .orderByDesc('CodCarrinhoPercurso')
+          .paginate(limit: 1);
 
-      final carrinhosPercurso =
-          await carrinhoPercursoRepository.select(queryBuilder);
+      final carrinhosPercurso = await carrinhoPercursoRepository.select(
+        queryBuilder,
+      );
 
       if (carrinhosPercurso.isEmpty) {
         throw AppError('Percurso não encontrado');
       }
 
-      final carrinhoPercurso =
-          carrinhosPercurso.last.copyWith(situacao: situacao);
+      final carrinhoPercurso = carrinhosPercurso.first.copyWith(
+        situacao: situacao,
+      );
 
-      final response =
-          await carrinhoPercursoRepository.update(carrinhoPercurso);
+      final response = await carrinhoPercursoRepository.update(
+        carrinhoPercurso,
+      );
 
       if (response.isEmpty) {
         throw AppError('Erro ao atualizar percurso');

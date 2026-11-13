@@ -17,6 +17,16 @@ QueryBuilder()
 
 `inList` manda `value` como lista JSON (`[10, 20]`), não string interpolada.
 
+`operator` omitido vale `=`. Não enviar `CUSTOM`: esse caminho legado interpola SQL. Comparadores recebem valores, não nomes de outra coluna; `QuantidadeItensSetor > QuantidadeItensSeparacaoSetor` não é uma comparação entre colunas suportada por este contrato.
+
+O warn de SQL cru não gera `Error` nem `[INVALID_PAYLOAD]`: o SELECT continua. Na aba Erros do supervisor Windows, stderr pode aparecer vermelho mesmo sendo warn. A fonte atual deste desktop usa lista; conferir a versão instalada quando um coletor ainda gera o aviso. Não reutilizar `SendQuerySocketModel.where` (`String?`, legado) em novos emits.
+
+## Limites de parâmetros e lotes
+
+SQL Server aceita até 2100 parâmetros por request; isso é independente das 1500 **linhas** da página. O servidor reserva orçamento de 2000 para filtros e usa fatias de `IN` de 500 em caminhos suportados. `NOT IN` não é dividido entre requests; payload arbitrário ainda pode exceder o limite e retornar `[SQL-8003]`.
+
+Quando o servidor fatia requests, ordena cada fatia e concatena os resultados, sem ordenação global nem remoção de duplicatas entre fatias. Não presumir que um `IN` enorme equivale a uma lista globalmente ordenada. Não interpolar SQL para contornar o limite; preferir filtros pelo documento/carrinho e paginação. Fonte: seção “Teto de parâmetros” de `docs/contratos/where.md` do servidor.
+
 ## Operadores no `QueryBuilder`
 
 | Método | Operador | SQL gerado |
@@ -63,7 +73,7 @@ Extensão `QueryBuilderExtension.search` gera `LIKE '%termo%'`. Não usar isso e
 ## Regras de filtro
 
 1. Recusa de setor do usuário logado é no app (`AppHelper.setorPermitido`), não no `WHERE` da lista. [Setor](./setor-estoque.md). Se um dia filtrar `separar.consulta` por setor: `CodSetorEstoque =` (o servidor vira `EXISTS` em `ItemSepararEstoque`). `LIKE` em `CodSetoresEstoque` (`STRING_AGG`) **não** entra nesse `EXISTS` e não usa índice. O servidor **ainda não** recusa esse `LIKE` — reescreve (regra 26).
-2. `DataEmissao` na view é `SepararEstoque.Data` (`DATE`). Filtrar com `=` ou intervalo (`greaterThan` / `lessThan` / `BETWEEN` no servidor), não `LIKE 'yyyy-MM-dd%'`.
+2. `DataEmissao` na view é `SepararEstoque.Data` (`DATE`). Filtrar com `=` ou intervalo `>=` início / `<` dia seguinte (`addParam` com operador explícito), não `LIKE 'yyyy-MM-dd%'`. `greaterThan` sozinho é `>` e exclui a data inicial.
 3. `ItemConferir` **não** tem `CodCarrinho`. Mandar no `WHERE` mesmo assim: a coluna vem do join `ItemCarrinhoPercurso = CarrinhoPercursoEstagio.Item` do estágio da **separação**, não do `CONFERINDO`.
 4. `conferir.item.select` **não** devolve `CodCarrinho`. Para a janela do carrinho usar `conferir.item.consulta`.
 5. Não filtrar estágio `CO` (`Item = '00010'`) e concluir que não há item a conferir. O vínculo do snapshot aponta para o estágio `SE`.

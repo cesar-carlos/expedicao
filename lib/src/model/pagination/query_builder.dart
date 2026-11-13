@@ -48,6 +48,7 @@ class QueryBuilder {
 
   /// Adds pagination to the query
   QueryBuilder paginate({int limit = 10, int? offset, int page = 1}) {
+    _fetchAllPages = false;
     _pagination = Pagination(limit: limit, offset: offset, page: page);
     return this;
   }
@@ -63,6 +64,7 @@ class QueryBuilder {
     int pageSize = Pagination.fetchPageSize,
   }) {
     _fetchAllPages = true;
+    _pagination = null;
     _fetchPageSize = pageSize < 1 ? 1 : pageSize;
     if (_orderBy.isEmpty) {
       orderByAsc(orderField);
@@ -77,7 +79,13 @@ class QueryBuilder {
 
   QueryBuilder copy() {
     final clone = QueryBuilder();
-    clone._params.addAll(_params);
+    for (final param in _params) {
+      clone.addParam(
+        param.key,
+        param.toWhereJson()['value'],
+        operator: param.operator,
+      );
+    }
     clone._orderBy.addAll(_orderBy);
     clone._pagination = _pagination;
     clone._fetchAllPages = _fetchAllPages;

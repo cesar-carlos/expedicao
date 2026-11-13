@@ -1,3 +1,4 @@
+import 'package:app_expedicao/src/service/socket_mutation_action.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
@@ -70,9 +71,13 @@ class ConferidoCarrinhosController extends GetxController {
     super.onClose();
   }
 
+  Future<void> reloadFromServer() => _fillGridConferidoCarrinhos();
+
   Future<void> _fillGridConferidoCarrinhos() async {
     final conferidoCarrinhos = await _conferirConsultaServices
         .carrinhosPercurso();
+    if (isClosed) return;
+    _conferidoCarrinhoGridController.removeAllGrid();
     _conferidoCarrinhoGridController.addAllGrid(conferidoCarrinhos);
     _conferidoCarrinhoGridController.update();
     _conferidoCarrinhoGridController.highlightFirstRow();
@@ -133,82 +138,85 @@ class ConferidoCarrinhosController extends GetxController {
         await LoadingProcessDialogGenericWidget.show<bool>(
           context: Get.context!,
           process: () async {
-            try {
-              final carrinhoQueryBuilder = QueryBuilder()
-                  .equals('CodEmpresa', item.codEmpresa)
-                  .equals('CodCarrinho', item.codCarrinho);
+            return runSocketMutation(() async {
+              try {
+                final carrinhoQueryBuilder = QueryBuilder()
+                    .equals('CodEmpresa', item.codEmpresa)
+                    .equals('CodCarrinho', item.codCarrinho);
 
-              final carrinho = await CarrinhoService().select(
-                carrinhoQueryBuilder,
-              );
+                final carrinho = await CarrinhoService().select(
+                  carrinhoQueryBuilder,
+                );
 
-              final carrinhosPercursoEstagioQueryBuilder = QueryBuilder()
-                  .equals('CodEmpresa', item.codEmpresa)
-                  .equals('CodCarrinhoPercurso', item.codCarrinhoPercurso)
-                  .equals('CodPercursoEstagio', item.codPercursoEstagio)
-                  .equals('CodCarrinho', item.codCarrinho)
-                  .equals('Item', item.item);
+                final carrinhosPercursoEstagioQueryBuilder = QueryBuilder()
+                    .equals('CodEmpresa', item.codEmpresa)
+                    .equals('CodCarrinhoPercurso', item.codCarrinhoPercurso)
+                    .equals('CodPercursoEstagio', item.codPercursoEstagio)
+                    .equals('CodCarrinho', item.codCarrinho)
+                    .equals('Item', item.item);
 
-              final carrinhosPercursoEstagio =
-                  await CarrinhoPercursoEstagioServices().select(
-                    carrinhosPercursoEstagioQueryBuilder,
+                final carrinhosPercursoEstagio =
+                    await CarrinhoPercursoEstagioServices().select(
+                      carrinhosPercursoEstagioQueryBuilder,
+                    );
+
+                if (carrinho.isEmpty || carrinhosPercursoEstagio.isEmpty) {
+                  await MessageDialogView.show(
+                    context: Get.context!,
+                    message: 'Carrinho não encontrado!',
+                    detail:
+                        'Carrinho não encontrado na tabela percurso estagio!',
                   );
 
-              if (carrinho.isEmpty || carrinhosPercursoEstagio.isEmpty) {
-                await MessageDialogView.show(
-                  context: Get.context!,
-                  message: 'Carrinho não encontrado!',
-                  detail: 'Carrinho não encontrado na tabela percurso estagio!',
+                  return false;
+                }
+
+                //TOOD:: ADD SOLICITACAO DE SENHA
+                final carrinhoPercursoEstagio = carrinhosPercursoEstagio.last;
+
+                final editViewMode =
+                    (_usuarioLogado.editaCarrinhoOutroUsuario == 'S');
+
+                final editUsuario =
+                    (carrinhoPercursoEstagio.codUsuarioInicio !=
+                    _processoExecutavel.codUsuario);
+
+                if (editUsuario && !editViewMode) {
+                  await MessageDialogView.show(
+                    context: Get.context!,
+                    message: 'Carrinho não pertence a você!',
+                    detail:
+                        '''Carrinho não pode ser cancelado. Solicite para o usuario ${carrinhoPercursoEstagio.nomeUsuarioInicio} fazer o cancelamento! ''',
+                  );
+
+                  return false;
+                }
+
+                final newCarrinho = carrinho.last.copyWith(
+                  situacao: ExpedicaoCarrinhoSituacaoModel.emConferencia,
                 );
 
-                return false;
-              }
+                await CarrinhoPercursoEstagioCancelarService(
+                  carrinho: newCarrinho,
+                  percursoEstagio: carrinhosPercursoEstagio.last,
+                ).execute();
 
-              //TOOD:: ADD SOLICITACAO DE SENHA
-              final carrinhoPercursoEstagio = carrinhosPercursoEstagio.last;
-
-              final editViewMode =
-                  (_usuarioLogado.editaCarrinhoOutroUsuario == 'S');
-
-              final editUsuario =
-                  (carrinhoPercursoEstagio.codUsuarioInicio !=
-                  _processoExecutavel.codUsuario);
-
-              if (editUsuario && !editViewMode) {
-                await MessageDialogView.show(
-                  context: Get.context!,
-                  message: 'Carrinho não pertence a você!',
-                  detail:
-                      '''Carrinho não pode ser cancelado. Solicite para o usuario ${carrinhoPercursoEstagio.nomeUsuarioInicio} fazer o cancelamento! ''',
+                final carrinhoPercurso = item.copyWith(
+                  situacao: ExpedicaoSituacaoModel.cancelada,
                 );
 
-                return false;
+                await ConferenciaCancelarItemService(
+                  percursoEstagioConsulta: carrinhoPercurso,
+                ).cancelarAllItensCart();
+
+                _conferidoCarrinhoGridController.updateGrid(carrinhoPercurso);
+                _conferidoCarrinhoGridController.update();
+
+                return true;
+              } catch (err) {
+                rethrow;
               }
-
-              final newCarrinho = carrinho.last.copyWith(
-                situacao: ExpedicaoCarrinhoSituacaoModel.emConferencia,
-              );
-
-              await CarrinhoPercursoEstagioCancelarService(
-                carrinho: newCarrinho,
-                percursoEstagio: carrinhosPercursoEstagio.last,
-              ).execute();
-
-              final carrinhoPercurso = item.copyWith(
-                situacao: ExpedicaoSituacaoModel.cancelada,
-              );
-
-              await ConferenciaCancelarItemService(
-                percursoEstagioConsulta: carrinhoPercurso,
-              ).cancelarAllItensCart();
-
-              _conferidoCarrinhoGridController.updateGrid(carrinhoPercurso);
-              _conferidoCarrinhoGridController.update();
-
-              return true;
-            } catch (err) {
-              rethrow;
-            }
+            });
           },
         );
       } catch (_) {
@@ -483,75 +491,78 @@ class ConferidoCarrinhosController extends GetxController {
         return await LoadingProcessDialogGenericWidget.show<bool>(
           context: Get.context!,
           process: () async {
-            try {
-              final newPercursoEstagio = ExpedicaoCarrinhoPercursoEstagioModel(
-                codEmpresa: item.codEmpresa,
-                codCarrinhoPercurso: item.codCarrinhoPercurso,
-                item: item.item,
-                origem: item.origem,
-                codOrigem: item.codOrigem,
-                codPercursoEstagio: item.codPercursoEstagio,
-                codCarrinho: item.codCarrinho,
-                situacao: ExpedicaoSituacaoModel.conferido,
-                dataInicio: item.dataInicio,
-                horaInicio: item.horaInicio,
-                codUsuarioInicio: item.codUsuarioInicio,
-                nomeUsuarioInicio: item.nomeUsuarioInicio,
-              );
+            return runSocketMutation(() async {
+              try {
+                final newPercursoEstagio =
+                    ExpedicaoCarrinhoPercursoEstagioModel(
+                      codEmpresa: item.codEmpresa,
+                      codCarrinhoPercurso: item.codCarrinhoPercurso,
+                      item: item.item,
+                      origem: item.origem,
+                      codOrigem: item.codOrigem,
+                      codPercursoEstagio: item.codPercursoEstagio,
+                      codCarrinho: item.codCarrinho,
+                      situacao: ExpedicaoSituacaoModel.conferido,
+                      dataInicio: item.dataInicio,
+                      horaInicio: item.horaInicio,
+                      codUsuarioInicio: item.codUsuarioInicio,
+                      nomeUsuarioInicio: item.nomeUsuarioInicio,
+                    );
 
-              final newCarrinho = ExpedicaoCarrinhoModel(
-                codEmpresa: item.codEmpresa,
-                codCarrinho: item.codCarrinho,
-                descricao: item.nomeCarrinho,
-                ativo: item.ativo,
-                codigoBarras: item.codigoBarrasCarrinho,
-                situacao: ExpedicaoCarrinhoSituacaoModel.conferido,
-              );
-
-              await CarrinhoPercursoEstagioFinalizarService(
-                carrinhoPercursoEstagio: newPercursoEstagio,
-                carrinho: newCarrinho,
-              ).execute();
-
-              await ConferenciaFinalizarItemService().updateAll(
-                itensConferenciaCarrinho,
-              );
-
-              for (var el in itensConferenciaCarrinho) {
-                _conferidoCarrinhoGridController.updateGridSituationItem(
-                  el.itemCarrinhoPercurso,
-                  ExpedicaoSituacaoModel.conferido,
+                final newCarrinho = ExpedicaoCarrinhoModel(
+                  codEmpresa: item.codEmpresa,
+                  codCarrinho: item.codCarrinho,
+                  descricao: item.nomeCarrinho,
+                  ativo: item.ativo,
+                  codigoBarras: item.codigoBarrasCarrinho,
+                  situacao: ExpedicaoCarrinhoSituacaoModel.conferido,
                 );
+
+                await CarrinhoPercursoEstagioFinalizarService(
+                  carrinhoPercursoEstagio: newPercursoEstagio,
+                  carrinho: newCarrinho,
+                ).execute();
+
+                await ConferenciaFinalizarItemService().updateAll(
+                  itensConferenciaCarrinho,
+                );
+
+                for (var el in itensConferenciaCarrinho) {
+                  _conferidoCarrinhoGridController.updateGridSituationItem(
+                    el.itemCarrinhoPercurso,
+                    ExpedicaoSituacaoModel.conferido,
+                  );
+                }
+
+                _conferidoCarrinhoGridController.update();
+                await _sincronizarSituacaoConferirSeguro();
+
+                // //FINALIZAR CONFERENCIA AUTOMATICAMENTE
+                // final isComplete = await _conferirConsultaServices.isComplete();
+                // final existsOpenCart =
+                //     await _conferirConsultaServices.existsOpenCart();
+
+                // if (isComplete && !existsOpenCart) {
+                //   await LoadingProcessDialogGenericWidget.show<bool>(
+                //     context: Get.context!,
+                //     process: () async {
+                //       try {
+                //         final separarController = Get.find<ConferirController>();
+                //         await separarController.finalizarConferencia();
+                //         await Future.delayed(Duration(seconds: 1));
+                //         return true;
+                //       } catch (err) {
+                //         return false;
+                //       }
+                //     },
+                //   );
+                // }
+
+                return true;
+              } catch (err) {
+                rethrow;
               }
-
-              _conferidoCarrinhoGridController.update();
-              await _sincronizarSituacaoConferirSeguro();
-
-              // //FINALIZAR CONFERENCIA AUTOMATICAMENTE
-              // final isComplete = await _conferirConsultaServices.isComplete();
-              // final existsOpenCart =
-              //     await _conferirConsultaServices.existsOpenCart();
-
-              // if (isComplete && !existsOpenCart) {
-              //   await LoadingProcessDialogGenericWidget.show<bool>(
-              //     context: Get.context!,
-              //     process: () async {
-              //       try {
-              //         final separarController = Get.find<ConferirController>();
-              //         await separarController.finalizarConferencia();
-              //         await Future.delayed(Duration(seconds: 1));
-              //         return true;
-              //       } catch (err) {
-              //         return false;
-              //       }
-              //     },
-              //   );
-              // }
-
-              return true;
-            } catch (err) {
-              rethrow;
-            }
+            });
           },
         );
       } catch (_) {

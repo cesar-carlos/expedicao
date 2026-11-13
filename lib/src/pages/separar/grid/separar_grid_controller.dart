@@ -166,7 +166,9 @@ class SepararGridController extends GetxController {
   void addAllUnidade(
     List<ExpedicaoSepararItemUnidadeMedidaConsultaModel> itens,
   ) {
-    _itemUnids.addAll(itens);
+    _itemUnids
+      ..clear()
+      ..addAll(itens);
   }
 
   void updateUnidade(ExpedicaoSepararItemUnidadeMedidaConsultaModel item) {
@@ -341,7 +343,9 @@ class SepararGridController extends GetxController {
   }
 
   bool existsBarCode(String barCode) {
-    return _itemUnids.any((el) => AppHelper.sameBarCode(el.codigoBarras, barCode));
+    return _itemUnids.any(
+      (el) => AppHelper.sameBarCode(el.codigoBarras, barCode),
+    );
   }
 
   bool existsCodProduto(int codProduto) {

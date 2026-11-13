@@ -6,12 +6,22 @@ import 'package:uuid/uuid.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
 
 import 'package:app_expedicao/src/app/app_error.dart';
+import 'package:app_expedicao/src/app/socket_recovery.dart';
+import 'package:app_expedicao/src/app/socket_mutation_operation.dart';
+import 'package:app_expedicao/src/app/app_socket_listen_log.dart';
 import 'package:app_expedicao/src/app/app_api_file_init.dart';
 import 'package:app_expedicao/src/model/pagination/paged_query.dart';
 import 'package:app_expedicao/src/model/pagination/pagination.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 
 class AppSocketConfig extends GetxController {
+  final io.Socket Function(String, Map<String, dynamic>) _socketFactory;
+
+  AppSocketConfig({
+    io.Socket Function(String, Map<String, dynamic>)? socketFactory,
+  }) : _socketFactory =
+           socketFactory ?? ((url, options) => io.io(url, options));
+
   static const _requestTimeout = Duration(seconds: 30);
   static const _uuid = Uuid();
   static final _connectionError = AppError(
@@ -30,6 +40,12 @@ class AppSocketConfig extends GetxController {
   Future<void>? _inFlightStart;
   final _listenHandlers = <String, List<void Function(dynamic)>>{};
   final _pending = <_PendingSocketRequest>[];
+  bool _everConnected = false;
+  late final recovery = SocketRecovery(
+    canRead: () =>
+        _hasSession && !trafficPaused.value && !sessionEndedByServer.value,
+  );
+  late final mutationOperation = SocketMutationOperation(recovery);
 
   /// Handshake continua sem token. Quando o servidor exigir, preencher
   /// (ex.: `{'token': token}`). Hoje **não** enviar — o servidor rejeitaria
@@ -113,6 +129,7 @@ class AppSocketConfig extends GetxController {
   }
 
   void initSocket() {
+    if (_everConnected) recovery.invalidate();
     _failPending(_connectionError);
     _socket?.dispose();
     _socketStarted = true;
@@ -129,7 +146,7 @@ class AppSocketConfig extends GetxController {
     if (auth != null && auth.isNotEmpty) {
       builder.setAuth(auth);
     }
-    _socket = io.io(_baseUrl, builder.build());
+    _socket = _socketFactory(_baseUrl, builder.build());
 
     _bindLifecycle();
     _bindPersistentListeners();
@@ -189,7 +206,25 @@ class AppSocketConfig extends GetxController {
       throw _sessionEndedError;
     }
 
+    // Congela o pedido antes de qualquer espera pela conexão/recuperação.
+    late final Map<String, dynamic> requestPayload;
+    try {
+      requestPayload = Map<String, dynamic>.from(
+        jsonDecode(jsonEncode(payload ?? <String, dynamic>{})) as Map,
+      );
+    } catch (error) {
+      throw AppError(
+        'Parâmetros da solicitação inválidos.',
+        details: error.toString(),
+      );
+    }
+    final isMutation = requestPayload.containsKey('Mutation');
+    if (isMutation) mutationOperation.checkAccess();
     final connected = await ensureStarted();
+    if (isMutation) await recovery.beforeMutation();
+    if (trafficPaused.value || sessionEndedByServer.value) {
+      throw _sessionEndedError;
+    }
     final socket = _socket;
     final session = socket?.id;
     if (!connected ||
@@ -205,6 +240,21 @@ class AppSocketConfig extends GetxController {
     final completer = Completer<Map<String, dynamic>>();
     final event = '$session $eventSuffix';
     Timer? timer;
+    var emitted = false;
+    var uncertain = false;
+
+    AppError uncertainError() {
+      if (!uncertain) {
+        uncertain = true;
+        recovery.mutationUncertain();
+      }
+      return AppError(
+        'Não foi possível confirmar a gravação. Ela pode ter sido aplicada no servidor. '
+        'Antes de repetir, o app consultará o documento e o carrinho. '
+        'Confira os dados atualizados para evitar duplicidade.',
+        location: eventSuffix,
+      );
+    }
 
     late final _PendingSocketRequest pending;
 
@@ -216,6 +266,7 @@ class AppSocketConfig extends GetxController {
 
     pending = _PendingSocketRequest(
       completer: completer,
+      failure: (error) => isMutation && emitted ? uncertainError() : error,
       cancel: () {
         timer?.cancel();
         socket.off(responseIn);
@@ -227,23 +278,45 @@ class AppSocketConfig extends GetxController {
       if (completer.isCompleted) return;
       finish();
       completer.completeError(
-        AppError('O servidor não respondeu a tempo. Tente novamente.'),
+        isMutation && emitted
+            ? uncertainError()
+            : AppError('O servidor não respondeu a tempo. Tente novamente.'),
       );
     });
 
     socket.on(responseIn, (receiver) {
+      if (completer.isCompleted) return;
+      var serverError = false;
       try {
         final decoded = _decodePayload(receiver);
         if (decoded is! Map) {
           throw AppError('Resposta inválida do servidor.');
         }
         final map = Map<String, dynamic>.from(decoded);
-        if (map['Error'] != null) {
-          throw AppError.fromResponse(map);
+        if ((map['Session'] != null && map['Session'] != session) ||
+            (map['ResponseIn'] != null && map['ResponseIn'] != responseIn)) {
+          throw AppError('Resposta não corresponde à solicitação enviada.');
         }
+        if (map['Error'] != null) {
+          serverError = true;
+          final error = AppError.fromResponse(map);
+          final mutation = requestPayload['Mutation'];
+          if (isMutation &&
+              ((error.identifier?.startsWith('SQL-') ?? false) ||
+                  error.identifier == 'INTERNAL_ERROR' ||
+                  (mutation is List && mutation.length > 1))) {
+            uncertainError();
+          }
+          throw error;
+        }
+        if (isMutation && map['Mutation'] == null && map['Data'] == null) {
+          throw AppError('Resposta de gravação inválida.');
+        }
+        if (isMutation) recovery.receivedChange();
         if (!completer.isCompleted) completer.complete(map);
       } catch (e) {
         if (!completer.isCompleted) {
+          if (isMutation && !serverError) uncertainError();
           completer.completeError(AppError.fromUnknown(e));
         }
       } finally {
@@ -252,17 +325,27 @@ class AppSocketConfig extends GetxController {
     });
 
     final body = <String, dynamic>{
+      ...requestPayload,
       'Session': session,
       'ResponseIn': responseIn,
-      ...?payload,
     };
 
     try {
-      socket.emit(event, jsonEncode(body));
+      if (isMutation && recovery.blocksMutation) {
+        throw AppError(
+          'Os dados precisam ser atualizados. Inicie novamente a ação para consultar o estado gravado.',
+        );
+      }
+      if (isMutation) mutationOperation.checkAccess();
+      final encoded = jsonEncode(body);
+      emitted = true;
+      socket.emit(event, encoded);
     } catch (e) {
       finish();
       if (!completer.isCompleted) {
-        completer.completeError(AppError.fromUnknown(e));
+        completer.completeError(
+          isMutation && emitted ? uncertainError() : AppError.fromUnknown(e),
+        );
       }
     }
 
@@ -274,17 +357,18 @@ class AppSocketConfig extends GetxController {
     required QueryBuilder queryBuilder,
     required T Function(Map<String, dynamic> json) fromJson,
   }) async {
-    if (queryBuilder.fetchAllPages) {
+    final query = queryBuilder.copy();
+    if (query.fetchAllPages) {
       return _queryMappedAllPages(
         eventSuffix: eventSuffix,
-        queryBuilder: queryBuilder,
+        queryBuilder: query,
         fromJson: fromJson,
       );
     }
 
     return _queryMappedPage(
       eventSuffix: eventSuffix,
-      queryBuilder: queryBuilder,
+      queryBuilder: query,
       fromJson: fromJson,
     );
   }
@@ -316,22 +400,36 @@ class AppSocketConfig extends GetxController {
     required QueryBuilder queryBuilder,
     required T Function(Map<String, dynamic> json) fromJson,
   }) async {
+    if (!await ensureStarted()) throw _connectionError;
+    final querySocket = _socket;
+    final querySession = sessionId;
+    void ensureSameSession() {
+      if (!_hasSession || _socket != querySocket || sessionId != querySession) {
+        throw AppError(
+          'A conexão mudou durante a consulta. Atualize os dados novamente.',
+        );
+      }
+    }
+
     try {
       return await PagedQuery.collect(
         pageSize: queryBuilder.fetchPageSize,
-        fetchPage: (page, pageSize) {
+        fetchPage: (page, pageSize) async {
+          ensureSameSession();
           final pagination = Pagination(
             limit: pageSize,
             offset: (page - 1) * pageSize,
             page: page,
           ).toQueryString();
 
-          return _queryMappedPage(
+          final rows = await _queryMappedPage(
             eventSuffix: eventSuffix,
             queryBuilder: queryBuilder,
             fromJson: fromJson,
             pagination: pagination,
           );
+          ensureSameSession();
+          return rows;
         },
       );
     } on StateError {
@@ -346,12 +444,25 @@ class AppSocketConfig extends GetxController {
     required Object mutation,
     required T Function(Map<String, dynamic> json) fromJson,
   }) async {
+    final expected = mutation is List ? mutation.length : 1;
     final response = await request(
       eventSuffix: eventSuffix,
       payload: {'Mutation': mutation},
     );
 
-    return _mapRows(response['Mutation'] ?? response['Data'], fromJson);
+    try {
+      final rows = _mapRows(response['Mutation'] ?? response['Data'], fromJson);
+      if (rows.length != expected) {
+        throw AppError(
+          'A resposta não confirmou todos os registros da gravação.',
+        );
+      }
+      if (rows.isNotEmpty) mutationOperation.recorded();
+      return rows;
+    } catch (_) {
+      recovery.mutationUncertain();
+      rethrow;
+    }
   }
 
   static List<T> _mapRows<T>(
@@ -361,10 +472,13 @@ class AppSocketConfig extends GetxController {
     if (rows is Map) {
       return [fromJson(Map<String, dynamic>.from(rows))];
     }
-    if (rows is! List) return [];
+    if (rows is! List || rows.any((row) => row is! Map)) {
+      throw AppError(
+        'Resposta inválida do servidor: esperada uma lista de registros.',
+      );
+    }
     return rows
-        .whereType<Map>()
-        .map((row) => fromJson(Map<String, dynamic>.from(row)))
+        .map((row) => fromJson(Map<String, dynamic>.from(row as Map)))
         .toList();
   }
 
@@ -384,7 +498,7 @@ class AppSocketConfig extends GetxController {
     for (final item in pending) {
       item.cancel();
       if (!item.completer.isCompleted) {
-        item.completer.completeError(error);
+        item.completer.completeError(item.failure(error));
       }
     }
   }
@@ -395,9 +509,20 @@ class AppSocketConfig extends GetxController {
 
     socket.onConnect((_) {
       _isConnected.value = true;
+      if (_everConnected &&
+          !trafficPaused.value &&
+          !sessionEndedByServer.value) {
+        unawaited(
+          recovery.refresh().catchError((Object error) {
+            AppSocketListenLog.error('reconexao', error);
+          }),
+        );
+      }
+      _everConnected = true;
     });
     socket.onDisconnect((_) {
       _isConnected.value = false;
+      if (_everConnected) recovery.invalidate();
       if (trafficPaused.value) {
         sessionEndedByServer.value = true;
         _failPending(_sessionEndedError);
@@ -432,6 +557,11 @@ class AppSocketConfig extends GetxController {
 class _PendingSocketRequest {
   final Completer<Map<String, dynamic>> completer;
   final void Function() cancel;
+  final Object Function(Object) failure;
 
-  _PendingSocketRequest({required this.completer, required this.cancel});
+  _PendingSocketRequest({
+    required this.completer,
+    required this.cancel,
+    required this.failure,
+  });
 }

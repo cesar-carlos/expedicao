@@ -1,3 +1,6 @@
+import 'socket_mutation_action.dart';
+import 'carrinho_recovery_validation.dart';
+
 import 'package:get/get.dart';
 
 import 'package:app_expedicao/src/model/expedicao_carrinho_model.dart';
@@ -18,14 +21,19 @@ class CarrinhoPercursoEstagioFinalizarService {
   });
 
   Future<void> execute() async {
-    final newEstagio = carrinhoPercursoEstagio.copyWith(
-      dataFinalizacao: DateTime.now(),
-      horaFinalizacao: DateTime.now().toString().substring(11, 19),
-      codUsuarioFinalizacao: _processo.codUsuario,
-      nomeUsuarioFinalizacao: _processo.nomeUsuario,
-    );
+    return runSocketMutation(() async {
+      await CarrinhoRecoveryValidation.assertLatestStage(
+        carrinhoPercursoEstagio,
+      );
+      final newEstagio = carrinhoPercursoEstagio.copyWith(
+        dataFinalizacao: DateTime.now(),
+        horaFinalizacao: DateTime.now().toString().substring(11, 19),
+        codUsuarioFinalizacao: _processo.codUsuario,
+        nomeUsuarioFinalizacao: _processo.nomeUsuario,
+      );
 
-    await CarrinhoRepository().update(carrinho);
-    await CarrinhoPercursoEstagioRepository().update(newEstagio);
+      await CarrinhoRepository().update(carrinho);
+      await CarrinhoPercursoEstagioRepository().update(newEstagio);
+    });
   }
 }

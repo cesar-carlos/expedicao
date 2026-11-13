@@ -10,12 +10,19 @@ class CarrinhoPercursoEstagioServices {
     QueryBuilder? queryBuilder,
   ]) async {
     try {
-      return await repository.select(
+      final rows = await repository.select(
         (queryBuilder ?? QueryBuilder()).withAllRows(
           orderField: 'CodCarrinhoPercurso',
           thenBy: ['Item'],
         ),
       );
+      rows.sort((a, b) {
+        final percurso = a.codCarrinhoPercurso.compareTo(b.codCarrinhoPercurso);
+        return percurso != 0
+            ? percurso
+            : int.parse(a.item).compareTo(int.parse(b.item));
+      });
+      return rows;
     } catch (e) {
       throw AppError.fromUnknown(e);
     }

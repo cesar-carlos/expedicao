@@ -11,6 +11,8 @@ Cancelar um carrinho: estágio `CANCELADA`, cadastro `LIBERADO`, itens `CA`. Rec
 
 Não confundir com **Reabrir Carrinho** (F6): reabre o **mesmo** estágio finalizado.
 
+Também não confundir com [Reconferir tudo](./reconferir-tudo.md): essa ação faz DELETE físico dos itens do estágio, não gera histórico CA recuperável e não cancela o estágio.
+
 ## Recuperar Carrinho (tela inicial)
 
 `SepararController.recuperarCarrinho`. Scan: `CarrinhoDialogView` (mesmo portão de adicionar: cadastro `LIBERADO`).
@@ -24,7 +26,7 @@ Permite só se **todas** forem verdadeiras:
 5. `Origem = SE`
 6. `CodOrigem` = `CodSepararEstoque` deste documento
 
-Depois: `adicionarCarrinho` (estágio novo `EM SEPARACAO`) → `addRecuperados` → abre o carrinho.
+Depois: abrir estágio novo `SEPARANDO` (cadastro `EM SEPARACAO`) → `addRecuperados` → recarregar grade → abrir o carrinho. A sequência compartilha `runSocketMutation`, inclusive as leituras posteriores à gravação.
 
 | Recusa | Mensagem |
 | --- | --- |
@@ -63,11 +65,16 @@ Permite só se:
 
 ## O que entra na cópia (`addRecuperados`)
 
-Só item com situação `CA` no estágio cancelado. Para cada um:
+O serviço relê histórico completo, cadastro, documento, pedido e itens. O destino deve ser o estágio mais recente do mesmo carrinho, aberto (`SEPARANDO`/`EM SEPARACAO`), e a origem deve ser o imediatamente anterior, `CANCELADA`, `SE`, do mesmo documento. Percurso e `Item` são ordenados numericamente. Uma origem vazia ou com qualquer item diferente de `CA` bloqueia a cópia inteira: isso indica cancelamento incompleto. A lista recebida identifica a origem; quantidades e situações são obtidas novamente do servidor.
+
+Para cada combinação de produto + unidade da origem:
 
 1. Ainda está na lista a separar (mesmo produto + unidade)
 2. `AppHelper.setorPermitido` (usuário `codSetorEstoque`, item `codSetorEstoque`; `null`/`0` libera)
-3. Quantidade = `AppHelper.quantidadeRecuperar` — não estoura o pedido (`quantidadePedido − já separado SP`)
+3. Soma as quantidades canceladas dessa combinação e insere no máximo uma linha `SP` por combinação.
+4. Quantidade = `max(0, min(totalCancelado − ativoNoDestino, quantidadePedido − ativoNoDocumento))`. Todos os itens diferentes de `CA` contam nos dois saldos, inclusive `FN`. O pedido continua sendo a primeira linha correspondente de produto + unidade; a permissão de setor é verificada nessa linha.
+
+O abatimento do destino impede repetir a mesma cópia sequencialmente quando ainda existe saldo no pedido. Bipagens manuais equivalentes também abatem o destino: não existe vínculo persistido entre cada item cancelado e sua cópia. Não é possível distinguir automaticamente a origem dessas quantidades. Linhas canceladas no destino não abatem o saldo e podem voltar a ser recuperadas.
 
 Produto fora da lista, de outro setor ou já completo: **pula**, não recusa o lote.
 
@@ -84,10 +91,19 @@ Produto fora da lista, de outro setor ou já completo: **pula**, não recusa o l
 | Estágios | `CarrinhoPercursoEstagioServices.select` (`CodEmpresa` + `CodCarrinho`) |
 | Cancelar (origem da recuperação) | `CarrinhoPercursoEstagioCancelarService` + `SeparacaoCancelarItemService.cancelarAllItensCart` |
 | Teste quantidade | `test/src/app/app_helper_grid_item_test.dart` |
+| Repetição e retomada | `test/src/service/separacao_recuperacao_service_test.dart` e `separacao_recuperacao_quantidade_test.dart` |
 
 Setor: [setor-estoque.md](./setor-estoque.md). `Item`: [chave de Item](./item-chave.md).
 
-## Teste manual
+## Falhas parciais e limites
+
+Antes de abrir o estágio, o F11 inicial relê o documento, verifica que a origem ainda é a última utilização e valida cadastro/estágios/itens. Antes da cópia, o serviço repete as verificações no novo destino. Um uso posterior em outro documento impede a cópia.
+
+Se abrir o estágio, copiar parte dos produtos ou gravar um item e perder a leitura seguinte, a operação marca o documento para recuperação. Não há rollback nem repetição automática. Recarregue e revise; com estado consistente, use **Recuperar Itens** no estágio que já foi aberto. O serviço desconta as quantidades presentes e completa apenas o pendente. Se cadastro/estágio/itens estiverem incoerentes, a validação de recuperação bloqueia novas mutações até a correção.
+
+As consultas e gravações continuam separadas. Conforme a regra 16 de `docs/expedicao/regras.md` do servidor, as mutações são autocommit. Dois coletores podem ler o mesmo saldo antes de gravar; as verificações locais não garantem exclusão mútua nem idempotência distribuída. Para eliminar essa corrida é necessário contrato transacional/idempotente no servidor. Testes desta revisão usam somente Socket em memória, sem API/SQL real.
+
+## Roteiro manual (não executado nesta revisão)
 
 1. Separar itens, cancelar o carrinho (Del). Cadastro volta `LIBERADO`. F11 na tela inicial, bipar o mesmo código: abre estágio novo com os itens. Qtd. Separada volta.
 2. Documento `SEPARADO` (como na foto): F11 recusa. Não é recuperação de documento finalizado.

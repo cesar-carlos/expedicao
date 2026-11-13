@@ -20,6 +20,8 @@ Não usar `==` em `Item` vindo de consulta vs tabela. Não “consertar” com `
 
 ## Onde o SQL gera a sequência
 
+O MAX + 1 atual não é garantia de exclusividade entre coletores e pode reutilizar o maior Item excluído. Ver [proposta de contador monotônico, limites e migração](./item-totais-concorrencia.md). Não gerar ou corrigir a sequência no cliente.
+
 `CASE WHEN @Item = '00000' OR @Item = '' THEN FORMAT(MAX(CAST(Item AS INT))+1, '00000')`.
 
 Tabelas: `ItemSeparacaoEstoque`, `ItemConferencia`, `ItemSepararEstoque`, `ItemConferir`, `CarrinhoPercursoEstagio`, agrupamento.
@@ -30,11 +32,15 @@ Tabelas: `ItemSeparacaoEstoque`, `ItemConferencia`, `ItemSepararEstoque`, `ItemC
 
 ### Excluir item (separação e conferência)
 
+Revisão detalhada: [exclusão/cancelamento individual](./excluir-cancelar-item.md). Identificar a linha pela chave não resolve versão, vínculo de estágio ou saldo por unidade; o cancelamento CA é distinto do botão excluir.
+
 `SeparacaoRemoverItemService.remove` / `ConferenciaRemoverItemService.remove` fazem `select` na tabela com `itemSequenceKey` e **só então** `delete`. `select` vazio lança erro — **não** chamar `removeGrid` antes.
 
 O listen `*.item.delete.listen` é `allEvent: false`: a própria sessão já tirou a linha na resposta.
 
 ### Separar tudo / conferir tudo
+
+A normalização de Item garante correspondência das linhas, não o saldo de negócio. A [revisão dos lotes](./separar-conferir-tudo.md) registra defeitos no abatimento de produtos repetidos, unidades e atualização da grade de demanda.
 
 A tela **não** espera o listen (`allEvent: false` no insert). Depois do `insertAll`, a consulta da view tem de voltar as linhas novas.
 

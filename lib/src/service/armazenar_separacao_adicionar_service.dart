@@ -1,3 +1,5 @@
+import 'socket_mutation_action.dart';
+
 import 'dart:async';
 
 import 'package:get/get.dart';
@@ -37,30 +39,32 @@ class ArmazenarSeparacaoAdicionarService {
   ArmazenarSeparacaoAdicionarService(this.carrinhoPercurso);
 
   Future<void> execute() async {
-    try {
-      final separar = await _findSeparar();
-      final itensSeparacao = await _findItensSeparacao();
+    return runSocketMutation(() async {
+      try {
+        final separar = await _findSeparar();
+        final itensSeparacao = await _findItensSeparacao();
 
-      if (itensSeparacao.isEmpty) {
-        throw AppError('Nenhum item Separacao encontrado');
+        if (itensSeparacao.isEmpty) {
+          throw AppError('Nenhum item Separacao encontrado');
+        }
+
+        final armazenar = _createArmazenar(separar);
+        final result = await armazenarRepository.insert(armazenar);
+
+        if (result.isEmpty) {
+          throw AppError('Erro ao armazenar');
+        }
+
+        final newItens = _createItensArmazenar(result.first, itensSeparacao);
+        await armazenarItemRepository.insertAll(newItens);
+
+        await _finalizarCarrinhoPercurso(carrinhoPercurso);
+        await _liberarCarrinhos(carrinhoPercurso);
+      } catch (e) {
+        if (e is AppError) rethrow;
+        throw AppError.fromUnknown(e);
       }
-
-      final armazenar = _createArmazenar(separar);
-      final result = await armazenarRepository.insert(armazenar);
-
-      if (result.isEmpty) {
-        throw AppError('Erro ao armazenar');
-      }
-
-      final newItens = _createItensArmazenar(result.first, itensSeparacao);
-      await armazenarItemRepository.insertAll(newItens);
-
-      await _finalizarCarrinhoPercurso(carrinhoPercurso);
-      await _liberarCarrinhos(carrinhoPercurso);
-    } catch (e) {
-      if (e is AppError) rethrow;
-      throw AppError.fromUnknown(e);
-    }
+    });
   }
 
   Future<ExpedicaoSepararConsultaModel> _findSeparar() async {

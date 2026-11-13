@@ -1,3 +1,6 @@
+import 'socket_mutation_action.dart';
+import 'carrinho_recovery_validation.dart';
+
 import 'package:get/get.dart';
 
 import 'package:app_expedicao/src/model/expedicao_origem_model.dart';
@@ -26,19 +29,22 @@ class CarrinhoPercursoEstagioCancelarService {
   });
 
   Future<void> execute() async {
-    try {
-      final newPercursoEstagio = percursoEstagio.copyWith(
-        situacao: ExpedicaoSituacaoModel.cancelada,
-      );
+    return runSocketMutation(() async {
+      await CarrinhoRecoveryValidation.assertLatestStage(percursoEstagio);
+      try {
+        final newPercursoEstagio = percursoEstagio.copyWith(
+          situacao: ExpedicaoSituacaoModel.cancelada,
+        );
 
-      final newCancelamento = await _createCancelamento();
+        final newCancelamento = await _createCancelamento();
 
-      await cancelamentoRepository.insert(newCancelamento);
-      await carrinhoPercursoEstagioRepository.update(newPercursoEstagio);
-      await carrinhoRepository.update(carrinho);
-    } catch (e) {
-      throw AppError.fromUnknown(e);
-    }
+        await cancelamentoRepository.insert(newCancelamento);
+        await carrinhoPercursoEstagioRepository.update(newPercursoEstagio);
+        await carrinhoRepository.update(carrinho);
+      } catch (e) {
+        throw AppError.fromUnknown(e);
+      }
+    });
   }
 
   Future<ExpedicaoCancelamentoModel> _createCancelamento() async {

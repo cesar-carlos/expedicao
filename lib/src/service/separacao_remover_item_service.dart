@@ -1,3 +1,5 @@
+import 'socket_mutation_action.dart';
+
 import 'package:app_expedicao/src/model/expedicao_separacao_item_model.dart';
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_consulta_repository.dart';
 import 'package:app_expedicao/src/repository/expedicao_separacao_item/separacao_item_repository.dart';
@@ -14,65 +16,71 @@ class SeparacaoRemoverItemService {
   SeparacaoRemoverItemService({required this.percursoEstagioConsulta});
 
   Future<void> remove({required String item}) async {
-    try {
-      final itemKey = AppHelper.itemSequenceKey(item);
-      final queryBuilder = QueryBuilder()
-          .equals('CodEmpresa', percursoEstagioConsulta.codEmpresa)
-          .equals('CodSepararEstoque', percursoEstagioConsulta.codOrigem)
-          .equals('Item', itemKey);
+    return runSocketMutation(() async {
+      try {
+        final itemKey = AppHelper.itemSequenceKey(item);
+        final queryBuilder = QueryBuilder()
+            .equals('CodEmpresa', percursoEstagioConsulta.codEmpresa)
+            .equals('CodSepararEstoque', percursoEstagioConsulta.codOrigem)
+            .equals('Item', itemKey);
 
-      final response = await separacaoItemRepository.select(queryBuilder);
-      if (response.isEmpty) {
-        throw AppError(
-          'Item não encontrado para exclusão.',
-          details: 'Item=$itemKey',
-        );
-      }
+        final response = await separacaoItemRepository.select(queryBuilder);
+        if (response.isEmpty) {
+          throw AppError(
+            'Item não encontrado para exclusão.',
+            details: 'Item=$itemKey',
+          );
+        }
 
-      for (var el in response) {
-        await separacaoItemRepository.delete(el);
+        for (var el in response) {
+          await separacaoItemRepository.delete(el);
+        }
+      } catch (e) {
+        throw AppError.fromUnknown(e);
       }
-    } catch (e) {
-      throw AppError.fromUnknown(e);
-    }
+    });
   }
 
   Future<void> removeAll() async {
-    try {
-      final queryBuilder = QueryBuilder()
-          .equals('CodEmpresa', percursoEstagioConsulta.codEmpresa)
-          .equals('CodSepararEstoque', percursoEstagioConsulta.codOrigem)
-          .allRows();
+    return runSocketMutation(() async {
+      try {
+        final queryBuilder = QueryBuilder()
+            .equals('CodEmpresa', percursoEstagioConsulta.codEmpresa)
+            .equals('CodSepararEstoque', percursoEstagioConsulta.codOrigem)
+            .allRows();
 
-      final response = await separacaoItemRepository.select(queryBuilder);
-      await separacaoItemRepository.deleteAll(response);
-    } catch (e) {
-      throw AppError.fromUnknown(e);
-    }
+        final response = await separacaoItemRepository.select(queryBuilder);
+        await separacaoItemRepository.deleteAll(response);
+      } catch (e) {
+        throw AppError.fromUnknown(e);
+      }
+    });
   }
 
   Future<void> removeAllItensCart() async {
-    try {
-      final queryBuilder = QueryBuilder()
-          .equals('CodEmpresa', percursoEstagioConsulta.codEmpresa)
-          .equals('CodSepararEstoque', percursoEstagioConsulta.codOrigem)
-          .equals(
-            'CodCarrinhoPercurso',
-            percursoEstagioConsulta.codCarrinhoPercurso,
-          )
-          .equals('ItemCarrinhoPercurso', percursoEstagioConsulta.item)
-          .allRows();
+    return runSocketMutation(() async {
+      try {
+        final queryBuilder = QueryBuilder()
+            .equals('CodEmpresa', percursoEstagioConsulta.codEmpresa)
+            .equals('CodSepararEstoque', percursoEstagioConsulta.codOrigem)
+            .equals(
+              'CodCarrinhoPercurso',
+              percursoEstagioConsulta.codCarrinhoPercurso,
+            )
+            .equals('ItemCarrinhoPercurso', percursoEstagioConsulta.item)
+            .allRows();
 
-      final separacaoItensConsulta = await separacaoItemConsultaRepository
-          .select(queryBuilder);
+        final separacaoItensConsulta = await separacaoItemConsultaRepository
+            .select(queryBuilder);
 
-      final itensDel = separacaoItensConsulta.map((el) {
-        return ExpedicaoSeparacaoItemModel.fromConsulta(el);
-      }).toList();
+        final itensDel = separacaoItensConsulta.map((el) {
+          return ExpedicaoSeparacaoItemModel.fromConsulta(el);
+        }).toList();
 
-      await separacaoItemRepository.deleteAll(itensDel);
-    } catch (e) {
-      throw AppError.fromUnknown(e);
-    }
+        await separacaoItemRepository.deleteAll(itensDel);
+      } catch (e) {
+        throw AppError.fromUnknown(e);
+      }
+    });
   }
 }

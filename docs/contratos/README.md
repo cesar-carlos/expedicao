@@ -1,6 +1,6 @@
 # Contratos de paginação e consulta
 
-O coletor não fala SQL direto com o banco. Toda lista passa pelo servidor: Socket.IO para expedição, HTTP só para login/usuários/versão.
+O coletor não fala SQL direto com o banco. Toda lista passa pelo servidor: Socket.IO para expedição. O servidor oferece HTTP para login/usuários/versão; neste desktop, o uso HTTP confirmado é o `/health` na configuração da API. [Contrato HTTP](./consulta-http.md).
 
 Esta pasta descreve o contrato **deste app**: o que montamos em Dart, o canal do pedido, a página que o servidor aplica e como o erro chega na tela.
 
@@ -22,6 +22,13 @@ Fonte no servidor: `D:\Developer\Node\data7-api-pix Campo\docs\contratos`. Comun
 12. [Modais](./modais.md) — `Navigator.pop` / `DialogCloseGuard`; `Get.back()` não fecha loading
 13. [Erros](./erros.md) — `AppError.fromSocket` / `display`
 14. [Consulta HTTP](./consulta-http.md) — `Page`, `Offset`, `Limit`
+15. [Concorrência e idempotência](./concorrencia-idempotencia.md) — dois coletores, autocommit, riscos de duplicação e contrato ainda necessário
+16. [Item e totais sob concorrência](./item-totais-concorrencia.md) — contador monotônico, recomposição transacional, versões e ajustes propostos no desktop
+17. [Separar tudo / conferir tudo](./separar-conferir-tudo.md) — abatimento repetido, unidades, escopo de carrinho e distribuição visual
+18. [Reconferir tudo](./reconferir-tudo.md) — exclusão física, limpeza parcial, totais restantes e concorrência
+19. [Excluir/cancelar item](./excluir-cancelar-item.md) — saldo individual, seleção antiga, unidades e erro após commit
+20. [Erros após gravação](./erros-pos-gravacao.md) — commit sem resposta de sucesso, lacuna em erro de negócio individual e política proposta
+21. [Recuperação de grades e totais](./recuperacao-grades-totais.md) — limites da validação estrutural e liberação com agregado persistido inconsistente
 
 ## Código neste app
 

@@ -1,3 +1,5 @@
+import 'socket_mutation_action.dart';
+
 import 'package:get/get.dart';
 
 import 'package:app_expedicao/src/app/app_socket_config.dart';
@@ -30,62 +32,8 @@ class ConferenciaAdicionarItemService {
     required String codUnidadeMedida,
     required double quantidade,
   }) async {
-    try {
-      final itemConferencia = ExpedicaoConferenciaItemModel(
-        codEmpresa: percursoEstagioConsulta.codEmpresa,
-        codConferir: percursoEstagioConsulta.codOrigem,
-        item: '',
-        sessionId: _socket.sessionId ?? '',
-        situacao: ExpedicaoItemSituacaoModel.conferido,
-        codCarrinhoPercurso: percursoEstagioConsulta.codCarrinhoPercurso,
-        itemCarrinhoPercurso: percursoEstagioConsulta.item,
-        codConferente: _processo.codUsuario,
-        nomeConferente: _processo.nomeUsuario,
-        dataConferencia: DateTime.now(),
-        horaConferencia: DateTime.now().toIso8601String().substring(11, 19),
-        codProduto: codProduto,
-        codUnidadeMedida: codUnidadeMedida,
-        quantidade: quantidade,
-      );
-
-      final newConferenciaItem = await conferenciaItemRepository.insert(
-        itemConferencia,
-      );
-
-      if (newConferenciaItem.isEmpty) return null;
-
-      final list = await conferenciaItemConsultaRepository.select(
-        _queryConsultaItem(newConferenciaItem.last),
-      );
-      if (list.isEmpty) return null;
-      return list.last;
-    } catch (e) {
-      throw AppError.fromUnknown(e);
-    }
-  }
-
-  Future<List<ExpedicaConferenciaItemConsultaModel>> addAll() async {
-    try {
-      final List<ExpedicaoConferenciaItemModel> conferenciaItensInsert = [];
-      final conferenciaItens = await _getConferenciaItensCarrinho();
-      final conferirItens = await _getConferirItensCarrinho();
-
-      for (final item in conferirItens) {
-        final conferenciaItensFiltrado = conferenciaItens.where((el) {
-          return el.codEmpresa == item.codEmpresa &&
-              el.codConferir == item.codConferir &&
-              el.codProduto == item.codProduto &&
-              el.situacao != ExpedicaoItemSituacaoModel.cancelado;
-        }).toList();
-
-        final qtdConferidaProduto = conferenciaItensFiltrado.fold<double>(
-          0.00,
-          (acm, el) => acm + el.quantidade,
-        );
-
-        final double qtdConferir = (item.quantidade - qtdConferidaProduto);
-        if (qtdConferir <= 0) continue;
-
+    return runSocketMutation(() async {
+      try {
         final itemConferencia = ExpedicaoConferenciaItemModel(
           codEmpresa: percursoEstagioConsulta.codEmpresa,
           codConferir: percursoEstagioConsulta.codOrigem,
@@ -98,50 +46,126 @@ class ConferenciaAdicionarItemService {
           nomeConferente: _processo.nomeUsuario,
           dataConferencia: DateTime.now(),
           horaConferencia: DateTime.now().toIso8601String().substring(11, 19),
-          codProduto: item.codProduto,
-          codUnidadeMedida: item.codUnidadeMedida,
-          quantidade: qtdConferir,
+          codProduto: codProduto,
+          codUnidadeMedida: codUnidadeMedida,
+          quantidade: quantidade,
         );
 
-        conferenciaItensInsert.add(itemConferencia);
-      }
-
-      if (conferenciaItensInsert.isEmpty) {
-        return [];
-      }
-
-      final conferenciaItensResponse = await conferenciaItemRepository
-          .insertAll(conferenciaItensInsert);
-
-      if (conferenciaItensResponse.isEmpty) {
-        return [];
-      }
-
-      final firstItem = conferenciaItensResponse.first;
-      final allItems = await conferenciaItemConsultaRepository.select(
-        QueryBuilder()
-            .equals('CodEmpresa', firstItem.codEmpresa)
-            .equals('CodConferir', firstItem.codConferir)
-            .equals('CodCarrinho', percursoEstagioConsulta.codCarrinho)
-            .allRows(),
-      );
-
-      final result = allItems.where((consulta) {
-        return conferenciaItensResponse.any(
-          (inserted) => AppHelper.sameGridItem(consulta.item, inserted.item),
+        final newConferenciaItem = await conferenciaItemRepository.insert(
+          itemConferencia,
         );
-      }).toList();
 
-      if (result.isEmpty) {
-        throw AppError(
-          'Itens gravados, mas a consulta não retornou as linhas.',
+        if (newConferenciaItem.isEmpty) {
+          throw AppError('Gravação sem confirmação dos itens.');
+        }
+
+        final list = await conferenciaItemConsultaRepository.select(
+          _queryConsultaItem(newConferenciaItem.last),
         );
+        if (list.length != 1 ||
+            !AppHelper.sameGridItem(
+              list.single.item,
+              newConferenciaItem.single.item,
+            )) {
+          throw AppError('Item gravado, mas a consulta não confirmou a linha.');
+        }
+        return list.last;
+      } catch (e) {
+        throw AppError.fromUnknown(e);
       }
+    });
+  }
 
-      return result;
-    } catch (e) {
-      throw AppError.fromUnknown(e);
-    }
+  Future<List<ExpedicaConferenciaItemConsultaModel>> addAll() async {
+    return runSocketMutation(() async {
+      try {
+        final List<ExpedicaoConferenciaItemModel> conferenciaItensInsert = [];
+        final conferenciaItens = await _getConferenciaItensCarrinho();
+        final conferirItens = await _getConferirItensCarrinho();
+
+        for (final item in conferirItens) {
+          final conferenciaItensFiltrado = conferenciaItens.where((el) {
+            return el.codEmpresa == item.codEmpresa &&
+                el.codConferir == item.codConferir &&
+                el.codProduto == item.codProduto &&
+                el.situacao != ExpedicaoItemSituacaoModel.cancelado;
+          }).toList();
+
+          final qtdConferidaProduto = conferenciaItensFiltrado.fold<double>(
+            0.00,
+            (acm, el) => acm + el.quantidade,
+          );
+
+          final double qtdConferir = (item.quantidade - qtdConferidaProduto);
+          if (qtdConferir <= 0) continue;
+
+          final itemConferencia = ExpedicaoConferenciaItemModel(
+            codEmpresa: percursoEstagioConsulta.codEmpresa,
+            codConferir: percursoEstagioConsulta.codOrigem,
+            item: '',
+            sessionId: _socket.sessionId ?? '',
+            situacao: ExpedicaoItemSituacaoModel.conferido,
+            codCarrinhoPercurso: percursoEstagioConsulta.codCarrinhoPercurso,
+            itemCarrinhoPercurso: percursoEstagioConsulta.item,
+            codConferente: _processo.codUsuario,
+            nomeConferente: _processo.nomeUsuario,
+            dataConferencia: DateTime.now(),
+            horaConferencia: DateTime.now().toIso8601String().substring(11, 19),
+            codProduto: item.codProduto,
+            codUnidadeMedida: item.codUnidadeMedida,
+            quantidade: qtdConferir,
+          );
+
+          conferenciaItensInsert.add(itemConferencia);
+        }
+
+        if (conferenciaItensInsert.isEmpty) {
+          return [];
+        }
+
+        final conferenciaItensResponse = await conferenciaItemRepository
+            .insertAll(conferenciaItensInsert);
+
+        if (conferenciaItensResponse.isEmpty) {
+          return [];
+        }
+
+        final firstItem = conferenciaItensResponse.first;
+        final allItems = await conferenciaItemConsultaRepository.select(
+          QueryBuilder()
+              .equals('CodEmpresa', firstItem.codEmpresa)
+              .equals('CodConferir', firstItem.codConferir)
+              .equals('CodCarrinho', percursoEstagioConsulta.codCarrinho)
+              .allRows(),
+        );
+
+        final result = allItems.where((consulta) {
+          return conferenciaItensResponse.any(
+            (inserted) => AppHelper.sameGridItem(consulta.item, inserted.item),
+          );
+        }).toList();
+
+        if (result.length != conferenciaItensResponse.length ||
+            conferenciaItensResponse.any(
+              (inserted) =>
+                  result
+                      .where(
+                        (row) =>
+                            AppHelper.sameGridItem(row.item, inserted.item),
+                      )
+                      .length !=
+                  1,
+            )) {
+          throw AppError(
+            'Itens gravados, mas a consulta não retornou as linhas.',
+          );
+        }
+
+        return result;
+      } catch (e) {
+        throw AppError.fromUnknown(e);
+      }
+    });
   }
 
   Future<List<ExpedicaoConferirItemModel>> _getConferirItensCarrinho() async {

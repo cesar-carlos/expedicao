@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:app_expedicao/src/app/app_socket_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -65,8 +66,10 @@ class CarrinhosAgruparController extends GetxController {
   @override
   void onReady() {
     super.onReady();
+    Get.find<AppSocketConfig>().recovery.register(this, _reloadAfterConnection);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _fillGridCarrinhosAgruparGrid();
+      if (isClosed) return;
       if (viewMode) {
         return;
       }
@@ -79,6 +82,7 @@ class CarrinhosAgruparController extends GetxController {
 
   @override
   void onClose() {
+    Get.find<AppSocketConfig>().recovery.unregister(this);
     controllerNomeCarrinho.dispose();
     controllerCodigoBarras.dispose();
     controllerCarrinhoSituacao.dispose();
@@ -167,9 +171,27 @@ class CarrinhosAgruparController extends GetxController {
         })
         .toList();
 
+    if (isClosed) return;
+    _carrinhosAgruparGridController.removeAllGrid();
     _carrinhosAgruparGridController.addAllGrid(resultFiltered);
     _carrinhosAgruparGridController.update();
     _carrinhosAgruparGridController.highlightFirstRow();
+  }
+
+  Future<void> _reloadAfterConnection() async {
+    await _fillGridCarrinhosAgruparGrid();
+    if (isClosed) return;
+    final destination = await _carrinhoAgruparService.refreshDestination(
+      carrinhoPercursoAgrupamento,
+    );
+    if (isClosed) return;
+    controllerNomeCarrinho.text = destination.nomeCarrinho;
+    controllerCodigoBarras.text = destination.codigoBarrasCarrinho;
+    controllerCarrinhoSituacao.text = destination.situacao;
+    if (destination.situacao != ExpedicaoSituacaoModel.conferido) {
+      _viewMode.value = true;
+    }
+    update();
   }
 
   Future<void> onSubmittedScan(String? value) async {
@@ -558,9 +580,7 @@ class CarrinhosAgruparController extends GetxController {
               throw AppErrorAlert('Carrinho agrupado não encontrado');
             }
 
-            _carrinhosAgruparGridController.updateGrid(
-              newItemCarrinhoPercurso,
-            );
+            _carrinhosAgruparGridController.updateGrid(newItemCarrinhoPercurso);
             _carrinhosAgruparGridController.update();
             return true;
           } on AppErrorAlert catch (err) {

@@ -1,3 +1,5 @@
+import 'socket_mutation_action.dart';
+
 import 'package:app_expedicao/src/repository/expedicao_conferencia_item/conferencia_item_repository.dart';
 import 'package:app_expedicao/src/model/expedicao_carrinho_percurso_estagio_consulta_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferencia_item_model.dart';
@@ -12,45 +14,51 @@ class ConferenciaRemoverItemService {
   ConferenciaRemoverItemService({required this.percursoEstagioConsulta});
 
   Future<void> remove({required String item}) async {
-    try {
-      final itemKey = AppHelper.itemSequenceKey(item);
-      final queryBuilder = QueryBuilder()
-          .equals('CodEmpresa', percursoEstagioConsulta.codEmpresa)
-          .equals('CodConferir', percursoEstagioConsulta.codOrigem)
-          .equals('Item', itemKey);
+    return runSocketMutation(() async {
+      try {
+        final itemKey = AppHelper.itemSequenceKey(item);
+        final queryBuilder = QueryBuilder()
+            .equals('CodEmpresa', percursoEstagioConsulta.codEmpresa)
+            .equals('CodConferir', percursoEstagioConsulta.codOrigem)
+            .equals('Item', itemKey);
 
-      final response = await conferenciaItemRepository.select(queryBuilder);
-      if (response.isEmpty) {
-        throw AppError(
-          'Item não encontrado para exclusão.',
-          details: 'Item=$itemKey',
-        );
-      }
+        final response = await conferenciaItemRepository.select(queryBuilder);
+        if (response.isEmpty) {
+          throw AppError(
+            'Item não encontrado para exclusão.',
+            details: 'Item=$itemKey',
+          );
+        }
 
-      for (var el in response) {
-        await conferenciaItemRepository.delete(el);
+        for (var el in response) {
+          await conferenciaItemRepository.delete(el);
+        }
+      } catch (e) {
+        throw AppError.fromUnknown(e);
       }
-    } catch (e) {
-      throw AppError.fromUnknown(e);
-    }
+    });
   }
 
   Future<void> removeAll() async {
-    try {
-      final conferenciaItens = await _getConferenciaItens();
-      await conferenciaItemRepository.deleteAll(conferenciaItens);
-    } catch (e) {
-      throw AppError.fromUnknown(e);
-    }
+    return runSocketMutation(() async {
+      try {
+        final conferenciaItens = await _getConferenciaItens();
+        await conferenciaItemRepository.deleteAll(conferenciaItens);
+      } catch (e) {
+        throw AppError.fromUnknown(e);
+      }
+    });
   }
 
   Future<void> removeAllItensCart() async {
-    try {
-      final conferenciaItens = await _getConferenciaItensCarrinho();
-      await conferenciaItemRepository.deleteAll(conferenciaItens);
-    } catch (e) {
-      throw AppError.fromUnknown(e);
-    }
+    return runSocketMutation(() async {
+      try {
+        final conferenciaItens = await _getConferenciaItensCarrinho();
+        await conferenciaItemRepository.deleteAll(conferenciaItens);
+      } catch (e) {
+        throw AppError.fromUnknown(e);
+      }
+    });
   }
 
   Future<List<ExpedicaoConferenciaItemModel>>

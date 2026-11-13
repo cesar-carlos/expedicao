@@ -1,3 +1,5 @@
+import 'socket_mutation_action.dart';
+
 import 'package:app_expedicao/src/model/expedicao_separar_model.dart';
 import 'package:app_expedicao/src/model/pagination/query_builder.dart';
 import 'package:app_expedicao/src/model/expedicao_tipo_operacao_model.dart';
@@ -24,44 +26,48 @@ class SepararFinalizarService {
   });
 
   Future<void> execute() async {
-    try {
-      //TODO: REVER CONFIGURAÇÃO
-      //final tipoOperacao = await _getTipoOperacao(
-      //  separarConsulta.codEmpresa,
-      //  separarConsulta.codTipoOperacao,
-      //);
+    return runSocketMutation(() async {
+      try {
+        //TODO: REVER CONFIGURAÇÃO
+        //final tipoOperacao = await _getTipoOperacao(
+        //  separarConsulta.codEmpresa,
+        //  separarConsulta.codTipoOperacao,
+        //);
 
-      final separar = await _getSeparar(
-        separarConsulta.codEmpresa,
-        separarConsulta.codSepararEstoque,
-      );
+        final separar = await _getSeparar(
+          separarConsulta.codEmpresa,
+          separarConsulta.codSepararEstoque,
+        );
 
-      final newSeparar = separar.copyWith(
-        situacao: ExpedicaoSituacaoModel.separado,
-      );
+        final newSeparar = separar.copyWith(
+          situacao: ExpedicaoSituacaoModel.separado,
+        );
 
-      final newCarrinhoPercurso = carrinhoPercurso.copyWith(
-        situacao: ExpedicaoSituacaoModel.separado,
-      );
+        final newCarrinhoPercurso = carrinhoPercurso.copyWith(
+          situacao: ExpedicaoSituacaoModel.separado,
+        );
 
-      await separarRepository.update(newSeparar);
-      await carrinhoPercursoRepository.update(newCarrinhoPercurso);
+        await separarRepository.update(newSeparar);
+        await carrinhoPercursoRepository.update(newCarrinhoPercurso);
 
-      //if (tipoOperacao.fazerConferencia == 'S') {
-      //  await _addConferir(newCarrinhoPercurso);
-      //}
+        //if (tipoOperacao.fazerConferencia == 'S') {
+        //  await _addConferir(newCarrinhoPercurso);
+        //}
 
-      // if (tipoOperacao.fazerConferencia == 'N' &&
-      //     tipoOperacao.fazerArmazenamento == 'S') {
-      //   await _addArmazenar(newCarrinhoPercurso);
-      // }
-    } catch (e) {
-      throw AppError.fromUnknown(e);
-    }
+        // if (tipoOperacao.fazerConferencia == 'N' &&
+        //     tipoOperacao.fazerArmazenamento == 'S') {
+        //   await _addArmazenar(newCarrinhoPercurso);
+        // }
+      } catch (e) {
+        throw AppError.fromUnknown(e);
+      }
+    });
   }
 
   Future<ExpedicaoSepararModel> _getSeparar(
-      int codEmpresa, int codSepararEstoque) async {
+    int codEmpresa,
+    int codSepararEstoque,
+  ) async {
     try {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', codEmpresa)
@@ -81,7 +87,9 @@ class SepararFinalizarService {
   }
 
   Future<ExpedicaoTipoOperacaoModel> getTipoOperacao(
-      int codEmpresa, int codTipoOperacaoExpedicao) async {
+    int codEmpresa,
+    int codTipoOperacaoExpedicao,
+  ) async {
     try {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', codEmpresa)

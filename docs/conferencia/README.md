@@ -9,6 +9,9 @@ Não há um guia de páginas paralelo ao de [separação](../separacao/separacao
 5. [Conversão de unidade](../contratos/conversao-unidade.md) — bip em `ConversaoUnidadeMedida.Codigo`; carga do conferir inteiro ao abrir o carrinho
 6. [Agrupar carrinho](../contratos/agrupar-carrinho.md) — F6 destino `CONFERIDO` / F7 assistente; origem vira `AGRUPADO` e o cadastro `LIBERADO`
 7. [Modais](../contratos/modais.md) — não usar `Get.back()` no overlay de carregamento
+8. [Conferir tudo / separar tudo](../contratos/separar-conferir-tudo.md) — revisão de saldo com linhas repetidas, unidades e escopos SE/CO; achados ainda não corrigidos
+9. [Reconferir tudo](../contratos/reconferir-tudo.md) — exclusão física, falha parcial e recomposição dos saldos; achados ainda não corrigidos
+10. [Excluir/cancelar item](../contratos/excluir-cancelar-item.md) — exclusão na UI, CA nos serviços, seleção antiga e falhas posteriores ao DML
 
 Não há **Recuperar Carrinho** / **Recuperar Itens** na conferência. [Recuperar](../contratos/recuperar-carrinho.md) é só da separação. Agrupar é só da conferência.
 

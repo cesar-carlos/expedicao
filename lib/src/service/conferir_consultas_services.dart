@@ -64,7 +64,10 @@ class ConferirConsultaServices {
       final queryBuilder = QueryBuilder()
           .equals('CodEmpresa', codEmpresa)
           .equals('CodConferir', codConferir)
-          .allRows(orderField: 'ItemCarrinhoPercurso');
+          .allRows(
+            orderField: 'CodCarrinhoPercurso',
+            thenBy: ['ItemCarrinhoPercurso'],
+          );
 
       final response = await conferirCarrinhoConsultaRepository.select(
         queryBuilder,
@@ -166,7 +169,10 @@ class ConferirConsultaServices {
       }
 
       final result = await carrinhoPercursoEstagioConsultaRepository.select(
-        queryBuilder.allRows(),
+        queryBuilder.allRows(
+          orderField: 'CodCarrinhoPercurso',
+          thenBy: ['Item'],
+        ),
       );
       return result;
     } catch (e) {

@@ -1,3 +1,6 @@
+import 'package:app_expedicao/src/service/socket_mutation_action.dart';
+import 'package:app_expedicao/src/service/carrinho_recovery_validation.dart';
+
 import 'dart:async';
 
 import 'package:get/get.dart';
@@ -98,9 +101,13 @@ class SeparadoCarrinhosController extends GetxController {
     _liteners();
   }
 
+  Future<void> reloadFromServer() => _fillGridSeparadoCarrinhos();
+
   Future<void> _fillGridSeparadoCarrinhos() async {
     final separadoCarrinhos = await _separarConsultaServices
         .carrinhosPercurso();
+    if (isClosed) return;
+    _separadoCarrinhoGridController.removeAllGrid();
     _separadoCarrinhoGridController.addAllGrid(separadoCarrinhos);
     _separadoCarrinhoGridController.update();
     _separadoCarrinhoGridController.highlightFirstRow();
@@ -158,63 +165,70 @@ class SeparadoCarrinhosController extends GetxController {
       await LoadingProcessDialogGenericWidget.show<bool>(
         context: Get.context!,
         process: () async {
-          final carrinhoQueryBuilder = QueryBuilder()
-              .equals('CodEmpresa', item.codEmpresa)
-              .equals('CodCarrinho', item.codCarrinho);
+          return runSocketMutation(() async {
+            final carrinhoQueryBuilder = QueryBuilder()
+                .equals('CodEmpresa', item.codEmpresa)
+                .equals('CodCarrinho', item.codCarrinho);
 
-          final carrinho = await CarrinhoService().select(carrinhoQueryBuilder);
+            final carrinho = await CarrinhoService().select(
+              carrinhoQueryBuilder,
+            );
 
-          final carrinhosPercursoEstagioQueryBuilder = QueryBuilder()
-              .equals('CodEmpresa', item.codEmpresa)
-              .equals('CodCarrinhoPercurso', item.codCarrinhoPercurso)
-              .equals('CodPercursoEstagio', item.codPercursoEstagio)
-              .equals('CodCarrinho', item.codCarrinho)
-              .equals('Item', item.item);
+            final carrinhosPercursoEstagioQueryBuilder = QueryBuilder()
+                .equals('CodEmpresa', item.codEmpresa)
+                .equals('CodCarrinhoPercurso', item.codCarrinhoPercurso)
+                .equals('CodPercursoEstagio', item.codPercursoEstagio)
+                .equals('CodCarrinho', item.codCarrinho)
+                .equals('Item', item.item);
 
-          final carrinhosPercursoEstagio =
-              await CarrinhoPercursoEstagioServices().select(
-                carrinhosPercursoEstagioQueryBuilder,
+            final carrinhosPercursoEstagio =
+                await CarrinhoPercursoEstagioServices().select(
+                  carrinhosPercursoEstagioQueryBuilder,
+                );
+
+            if (carrinho.isEmpty || carrinhosPercursoEstagio.isEmpty) {
+              throw AppError(
+                'Carrinho não encontrado na tabela percurso estagio!',
               );
+            }
 
-          if (carrinho.isEmpty || carrinhosPercursoEstagio.isEmpty) {
-            throw AppError(
-              'Carrinho não encontrado na tabela percurso estagio!',
+            final carrinhoPercursoEstagio = carrinhosPercursoEstagio.last;
+            if (carrinhoPercursoEstagio.codUsuarioInicio !=
+                    _processoExecutavel.codUsuario &&
+                _usuarioLogado.excluiCarrinhoOutroUsuario != 'S') {
+              throw AppError(
+                'Carrinho não pode ser cancelado. Solicite para o usuario ${carrinhoPercursoEstagio.nomeUsuarioInicio} fazer o cancelamento!',
+              );
+            }
+
+            final newCarrinho = carrinho.last.copyWith(
+              situacao: ExpedicaoCarrinhoSituacaoModel.liberado,
             );
-          }
 
-          final carrinhoPercursoEstagio = carrinhosPercursoEstagio.last;
-          if (carrinhoPercursoEstagio.codUsuarioInicio !=
-                  _processoExecutavel.codUsuario &&
-              _usuarioLogado.excluiCarrinhoOutroUsuario != 'S') {
-            throw AppError(
-              'Carrinho não pode ser cancelado. Solicite para o usuario ${carrinhoPercursoEstagio.nomeUsuarioInicio} fazer o cancelamento!',
+            await CarrinhoPercursoEstagioCancelarService(
+              carrinho: newCarrinho,
+              percursoEstagio: carrinhoPercursoEstagio,
+            ).execute();
+
+            final carrinhoPercursoConsulta = item.copyWith(
+              situacao: ExpedicaoSituacaoModel.cancelada,
             );
-          }
 
-          final newCarrinho = carrinho.last.copyWith(
-            situacao: ExpedicaoCarrinhoSituacaoModel.liberado,
-          );
+            await SeparacaoCancelarItemService(
+              percursoEstagioConsulta: carrinhoPercursoConsulta,
+            ).cancelarAllItensCart();
 
-          await CarrinhoPercursoEstagioCancelarService(
-            carrinho: newCarrinho,
-            percursoEstagio: carrinhoPercursoEstagio,
-          ).execute();
+            final newSepararItens = await _separarConsultaServices
+                .itensSaparar();
 
-          final carrinhoPercursoConsulta = item.copyWith(
-            situacao: ExpedicaoSituacaoModel.cancelada,
-          );
-
-          await SeparacaoCancelarItemService(
-            percursoEstagioConsulta: carrinhoPercursoConsulta,
-          ).cancelarAllItensCart();
-
-          final newSepararItens = await _separarConsultaServices.itensSaparar();
-
-          _separadoCarrinhoGridController.updateGrid(carrinhoPercursoConsulta);
-          _separarGridController.updateAllGrid(newSepararItens);
-          _separadoCarrinhoGridController.update();
-          _separarGridController.update();
-          return true;
+            _separadoCarrinhoGridController.updateGrid(
+              carrinhoPercursoConsulta,
+            );
+            _separarGridController.updateAllGrid(newSepararItens);
+            _separadoCarrinhoGridController.update();
+            _separarGridController.update();
+            return true;
+          });
         },
       );
     } catch (_) {}
@@ -403,7 +417,7 @@ class SeparadoCarrinhosController extends GetxController {
             context: Get.context!,
             process: () async {
               try {
-                return await _persistirSaveCart(item);
+                return await runSocketMutation(() => _persistirSaveCart(item));
               } catch (err) {
                 return _SaveCartResultado.fromError(err);
               }
@@ -482,6 +496,7 @@ class SeparadoCarrinhosController extends GetxController {
       );
     }
 
+    await CarrinhoRecoveryValidation.assertLatestStage(carrinhoPercursoEstagio);
     await SeparacaoFinalizarItemService().updateAll(itensSeparacaoCarrinho);
 
     final newCarrinho = carrinhoEstagio.carrinho.copyWith(
@@ -616,7 +631,9 @@ class SeparadoCarrinhosController extends GetxController {
             context: Get.context!,
             process: () async {
               try {
-                return await _persistirReopenCart(item);
+                return await runSocketMutation(
+                  () => _persistirReopenCart(item),
+                );
               } catch (err) {
                 return _SaveCartResultado.fromError(err);
               }

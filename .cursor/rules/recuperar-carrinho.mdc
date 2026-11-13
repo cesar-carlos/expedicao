@@ -15,3 +15,7 @@ Dois F11. Conferência não tem.
 - Itens: só `CA`. Copiar com `addRecuperados` (lista, setor, teto do pedido). Não `add` cru da quantidade cancelada.
 - `ItemCarrinhoPercurso` no `select`: `itemSequenceKey`.
 - Reabrir (F6) é outro fluxo: mesmo estágio, não copiar itens.
+- Releia histórico, cadastro, documento e itens antes da cópia. Destino deve ser a última utilização; origem, a imediatamente anterior. Ordene percurso/Item numericamente.
+- Cancelamento parcial (origem com qualquer item não CA) bloqueia o lote. Não pule silenciosamente esses itens.
+- Por produto/unidade, desconte do total cancelado tudo que já está ativo no destino e respeite o saldo ativo do documento. Isso inclui bipagens manuais equivalentes; não há vínculo de origem persistido.
+- Abertura, cópia e recarga de grade compartilham `runSocketMutation`. Retome no estágio já aberto após revisão; nunca repita automaticamente a abertura. Corridas entre coletores exigem proteção no servidor.

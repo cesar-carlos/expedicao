@@ -1,4 +1,9 @@
+import 'package:app_expedicao/src/service/carrinho_recovery_validation.dart';
+
 import 'dart:async';
+
+import 'package:app_expedicao/src/app/app_socket_config.dart';
+import 'package:app_expedicao/src/app/app_error.dart';
 
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
@@ -122,6 +127,15 @@ class ConferirController extends GetxController {
 
   @override
   onReady() async {
+    Get.find<AppSocketConfig>().recovery.register(this, _reloadAfterConnection);
+    Get.find<AppSocketConfig>().recovery.registerValidator(this, () async {
+      if (isClosed) return;
+      await CarrinhoRecoveryValidation.reloadAndValidate(
+        codEmpresa: _processoExecutavel.codEmpresa,
+        codDocumento: _processoExecutavel.codOrigem,
+        conferencia: true,
+      );
+    });
     formFocusNode.requestFocus();
     await Future.wait([_fillCarrinhoConferir(), _fillCarrinhoPercurso()]);
     _liteners();
@@ -130,6 +144,7 @@ class ConferirController extends GetxController {
 
   @override
   onClose() {
+    Get.find<AppSocketConfig>().recovery.unregister(this);
     _removeAllliteners();
     formFocusNode.dispose();
     Get.find<AppEventState>().canCloseWindow = true;
@@ -200,10 +215,27 @@ class ConferirController extends GetxController {
     return KeyEventResult.ignored;
   }
 
+  Future<void> _reloadAfterConnection() async {
+    final documento = await _conferirConsultaServices.conferir();
+    if (isClosed) return;
+    if (documento == null) {
+      throw AppError('Documento de conferência não encontrado. Reabra a tela.');
+    }
+    _conferirConsulta = documento;
+    Get.find<ExpedicaoConferirConsultaModel>().situacao = documento.situacao;
+    aplicarSituacao(documento.situacao);
+    await _fillCarrinhoConferir();
+    if (isClosed) return;
+    await _fillCarrinhoPercurso();
+    if (isClosed) return;
+    await _conferidoCarrinhosController.reloadFromServer();
+  }
+
   Future<void> _fillCarrinhoConferir() async {
     final carrinhoConferirConsulta = await _conferirConsultaServices
         .carrinhosConferir();
-    _conferirCarrinhosController.addAllCarrinho(carrinhoConferirConsulta);
+    if (isClosed) return;
+    _conferirCarrinhosController.replaceCarrinhos(carrinhoConferirConsulta);
 
     _conferirCarrinhosController.update();
   }
@@ -218,9 +250,8 @@ class ConferirController extends GetxController {
       queryBuilder,
     );
 
-    if (carrinhoPercursos.isNotEmpty) {
-      _carrinhoPercurso = carrinhoPercursos.first;
-    }
+    if (isClosed) return;
+    _carrinhoPercurso = carrinhoPercursos.firstOrNull;
   }
 
   Future<void> iniciarConferencia() async {
