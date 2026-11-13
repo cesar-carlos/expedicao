@@ -1,0 +1,27 @@
+---
+description: Proteções Socket.IO do servidor — emergência, Where lista, sem token
+globs: "**/{app_socket_config.dart,servidor_emergencia_service.dart,*event_repository.dart,query_builder.dart,app_error.dart}"
+alwaysApply: false
+---
+
+# Proteções do servidor
+
+Fonte no servidor: `D:\Developer\Node\data7-api-pix Campo\docs\socket\protecoes-cliente.md`. Neste app: `docs/contratos/protecoes-servidor.md`. Regras 26–27 em `docs/expedicao/regras.md` do servidor.
+
+## Já neste desktop
+
+- Canal `servidor.emergencia.listen` — o coletor **não** emite. Nome literal, sem `socket.id`.
+- Já registrado na conexão (`ServidorEmergenciaService`), não no dispose da tela.
+- `allEvent: true`. Payload `{ Data }`, **sem `Session`**.
+- Mostrar `Mensagem` sem prefixo `Erro ao X:`.
+- `Acao=desconectar`: parar consulta/mutação, não auto-reconnect, tela “Servidor encerrou a sessão”, reconectar só com ação do usuário (F12).
+
+## Já no servidor (não recusa o pedido)
+
+- `LIKE` de setor/data em `separar.consulta` é reescrito; este app não manda esse `LIKE`.
+- `[SQL-1222]` = lock timeout, tente de novo. `[SQL-CONN]` = timeout 30 s, não relançar em loop.
+- `Where` lista `{ key, value }`. Handshake **sem token** (`handshakeAuth` nulo).
+
+## Ainda não
+
+Não exigir token, não recusar string SQL, não cortar `LIMIT` explícito, não assumir kick automático (quando ligar, o aviso sai no canal de emergência antes do `disconnect`).

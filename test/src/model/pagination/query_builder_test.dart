@@ -80,4 +80,32 @@ void main() {
       expect(paged.buildPagination(), 'LIMIT=20&OFFSET=20&PAGE=2');
     });
   });
+
+  group('QueryBuilder.buildWhereList', () {
+    test('manda lista { key, operator, value } em vez de SQL', () {
+      final query = QueryBuilder()
+          .equals('CodEmpresa', 1)
+          .equals('CodConferir', 290)
+          .notEquals('Situacao', 'CANCELADA');
+
+      expect(query.buildWhereList(), [
+        {'key': 'CodEmpresa', 'operator': '=', 'value': 1},
+        {'key': 'CodConferir', 'operator': '=', 'value': 290},
+        {'key': 'Situacao', 'operator': '!=', 'value': 'CANCELADA'},
+      ]);
+    });
+
+    test('IN guarda lista de valores, não string interpolada', () {
+      final query = QueryBuilder().inList('CodCarrinho', [10, 20]);
+
+      expect(query.buildWhereList(), [
+        {
+          'key': 'CodCarrinho',
+          'operator': 'IN',
+          'value': [10, 20],
+        },
+      ]);
+      expect(query.buildSqlWhere(), 'CodCarrinho IN (10,20)');
+    });
+  });
 }

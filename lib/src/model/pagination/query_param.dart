@@ -31,7 +31,27 @@ class QueryParam<P> {
 
   /// Converts parameter to SQL format
   String toSqlString() {
+    if (_isInOperator && value is List) {
+      final inner = [
+        for (final item in value as List) _formatSqlValue(item),
+      ].join(',');
+      return '$key $operator ($inner)';
+    }
     return '$key $operator ${_formatSqlValue(value)}';
+  }
+
+  /// Lista `{ key, operator, value }` preferida pelo servidor.
+  Map<String, dynamic> toWhereJson() {
+    return {
+      'key': key,
+      'operator': operator,
+      'value': _jsonValue(value),
+    };
+  }
+
+  bool get _isInOperator {
+    final op = operator.toUpperCase();
+    return op == 'IN' || op == 'NOT IN';
   }
 
   /// Formats the value for query string
@@ -46,7 +66,7 @@ class QueryParam<P> {
   }
 
   /// Formats the value for SQL
-  String _formatSqlValue(P value) {
+  String _formatSqlValue(dynamic value) {
     if (value is String) {
       return "'$value'";
     } else if (value is DateTime) {
@@ -56,6 +76,12 @@ class QueryParam<P> {
     } else {
       return value.toString();
     }
+  }
+
+  dynamic _jsonValue(dynamic value) {
+    if (value is DateTime) return value.toIso8601String();
+    if (value is List) return value.map(_jsonValue).toList();
+    return value;
   }
 
   @override

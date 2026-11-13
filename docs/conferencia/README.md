@@ -2,8 +2,8 @@
 
 Não há um guia de páginas paralelo ao de [separação](../separacao/separacao_estoque_documentation.md). Regras deste coletor que valem na conferência:
 
-1. [Setor](../contratos/setor-estoque.md) — usuário `CodSetorConferencia`, item `CodSetorEstoque`; `null` ou `0` em qualquer lado libera
-2. [Listen da situação](../contratos/listen-situacao.md) — insert/quantidade `allEvent: false`; faixa `allEvent: true`
+1. [Setor](../contratos/setor-estoque.md) — usuário `CodSetorConferencia`, item `CodSetorEstoque`; `null` ou `0` em qualquer lado libera. **TESTE: validações de setor de conferência comentadas (scan, excluir, ícone).**
+2. [Listen da situação](../contratos/listen-situacao.md) — insert/quantidade `allEvent: false`; faixa `allEvent: true`. Emergência: [proteções](../contratos/protecoes-servidor.md) (`allEvent: true`, na conexão)
 3. [Chave de Item](../contratos/item-chave.md) — `'00001'` na tabela, `'1'` na grade; excluir e conferir tudo
 4. [Consultas](../contratos/consultas.md) — `conferir.item.consulta` e `conferencia.item.consulta` exigem `CodCarrinho`
 5. [Conversão de unidade](../contratos/conversao-unidade.md) — bip em `ConversaoUnidadeMedida.Codigo`; carga do conferir inteiro ao abrir o carrinho

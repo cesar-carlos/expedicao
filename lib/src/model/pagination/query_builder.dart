@@ -43,8 +43,7 @@ class QueryBuilder {
 
   /// Adds a parameter with in operator
   QueryBuilder inList<P>(String key, List<P> values) {
-    final valueString = values.map((v) => _formatValue(v)).join(',');
-    return addParam(key, valueString, operator: 'IN');
+    return addParam(key, List<P>.from(values), operator: 'IN');
   }
 
   /// Adds pagination to the query
@@ -142,6 +141,11 @@ class QueryBuilder {
     return _params.map((param) => param.toSqlString()).join(' AND ');
   }
 
+  /// `Where` como lista `{ key, value, operator }`. Preferido no servidor.
+  List<Map<String, dynamic>> buildWhereList() {
+    return _params.map((param) => param.toWhereJson()).toList();
+  }
+
   /// Builds only the pagination string
   String buildPagination() {
     if (_pagination == null) {
@@ -211,17 +215,6 @@ class QueryBuilder {
     _orderBy.clear();
     _fetchAllPages = false;
     _fetchPageSize = Pagination.fetchPageSize;
-  }
-
-  /// Formats a value for query string
-  String _formatValue(dynamic value) {
-    if (value is String) {
-      return "'$value'";
-    } else if (value is DateTime) {
-      return "'${value.toIso8601String()}'";
-    } else {
-      return value.toString();
-    }
   }
 
   @override

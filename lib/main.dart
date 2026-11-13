@@ -10,6 +10,7 @@ import 'package:app_expedicao/src/routes/app_page_router.dart';
 import 'package:app_expedicao/src/routes/app_router.dart';
 import 'package:app_expedicao/src/app/app_socket_config.dart';
 import 'package:app_expedicao/src/app/app_event_state.dart';
+import 'package:app_expedicao/src/app/servidor_emergencia_service.dart';
 
 Future<void> main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,6 +42,7 @@ class _MyAppState extends State<MyApp> {
     Get.put(AppClientHttp(), permanent: true);
     Get.put(AppSocketConfig(), permanent: true);
     Get.put(AppEventState(), permanent: true);
+    Get.put(ServidorEmergenciaService(), permanent: true);
   }
 
   @override

@@ -2,6 +2,18 @@
 
 O servidor **não** tem canal `*.situacao.listen`. A situação viaja no payload (`Situacao` em `Mutation` / `Data`).
 
+O cliente **não** emite `*.listen`. Só escuta o nome do canal, sem `socket.id`. O corpo no fio é JSON string. Catálogo no servidor: `docs/socket/listen.md`.
+
+Três famílias coexistem. `BasicEventModel.parse` lê `Mutation` ou `Data` na mesma lista. `Session` vazio não filtra o emissor; `Session` igual ao `socket.id` é ignorado, salvo `allEvent: true`.
+
+| Família | JSON | Neste coletor |
+| --- | --- | --- |
+| `ExpedicaoMutationListenEvent` | `{ "Mutation": [ … ] }` | `separar.*.listen` |
+| `ExpedicaoMutationBasicEvent` | `{ "Session", "ResponseIn", "Mutation": [ … ] }` | conferir, conferência, estágio, `separacao.item` |
+| `ExpedicaoBasicListenEvent` | `{ "Data": [ … ] }` | `POST /expedicao/separacao/notify` → `separar.update.listen`; **`servidor.emergencia.listen`** (sem `Session`) |
+
+Não unificar as três. Canal de emergência: [proteções](./protecoes-servidor.md) (regra 27).
+
 O servidor emite `*.listen` para **todos** os sockets, inclusive quem gravou. O coletor, por padrão, **ignora a própria sessão**.
 
 ```dart
@@ -80,6 +92,12 @@ Estes binds existem (`*_event_repository.dart`) e o servidor emite. Nenhuma tela
 
 Se ligar listener nestes canais: insert/delete `allEvent: false`; situação `allEvent: true`; nunca `addGrid` na própria sessão.
 
+### Emergência (global, não é tela)
+
+| Canal | Serviço | `allEvent` | O que faz |
+| --- | --- | --- | --- |
+| `servidor.emergencia.listen` | `ServidorEmergenciaService` | `true` | **Já neste desktop.** Mostra `Mensagem`. `Acao=desconectar` para tráfego e pede reconectar. Sem `Session`. [Proteções](./protecoes-servidor.md) |
+
 ## Erros que já aconteceram
 
 | Sintoma | Causa | Contrato |
@@ -101,14 +119,19 @@ Payload da situação: só `CodEmpresa`, `CodSepararEstoque` / `CodConferir`, `S
 | Situação da separação | `SepararController.aplicarSituacao` |
 | Situação da conferência | `ConferirController.aplicarSituacao` → cabeçalho em `ConferirCarrinhosController` |
 | Grade sem duplicar | `addGrid` recusa chave repetida (`sameGridItem` / `codCarrinhoPercurso` + `item`) |
+| Emergência | `ServidorEmergenciaService` — `servidor.emergencia.listen`, `allEvent: true` |
 
 Depois de salvar/reabrir carrinho a tela consulta o documento (`separar.consulta` / `conferir.consulta`).
+
+Este coletor **não** escuta `separar.consulta.listen` (timer periódico do servidor). Não disparar `separar.consulta` no mesmo tick — a grade usa o `Data`/`Mutation` dos listens de situação e item.
+
+Canal de emergência: [proteções do servidor](./protecoes-servidor.md). `allEvent: true`. Sem prefixar `socket.id`.
 
 Cruzado no servidor: insert/update de estágio também emite `separar.update.listen`. `conferir.update.listen` sai de `conferir.update` e de `PUT /expedicao/conferir/notify`. Envelope: [consulta Socket.IO](./consulta-socket.md). Catálogo: [consultas](./consultas.md). Overlay: [modais](./modais.md). `Item`: [chave de Item](./item-chave.md). Setor: [setor de estoque](./setor-estoque.md).
 
 ## Log no console
 
-Filtro: `SOCKET-LISTEN`. Canais: situação, estágio, `separacao.item`, `conferencia.item`, `separar.item.consulta.update`, `conferir.item.update`.
+Filtro: `SOCKET-LISTEN`. Canais: situação, estágio, `separacao.item`, `conferencia.item`, `separar.item.consulta.update`, `conferir.item.update`, `servidor.emergencia`.
 
 | Linha | Significado |
 | --- | --- |

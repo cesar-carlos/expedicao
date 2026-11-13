@@ -1,12 +1,12 @@
 ---
 description: Listen Socket.IO — allEvent, situação e grade sem duplicar
-globs: "**/{*controller.dart,*event_repository.dart,socket_event_repository.dart,app_socket_listen_log.dart}"
+globs: "**/{*controller.dart,*event_repository.dart,socket_event_repository.dart,app_socket_listen_log.dart,servidor_emergencia_service.dart}"
 alwaysApply: false
 ---
 
 # Listen Socket.IO
 
-Contrato: `docs/contratos/listen-situacao.md`. `Item`: `docs/contratos/item-chave.md`. Overlay: `docs/contratos/modais.md`.
+Contrato: `docs/contratos/listen-situacao.md`. Emergência: `docs/contratos/protecoes-servidor.md`. Fonte no servidor: `docs/socket/listen.md`, `docs/socket/protecoes-cliente.md`. `Item`: `docs/contratos/item-chave.md`. Overlay: `docs/contratos/modais.md`.
 
 ## `allEvent`
 
@@ -15,6 +15,7 @@ O servidor emite `*.listen` para **todos** os sockets, inclusive quem gravou. De
 - **Insert/delete** de carrinho ou item: `allEvent: false`. A mutação já fez `addGrid` / `removeGrid`. `true` duplica a linha.
 - **Update de quantidade** (`separar.item.consulta.update.listen`, `conferir.item.update.listen`): `allEvent: false`. O bip / separar tudo / conferir tudo já somou.
 - **Update de situação** (`separar.update.listen`, `conferir.update.listen`, `carrinho.percurso.estagio.update.listen`): `allEvent: true`. Sem isso a faixa não muda ao salvar o último carrinho.
+- **Emergência** (`servidor.emergencia.listen`): `allEvent: true`, bind na conexão (`ServidorEmergenciaService`), sem prefixar `socket.id`. Canal sem `Session`. Contrato: `docs/contratos/protecoes-servidor.md`.
 
 Não “consertar” duplicata só com `alreadyInGrid` no listen de insert e deixar `allEvent: true`: o listen pode chegar antes do `addCart` local.
 

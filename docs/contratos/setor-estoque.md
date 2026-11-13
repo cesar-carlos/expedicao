@@ -55,9 +55,9 @@ Eventos do servidor que este coletor **não** emite: `separar.usuario.setor.cons
 | Bipar na separação | `SeparacaoController._addItemSeparacao` | *Produto fora do setor estoque!* / *Este produto não esta no seu setor de setor estoque!* |
 | Excluir na separação | `SeparacaoController._onRemoveItemSeparacaoGrid` | *Não é possivel remover!* / *O produto não esta no seu setor estoque!* |
 | Ícone da grade a separar | `SepararGridController.iconIndicator` | Ícone `ban` vermelho (não impede sozinho) |
-| Bipar na conferência | `ConferenciaController._addItemConferencia` | *Produto fora do setor conferência!* / *Este produto não esta no seu setor de conferência!* |
-| Excluir na conferência | `ConferenciaController._onRemoveItemConferenciaGrid` | *Não é possivel remover!* / *O produto não esta no seu setor conferência!* |
-| Ícone da grade a conferir | `ConferirGridController.iconIndicator` | Ícone `ban` vermelho (não impede sozinho) |
+| Bipar na conferência | `ConferenciaController._addItemConferencia` | *Produto fora do setor conferência!* / *Este produto não esta no seu setor de conferência!* — **TESTE: comentada** |
+| Excluir na conferência | `ConferenciaController._onRemoveItemConferenciaGrid` | *Não é possivel remover!* / *O produto não esta no seu setor conferência!* — **TESTE: comentada** |
+| Ícone da grade a conferir | `ConferirGridController.iconIndicator` | Ícone `ban` vermelho (não impede sozinho) — **TESTE: comentada** |
 
 A lista da tela mostra **todos** os itens. O recorte é na hora de bipar / excluir.
 
@@ -67,7 +67,7 @@ A lista da tela mostra **todos** os itens. O recorte é na hora de bipar / exclu
 - `SepararGridController.getItensSort` / `itensSortSetor` usa `setorPermitido`. **Ninguém chama.** A tela mostra todos os itens.
 - `separar.consulta`, `separar.item.consulta` e `conferir.item.consulta` **não** mandam o setor do usuário no `WHERE`. A grade vem completa.
 
-Se o servidor filtrar `separar.consulta` por setor: `CodSetorEstoque =` vira `EXISTS` em `ItemSepararEstoque`. `LIKE` em `CodSetoresEstoque` (`STRING_AGG`) **não** entra nesse `EXISTS`. [Where](./where.md).
+Se o servidor filtrar `separar.consulta` por setor: `CodSetorEstoque =` vira `EXISTS` em `ItemSepararEstoque`. `LIKE` em `CodSetoresEstoque` (`STRING_AGG`) **não** entra nesse `EXISTS`. O servidor **ainda não** recusa esse `LIKE` — reescreve (regra 26). [Where](./where.md). [Proteções](./protecoes-servidor.md).
 
 ## Código
 

@@ -25,10 +25,11 @@ Neste app: `lib/src/app/app_error.dart` (`implements Exception`). Alerta de tela
 | Prefixo | Significa | O que fazer |
 | --- | --- | --- |
 | `[50011]`–`[50099]` | `THROW` de regra na base | Mostrar a mensagem. Tabela abaixo |
-| `[SQL-CONN]` | Falha de conexão / login / timeout | Conferir SQL Server e API |
+| `[SQL-CONN]` | Falha de conexão / login / timeout | Conferir SQL Server e API. `isConnectionFailure`. Não relançar a mesma consulta em loop |
+| `[SQL-1222]` | Lock além de `SQL_LOCK_TIMEOUT_MS` | `isRetryableLock`. Mostrar “tente de novo”; não tratar como payload inválido |
 | `[SQL-547]`, `[SQL-2627]`, … | Erro SQL conhecido, sem nome de tabela | Integridade, duplicata, lock, conversão |
 | `[SQL-208]` e outros `[SQL-n]` | Erro SQL sem mapeamento específico | Ver o log do servidor (texto técnico depois do `\|`) |
-| `[INVALID_PAYLOAD]` | Envelope Socket inválido | `Where` / `Mutation` / JSON |
+| `[INVALID_PAYLOAD]` | Envelope Socket inválido | `Where` / `Mutation` / JSON. **Ainda não** cobre `LIKE` de setor ([proteções](./protecoes-servidor.md)) |
 | `[UNAUTHORIZED]` | Sem permissão | Login / sessão |
 | `[NOT_FOUND]` | Registro ausente | |
 | `[INTERNAL_ERROR]` | Falha não classificada | Ver o log |
@@ -117,6 +118,7 @@ Validação de query (login, usuários) responde 400 com `message` e `errors[]` 
 ## Regras deste coletor
 
 - Não embrulhar erro de socket. `AppError.display` já é o texto da tela.
+- `[SQL-1222]` é lock timeout (`SET LOCK_TIMEOUT`); `[SQL-CONN]` é timeout 30 s / falha de conexão. [Proteções](./protecoes-servidor.md).
 - Lista vazia em `conferir.item.consulta` **não** é conferência completa (`every()` em lista vazia no Dart não vale).
 - `Carrinho não conferido!` ao salvar (F12) é ausência de `ItemConferencia` (scan). É sintoma, não o `[50014]`.
 - Este app **não** deve voltar a chamar `ConferirSeparacaoAdicionarService` enquanto a trigger existir. Quem cria `Conferir` é a trigger, não o coletor.

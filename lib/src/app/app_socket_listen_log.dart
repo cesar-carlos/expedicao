@@ -39,7 +39,8 @@ abstract class AppSocketListenLog {
         channel.contains('separacao.item') ||
         channel.contains('conferencia.item') ||
         channel.contains('separar.item.consulta.update') ||
-        channel.contains('conferir.item.update');
+        channel.contains('conferir.item.update') ||
+        channel.contains('servidor.emergencia');
   }
 
   static void received(String channel, dynamic data) {

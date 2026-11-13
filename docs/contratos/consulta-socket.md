@@ -14,7 +14,11 @@ O cliente envia por `AppSocketConfig.queryMapped` / `mutateMapped` (`request`). 
 {
   "Session": "<socket.id>",
   "ResponseIn": "<uuid>",
-  "Where": "CodEmpresa = 1 AND CodConferir = 290 AND CodCarrinho = 94",
+  "Where": [
+    { "key": "CodEmpresa", "operator": "=", "value": 1 },
+    { "key": "CodConferir", "operator": "=", "value": 290 },
+    { "key": "CodCarrinho", "operator": "=", "value": 94 }
+  ],
   "Pagination": "LIMIT=500&OFFSET=0&PAGE=1",
   "OrderBy": "order_by=Item&order_direction=ASC"
 }
@@ -24,11 +28,11 @@ O cliente envia por `AppSocketConfig.queryMapped` / `mutateMapped` (`request`). 
 | --- | --- | --- |
 | `Session` | `socket.id` | Nunca. Sem handshake, `ensureStarted` ainda não terminou |
 | `ResponseIn` | `Uuid().v4()` | Sem UUID o servidor responde no canal padrão do evento |
-| `Where` | `queryBuilder.buildSqlWhere()` | Sem filtro o servidor lê a view inteira (depois corta a página) |
+| `Where` | `queryBuilder.buildWhereList()` | Sem filtro o servidor lê a view inteira (depois corta a página) |
 | `Pagination` | `queryBuilder.buildPagination()` | String vazia **não** entra no JSON. O servidor aplica 1500 |
 | `OrderBy` | `queryBuilder.buildOrderByQuery()` | Sem ordem válida o SQL Server usa `ORDER BY (SELECT NULL)` |
 
-`toJson()` só inclui `Where`, `Pagination` e `OrderBy` se a string não estiver vazia. Por isso `QueryBuilder()` sem `.paginate()` **não** manda página — o servidor assume 1500. Detalhe em [paginação](./paginacao.md).
+`queryMapped` só inclui `Where` se a lista não estiver vazia, e `Pagination` / `OrderBy` se a string não estiver vazia. Por isso `QueryBuilder()` sem `.paginate()` **não** manda página — o servidor assume 1500. Detalhe em [paginação](./paginacao.md). Handshake **sem token**. [Proteções](./protecoes-servidor.md).
 
 Formatos de filtro: [Where](./where.md).
 
@@ -68,10 +72,15 @@ Resposta: `Session`, `ResponseIn`, `Mutation`. Em seguida o servidor emite `*.li
 
 ## Listen
 
-Dois formatos de payload existem hoje; não unificar:
+Três famílias coexistem; não unificar. O desktop lê `Mutation` ou `Data` na mesma lista (`BasicEventModel.parse`).
 
-- `{ Session, ResponseIn, Mutation }` — mutação básica
-- DTO de consulta — usado em separar / conferir / estágio quando o listen leva a linha da view
+| Família | JSON |
+| --- | --- |
+| `ExpedicaoMutationListenEvent` | `{ "Mutation": [ … ] }` |
+| `ExpedicaoMutationBasicEvent` | `{ "Session", "ResponseIn", "Mutation": [ … ] }` |
+| `ExpedicaoBasicListenEvent` | `{ "Data": [ … ] }` — timer, `POST /expedicao/separacao/notify` e `servidor.emergencia.listen` (sem `Session`) |
+
+Emergência: o coletor **não** emite. Este desktop **já** escuta `servidor.emergencia.listen` na conexão com `allEvent: true`. O `exp` ainda deve registrar. [Proteções](./protecoes-servidor.md). Servidor: `docs/socket/listen.md`.
 
 Listen cruzado (sai de **outro** handler):
 
@@ -90,11 +99,11 @@ Payload de listen: `BasicEventModel.parse` aceita string ou Map, `Mutation`/`Dat
 
 Este coletor escuta `separar.item.consulta.update.listen` (não `separar.item.update.listen`). Catálogo: [consultas](./consultas.md).
 
-Escuta periódica `separar.consulta.listen`: intervalo padrão 8 s, limite 20 (não 1500). O cliente só escuta. Guia no servidor: `docs/escuta-separacao.md`.
+Escuta periódica `separar.consulta.listen`: intervalo padrão 8 s, limite 20 (não 1500). Este desktop **não** registra listener nesse canal e **não** dispara outra `separar.consulta` no mesmo tick. Guia no servidor: `docs/socket/escuta.md`.
 
 ## Conexão
 
-`AppSocketConfig` usa `transports: ['websocket']`, `autoConnect: true`. Sem token. URL: `http://<host>:<porta>` do arquivo de configuração da API.
+`AppSocketConfig` usa `transports: ['websocket']`, `autoConnect: true`, reconexão. Sem token (`handshakeAuth` nulo). URL: `http://<host>:<porta>` do arquivo de configuração da API. Emergência na conexão: [proteções](./protecoes-servidor.md).
 
 Antes de emitir, `ensureStarted` espera o handshake. Sem `socket.id` o canal de pedido fica inválido. `listen` reassocia os handlers depois de um reconnect (`reconnectFromConfig` após salvar a API). Pedido parado espera 30s; queda da conexão aborta na hora (`_failPending`). HTTP: `connectTimeout` 8s, `receiveTimeout` 20s (`AppClientHttp`).
 

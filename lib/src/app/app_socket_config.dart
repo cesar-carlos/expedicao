@@ -17,14 +17,24 @@ class AppSocketConfig extends GetxController {
   static final _connectionError = AppError(
     'Não foi possível conectar ao servidor. Verifique a rede e o endereço da API.',
   );
+  static final _sessionEndedError = AppError(
+    'O servidor encerrou a sessão. Reconecte para continuar.',
+  );
 
   String _baseUrl = '';
   final Rx<bool> _isConnected = false.obs;
+  final RxBool trafficPaused = false.obs;
+  final RxBool sessionEndedByServer = false.obs;
   io.Socket? _socket;
   bool _socketStarted = false;
   Future<void>? _inFlightStart;
   final _listenHandlers = <String, List<void Function(dynamic)>>{};
   final _pending = <_PendingSocketRequest>[];
+
+  /// Handshake continua sem token. Quando o servidor exigir, preencher
+  /// (ex.: `{'token': token}`). Hoje **não** enviar — o servidor rejeitaria
+  /// o cliente antigo se o token passasse a ser obrigatório sem migração.
+  Map<String, dynamic>? handshakeAuth;
 
   @override
   void onInit() {
@@ -107,21 +117,44 @@ class AppSocketConfig extends GetxController {
     _socket?.dispose();
     _socketStarted = true;
     _isConnected.value = false;
-    _socket = io.io(
-      _baseUrl,
-      io.OptionBuilder()
-          .setTransports(['websocket'])
-          .enableAutoConnect()
-          .enableReconnection()
-          .enableForceNew()
-          .setReconnectionDelay(1000)
-          .setReconnectionDelayMax(5000)
-          .setTimeout(20000)
-          .build(),
-    );
+    final builder = io.OptionBuilder()
+        .setTransports(['websocket'])
+        .enableAutoConnect()
+        .enableReconnection()
+        .enableForceNew()
+        .setReconnectionDelay(1000)
+        .setReconnectionDelayMax(5000)
+        .setTimeout(20000);
+    final auth = handshakeAuth;
+    if (auth != null && auth.isNotEmpty) {
+      builder.setAuth(auth);
+    }
+    _socket = io.io(_baseUrl, builder.build());
 
     _bindLifecycle();
     _bindPersistentListeners();
+  }
+
+  /// Para `*.consulta` e mutação e desliga auto-reconnect. Usado em
+  /// `servidor.emergencia.listen` com `Acao=desconectar`.
+  void pauseForServerDisconnect() {
+    trafficPaused.value = true;
+    _setReconnectionEnabled(false);
+    _failPending(_sessionEndedError);
+  }
+
+  Future<void> reconnectAfterServerEnd() async {
+    sessionEndedByServer.value = false;
+    trafficPaused.value = false;
+    _setReconnectionEnabled(true);
+    await reconnectFromConfig();
+  }
+
+  void _setReconnectionEnabled(bool enabled) {
+    final socket = _socket;
+    if (socket == null) return;
+    socket.io.reconnection = enabled;
+    socket.io.skipReconnect = !enabled;
   }
 
   Future<void> reconnectFromConfig() async {
@@ -152,6 +185,10 @@ class AppSocketConfig extends GetxController {
     Map<String, dynamic>? payload,
     Duration timeout = _requestTimeout,
   }) async {
+    if (trafficPaused.value || sessionEndedByServer.value) {
+      throw _sessionEndedError;
+    }
+
     final connected = await ensureStarted();
     final socket = _socket;
     final session = socket?.id;
@@ -159,7 +196,9 @@ class AppSocketConfig extends GetxController {
         socket == null ||
         session == null ||
         socket.disconnected) {
-      throw _connectionError;
+      throw trafficPaused.value || sessionEndedByServer.value
+          ? _sessionEndedError
+          : _connectionError;
     }
 
     final responseIn = _uuid.v4();
@@ -256,7 +295,7 @@ class AppSocketConfig extends GetxController {
     required T Function(Map<String, dynamic> json) fromJson,
     String? pagination,
   }) async {
-    final where = queryBuilder.buildSqlWhere();
+    final where = queryBuilder.buildWhereList();
     final orderBy = queryBuilder.buildOrderByQuery();
     final page = pagination ?? queryBuilder.buildPagination();
 
@@ -359,7 +398,12 @@ class AppSocketConfig extends GetxController {
     });
     socket.onDisconnect((_) {
       _isConnected.value = false;
-      _failPending(_connectionError);
+      if (trafficPaused.value) {
+        sessionEndedByServer.value = true;
+        _failPending(_sessionEndedError);
+      } else {
+        _failPending(_connectionError);
+      }
     });
     socket.onConnectError((_) {
       _isConnected.value = false;

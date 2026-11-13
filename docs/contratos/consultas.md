@@ -21,7 +21,7 @@ Repositórios em `lib/src/repository/`. Listen em `*_event_repository.dart` — 
 
 Eventos do servidor que este coletor **não** emite hoje: `separar.progresso.consulta`, `separar.estoque.item.impresso.consulta`, `separar.usuario.setor.consulta` / `select`. Recusa de setor do usuário logado é no app, não nessa consulta. [Setor](./setor-estoque.md).
 
-Escuta periódica **sem pedido**: `separar.consulta.listen`. Página padrão 20.
+Escuta periódica **sem pedido**: `separar.consulta.listen`. Página padrão 20. Este desktop **não** escuta esse canal e **não** refaz `separar.consulta` no mesmo tick. Emergência: [proteções](./protecoes-servidor.md).
 
 ### Mutação e listen — separar
 

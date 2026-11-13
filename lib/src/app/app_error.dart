@@ -78,6 +78,12 @@ class AppError implements Exception {
     return match?.group(1);
   }
 
+  /// Lock timeout (`SET LOCK_TIMEOUT`). Mostrar e deixar o usuário tentar de novo.
+  bool get isRetryableLock => identifier == 'SQL-1222';
+
+  /// Timeout 30 s / falha de conexão. Não relançar a mesma consulta em loop.
+  bool get isConnectionFailure => identifier == 'SQL-CONN';
+
   String get userMessage {
     var text = message.trim();
     text = text.replaceFirst(_identifierPattern, '').trim();
@@ -93,6 +99,7 @@ class AppError implements Exception {
     if (id != null) {
       if (id.startsWith('500')) return 'Operação não permitida';
       if (id == 'SQL-CONN') return 'Falha de conexão';
+      if (id == 'SQL-1222') return 'Registro em uso';
       if (id.startsWith('SQL-')) return 'Falha no banco de dados';
       if (id == 'INVALID_PAYLOAD') return 'Dados inválidos';
       if (id == 'UNAUTHORIZED') return 'Sem permissão';

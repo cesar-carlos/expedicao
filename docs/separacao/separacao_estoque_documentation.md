@@ -421,6 +421,7 @@ Contrato: [setor-estoque.md](../contratos/setor-estoque.md).
 A regra vigente de `allEvent`, situação e grade **não** está neste arquivo (trechos abaixo misturam `SEPARANDO` com carrinho finalizado). Use:
 
 - [Listen da situação](../contratos/listen-situacao.md)
+- [Proteções do servidor](../contratos/protecoes-servidor.md) — `servidor.emergencia.listen` já neste desktop
 - [Chave de Item](../contratos/item-chave.md)
 - [Modais](../contratos/modais.md)
 
@@ -444,11 +445,11 @@ abstract class EventContract {
 ### **Tipos de Eventos** (`lib/src/model/repository_event_listener_model.dart`)
 
 ```dart
-enum Event { insert, update, delete }
+enum Event { insert, update, delete, emergencia }
 
 class RepositoryEventListenerModel {
   String id;                    // ID único do listener
-  Event event;                  // Tipo de evento (insert, update, delete)
+  Event event;                  // Tipo de evento (insert, update, delete, emergencia)
   Callback callback;            // Função callback executada no evento
   bool allEvent;                // Se deve escutar eventos da própria sessão
 }

@@ -51,3 +51,5 @@ Parâmetro inválido: 400 com `message` e `errors[]`. Demais falhas: texto prefi
 Senha do login-app: bcrypt 12 rounds. A consulta não devolve senha. Foto entra e sai em base64.
 
 Este coletor hoje autentica a tela de login localmente e usa Socket.IO para o restante. As rotas HTTP existem no servidor para o outro cliente e para cadastro.
+
+`POST /internal/sockets/emergencia` é loopback do operador: emite `servidor.emergencia.listen`. Este coletor **não** chama essa rota — só escuta o Socket.IO. [Proteções](./protecoes-servidor.md).

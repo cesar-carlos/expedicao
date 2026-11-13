@@ -21,7 +21,7 @@ Regras:
 - Sem `LIMIT` → 1500.
 - `LIMIT` 0 → 1.
 - `LIMIT` inválido → 1500.
-- `LIMIT` explícito do cliente **não** é cortado em 1500.
+- `LIMIT` explícito do cliente **não** é cortado em 1500. Cortar num teto **ainda não** está ligado ([proteções](./protecoes-servidor.md)).
 - `OFFSET` ausente → 0.
 - `PAGE` ausente → 1. O helper de consulta usa `OFFSET`/`LIMIT`; `PAGE` é metadado.
 
@@ -94,7 +94,7 @@ Insert, update e delete no servidor **não** recarregam a lista inteira. O colet
 
 ## Escuta periódica
 
-`separar.consulta.listen` **não** usa 1500. Padrão 20, `SEPARAR_LISTEN_LIMIT` entre 1 e 500. O coletor não pede essa página.
+`separar.consulta.listen` **não** usa 1500. Padrão 20, `SEPARAR_LISTEN_LIMIT` entre 1 e 500. Este desktop não pede essa página e **não** dispara `separar.consulta` no tick do listen. [Proteções](./protecoes-servidor.md).
 
 ## HTTP
 

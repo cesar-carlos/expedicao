@@ -139,6 +139,19 @@ void main() {
       expect(error.identifier, '50014');
     });
 
+    test('SQL-1222 é retryable e SQL-CONN não relança sozinho', () {
+      final lock = AppError('[SQL-1222] O registro esta em uso. Tente novamente.');
+      expect(lock.identifier, 'SQL-1222');
+      expect(lock.title, 'Registro em uso');
+      expect(lock.isRetryableLock, isTrue);
+      expect(lock.isConnectionFailure, isFalse);
+
+      final conn = AppError('[SQL-CONN] Falha de conexao com o banco.');
+      expect(conn.title, 'Falha de conexão');
+      expect(conn.isConnectionFailure, isTrue);
+      expect(conn.isRetryableLock, isFalse);
+    });
+
     test('alerta de negocio usa a propria frase como titulo', () {
       final alert = AppErrorAlert(
         'Carrinho não encontrado',

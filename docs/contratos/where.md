@@ -1,21 +1,21 @@
 # Where
 
-O servidor (`normalizeConsultaWhere`) aceita só lista `{ key, value, operator? }`. String SQL não vazia responde `[INVALID_PAYLOAD] Where deve ser uma lista de parametros.` Fonte: `D:\Developer\Node\data7-api-pix Campo\docs\contratos\where.md`.
+O servidor prefere lista `{ key, value, operator? }`. String SQL legado ainda é aceita (warn `Consulta Where em SQL cru`) — regra 26, **ainda não** recusa. Fonte: `D:\Developer\Node\data7-api-pix Campo\docs\contratos\where.md`. Shim de `LIKE` em `separar.consulta`: `docs/socket/protecoes-cliente.md`.
 
-Este coletor ainda manda **string SQL** (`QueryBuilder.buildSqlWhere()`). Isso precisa migrar para lista de objetos.
+Este coletor manda **lista** (`QueryBuilder.buildWhereList()`).
 
 ```dart
 QueryBuilder()
     .equals('CodEmpresa', 1)
     .equals('CodConferir', 290)
     .equals('CodCarrinho', 94)
-    .buildSqlWhere();
-// CodEmpresa = 1 AND CodConferir = 290 AND CodCarrinho = 94
+    .buildWhereList();
+// [{ key: CodEmpresa, operator: =, value: 1 }, …]
 ```
 
-O servidor aceita essa string como veio (`ParamsCommonRepository.build`). Não é parametrizada. Identificadores inválidos são recusados.
+`buildSqlWhere()` permanece para teste e para o fragmento legado. O fio usa a lista (caminho parametrizado no servidor). Identificadores inválidos são recusados.
 
-Lista de objetos `{ key, operator, value }` também é válida no servidor (caminho parametrizado). Este app não monta esse formato hoje.
+`inList` manda `value` como lista JSON (`[10, 20]`), não string interpolada.
 
 ## Operadores no `QueryBuilder`
 
@@ -25,10 +25,10 @@ Lista de objetos `{ key, operator, value }` também é válida no servidor (cami
 | `notEquals` | `!=` | `Situacao != 'CANCELADA'` |
 | `greaterThan` / `lessThan` | `>` / `<` | |
 | `like` | `LIKE` | `Nome LIKE '%Joao%'` |
-| `inList` | `IN` | `Situacao IN ('EM SEPARACAO','SEPARANDO')` |
+| `inList` | `IN` | `CodCarrinho IN (10,20)` |
 | `addParam(key, value, operator:)` | livre | |
 
-`inList` formata string com aspas: `IN ('A','B')`. Número fica sem aspas.
+`inList` manda `value` como lista JSON. No fragmento SQL de teste: `IN (10,20)` ou `IN ('A','B')`.
 
 `OrderBy`:
 
@@ -62,7 +62,7 @@ Extensão `QueryBuilderExtension.search` gera `LIKE '%termo%'`. Não usar isso e
 
 ## Regras de filtro
 
-1. Recusa de setor do usuário logado é no app (`AppHelper.setorPermitido`), não no `WHERE` da lista. [Setor](./setor-estoque.md). Se um dia filtrar `separar.consulta` por setor: `CodSetorEstoque =` (o servidor vira `EXISTS` em `ItemSepararEstoque`). `LIKE` em `CodSetoresEstoque` (`STRING_AGG`) **não** entra nesse `EXISTS` e não usa índice.
+1. Recusa de setor do usuário logado é no app (`AppHelper.setorPermitido`), não no `WHERE` da lista. [Setor](./setor-estoque.md). Se um dia filtrar `separar.consulta` por setor: `CodSetorEstoque =` (o servidor vira `EXISTS` em `ItemSepararEstoque`). `LIKE` em `CodSetoresEstoque` (`STRING_AGG`) **não** entra nesse `EXISTS` e não usa índice. O servidor **ainda não** recusa esse `LIKE` — reescreve (regra 26).
 2. `DataEmissao` na view é `SepararEstoque.Data` (`DATE`). Filtrar com `=` ou intervalo (`greaterThan` / `lessThan` / `BETWEEN` no servidor), não `LIKE 'yyyy-MM-dd%'`.
 3. `ItemConferir` **não** tem `CodCarrinho`. Mandar no `WHERE` mesmo assim: a coluna vem do join `ItemCarrinhoPercurso = CarrinhoPercursoEstagio.Item` do estágio da **separação**, não do `CONFERINDO`.
 4. `conferir.item.select` **não** devolve `CodCarrinho`. Para a janela do carrinho usar `conferir.item.consulta`.

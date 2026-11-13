@@ -9,7 +9,7 @@ class ProcessoExecutavelService {
   Future<ProcessoExecutavelModel?> executar() async {
     try {
       final queryBuilder = QueryBuilder()
-          .like('Status', 'Ativo')
+          .equals('Status', 'Ativo')
           .orderByDesc('CodProcessoExecutavel')
           .paginate(limit: 1);
       final response = await processoExecutavelRepository.select(queryBuilder);

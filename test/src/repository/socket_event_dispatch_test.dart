@@ -111,5 +111,73 @@ void main() {
 
       expect(received, ['SEPARADO']);
     });
+
+    test('emergencia sem Session chega com allEvent', () {
+      final received = <String>[];
+      final listeners = [
+        RepositoryEventListenerModel(
+          id: 'emergencia',
+          event: Event.emergencia,
+          allEvent: true,
+          callback: (event) {
+            received.add(event.mutation.first['Mensagem'] as String);
+          },
+        ),
+        RepositoryEventListenerModel(
+          id: 'sem-all',
+          event: Event.emergencia,
+          callback: (_) => received.add('filtered'),
+        ),
+      ];
+
+      SocketEventRepository.dispatch(
+        listeners: listeners,
+        event: Event.emergencia,
+        channel: 'servidor.emergencia.listen',
+        data: {
+          'Data': [
+            {
+              'Nivel': 'aviso',
+              'Mensagem': 'Manutencao em 10 minutos.',
+              'Acao': 'nenhuma',
+            },
+          ],
+        },
+        sessionId: 'abc123',
+      );
+
+      expect(received, ['Manutencao em 10 minutos.', 'filtered']);
+    });
+
+    test('allEvent evita engolir emergencia quando Session e socket.id estão vazios', () {
+      final received = <String>[];
+      final listeners = [
+        RepositoryEventListenerModel(
+          id: 'sem-all',
+          event: Event.emergencia,
+          callback: (_) => received.add('dropped'),
+        ),
+        RepositoryEventListenerModel(
+          id: 'all',
+          event: Event.emergencia,
+          allEvent: true,
+          callback: (_) => received.add('all'),
+        ),
+      ];
+
+      SocketEventRepository.dispatch(
+        listeners: listeners,
+        event: Event.emergencia,
+        channel: 'servidor.emergencia.listen',
+        data: {
+          'Data': [
+            {'Mensagem': 'aviso'},
+          ],
+        },
+        sessionId: '',
+      );
+
+      expect(received, ['all']);
+    });
   });
 }

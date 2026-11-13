@@ -32,6 +32,7 @@ class FooterPageController extends GetxController {
       return;
     }
     if (!_hadSuccessfulConnection || _showingReconnectDialog) return;
+    if (_socket.sessionEndedByServer.value) return;
     if (_disconnectDebounce?.isActive ?? false) return;
 
     _disconnectDebounce = Timer(_reconnectDialogDelay, _showReconnectDialog);
@@ -39,6 +40,7 @@ class FooterPageController extends GetxController {
 
   void _showReconnectDialog() {
     if (_socket.isConnect.value || _showingReconnectDialog) return;
+    if (_socket.sessionEndedByServer.value) return;
 
     final context = Get.context;
     if (context == null) return;

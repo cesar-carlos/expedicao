@@ -27,6 +27,10 @@ void main() {
         AppSocketListenLog.isListenLogChannel('separacao.item.insert.listen'),
         isTrue,
       );
+      expect(
+        AppSocketListenLog.isListenLogChannel('servidor.emergencia.listen'),
+        isTrue,
+      );
     });
 
     test('reconhece sessao propria no envelope ou na linha', () {

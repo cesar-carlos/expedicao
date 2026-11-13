@@ -92,7 +92,7 @@ class CarrinhoPercursoEstagioAdicionarService {
 
     try {
       final queryBuilder = QueryBuilder()
-          .like('Origem', origem)
+          .equals('Origem', origem)
           .equals('Ativo', 'S');
 
       final estagios = await expedicaoEstagioRepository.select(queryBuilder);
