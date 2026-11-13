@@ -6,7 +6,8 @@ import 'package:app_expedicao/src/app/app_color.dart';
 import 'package:app_expedicao/src/app/app_data_grid.dart';
 import 'package:app_expedicao/src/app/app_helper.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
-import 'package:app_expedicao/src/model/processo_executavel_model.dart';
+// TESTE: import só usado na validação de setor de conferência (desligada).
+// import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_item_consulta_model.dart';
 import 'package:app_expedicao/src/pages/conferir/grid/conferir_grid_source.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_item_unidade_medida_consulta_model.dart';
@@ -27,7 +28,8 @@ class ConferirGridController extends GetxController {
   final List<ExpedicaoConferirItemConsultaModel> _itensSort = [];
   final List<ConferirSource> _sources = [];
   final List<ExpedicaoConferirItemUnidadeMedidaConsultaModel> _itemUnids = [];
-  final _processoExecutavel = Get.find<ProcessoExecutavelModel>();
+  // TESTE: validação de setor de conferência desligada temporariamente.
+  // final _processoExecutavel = Get.find<ProcessoExecutavelModel>();
   final dataGridController = DataGridController();
   final dataGridControllerConferencia = DataGridController();
 
@@ -504,12 +506,13 @@ class ConferirGridController extends GetxController {
       );
     }
 
-    if (!AppHelper.setorPermitido(
-      _processoExecutavel.codSetorConferencia,
-      item.codSetorEstoque,
-    )) {
-      return Icon(BootstrapIcons.ban, color: Colors.red, size: iconSize);
-    }
+    // TESTE: validação de setor de conferência desligada temporariamente.
+    // if (!AppHelper.setorPermitido(
+    //   _processoExecutavel.codSetorConferencia,
+    //   item.codSetorEstoque,
+    // )) {
+    //   return Icon(BootstrapIcons.ban, color: Colors.red, size: iconSize);
+    // }
 
     return Icon(BootstrapIcons.box, color: Colors.blue, size: iconSize);
   }

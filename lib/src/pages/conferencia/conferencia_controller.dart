@@ -364,22 +364,23 @@ class ConferenciaController extends GetxController {
       return;
     }
 
-    if (!AppHelper.setorPermitido(
-      _processoExecutavel.codSetorConferencia,
-      itemConferirConsulta.codSetorEstoque,
-    )) {
-      AppAudioHelper().play('/error.wav');
-      await MessageDialogView.show(
-        context: Get.context!,
-        message: 'Produto fora do setor conferência!',
-        detail: 'Este produto não esta no seu setor de conferência!',
-      );
-
-      displayController.text = '';
-      scanFocusNode.requestFocus();
-      scanController.clear();
-      return;
-    }
+    // TESTE: validação de setor de conferência desligada temporariamente.
+    // if (!AppHelper.setorPermitido(
+    //   _processoExecutavel.codSetorConferencia,
+    //   itemConferirConsulta.codSetorEstoque,
+    // )) {
+    //   AppAudioHelper().play('/error.wav');
+    //   await MessageDialogView.show(
+    //     context: Get.context!,
+    //     message: 'Produto fora do setor conferência!',
+    //     detail: 'Este produto não esta no seu setor de conferência!',
+    //   );
+    //
+    //   displayController.text = '';
+    //   scanFocusNode.requestFocus();
+    //   scanController.clear();
+    //   return;
+    // }
 
     double qtdConfDigitada = AppHelper.qtdDisplayToDouble(
       quantidadeController.text,
@@ -530,20 +531,21 @@ class ConferenciaController extends GetxController {
         return;
       }
 
-      final itemConferirSetor = _findItemConferirGrid(el.codProduto);
-      if (itemConferirSetor != null &&
-          !AppHelper.setorPermitido(
-            _processoExecutavel.codSetorConferencia,
-            itemConferirSetor.codSetorEstoque,
-          )) {
-        await MessageDialogView.show(
-          context: Get.context!,
-          message: 'Não é possivel remover!',
-          detail: 'O produto não esta no seu setor conferência!',
-        );
-
-        return;
-      }
+      // TESTE: validação de setor de conferência desligada temporariamente.
+      // final itemConferirSetor = _findItemConferirGrid(el.codProduto);
+      // if (itemConferirSetor != null &&
+      //     !AppHelper.setorPermitido(
+      //       _processoExecutavel.codSetorConferencia,
+      //       itemConferirSetor.codSetorEstoque,
+      //     )) {
+      //   await MessageDialogView.show(
+      //     context: Get.context!,
+      //     message: 'Não é possivel remover!',
+      //     detail: 'O produto não esta no seu setor conferência!',
+      //   );
+      //
+      //   return;
+      // }
 
       final bool? confirmation = await ConfirmationDialogView.show(
         context: Get.context!,
