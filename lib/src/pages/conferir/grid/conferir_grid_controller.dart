@@ -7,6 +7,7 @@ import 'package:app_expedicao/src/app/app_data_grid.dart';
 import 'package:app_expedicao/src/app/app_helper.dart';
 import 'package:app_expedicao/src/model/expedicao_situacao_model.dart';
 // TESTE: import só usado na validação de setor de conferência (desligada).
+// Só descomentar se for pedido explicitamente.
 // import 'package:app_expedicao/src/model/processo_executavel_model.dart';
 import 'package:app_expedicao/src/model/expedicao_conferir_item_consulta_model.dart';
 import 'package:app_expedicao/src/pages/conferir/grid/conferir_grid_source.dart';
@@ -29,6 +30,7 @@ class ConferirGridController extends GetxController {
   final List<ConferirSource> _sources = [];
   final List<ExpedicaoConferirItemUnidadeMedidaConsultaModel> _itemUnids = [];
   // TESTE: validação de setor de conferência desligada temporariamente.
+  // Só descomentar se for pedido explicitamente.
   // final _processoExecutavel = Get.find<ProcessoExecutavelModel>();
   final dataGridController = DataGridController();
   final dataGridControllerConferencia = DataGridController();
@@ -507,6 +509,7 @@ class ConferirGridController extends GetxController {
     }
 
     // TESTE: validação de setor de conferência desligada temporariamente.
+    // Só descomentar se for pedido explicitamente.
     // if (!AppHelper.setorPermitido(
     //   _processoExecutavel.codSetorConferencia,
     //   item.codSetorEstoque,

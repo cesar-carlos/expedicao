@@ -23,7 +23,7 @@ Setor válido é **maior que zero**. `null` e `0` são indefinido (`setorDefinid
 
 - Setor do usuário vem do processo (`processo.executavel.select`), não do cadastro de usuário.
 - Vale no scan e no excluir. Na conferência o item do carrinho não tem setor: buscar o produto na lista a conferir.
-- TESTE: as validações de setor de conferência (scan, excluir, ícone `ban`) estão comentadas. A separação continua filtrando. Reativar depois do teste.
+- TESTE: as validações de setor de conferência (scan, excluir, ícone `ban`) estão comentadas. A separação continua filtrando. Só descomentar se for pedido explicitamente.
 - A grade mostra todos os itens. Não filtrar `separar.consulta` / `conferir.item.consulta` com o setor do usuário.
 - Conferir tudo / separar tudo hoje **não** filtram. Qualquer filtro novo no lote usa `setorPermitido`.
 - Não filtrar com `LIKE` em `CodSetoresEstoque`.

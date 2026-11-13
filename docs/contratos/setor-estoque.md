@@ -55,9 +55,9 @@ Eventos do servidor que este coletor **não** emite: `separar.usuario.setor.cons
 | Bipar na separação | `SeparacaoController._addItemSeparacao` | *Produto fora do setor estoque!* / *Este produto não esta no seu setor de setor estoque!* |
 | Excluir na separação | `SeparacaoController._onRemoveItemSeparacaoGrid` | *Não é possivel remover!* / *O produto não esta no seu setor estoque!* |
 | Ícone da grade a separar | `SepararGridController.iconIndicator` | Ícone `ban` vermelho (não impede sozinho) |
-| Bipar na conferência | `ConferenciaController._addItemConferencia` | *Produto fora do setor conferência!* / *Este produto não esta no seu setor de conferência!* — **TESTE: comentada** |
-| Excluir na conferência | `ConferenciaController._onRemoveItemConferenciaGrid` | *Não é possivel remover!* / *O produto não esta no seu setor conferência!* — **TESTE: comentada** |
-| Ícone da grade a conferir | `ConferirGridController.iconIndicator` | Ícone `ban` vermelho (não impede sozinho) — **TESTE: comentada** |
+| Bipar na conferência | `ConferenciaController._addItemConferencia` | *Produto fora do setor conferência!* / *Este produto não esta no seu setor de conferência!* — **TESTE: comentada. Só descomentar se for pedido explicitamente.** |
+| Excluir na conferência | `ConferenciaController._onRemoveItemConferenciaGrid` | *Não é possivel remover!* / *O produto não esta no seu setor conferência!* — **TESTE: comentada. Só descomentar se for pedido explicitamente.** |
+| Ícone da grade a conferir | `ConferirGridController.iconIndicator` | Ícone `ban` vermelho (não impede sozinho) — **TESTE: comentada. Só descomentar se for pedido explicitamente.** |
 
 A lista da tela mostra **todos** os itens. O recorte é na hora de bipar / excluir.
 

@@ -365,6 +365,7 @@ class ConferenciaController extends GetxController {
     }
 
     // TESTE: validação de setor de conferência desligada temporariamente.
+    // Só descomentar se for pedido explicitamente.
     // if (!AppHelper.setorPermitido(
     //   _processoExecutavel.codSetorConferencia,
     //   itemConferirConsulta.codSetorEstoque,
@@ -532,6 +533,7 @@ class ConferenciaController extends GetxController {
       }
 
       // TESTE: validação de setor de conferência desligada temporariamente.
+      // Só descomentar se for pedido explicitamente.
       // final itemConferirSetor = _findItemConferirGrid(el.codProduto);
       // if (itemConferirSetor != null &&
       //     !AppHelper.setorPermitido(
